@@ -1,0 +1,422 @@
+version: "1.1"
+metadata:
+  description: "AI-Protocol v1.1 - Standard Specification for AI Model Integration"
+  last_updated: "2025-12-XX"
+  authors: ["AI-Protocol Team"]
+  license: "MIT OR Apache-2.0"
+
+# =========================================================
+# Standard Schema (2025 Extensions)
+# =========================================================
+standard_schema:
+  # Standard parameter definitions - unified developer interface
+  parameters:
+    temperature:
+      type: float
+      range: [0.0, 2.0]
+      default: 1.0
+      description: "Controls randomness in the output"
+    max_tokens:
+      type: integer
+      min: 1
+      max: 32768
+      description: "Maximum number of tokens to generate"
+    stream:
+      type: boolean
+      default: false
+      description: "Enable streaming responses"
+    top_p:
+      type: float
+      range: [0.0, 1.0]
+      default: 1.0
+      description: "Nucleus sampling parameter"
+
+    frequency_penalty:
+      type: float
+      range: [-2.0, 2.0]
+      default: 0.0
+      description: "Penalize frequent tokens (OpenAI-compatible)"
+
+    presence_penalty:
+      type: float
+      range: [-2.0, 2.0]
+      default: 0.0
+      description: "Penalize repeated presence (OpenAI-compatible)"
+
+    top_k:
+      type: integer
+      min: 1
+      max: 500
+      description: "Top-K filtering (Gemini/open-source compatible)"
+
+    stop_sequences:
+      type: array
+      description: "Stop sequences to truncate generation"
+
+    logprobs:
+      type: boolean
+      default: false
+      description: "Return token logprobs when provider supports"
+
+    top_logprobs:
+      type: integer
+      min: 1
+      max: 5
+      description: "Number of top logprobs to return"
+
+    seed:
+      type: integer
+      description: "Deterministic seed when supported"
+
+    tool_choice:
+      type: string
+      values: ["auto", "none", "required", "specific"]
+      default: "auto"
+      description: "Tool choice policy per request"
+
+    response_format_mode:
+      type: string
+      values: ["auto", "text", "json_object", "json_schema"]
+      default: "auto"
+      description: "Structured output selection (OpenAI Responses / JSON mode)"
+
+    # 2025: Agentic reasoning control
+    reasoning_effort:
+      type: string
+      values: ["low", "medium", "high", "auto"]
+      default: "auto"
+      description: "Reasoning effort for agentic tasks"
+
+  # Tool definition standards
+  tools:
+    schema: "standard_tool_definition"
+    choice_policy: ["auto", "none", "required", "specific"]
+    strict_mode: true
+    parallel_calls: true
+
+  # Response format standards
+  response_format:
+    types: ["text", "json", "structured"]
+    schema_validation: true
+
+  # Multimodal content standards
+  multimodal:
+    image:
+      formats: ["png", "jpeg", "gif", "webp"]
+      max_size: "10MB"
+
+  # 2025: Agentic Loop configuration
+  agentic_loop:
+    max_iterations: 10
+    stop_conditions: ["tool_result", "final_answer"]
+    reasoning_effort: "auto"
+
+  # 2025: Streaming events model
+  streaming_events:
+    supported_events: ["PartialContentDelta", "ThinkingDelta", "PartialToolCall", "ToolCallStarted", "ToolCallEnded", "StreamError"]
+    thinking_blocks: true
+    citations_enabled: true
+
+    transport_definitions:
+      sse:
+        description: "Server-Sent Events (SSE) framing contract used by multiple providers."
+        framing:
+          delimiter: "\\n\\n"
+          data_prefix: "data: "
+          done_signal: "[DONE]"
+        notes:
+          - "Runtimes should split frames by delimiter and parse each data payload as JSON when applicable."
+          - "Providers MAY emit non-data lines; runtimes should ignore unknown lines unless a provider-specific decoder.strategy says otherwise."
+
+    # Termination / stop reasons (cross-provider normalization)
+    #
+    # Goal: normalize provider-specific termination signals (e.g. OpenAI finish_reason,
+    # Anthropic stop_reason) into a stable enum that runtimes and UIs can rely on.
+    termination_reasons:
+      standard_reasons:
+        - id: "end_turn"
+          description: "Model reached a natural stopping point."
+        - id: "max_tokens"
+          description: "Generation stopped because max tokens or context constraints were hit."
+        - id: "stop_sequence"
+          description: "Generation stopped because a user-provided stop sequence was encountered."
+        - id: "tool_use"
+          description: "Model decided to invoke one or more tools / function calls."
+        - id: "refusal"
+          description: "Model refused or safety classifiers intervened (policy)."
+        - id: "pause_turn"
+          description: "Turn was paused and may be continued in a subsequent request."
+        - id: "other"
+          description: "Provider-specific or unknown termination."
+
+      # Informative mapping guidance (NOT exhaustive; providers may evolve)
+      provider_mappings:
+        anthropic:
+          source_field: "stop_reason"
+          notes:
+            - "Non-streaming: stop_reason is always non-null."
+            - "Streaming: stop_reason is null in message_start, then non-null otherwise."
+          map:
+            end_turn: "end_turn"
+            max_tokens: "max_tokens"
+            stop_sequence: "stop_sequence"
+            tool_use: "tool_use"
+            pause_turn: "pause_turn"
+            refusal: "refusal"
+        openai:
+          source_field: "finish_reason"
+          notes:
+            - "finish_reason is reported per candidate."
+          map:
+            stop: "end_turn"
+            length: "max_tokens"
+            tool_calls: "tool_use"
+            content_filter: "refusal"
+            null: "other"
+
+      runtime_behavior:
+        - "Runtimes SHOULD surface standardized termination reasons to users and logs."
+        - "Runtimes SHOULD preserve the original provider-specific reason in extra metadata for debugging."
+
+    # Standard event payload definitions (used by runtimes for normalization)
+    event_definitions:
+      StreamError:
+        description: "A stream-level error event emitted after a streaming/realtime session has been established. Most errors are recoverable and the session may stay open; runtimes SHOULD monitor and log error messages by default."
+        payload:
+          type: object
+          # Providers differ: some emit a rich error object with event ids (e.g. OpenAI realtime),
+          # others may emit a simple string (e.g. SSE frames with an `error` message).
+          required: ["error"]
+          properties:
+            type:
+              type: string
+              description: "Optional event type when provided by the stream (e.g., 'error')."
+            event_id:
+              type: string
+              description: "Optional unique ID of the server event when provided."
+            error:
+              type: any
+              description: "Error payload. May be an object (rich error) or a string (human-readable message), depending on provider."
+            model_version:
+              type: string
+              description: "Optional model version string when provided by the stream."
+
+  # Standard content block model (cross-provider normalization)
+  #
+  # Goal: normalize tool invocation and tool result payloads across providers that represent
+  # tools as content blocks (e.g. Anthropic tool_use/tool_result) or as tool_calls arrays (e.g. OpenAI).
+  content_blocks:
+    types: ["text", "tool_use", "tool_result", "thinking"]
+
+    tool_use:
+      description: "A request from the model to invoke a tool."
+      required_fields: ["type", "id", "name", "input"]
+      fields:
+        type:
+          const: "tool_use"
+        id:
+          type: string
+          description: "Unique identifier for this tool invocation (tool_use id / tool_call id)."
+        name:
+          type: string
+          description: "Tool name to invoke."
+        input:
+          type: object
+          description: "Tool input parameters (structured object)."
+
+    tool_result:
+      description: "A tool execution result provided back to the model."
+      required_fields: ["type", "tool_use_id", "content"]
+      fields:
+        type:
+          const: "tool_result"
+        tool_use_id:
+          type: string
+          description: "The id of the corresponding tool_use/tool_call."
+        content:
+          type: any
+          description: "Result content (provider/runtime-defined). Prefer a structured object or an array of text blocks."
+        is_error:
+          type: boolean
+          description: "Optional: whether the tool execution failed."
+
+  # Retry policy model (cross-provider normalization)
+  #
+  # Goal: allow providers to declare retry guidance so runtimes can apply consistent behavior.
+  retry_policy:
+    fields:
+      strategy:
+        values: ["none", "exponential_backoff"]
+      max_retries:
+        type: integer
+        min: 0
+      min_delay_ms:
+        type: integer
+        min: 0
+      max_delay_ms:
+        type: integer
+        min: 0
+      jitter:
+        values: ["none", "full", "equal"]
+      retry_on_http_status:
+        type: array
+        items: integer
+      retry_on_error_status:
+        type: array
+        items: string
+    runtime_notes:
+      - "Runtimes SHOULD treat retry_policy as guidance; user overrides may apply."
+      - "Runtimes SHOULD apply exponential backoff with an upper bound and optional jitter when enabled."
+
+  # Rate limit headers (cross-provider normalization)
+  #
+  # Goal: allow providers to declare which HTTP response headers expose rate limits.
+  rate_limit_headers:
+    fields:
+      requests_limit:
+        type: string
+        description: "Header name that reports request limit."
+      requests_remaining:
+        type: string
+        description: "Header name that reports remaining requests."
+      requests_reset:
+        type: string
+        description: "Header name that reports time until request limit resets (format is provider-specific)."
+      tokens_limit:
+        type: string
+        description: "Header name that reports token limit."
+      tokens_remaining:
+        type: string
+        description: "Header name that reports remaining tokens."
+      tokens_reset:
+        type: string
+        description: "Header name that reports time until token limit resets (format is provider-specific)."
+      retry_after:
+        type: string
+        description: "Header name that reports seconds until retry allowed (Retry-After style), if provided."
+    runtime_notes:
+      - "Runtimes SHOULD treat rate_limit_headers as optional; not all providers return all headers."
+      - "When retry_after is present on 429, runtimes SHOULD respect it."
+
+  # Error handling (cross-provider normalization)
+  #
+  # Goal: define a stable, cross-provider error taxonomy and runtime behavior guidelines.
+  #
+  # Provider configs should:
+  # - Declare how to extract errors via `features.response_mapping.error.*`
+  # - Declare retry guidance via `retry_policy`
+  # - Declare rate limit headers via `rate_limit_headers`
+  error_handling:
+    # Stable classification labels that runtimes can surface consistently.
+    # Providers MAY offer richer or more specific codes; runtimes SHOULD preserve raw provider fields.
+    error_classes:
+      - id: "invalid_request"
+        description: "Malformed request body, invalid parameters, or unsupported operation."
+        default_retryable: false
+      - id: "authentication"
+        description: "Missing/invalid credentials (API key/token)."
+        default_retryable: false
+      - id: "permission_denied"
+        description: "Caller is authenticated but not permitted to access the resource."
+        default_retryable: false
+      - id: "not_found"
+        description: "Requested resource not found."
+        default_retryable: false
+      - id: "quota_exhausted"
+        description: "Account quota/billing/spend limit exceeded."
+        default_retryable: false
+      - id: "rate_limited"
+        description: "Throttled due to request/token limits; typically retryable with backoff."
+        default_retryable: true
+      - id: "request_too_large"
+        description: "Payload too large (e.g., context too long, request too big)."
+        default_retryable: false
+      - id: "timeout"
+        description: "Request timed out or deadline exceeded."
+        default_retryable: true
+      - id: "conflict"
+        description: "Request conflict (often safe to retry depending on semantics)."
+        default_retryable: true
+      - id: "cancelled"
+        description: "Request was cancelled by client or upstream."
+        default_retryable: false
+      - id: "server_error"
+        description: "Transient server-side failure (5xx)."
+        default_retryable: true
+      - id: "overloaded"
+        description: "Service overloaded / temporarily unavailable."
+        default_retryable: true
+      - id: "other"
+        description: "Unknown or provider-specific classification."
+        default_retryable: false
+
+    # Common envelopes observed across providers (informative, not prescriptive).
+    # Runtimes SHOULD use provider mappings to extract fields.
+    envelope_patterns:
+      openai_style:
+        shape: '{ "error": { "message": string, "type": string, "code"?: string|null, "param"?: string|null } }'
+        extraction:
+          message: "error.message"
+          type: "error.type"
+          code: "error.code"
+          param: "error.param"
+      anthropic_style:
+        shape: '{ "type": "error", "error": { "type": string, "message": string }, "request_id": string }'
+        extraction:
+          message: "error.message"
+          type: "error.type"
+          request_id: "request_id"
+      google_cloud_style:
+        shape: '{ "error": { "code": integer, "message": string, "status": string, "errors"?: [], "details"?: [] } }'
+        extraction:
+          message: "error.message"
+          http_code: "error.code"
+          status: "error.status"
+          errors: "error.errors"
+          details: "error.details"
+
+    # Canonical guidance for classification and retries.
+    runtime_behavior:
+      - "Runtimes SHOULD map provider-specific errors into error_classes for logs/UI, while preserving raw fields."
+      - "Runtimes SHOULD treat HTTP 401/403 as authentication/permission_denied and avoid retries by default."
+      - "Runtimes SHOULD treat HTTP 400/422 as invalid_request and avoid retries by default."
+      - "On HTTP 429, runtimes SHOULD distinguish rate-limited vs quota-exhausted when possible (often via message/type/code)."
+      - "On HTTP 429, if a Retry-After header (or provider-declared retry_after) is present, runtimes SHOULD respect it."
+      - "On transient 5xx/overloaded errors, runtimes SHOULD retry with exponential backoff and a cap (see retry_policy)."
+      - "Runtimes SHOULD cap retries and add jitter to avoid retry storms."
+
+    # Provider field contract: how provider configs combine to express error handling
+    #
+    # Providers SHOULD declare:
+    # 1. `features.response_mapping.error.*`: JSON paths to extract error fields from responses.
+    # 2. `error_classification`: How HTTP status codes and provider error status strings map to error_classes.
+    # 3. `retry_policy`: Which errors are retryable and with what strategy (backoff, delays, caps).
+    # 4. `rate_limit_headers`: Which HTTP headers expose rate limit state (for monitoring/throttling).
+    #
+    # Runtime interpretation:
+    # - Extract error fields using `response_mapping.error.*` paths.
+    # - Classify errors using `error_classification` (HTTP status → error_class, or provider status → error_class).
+    # - Determine retry eligibility from `error_classification` output + `retry_policy.retry_on_http_status` + `retry_policy.retry_on_error_status`.
+    # - Apply `retry_policy` strategy (exponential_backoff) with declared delays/jitter/caps.
+    # - Monitor `rate_limit_headers` for rate limit state (remaining/reset times).
+    # - On 429, check `rate_limit_headers.retry_after` (if present) before applying backoff.
+    #
+    # Example flow:
+    # 1. HTTP 429 response received.
+    # 2. Extract `error.message` using `features.response_mapping.error.message_path`.
+    # 3. Classify via `error_classification.by_http_status["429"]` → "rate_limited" (or "quota_exhausted" if detectable).
+    # 4. Check `retry_policy.retry_on_http_status` includes 429 → retryable.
+    # 5. Check `rate_limit_headers.retry_after` header value (if present) → use that delay; otherwise use `retry_policy.min_delay_ms` + exponential backoff.
+    # 6. Apply retry with `retry_policy.strategy`, `retry_policy.jitter`, up to `retry_policy.max_retries`.
+    provider_field_contract:
+      purpose: "Clarify how provider configs work together to enable consistent error handling and retry behavior."
+      fields_relationship:
+        - "response_mapping.error: Extracts raw error fields (message, code, type, etc.) from provider responses."
+        - "error_classification: Maps HTTP status / provider status strings to standard error_classes."
+        - "retry_policy: Declares which errors are retryable and how to retry (strategy, delays, caps)."
+        - "rate_limit_headers: Declares which HTTP headers expose rate limit state (for throttling/monitoring)."
+      runtime_integration:
+        - "Runtimes SHOULD use error_classification output to determine retry eligibility (default_retryable from error_class + explicit retry_policy overrides)."
+        - "Runtimes SHOULD combine error_classification with retry_policy.retry_on_http_status and retry_policy.retry_on_error_status to finalize retry decisions."
+        - "Runtimes SHOULD respect rate_limit_headers.retry_after when present on 429 responses."
+        - "Runtimes SHOULD preserve raw provider error fields (via response_mapping) alongside normalized error_class for debugging."

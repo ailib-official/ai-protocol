@@ -1,0 +1,101 @@
+$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+
+id: groq
+protocol_version: "1.1"
+
+version: "v1"
+base_url: "https://api.groq.com/openai/v1"
+auth:
+  type: bearer
+  token_env: "GROQ_API_KEY"
+payload_format: "openai_style"
+
+# OpenAI-compatible API families
+api_families: ["chat_completions", "completions"]
+default_api_family: "chat_completions"
+endpoints:
+  chat_completions_create: "/chat/completions"
+  completions_create: "/completions"
+
+# Termination reason normalization (see v1/spec.yaml: standard_schema.streaming_events.termination_reasons)
+termination:
+  source_field: "finish_reason"
+  mapping:
+    stop: "end_turn"
+    length: "max_tokens"
+    tool_calls: "tool_use"
+    content_filter: "refusal"
+  notes:
+    - "OpenAI-compatible: finish_reason is reported per candidate."
+
+# Tool invocation normalization (see v1/spec.yaml: standard_schema.content_blocks)
+tooling:
+  source_model: "openai_tool_calls"
+  tool_use:
+    id_path: "id"
+    name_path: "function.name"
+    input_path: "function.arguments"
+    input_format: "json_string"
+  notes:
+    - "OpenAI-compatible tool_calls.function.arguments is typically a JSON string; runtimes SHOULD parse it into an object when normalizing."
+
+# Rate limits (OpenAI-compatible; see OpenAI rate limits guide)
+rate_limit_headers:
+  requests_limit: "x-ratelimit-limit-requests"
+  tokens_limit: "x-ratelimit-limit-tokens"
+  requests_remaining: "x-ratelimit-remaining-requests"
+  tokens_remaining: "x-ratelimit-remaining-tokens"
+  requests_reset: "x-ratelimit-reset-requests"
+  tokens_reset: "x-ratelimit-reset-tokens"
+
+# Retry policy (OpenAI-compatible guidance: exponential backoff for 429; retry 5xx after brief wait)
+retry_policy:
+  strategy: "exponential_backoff"
+  min_delay_ms: 1000
+  jitter: "full"
+  retry_on_http_status: [429, 500]
+  notes:
+    - "OpenAI-compatible: exponential backoff is recommended for rate limit errors (429)."
+    - "Retry 500 after a brief wait."
+parameter_mappings:
+  temperature: "temperature"
+  max_tokens: "max_tokens"
+  stream: "stream"
+  stop_sequences: "stop"
+  tools: "tools"
+  tool_choice: "tool_choice"
+  frequency_penalty: "frequency_penalty"
+  presence_penalty: "presence_penalty"
+  logprobs: "logprobs"
+  top_logprobs: "top_logprobs"
+  seed: "seed"
+response_format: "openai_style"
+response_paths:
+  content: "choices[0].message.content"
+  tool_calls: "choices[0].message.tool_calls"
+  usage: "usage"
+streaming:
+  event_format: "data_lines"
+  content_path: "choices[0].delta.content"
+  tool_call_path: "choices[0].delta.tool_calls"
+features:
+  multi_candidate:
+    support_type: "native"
+    param_name: "n"
+  response_mapping:
+    tool_calls:
+      path: "choices[0].message.tool_calls"
+      fields:
+        id: "id"
+        name: "function.name"
+        args: "function.arguments"
+    error:
+      message_path: "error.message"
+      code_path: "error.code"
+      type_path: "error.type"
+      param_path: "error.param"
+capabilities: [chat, tools, streaming, parallel_tools, agentic]
+experimental_features:
+  - "builtin_search"
+  - "code_execution"
+  - "fast_inference"

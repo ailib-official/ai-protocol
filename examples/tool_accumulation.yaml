@@ -1,0 +1,149 @@
+# AI-Protocol v1.1 Example: Tool Accumulation Pattern
+# This example demonstrates how to configure a provider for complex tool calling scenarios
+
+$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+
+# Example: Anthropic with enhanced tool streaming
+id: anthropic_enhanced
+protocol_version: "1.1"
+
+version: "v1"
+base_url: "https://api.anthropic.com/v1"
+auth:
+  type: bearer
+  token_env: "ANTHROPIC_API_KEY"
+  extra_headers:
+    - name: "anthropic-version"
+      value: "2023-06-01"
+
+# Enhanced parameter mapping for tool accumulation
+parameter_mappings:
+  temperature: "temperature"
+  max_tokens: "max_tokens"
+  stream: "stream"
+  tools: "tools"
+  tool_choice: "tool_choice"
+  # Custom mapping for tool accumulation strategy
+  tool_accumulation_strategy: "auto"  # Let the model decide when to accumulate
+  max_tool_calls_per_turn: "10"       # Allow up to 10 tool calls
+
+# Enhanced streaming configuration for tool accumulation
+streaming:
+  event_format: "anthropic_sse"
+  decoder:
+    format: "anthropic_sse"
+    strategy: "anthropic_event_stream"
+    delimiter: "\n\n"
+    prefix: "data: "
+
+  # Advanced frame selection for tool accumulation
+  frame_selector: "$.type in ['content_block_start', 'content_block_delta', 'content_block_stop', 'message_delta', 'message_stop']"
+
+  # Stateful accumulator for complex tool parsing
+  accumulator:
+    stateful_tool_parsing: true
+    key_path: "$.delta.partial_json"
+    flush_on: "$.type == 'content_block_stop'"
+    # Tool accumulation specific settings
+    accumulation_mode: "batch"        # Accumulate all tools before execution
+    max_accumulation_size: 10         # Maximum tools to accumulate
+    timeout_ms: 5000                  # Timeout for accumulation
+
+  # Enhanced event mapping for tool accumulation
+  event_map:
+    # Text content streaming (may be interleaved with tools)
+    - match: "$.type == 'content_block_delta' && $.delta.type == 'text_delta'"
+      emit: "PartialContentDelta"
+      extract:
+        content: "$.delta.text"
+        sequence_id: "$.index"  # Track sequence for reordering
+
+    # Thinking/reasoning delta (important for tool accumulation decisions)
+    - match: "$.type == 'content_block_delta' && $.delta.type == 'thinking_delta'"
+      emit: "ThinkingDelta"
+      extract:
+        thinking: "$.delta.thinking"
+        tool_consideration: "$.delta.tool_thinking"  # Model's tool reasoning
+
+    # Tool call start (with accumulation context)
+    - match: "$.type == 'content_block_start' && $.content_block.type == 'tool_use'"
+      emit: "ToolCallStarted"
+      extract:
+        tool_call_id: "$.content_block.id"
+        tool_name: "$.content_block.name"
+        index: "$.index"
+        accumulation_batch: "$.batch_id"  # Track which accumulation batch this belongs to
+
+    # Tool call arguments streaming (partial JSON accumulation)
+    - match: "$.type == 'content_block_delta' && $.delta.type == 'input_json_delta'"
+      emit: "PartialToolCall"
+      extract:
+        arguments: "$.delta.partial_json"
+        index: "$.index"
+        is_complete: "$.delta.is_complete"  # Signal when tool args are complete
+
+    # Tool call end (ready for execution in accumulation batch)
+    - match: "$.type == 'content_block_stop'"
+      emit: "ToolCallEnded"
+      extract:
+        index: "$.index"
+        batch_ready: "$.batch_ready"  # Signal when entire batch is ready
+
+    # Batch completion signal
+    - match: "$.type == 'tool_batch_complete'"
+      emit: "ToolBatchReady"
+      extract:
+        batch_id: "$.batch_id"
+        tool_count: "$.tool_count"
+        execution_priority: "$.priority"
+
+    # Message completion with accumulated tool results
+    - match: "$.type == 'message_delta'"
+      emit: "Metadata"
+      extract:
+        stop_reason: "$.delta.stop_reason"
+        usage: "$.usage"
+        accumulated_tools: "$.accumulated_tool_calls"
+
+    # Stream end
+    - match: "$.type == 'message_stop'"
+      emit: "StreamEnd"
+      extract:
+        finish_reason: "end_turn"
+        final_accumulation: "$.final_tool_batch"
+
+# Enhanced capabilities for tool accumulation
+capabilities: [chat, vision, tools, streaming, agentic, reasoning, tool_accumulation]
+
+# Tool accumulation specific features
+features:
+  tool_accumulation:
+    enabled: true
+    strategy: "batch"              # Execute tools in batches
+    max_batch_size: 10            # Maximum tools per batch
+    parallel_execution: true      # Execute multiple tools in parallel when possible
+    dependency_resolution: true   # Resolve tool dependencies automatically
+    error_handling: "rollback"    # Rollback batch on any tool failure
+
+  response_mapping:
+    tool_calls:
+      path: "content"
+      filter: "type == 'tool_use'"
+      fields:
+        id: "id"
+        name: "name"
+        args: "input"
+        batch_id: "_generate_batch_id"
+      array_fan_out: true
+      accumulation_grouping: "batch_id"  # Group tools by batch for execution
+
+    error:
+      message_path: "error.message"
+      code_path: "error.type"
+
+# Experimental features for advanced tool accumulation
+experimental_features:
+  - "tool_accumulation_v2"
+  - "parallel_tool_execution"
+  - "dependency_injection"
+  - "batch_rollback"

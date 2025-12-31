@@ -1,0 +1,49 @@
+$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+
+# Claude Model Instances
+models:
+  claude-3-5-sonnet:
+    provider: anthropic
+    model_id: "claude-3-5-sonnet-20241022"
+    display_name: "Claude 3.5 Sonnet"
+    context_window: 200000
+    capabilities: [chat, vision, tools, streaming, agentic, reasoning]
+    pricing:
+      input_per_token: 0.000003
+      output_per_token: 0.000015
+    status: active
+    tags: ["claude", "vision", "reasoning", "agentic", "thinking"]
+    agentic_capabilities:
+      reasoning_effort: "high"
+      thinking_blocks: true
+      parallel_tools: false
+      builtin_tools: ["web_search", "document_analysis"]
+
+  claude-3-5-haiku:
+    provider: anthropic
+    model_id: "claude-3-5-haiku-20241022"
+    display_name: "Claude 3.5 Haiku"
+    context_window: 200000
+    capabilities: [chat, vision, tools, streaming, agentic]
+    pricing:
+      input_per_token: 0.0000008
+      output_per_token: 0.000004
+    status: active
+    tags: ["claude", "vision", "fast", "cost-effective", "agentic"]
+
+  claude-3-opus:
+    provider: anthropic
+    model_id: "claude-3-opus-20240229"
+    display_name: "Claude 3 Opus"
+    context_window: 200000
+    capabilities: [chat, vision, tools, streaming, agentic, reasoning]
+    pricing:
+      input_per_token: 0.000015
+      output_per_token: 0.000075
+    status: active
+    tags: ["claude", "vision", "premium", "reasoning", "agentic"]
+    agentic_capabilities:
+      reasoning_effort: "high"
+      thinking_blocks: true
+      parallel_tools: true
+      builtin_tools: ["web_search", "code_execution", "document_analysis"]

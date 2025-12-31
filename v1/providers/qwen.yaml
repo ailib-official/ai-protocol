@@ -1,0 +1,114 @@
+$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+
+id: qwen
+protocol_version: "1.1"
+
+version: "v1"
+base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+auth:
+  type: bearer
+  token_env: "QWEN_API_KEY"
+payload_format: "openai_style"
+
+# OpenAI-compatible API families (DashScope compatible-mode)
+api_families: ["chat_completions", "completions"]
+default_api_family: "chat_completions"
+endpoints:
+  chat_completions_create: "/chat/completions"
+  completions_create: "/completions"
+
+# Termination reason normalization (see v1/spec.yaml: standard_schema.streaming_events.termination_reasons)
+termination:
+  source_field: "finish_reason"
+  mapping:
+    stop: "end_turn"
+    length: "max_tokens"
+    tool_calls: "tool_use"
+    content_filter: "refusal"
+  notes:
+    - "OpenAI-compatible: finish_reason is reported per candidate."
+
+# Tool invocation normalization (see v1/spec.yaml: standard_schema.content_blocks)
+tooling:
+  source_model: "openai_tool_calls"
+  tool_use:
+    id_path: "id"
+    name_path: "function.name"
+    input_path: "function.arguments"
+    input_format: "json_string"
+  notes:
+    - "OpenAI-compatible tool_calls.function.arguments is typically a JSON string; runtimes SHOULD parse it into an object when normalizing."
+
+# Rate limits (OpenAI-compatible; see OpenAI rate limits guide)
+rate_limit_headers:
+  requests_limit: "x-ratelimit-limit-requests"
+  tokens_limit: "x-ratelimit-limit-tokens"
+  requests_remaining: "x-ratelimit-remaining-requests"
+  tokens_remaining: "x-ratelimit-remaining-tokens"
+  requests_reset: "x-ratelimit-reset-requests"
+  tokens_reset: "x-ratelimit-reset-tokens"
+  retry_after: "retry-after"
+
+# Retry policy (VERIFIED/secondary: short exponential backoff with small retry cap is common in client libs;
+# official docs confirm 429/500/503 meanings but do not prescribe an exact algorithm)
+retry_policy:
+  strategy: "exponential_backoff"
+  max_retries: 2
+  min_delay_ms: 1000
+  max_delay_ms: 8000
+  jitter: "full"
+  retry_on_http_status: [408, 409, 429, 500, 503]
+  notes:
+    - "429 can mean rate limit exceeded (QPS/QPM/other limits) OR quota/payment issue; runtimes SHOULD inspect error messages and avoid infinite retries on quota/payment problems."
+    - "On 429, runtimes SHOULD respect Retry-After when present."
+    - "500/503 are server-side/transient; retry after a brief wait."
+    - "408/409 are commonly retried by client libraries with short exponential backoff."
+
+# Error classification hints (see v1/spec.yaml: standard_schema.error_handling.error_classes)
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "429": "rate_limited"
+    "500": "server_error"
+    "503": "overloaded"
+  notes:
+    - "Qwen/DashScope 429 may indicate quota/payment issue; runtimes SHOULD treat as quota_exhausted when the message indicates quota/payment."
+parameter_mappings:
+  temperature: "temperature"
+  max_tokens: "max_tokens"
+  stream: "stream"
+  top_p: "top_p"
+  stop_sequences: "stop"
+  tools: "tools"
+  tool_choice: "tool_choice"
+response_format: "openai_style"
+response_paths:
+  content: "choices[0].message.content"
+  tool_calls: "choices[0].message.tool_calls"
+  usage: "usage"
+  finish_reason: "choices[0].finish_reason"
+streaming:
+  event_format: "data_lines"
+  content_path: "choices[0].delta.content"
+  tool_call_path: "choices[0].delta.tool_calls"
+features:
+  multi_candidate:
+    support_type: "native"
+    param_name: "n"
+  response_mapping:
+    tool_calls:
+      path: "choices[0].message.tool_calls"
+      fields:
+        id: "id"
+        name: "function.name"
+        args: "function.arguments"
+    error:
+      message_path: "error.message"
+      code_path: "error.code"
+      type_path: "error.type"
+      param_path: "error.param"
+capabilities: [chat, vision, tools, streaming, agentic]
+experimental_features:
+  - "multilingual_support"
+  - "qwen_agent"

@@ -1,0 +1,266 @@
+# Provider Survey: Gemini (Draft)
+
+## Provider
+- **id**: gemini
+- **Status**: draft (structure added; evidence pending)
+- **Protocol target**: v1.x (stable)
+
+## Current ai-protocol config snapshot
+- `v1/providers/gemini.yaml` 已补充：
+  - `api_families/default_api_family/endpoints`（generateContent / streamGenerateContent）
+  - `termination`（finish_reason best-effort mapping，待证据化）
+  - `tooling.source_model = gemini_function_call`（工具调用由 parts/functionCall 表达）
+
+## Official Docs (Sources)
+以下链接均为官方来源，可用于本文件的 **VERIFIED** 引用：
+
+- **generateContent (VERIFIED)**: `https://ai.google.dev/api/generate-content`
+- **streamGenerateContent (VERIFIED)**: `https://docs.cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1beta1/projects.locations.publishers.models/streamGenerateContent`
+- **Function calling / tools (VERIFIED)**: `https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/function-calling`
+
+TODO（建议后续补充的官方入口）：
+- Errors:（待补具体链接）
+- Rate limits / quotas:（待补具体链接）
+
+## Extracted Rules (What the runtime MUST do)
+
+### 1) Endpoint + Request
+- **API family（VERIFIED）**：Gemini/Vertex 的核心家族是 `generateContent` / `streamGenerateContent`（REST 端点形如 `...:generateContent` / `...:streamGenerateContent`）。
+- **Content model**：消息结构通常是 `contents[].parts[]`（与 OpenAI 的 messages/choices 结构不同），需要 runtime 具备“parts 解析器”。
+
+TODO（待证据化）：
+- 请求体中 function calling/toolConfig 的字段名、类型与默认语义。
+- safetySettings 等安全参数是否在 v1 纳入标准字段，还是仅作为扩展字段。
+
+### 2) Response + Usage
+- **finishReason（VERIFIED）**：Gemini 以 `finishReason` 报告终止原因，需要映射到 `v1/spec.yaml` 的标准终止原因枚举。
+- **usage**：`usageMetadata` 字段需要抽取并归一（prompt/completion/total tokens 等）。
+
+#### UsageMetadata (VERIFIED excerpt)
+Source (official): `https://docs.cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1/GenerateContentResponse`
+
+原文摘录（UsageMetadata）：
+
+> Usage metadata about the content generation request and response. This message provides a detailed breakdown of token usage and other relevant metrics.
+>
+> Fields
+>
+> `promptTokenCount` (integer): The total number of tokens in the prompt...
+> `candidatesTokenCount` (integer): The total number of tokens in the generated candidates.
+> `totalTokenCount` (integer): The total number of tokens for the entire request...
+> `toolUsePromptTokenCount` (integer): Output only. The number of tokens in the results from tool executions...
+> `thoughtsTokenCount` (integer): Output only. The number of tokens that were part of the model's generated "thoughts" output...
+> `cachedContentTokenCount` (integer): Output only. The number of tokens in the cached content that was used for this request.
+> `promptTokensDetails[]` (ModalityTokenCount): Output only. A detailed breakdown...
+> `cacheTokensDetails[]` (ModalityTokenCount): Output only. A detailed breakdown...
+> `candidatesTokensDetails[]` (ModalityTokenCount): Output only. A detailed breakdown...
+> `toolUsePromptTokensDetails[]` (ModalityTokenCount): Output only. A detailed breakdown...
+> `trafficType` (enum TrafficType): Output only. The traffic type for this request.
+>
+> JSON representation
+> ```json
+> {
+>   "promptTokenCount": integer,
+>   "candidatesTokenCount": integer,
+>   "totalTokenCount": integer,
+>   "toolUsePromptTokenCount": integer,
+>   "thoughtsTokenCount": integer,
+>   "cachedContentTokenCount": integer,
+>   "promptTokensDetails": [...],
+>   "cacheTokensDetails": [...],
+>   "candidatesTokensDetails": [...],
+>   "toolUsePromptTokensDetails": [...],
+>   "trafficType": "enum"
+> }
+> ```
+
+Normalization guidance:
+- `promptTokenCount` → prompt tokens
+- `candidatesTokenCount` → completion tokens (candidate tokens)
+- `totalTokenCount` → total tokens
+- `toolUsePromptTokenCount` / `thoughtsTokenCount` / modality breakdown fields → extra metadata (provider-specific but standardized names)
+
+TODO（待证据化 / clarify behavior）：
+- usageMetadata 在 **streamGenerateContent** 的出现时机（每帧/尾帧）与稳定性，需要官方 streaming 文档或示例原文确认。
+
+#### finishReason enum (VERIFIED excerpt)
+原文摘录（来自 Gemini generate-content 官方 REST reference）：
+
+> Defines the reason why the model stopped generating tokens.
+>
+> Enums
+> ---
+> `FINISH_REASON_UNSPECIFIED`  | Default value. This value is unused.
+> `STOP`  | Natural stop point of the model or provided stop sequence.
+> `MAX_TOKENS`  | The maximum number of tokens as specified in the request was reached.
+> `SAFETY`  | The response candidate content was flagged for safety reasons.
+> `RECITATION`  | The response candidate content was flagged for recitation reasons.
+> `LANGUAGE`  | The response candidate content was flagged for using an unsupported language.
+> `OTHER`  | Unknown reason.
+> `BLOCKLIST`  | Token generation stopped because the content contains forbidden terms.
+> `PROHIBITED_CONTENT`  | Token generation stopped for potentially containing prohibited content.
+> `SPII`  | Token generation stopped because the content potentially contains Sensitive Personally Identifiable Information (SPII).
+> `MALFORMED_FUNCTION_CALL`  | The function call generated by the model is invalid.
+> `IMAGE_SAFETY`  | Token generation stopped because generated images contain safety violations.
+> `IMAGE_PROHIBITED_CONTENT`  | Image generation stopped because generated images has other prohibited content.
+> `IMAGE_OTHER`  | Image generation stopped because of other miscellaneous issue.
+> `NO_IMAGE`  | The model was expected to generate an image, but none was generated.
+> `IMAGE_RECITATION`  | Image generation stopped due to recitation.
+> `UNEXPECTED_TOOL_CALL`  | Model generated a tool call but no tools were enabled in the request.
+> `TOO_MANY_TOOL_CALLS`  | Model called too many tools consecutively, thus the system exited execution.
+> `MISSING_THOUGHT_SIGNATURE`  | Request has at least one thought signature missing.
+
+Source (official): `https://ai.google.dev/api/generate-content`
+
+Normalization guidance (to `v1/spec.yaml` standard termination reasons):
+- `STOP` → `end_turn` (note: also covers stop sequence; cannot be distinguished from this field alone)
+- `MAX_TOKENS` → `max_tokens`
+- `SAFETY | RECITATION | BLOCKLIST | PROHIBITED_CONTENT | SPII | LANGUAGE` → `refusal`
+- `MALFORMED_FUNCTION_CALL | UNEXPECTED_TOOL_CALL | TOO_MANY_TOOL_CALLS | MISSING_THOUGHT_SIGNATURE | IMAGE_* | NO_IMAGE | OTHER | FINISH_REASON_UNSPECIFIED` → `other`
+
+### 3) Streaming
+- **streamGenerateContent 返回体（VERIFIED）**：
+  - “If successful, the response body contains a stream of GenerateContentResponse instances.”
+  - Source: `https://cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1/projects.locations.endpoints/streamGenerateContent`
+
+- **wire format / frame boundary（VERIFIED via SSE example）**：
+  - 采用 **Server-Sent Events (SSE)**：每个事件以 `data:` 开头，后跟 JSON payload；事件之间以空行分隔（SSE 标准为 `\n\n`）。
+  - 示例片段（摘录，SSE）：
+    - `data: { "candidates": [...], "usageMetadata": {...}, ... }`
+    - `data: { "candidates": [...], "finishReason": "STOP", ... }`
+  - Source: `https://docs.cloud.google.com/apigee/docs/api-platform/develop/server-sent-events`
+
+- **keep-alive / ping（VERIFIED by SSE spec applicability）**：
+  - SSE 标准允许注释/空行/keepalive；客户端应忽略非 data 行，并仅对 `data:` payload 做解析与合并。
+  - Source: `https://docs.cloud.google.com/apigee/docs/api-platform/develop/server-sent-events`
+
+- **Error handling（VERIFIED guidance based on SSE example + REST behavior）**：
+  - Request-level errors: HTTP non-2xx。
+  - Stream-level errors: 在连接建立后，可能以 SSE `data: { \"error\": ... }` 的 JSON 块传递。
+  - Sources:
+    - `https://cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1/projects.locations.endpoints/streamGenerateContent`
+    - `https://docs.cloud.google.com/apigee/docs/api-platform/develop/server-sent-events`
+
+#### Stream error frame (VERIFIED excerpt)
+来自官方 SSE 示例，error 作为独立 SSE 事件块出现：
+
+```text
+data: {
+  "error": "Service temporarily unavailable. We are experiencing high traffic.",
+  "modelVersion": "gemini-2.5-flash"
+}
+```
+
+Normalization guidance:
+- Treat this as `StreamError` with `error = <string message>` and `model_version = modelVersion`.
+
+### 4) Tools / Function Calling
+- **tool invocation representation（VERIFIED）**：Gemini 通过 parts 中的 `functionCall` 表达工具调用。
+- **normalization**：应归一为 `v1/spec.yaml` 的 `standard_schema.content_blocks.tool_use/tool_result` 模型。
+
+字段结构摘录（VERIFIED，可直接引用）：
+- **functionCall**：包含 `functionDeclaration.name` 的字符串 + **结构化 JSON object** 参数
+- **functionResponse**：包含 `functionDeclaration.name` 的字符串 + **结构化 JSON object** 输出
+
+摘录原文（供审计/引用）：
+- “functionCall | Optional: FunctionCall. It contains a string representing the functionDeclaration.name field and a structured JSON object containing any parameters for the function call predicted by the model.”
+- “functionResponse | Optional: FunctionResponse. The result output of a FunctionCall that contains a string representing the functionDeclaration.name field and a structured JSON object containing any output from the function call.”
+来源：`https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/function-calling`
+
+#### FunctionResponse schema (VERIFIED excerpt)
+Source (official):
+- `https://docs.cloud.google.com/vertex-ai/docs/reference/rest/v1/Content`
+- `https://docs.cloud.google.com/vertex-ai/generative-ai/docs/reference/rpc/google.cloud.aiplatform.v1beta1`
+
+原文摘录要点（FunctionResponse）：
+- `id` (string): Optional. The id of the function call this response is for.
+- `name` (string): Required. Matches FunctionDeclaration.name and FunctionCall.name.
+- `response` (Struct): Required. JSON object. Use "output" for function output and "error" for error details (if any). If neither key is present, the whole "response" is treated as output.
+- `parts[]`: Optional ordered parts for complex responses.
+
+#### functionResponse placement (VERIFIED excerpt)
+官方示例片段展示 functionResponse 作为 content.parts[] 中的一个 part：
+
+```json
+{
+  "functionResponse": {
+    "name": "get_current_weather",
+    "response": {
+      "temperature": 30.5,
+      "unit": "C"
+    }
+  }
+}
+```
+
+Source (official): `https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/function-calling`
+
+### 5) Errors + Retry
+#### API errors model (VERIFIED excerpt)
+Source (official): `https://docs.cloud.google.com/vertex-ai/generative-ai/docs/model-reference/api-errors`
+
+原文摘录（HTTP → Canonical error code mapping）：
+
+> The errors follow the error model of the Google Cloud API...
+>
+> HTTP error code  | Canonical error code
+> ---
+> 400  | `INVALID_ARGUMENT / FAILED_PRECONDITION`
+> 403  | `PERMISSION_DENIED`
+> 404  | `NOT_FOUND`
+> 429  | `RESOURCE_EXHAUSTED`
+> 499  | `CANCELLED`
+> 500  | `UNKNOWN / INTERNAL`
+> 503  | `UNAVAILABLE`
+> 504  | `DEADLINE_EXCEEDED`
+
+Normalization guidance:
+- Treat the canonical status string (e.g. `RESOURCE_EXHAUSTED`) as the primary error classifier for retry and user messaging.
+
+#### Error envelope structure (VERIFIED guidance)
+Vertex AI REST errors follow the Google Cloud error envelope pattern:
+
+```json
+{
+  "error": {
+    "code": 429,
+    "message": "Resource exhausted. Please try again later...",
+    "status": "RESOURCE_EXHAUSTED",
+    "errors": [
+      {
+        "message": "Resource exhausted. Please try again later...",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ]
+  }
+}
+```
+
+Notes:
+- `error.errors[]` may be present and provides finer-grained `reason` such as `rateLimitExceeded`.
+
+#### 429 semantics (VERIFIED excerpt)
+Source (official): `https://docs.cloud.google.com/vertex-ai/generative-ai/docs/provisioned-throughput/error-code-429`
+
+原文摘录：
+- If requests exceed allocated capacity, error code `429` is returned.
+- Pay-as-you-go message: `Resource exhausted, please try again later.`
+- Provisioned Throughput message: `Too many requests. Exceeded the Provisioned Throughput.`
+
+#### Retry guidance (VERIFIED excerpt)
+Source (official): `https://docs.cloud.google.com/vertex-ai/generative-ai/docs/model-reference/api-errors`
+
+原文摘录要点：
+- Retry after a few seconds.
+- Recommend retrying no more than two times.
+- Minimum delay is one second with subsequent requests backing up exponentially.
+
+Normalization guidance:
+- `RESOURCE_EXHAUSTED (429)` should be treated as retryable with exponential backoff (min 1s), up to ~2 retries.
+
+## Mapping to `v1/spec.yaml` (implemented / in-progress)
+- **API families/endpoints**：已在 `v1/providers/gemini.yaml` 声明 `generate_content` 家族与 endpoints。
+- **Termination reasons**：`termination.source_field = finishReason`，且 finishReason enum 与 mapping 已基于官方摘录收敛。
+- **Tool model**：`tooling.source_model = gemini_function_call`，且 functionCall/functionResponse 已证据化；provider 中已补充 tool_use/tool_result 的字段路径提示。
+- **Retry policy (VERIFIED → declared)**：已在 `v1/providers/gemini.yaml` 增加 `retry_policy`（exponential backoff, min 1s, ≤2 retries），并以 `RESOURCE_EXHAUSTED(429)` 等 canonical status 作为主要 retry 判定依据。
