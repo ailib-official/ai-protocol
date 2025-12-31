@@ -8,6 +8,7 @@ on:
       - 'v2-alpha/**'
       - 'examples/**'
       - 'schemas/**'
+      - 'scripts/**'
       - '.github/workflows/validate.yml'
   pull_request:
     branches: [ main, develop ]
@@ -16,6 +17,7 @@ on:
       - 'v2-alpha/**'
       - 'examples/**'
       - 'schemas/**'
+      - 'scripts/**'
 
 jobs:
   validate:
@@ -47,10 +49,12 @@ jobs:
     - name: Run configuration validation
       run: ./scripts/validate-configs.sh
 
-    - name: Validate JSON schemas
+    - name: Validate JSON schemas syntax
       run: |
-        echo "Validating JSON schemas..."
+        echo "Validating JSON schemas syntax..."
         for schema in schemas/*.json; do
-          echo "Checking $schema..."
-          python -c "import json; json.load(open('$schema'))" && echo "✅ $schema is valid JSON"
+          if [ -f "$schema" ]; then
+            echo "Checking $schema..."
+            python -c "import json; json.load(open('$schema'))" && echo "✅ $schema is valid JSON"
+          fi
         done

@@ -1,12 +1,16 @@
 # AI-Protocol: Data-State Rulebook
 
-AI-Protocol is a standardized protocol specification in the field of AI model integration, decoupling "data-state rulebook" from "language-state runtime" to provide unified infrastructure for the AI ecosystem.
+**AI-Protocol is a provider-agnostic specification for all AI models, standardizing how we interact with intelligence, regardless of modality** (text, vision, audio, video). We decouple the "data-state rulebook" from the "language-state runtime" to provide unified infrastructure for the AI ecosystem.
+
+**We complement standards like [MCP](https://modelcontextprotocol.io) by providing a declarative runtime for raw API normalization.** While MCP focuses on high-level protocols for tool calling and context management, AI-Protocol focuses on standardizing and normalizing low-level API calls, enabling runtimes to uniformly handle APIs from different providers.
 
 ## 🎯 Project Vision
 
 - **Data-State Rulebook**: Focuses on defining standardized interfaces and behavioral norms for AI models
 - **Language-State Runtime**: Focuses on implementing efficient, scalable AI model runtimes (like ai-lib)
 - **Ecosystem Decoupling**: Protocol specifications are separated from implementations, supporting unified ecosystems across multiple languages and frameworks
+- **Provider-Agnostic**: Unifies APIs from different AI providers, enabling true cross-provider interoperability
+- **Cross-Modality Support**: Standardizes interactions across text, vision, audio, video, and other modalities
 
 ## 📁 Project Structure
 
@@ -20,6 +24,9 @@ ai-protocol/
 │   │   ├── openai.yaml        # OpenAI compatible interface
 │   │   ├── anthropic.yaml     # Anthropic Claude interface
 │   │   ├── gemini.yaml        # Google Gemini interface
+│   │   ├── groq.yaml          # Groq compatible interface
+│   │   ├── deepseek.yaml      # DeepSeek compatible interface
+│   │   ├── qwen.yaml          # Qwen (DashScope) compatible interface
 │   │   └── ...                # More providers
 │   └── models/                # Model instance registry
 │       ├── gpt.yaml           # GPT series models
@@ -30,6 +37,12 @@ ai-protocol/
 │   └── providers/             # Experimental provider configurations
 ├── examples/                  # Configuration examples
 │   └── tool_accumulation.yaml # Tool accumulation pattern example
+├── research/                  # Research documents (official API excerpts and verification)
+│   └── providers/             # Provider-specific official documentation research
+│       ├── openai.md          # OpenAI official API rules (VERIFIED)
+│       ├── anthropic.md       # Anthropic official API rules (VERIFIED)
+│       ├── gemini.md          # Gemini official API rules (VERIFIED)
+│       └── ...                # More provider research
 └── scripts/                   # Maintenance scripts
 ```
 
@@ -40,8 +53,9 @@ ai-protocol/
 AI-Protocol standardizes AI model behavior through the concept of **operators**:
 
 - **Parameter Operators**: Standardized parameter mapping (`temperature`, `max_tokens`, `stream`, etc.)
-- **Event Operators**: Standardized streaming events (`PartialContentDelta`, `ToolCallStarted`, etc.)
-- **Capability Operators**: Standardized capability declarations (`chat`, `vision`, `tools`, `streaming`, etc.)
+- **Event Operators**: Standardized streaming events (`PartialContentDelta`, `ToolCallStarted`, `StreamError`, etc.)
+- **Capability Operators**: Standardized capability declarations (`chat`, `vision`, `tools`, `streaming`, `multimodal`, etc.)
+- **Error Handling Operators**: Standardized error classification, rate limiting, and retry strategies (`error_classification`, `retry_policy`, `rate_limit_headers`)
 
 ### 2. Version Isolation
 
@@ -78,7 +92,32 @@ streaming:
         content: "$.delta.text"
 ```
 
-### 2. Model Registration Example
+### 2. Error Handling and Rate Limiting Example
+
+```yaml
+# v1/providers/openai.yaml (excerpt)
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "429": "rate_limited"  # Could be rate limit or quota exhausted
+    "500": "server_error"
+
+rate_limit_headers:
+  requests_limit: "x-ratelimit-limit-requests"
+  requests_remaining: "x-ratelimit-remaining-requests"
+  retry_after: null  # OpenAI doesn't use standard Retry-After
+
+retry_policy:
+  strategy: "exponential_backoff"
+  min_delay_ms: 1000
+  jitter: "full"
+  retry_on_http_status: [429, 500]
+  notes:
+    - "429 may be rate limit or quota exhausted; runtimes should inspect error messages"
+```
+
+### 3. Model Registration Example
 
 ```yaml
 # v1/models/claude.yaml
@@ -95,7 +134,7 @@ models:
       output_per_token: 0.000015
 ```
 
-### 3. Runtime Integration
+### 4. Runtime Integration
 
 ```rust
 // Dynamic loading example in ai-lib
@@ -122,10 +161,14 @@ Validation scripts are also available in `scripts/validate-configs.sh`.
 ## 🛣️ Roadmap
 
 ### v1.x (Current Stable)
-- ✅ Mainstream AI provider support (OpenAI, Anthropic, Gemini, etc.)
+- ✅ Mainstream AI provider support (OpenAI, Anthropic, Gemini, Groq, DeepSeek, Qwen)
 - ✅ Standardized parameters and event normalization
 - ✅ Tool calling and streaming response support
 - ✅ JSON Schema constraints
+- ✅ Error handling and classification standardization (`error_classification`, 13 standard error classes)
+- ✅ Rate limiting and retry policy standardization (`rate_limit_headers`, `retry_policy`)
+- ✅ API family declarations (`api_families`, `endpoints`) to avoid request/response model confusion
+- ✅ Termination reason normalization (`termination_reasons`) unified across providers
 
 ### v2-alpha (Experimental In Progress)
 - 🔄 Multimodal stream interleaving (`FrameInterleave` operator)
@@ -143,10 +186,13 @@ Validation scripts are also available in `scripts/validate-configs.sh`.
 
 ### Adding New Providers
 
-1. Create a new file under `v1/providers/`
-2. Follow JSON Schema specifications
-3. Add corresponding model configurations
-4. Submit PR with test cases
+1. Create a new file under `v1/providers/` (e.g., `new-provider.yaml`)
+2. Follow JSON Schema specifications (`schemas/v1.json`)
+3. Add official documentation research under `research/providers/` (`new-provider.md`) with VERIFIED evidence
+4. Add corresponding model configurations under `v1/models/`
+5. Submit PR with test cases and validation results
+
+**All configurations are hosted in this repository**, where community contributions follow the same version control and validation process as official configurations.
 
 ### Adding New Operators
 
@@ -170,9 +216,10 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 ## 🔗 Related Projects
 
-- **[ai-lib](https://github.com/your-org/ai-lib)**: Rust runtime implementation
-- **[ai-lib-python](https://github.com/your-org/ai-lib-python)**: Python runtime implementation (planned)
-- **[ai-protocol-registry](https://github.com/your-org/ai-protocol-registry)**: Community configuration repository
+- **[ai-lib](https://github.com/hiddenpath/ai-lib)**: Rust runtime implementation
+- **[ai-lib-python](https://github.com/hiddenpath/ai-lib-python)**: Python runtime implementation (planned)
+
+> **Note**: AI-Protocol itself already includes configuration registry functionality. Community contributions for new provider configurations and model registrations can be submitted directly via PRs to this repository's `v1/providers/` and `v1/models/` directories, without needing a separate configuration repository.
 
 ---
 
