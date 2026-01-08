@@ -1,0 +1,77 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
+# Mistral Model Instances
+# Reference: https://docs.mistral.ai/api/
+
+models:
+  mistral-small-latest:
+    provider: mistral
+    model_id: "mistral-small-latest"
+    display_name: "Mistral Small"
+    context_window: 32000
+    capabilities: [chat, tools, streaming, parallel_tools]
+    status: active
+    tags: ["mistral", "small", "tools", "latest"]
+
+  mistral-medium-latest:
+    provider: mistral
+    model_id: "mistral-medium-latest"
+    display_name: "Mistral Medium"
+    context_window: 32000
+    capabilities: [chat, tools, streaming, parallel_tools]
+    status: active
+    tags: ["mistral", "medium", "tools", "latest"]
+
+  mistral-large-latest:
+    provider: mistral
+    model_id: "mistral-large-latest"
+    display_name: "Mistral Large"
+    context_window: 32000
+    capabilities: [chat, tools, streaming, parallel_tools, agentic]
+    status: active
+    tags: ["mistral", "large", "tools", "agentic", "latest"]
+
+  pixtral-small-latest:
+    provider: mistral
+    model_id: "pixtral-small-latest"
+    display_name: "Pixtral Small"
+    context_window: 128000
+    capabilities: [chat, vision, tools, streaming, parallel_tools]
+    status: active
+    tags: ["mistral", "pixtral", "vision", "small", "latest"]
+
+  pixtral-large-latest:
+    provider: mistral
+    model_id: "pixtral-large-latest"
+    display_name: "Pixtral Large"
+    context_window: 128000
+    capabilities: [chat, vision, tools, streaming, parallel_tools, agentic]
+    status: active
+    tags: ["mistral", "pixtral", "vision", "large", "agentic", "latest"]
+
+  open-mistral-7b:
+    provider: mistral
+    model_id: "open-mistral-7b"
+    display_name: "Open Mistral 7B"
+    context_window: 32000
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["mistral", "open", "7b", "base"]
+
+  open-mixtral-8x7b:
+    provider: mistral
+    model_id: "open-mixtral-8x7b"
+    display_name: "Open Mixtral 8x7B"
+    context_window: 32000
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["mistral", "open", "mixtral", "8x7b", "base"]
+
+  mistral-tiny:
+    provider: mistral
+    model_id: "mistral-tiny"
+    display_name: "Mistral Tiny"
+    context_window: 32000
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["mistral", "tiny", "cost-effective"]
