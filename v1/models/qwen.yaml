@@ -1,0 +1,20 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
+# Qwen Model Instances
+models:
+  qwen-max:
+    provider: qwen
+    model_id: "qwen-max"
+    display_name: "Qwen Max"
+    context_window: 262144
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["alibaba", "qwen", "strong"]
+
+  qwen-turbo:
+    provider: qwen
+    model_id: "qwen-turbo"
+    display_name: "Qwen Turbo"
+    capabilities: [chat, vision, tools, streaming, agentic]
+    status: active
+    tags: ["alibaba", "qwen", "fast"]

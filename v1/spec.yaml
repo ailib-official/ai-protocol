@@ -1,7 +1,8 @@
 version: "1.1"
 metadata:
   description: "AI-Protocol v1.1 - Standard Specification for AI Model Integration"
-  last_updated: "2025-12-XX"
+  last_updated: "2026-01-04"
+  release_version: "1.1.1"
   authors: ["AI-Protocol Team"]
   license: "MIT OR Apache-2.0"
 
@@ -69,10 +70,10 @@ standard_schema:
       description: "Deterministic seed when supported"
 
     tool_choice:
-      type: string
+      type: string_or_object
       values: ["auto", "none", "required", "specific"]
       default: "auto"
-      description: "Tool choice policy per request"
+      description: "Tool choice policy per request. Runtimes SHOULD accept either a simple string policy (auto/none/required) or a provider-specific object (e.g., OpenAI tool_choice object for selecting a specific tool)."
 
     response_format_mode:
       type: string
@@ -138,6 +139,46 @@ standard_schema:
           description: "Model reached a natural stopping point."
         - id: "max_tokens"
           description: "Generation stopped because max tokens or context constraints were hit."
+
+  # =========================================================
+  # Telemetry & Feedback (optional, application-controlled)
+  # =========================================================
+  telemetry:
+    principles:
+      - "Telemetry MUST be opt-in. Runtimes MUST NOT force collection or transmission."
+      - "Generation and feedback reporting MUST be decoupled; feedback is asynchronous and may be dropped."
+      - "Data minimization is required. Prefer ids, indices, and hashes over raw prompt/output text."
+      - "A stable request_id (client-generated if necessary) is REQUIRED for closed-loop linkage."
+    feedback_events:
+      ChoiceSelection:
+        description: "User selection among multiple candidates (n > 1)."
+        fields:
+          request_id:
+            type: string
+            required: true
+            description: "Runtime-generated request identifier used for linkage (not necessarily provider's request id)."
+          chosen_index:
+            type: integer
+            required: true
+            description: "0-based index of the chosen candidate."
+          rejected_indices:
+            type: array
+            items: integer
+            required: false
+            description: "Optional list of 0-based indices that were shown but not chosen."
+          latency_to_select_ms:
+            type: integer
+            required: false
+            description: "Time from rendering candidates to the user making a selection (milliseconds)."
+          ui_context:
+            type: object
+            required: false
+            description: "Optional UI / experiment context (A/B bucket, component, etc.)."
+          candidate_hashes:
+            type: array
+            items: string
+            required: false
+            description: "Optional hashes for the rendered candidates; enables audit/linkage without uploading full text."
         - id: "stop_sequence"
           description: "Generation stopped because a user-provided stop sequence was encountered."
         - id: "tool_use"

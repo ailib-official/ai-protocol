@@ -1,0 +1,6 @@
+# Keep release archives clean (git archive).
+# Exclude internal/research/work documents from exported archives.
+
+research/ export-ignore
+scripts/ export-ignore
+v2-alpha/ export-ignore

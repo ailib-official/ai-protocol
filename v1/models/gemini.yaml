@@ -1,0 +1,21 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
+# Gemini Model Instances
+models:
+  gemini-1.5-pro:
+    provider: gemini
+    model_id: "gemini-1.5-pro"
+    name: "Gemini 1.5 Pro"
+    context_window: 2000000
+    capabilities: ["chat", "vision", "audio", "video", "tools", "streaming", "reasoning"]
+    status: active
+    tags: ["google", "multimodal", "large-context"]
+
+  gemini-1.5-flash:
+    provider: gemini
+    model_id: "gemini-1.5-flash"
+    name: "Gemini 1.5 Flash"
+    context_window: 1000000
+    capabilities: ["chat", "vision", "audio", "video", "tools", "streaming"]
+    status: active
+    tags: ["google", "multimodal", "fast", "cost-effective"]

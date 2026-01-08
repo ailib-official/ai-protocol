@@ -75,7 +75,7 @@ AI-Protocol 通过**算子**的概念来标准化 AI 模型的行为：
 
 ```yaml
 # v1/providers/anthropic.yaml
-$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+$schema: "https://github.com/hiddenpath/ai-protocol/tree/main/schemas/v1.json"
 
 id: anthropic
 protocol_version: "1.1"
@@ -121,7 +121,7 @@ retry_policy:
 
 ```yaml
 # v1/models/claude.yaml
-$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+$schema: "https://github.com/hiddenpath/ai-protocol/tree/main/schemas/v1.json"
 
 models:
   claude-3-5-sonnet:

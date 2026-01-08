@@ -1,7 +1,7 @@
-$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 
 id: openai
-protocol_version: "1.1"
+protocol_version: "1.5"
 
 version: "v1"
 base_url: "https://api.openai.com/v1"
@@ -14,17 +14,38 @@ payload_format: "openai_style"
 api_families: ["chat_completions", "completions", "assistants", "realtime"]
 default_api_family: "chat_completions"
 endpoints:
-  # Chat Completions (primary for v1 provider mapping)
-  chat_completions_create: "/chat/completions"
-  # Legacy Completions
-  completions_create: "/completions"
-  # Assistants (tooling object model)
-  assistants_create: "/assistants"
-  threads_create: "/threads"
-  threads_messages_create: "/threads/{thread_id}/messages"
-  threads_runs_create: "/threads/{thread_id}/runs"
+  chat:
+    path: "/chat/completions"
+    method: "POST"
+    adapter: "openai"
+  completions:
+    path: "/completions"
+    method: "POST"
+    adapter: "openai"
+  embeddings:
+    path: "/embeddings"
+    method: "POST"
+    adapter: "openai"
   # Realtime (non-HTTP transport; provided as absolute URL for WS clients)
   realtime_ws: "wss://api.openai.com/v1/realtime"
+
+# V1.5 Service Endpoints
+services:
+  list_models:
+    path: "/models"
+    method: "GET"
+    response_binding: "data"
+  get_usage:
+    path: "/usage"
+    method: "GET"
+    response_binding: "data"
+  list_files:
+    path: "/files"
+    method: "GET"
+    response_binding: "data"
+  create_batch:
+    path: "/batches"
+    method: "POST"
 
 # Termination reason normalization (see v1/spec.yaml: standard_schema.streaming_events.termination_reasons)
 termination:

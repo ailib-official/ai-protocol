@@ -46,6 +46,19 @@ ai-protocol/
 └── scripts/                   # Maintenance scripts
 ```
 
+## 📦 Release Packaging Policy (What gets published)
+
+To avoid publishing work/discussion/internal documents by default, release archives SHOULD exclude:
+- `research/`
+- `scripts/`
+- `v2-alpha/`
+
+The normative, publish-ready artifacts are:
+- `schemas/`
+- `v1/` (spec + providers + models)
+- `examples/`
+- `README.md`, `LICENSE-*`, `CHANGELOG.md`
+
 ## 🔧 Core Concepts
 
 ### 1. Operator-based Design
@@ -75,7 +88,7 @@ AI-Protocol standardizes AI model behavior through the concept of **operators**:
 
 ```yaml
 # v1/providers/anthropic.yaml
-$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+$schema: "https://github.com/hiddenpath/ai-protocol/tree/main/schemas/v1.json"
 
 id: anthropic
 protocol_version: "1.1"
@@ -121,7 +134,7 @@ retry_policy:
 
 ```yaml
 # v1/models/claude.yaml
-$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+$schema: "https://github.com/hiddenpath/ai-protocol/tree/main/schemas/v1.json"
 
 models:
   claude-3-5-sonnet:

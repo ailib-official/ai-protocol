@@ -1,7 +1,7 @@
-$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 
 id: gemini
-protocol_version: "1.1"
+protocol_version: "1.5"
 
 version: "v1beta"
 base_url: "https://generativelanguage.googleapis.com/v1beta"
@@ -15,8 +15,24 @@ payload_format: "gemini_style"
 api_families: ["generate_content"]
 default_api_family: "generate_content"
 endpoints:
-  generate_content: "/models/{model}:generateContent"
-  stream_generate_content: "/models/{model}:streamGenerateContent"
+  chat:
+    path: "/models/{model}:generateContent"
+    method: "POST"
+    adapter: "gemini"
+
+# V1.5 Service Endpoints
+services:
+  list_models:
+    path: "/models"
+    method: "GET"
+    response_binding: "models"
+  list_files:
+    path: "/files"
+    method: "GET"
+    response_binding: "files"
+  get_model:
+    path: "/models/{model}"
+    method: "GET"
 termination:
   # Gemini response field is typically named finishReason (provider-defined enum).
   source_field: "finishReason"

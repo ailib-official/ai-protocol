@@ -1,0 +1,14 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
+models:
+  deepseek-chat:
+    provider: deepseek
+    model_id: "deepseek-chat"
+    display_name: "DeepSeek Chat"
+    context_window: 32768
+    capabilities: [chat, streaming, tools]
+    pricing:
+      input_per_token: 0.00000014 # example
+      output_per_token: 0.00000028 # example
+    status: active
+    tags: ["deepseek", "chat", "tools"]

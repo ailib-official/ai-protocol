@@ -1,23 +1,41 @@
-$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 
 id: deepseek
-protocol_version: "1.1"
+provider_id: deepseek
+protocol_version: "1.5"
 
 version: "v1"
-base_url: "https://api.deepseek.com/v1"
+base_url: "https://api.deepseek.com"
 auth:
   type: bearer
   token_env: "DEEPSEEK_API_KEY"
 payload_format: "openai_style"
 
-# OpenAI-compatible API families
-api_families: ["chat_completions", "completions"]
-default_api_family: "chat_completions"
+# V1.5 Structured Endpoints
 endpoints:
-  chat_completions_create: "/chat/completions"
-  completions_create: "/completions"
+  chat:
+    path: "/chat/completions"
+    method: "POST"
+    adapter: "openai"
+  completions:
+    path: "/completions"
+    method: "POST"
+    adapter: "openai"
 
-# Termination reason normalization (see v1/spec.yaml: standard_schema.streaming_events.termination_reasons)
+# V1.5 Service Endpoints
+services:
+  list_models:
+    path: "/models"
+    method: "GET"
+    response_binding: "data"
+  get_balance:
+    path: "/user/balance"
+    method: "GET"
+
+# Legacy support
+api_families: ["chat_completions"]
+default_api_family: "chat_completions"
+
 termination:
   source_field: "finish_reason"
   mapping:
@@ -25,10 +43,7 @@ termination:
     length: "max_tokens"
     tool_calls: "tool_use"
     content_filter: "refusal"
-  notes:
-    - "OpenAI-compatible: finish_reason is reported per candidate."
 
-# Tool invocation normalization (see v1/spec.yaml: standard_schema.content_blocks)
 tooling:
   source_model: "openai_tool_calls"
   tool_use:
@@ -36,15 +51,7 @@ tooling:
     name_path: "function.name"
     input_path: "function.arguments"
     input_format: "json_string"
-  notes:
-    - "OpenAI-compatible tool_calls.function.arguments is typically a JSON string; runtimes SHOULD parse it into an object when normalizing."
 
-# Rate limits (VERIFIED: DeepSeek rate limits are dynamically adjusted per account; headers not specified in docs)
-# Source: https://api-docs.deepseek.com/faq
-# NOTE: `rate_limit_headers` omitted until DeepSeek documents specific header names.
-
-# Retry policy (VERIFIED from DeepSeek error codes doc: 429 pace requests; 500/503 retry after brief wait)
-# Source: https://api-docs.deepseek.com/quick_start/error_codes
 retry_policy:
   strategy: "exponential_backoff"
   max_retries: 2
@@ -52,13 +59,17 @@ retry_policy:
   max_delay_ms: 8000
   jitter: "full"
   retry_on_http_status: [429, 500, 503]
-  notes:
-    - "429 Rate Limit Reached: pace requests reasonably; apply backoff then retry."
-    - "500 Server Error: retry after a brief wait."
-    - "503 Server Overloaded: retry after a brief wait."
-    - "400/401/402/422 are non-retryable client/account errors."
 
-# Error classification hints (see v1/spec.yaml: standard_schema.error_handling.error_classes)
+# Rate limit headers (OpenAI-compatible)
+rate_limit_headers:
+  requests_limit: "x-ratelimit-limit-requests"
+  requests_remaining: "x-ratelimit-remaining-requests"
+  requests_reset: "x-ratelimit-reset-requests"
+  tokens_limit: "x-ratelimit-limit-tokens"
+  tokens_remaining: "x-ratelimit-remaining-tokens"
+  tokens_reset: "x-ratelimit-reset-tokens"
+  retry_after: "retry-after"
+
 error_classification:
   by_http_status:
     "400": "invalid_request"
@@ -68,8 +79,7 @@ error_classification:
     "429": "rate_limited"
     "500": "server_error"
     "503": "overloaded"
-  notes:
-    - "DeepSeek error codes doc uses HTTP status codes with descriptions; treat 402 as insufficient balance (quota_exhausted)."
+
 parameter_mappings:
   temperature: "temperature"
   max_tokens: "max_tokens"
@@ -78,22 +88,57 @@ parameter_mappings:
   stop_sequences: "stop"
   tools: "tools"
   tool_choice: "tool_choice"
+
 response_format: "openai_style"
 response_paths:
   content: "choices[0].message.content"
   tool_calls: "choices[0].message.tool_calls"
   usage: "usage"
   finish_reason: "choices[0].finish_reason"
+
 streaming:
   event_format: "data_lines"
   decoder:
     format: "sse"
     delimiter: "\n\n"
     prefix: "data: "
-    # DeepSeek may emit `: keep-alive` SSE comment lines while waiting to be scheduled.
     strategy: "sse_ignore_comments"
   content_path: "choices[0].delta.content"
   tool_call_path: "choices[0].delta.tool_calls"
+  usage_path: "usage"
+  frame_selector: "exists($.choices) || exists($.error)"
+  event_map:
+    # Text content delta
+    - match: "exists($.choices[*].delta.content)"
+      emit: "PartialContentDelta"
+      fields:
+        content: "$.choices[*].delta.content"
+    # Tool call start
+    - match: "exists($.choices[*].delta.tool_calls[*].function.name)"
+      emit: "ToolCallStarted"
+      fields:
+        tool_call_id: "$.choices[*].delta.tool_calls[*].id"
+        tool_name: "$.choices[*].delta.tool_calls[*].function.name"
+        index: "$.choices[*].delta.tool_calls[*].index"
+    # Tool call arguments streaming
+    - match: "exists($.choices[*].delta.tool_calls[*].function.arguments)"
+      emit: "PartialToolCall"
+      fields:
+        arguments: "$.choices[*].delta.tool_calls[*].function.arguments"
+        index: "$.choices[*].delta.tool_calls[*].index"
+    # Usage metadata
+    - match: "exists($.usage)"
+      emit: "Metadata"
+      fields:
+        usage: "$.usage"
+    # Finish with reason
+    - match: "exists($.choices[*].finish_reason)"
+      emit: "FinalCandidate"
+      fields:
+        finish_reason: "$.choices[*].finish_reason"
+        candidate_index: "$.choices[*].index"
+  stop_condition: "$.choices[0].finish_reason != null"
+
 features:
   multi_candidate:
     support_type: "native"
@@ -110,6 +155,7 @@ features:
       code_path: "error.code"
       type_path: "error.type"
       param_path: "error.param"
+
 capabilities: [chat, tools, streaming, agentic, reasoning]
 experimental_features:
   - "deep_thinking"

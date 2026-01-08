@@ -1,0 +1,7 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
+# Groq Llama Model Instances
+models:
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["meta", "llama", "fast", "groq"]

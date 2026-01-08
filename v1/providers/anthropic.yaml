@@ -1,7 +1,7 @@
-$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 
 id: anthropic
-protocol_version: "1.1"
+protocol_version: "1.5"
 
 version: "v1"
 base_url: "https://api.anthropic.com/v1"
@@ -52,9 +52,22 @@ error_classification:
 api_families: ["messages"]
 default_api_family: "messages"
 endpoints:
-  messages_create: "/messages"
-  # Same endpoint; streaming is enabled via request parameter `stream: true`.
-  messages_stream: "/messages"
+  chat:
+    path: "/messages"
+    method: "POST"
+    adapter: "anthropic"
+
+# V1.5 Service Endpoints
+services:
+  list_models:
+    path: "/models"
+    method: "GET"
+    response_binding: "data"
+  get_usage_report:
+    path: "/organizations/usage_report/messages"
+    method: "POST"
+    headers:
+      "anthropic-beta": "message-batches-2024-09-24"
 
 # Termination reason normalization (see v1/spec.yaml: standard_schema.streaming_events.termination_reasons)
 termination:

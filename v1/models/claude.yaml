@@ -1,4 +1,4 @@
-$schema: "https://spec.ai-protocol.org/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 
 # Claude Model Instances
 models:
