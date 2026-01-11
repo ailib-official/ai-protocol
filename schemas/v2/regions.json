@@ -1,0 +1,13 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/v2/regions.json",
+  "title": "Region Definitions",
+  "description": "Standard region identifiers for provider availability",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "string",
+    "enum": ["cn", "global", "us", "eu"]
+  },
+  "uniqueItems": true
+}

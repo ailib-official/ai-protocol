@@ -1,0 +1,72 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/v2/provider.json",
+  "title": "AI Protocol Provider Manifest",
+  "description": "Complete provider manifest schema for AI-Protocol v2",
+  "type": "object",
+  "required": [
+    "id",
+    "endpoint",
+    "availability",
+    "capabilities"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Schema reference URL"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-_]{1,63}$",
+      "description": "Stable provider identifier (lowercase, alphanumeric, hyphens, underscores)"
+    },
+    "protocol_version": {
+      "type": "string",
+      "description": "AI-Protocol version this manifest conforms to"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable provider name"
+    },
+    "version": {
+      "type": "string",
+      "description": "Provider API version"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["stable", "beta", "deprecated"],
+      "default": "stable",
+      "description": "Provider status"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["ai_provider", "model_provider", "third_party_aggregator"],
+      "description": "Provider category"
+    },
+    "official_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Official documentation website"
+    },
+    "support_contact": {
+      "type": "string",
+      "format": "uri",
+      "description": "Support or feedback link"
+    },
+    "endpoint": {
+      "$ref": "./endpoint.json"
+    },
+    "availability": {
+      "$ref": "./availability.json"
+    },
+    "capabilities": {
+      "$ref": "./capabilities.json"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Additional provider-specific metadata"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,53 @@
+# Work and internal documents (should not be committed)
+*-*.txt
+*讨论*.txt
+*演进*.txt
+*草案*.txt
+*Schema*.txt
+
+# Work and planning documents
+CHANGE_PLAN.md
+IMPLEMENTATION_SUMMARY.md
+IMPLEMENTATION_CHECK_REPORT.md
+COMPLETION_SUMMARY.md
+FINAL_FIX.md
+VALIDATION_FIX.md
+SCHEMA_FIX_EXPLANATION.md
+SCHEMA_MIGRATION_SUMMARY.md
+SCHEMA_VALIDATION.md
+SUMMARY.md
+VALIDATION_SCRIPT.md
+FACT_CHECK_SUMMARY.md
+RECOVERY_SUMMARY.md
+RECOVERY_COMPLETE.md
+
+# PR-related documents
+PR_DESCRIPTION.md
+PR_INSTRUCTIONS.md
+PUBLISH_MANIFEST.md
+RELEASE_CHECKLIST.md
+
+# Internal documentation (moved to docs/ but should not be committed)
+docs/HEALTH_CHECK_VERIFICATION.md
+docs/MIGRATION_GUIDE.md
+
+# Scripts documentation (internal use only)
+scripts/CHANGELOG.md
+scripts/VALIDATION_NOTES.md
+scripts/README.md
+
+# Development files
+.publishignore
+node_modules/
+package-lock.json
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db

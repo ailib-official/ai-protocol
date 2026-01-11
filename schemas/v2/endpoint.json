@@ -1,0 +1,28 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/v2/endpoint.json",
+  "title": "Endpoint Definition",
+  "description": "Network-level endpoint configuration",
+  "type": "object",
+  "required": ["base_url"],
+  "properties": {
+    "base_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Absolute base URL of the provider API"
+    },
+    "protocol": {
+      "type": "string",
+      "enum": ["https", "http", "ws", "wss"],
+      "default": "https",
+      "description": "Protocol used for communication"
+    },
+    "timeout_ms": {
+      "type": "integer",
+      "minimum": 100,
+      "default": 10000,
+      "description": "Default timeout for requests in milliseconds"
+    }
+  },
+  "additionalProperties": false
+}
