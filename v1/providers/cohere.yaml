@@ -1,0 +1,61 @@
+# AI-Protocol Provider Manifest for Cohere
+$schema: "../../../schemas/v1.json"
+id: cohere
+protocol_version: "1.1"
+
+endpoint:
+  base_url: "https://api.cohere.ai/v2"
+  protocol: "https"
+
+availability:
+  required: true
+  regions: ["global"]
+  check:
+    method: "GET"
+    path: "/check-api-key" # Hypothetical check, or simple model list
+    expected_status: [200]
+
+capabilities:
+  streaming: true
+  tools: true
+  vision: false # V2 might support it, but keeping safe
+  agentic: true
+
+auth:
+  type: "bearer"
+  key_env: "COHERE_API_KEY"
+  header_name: "Authorization"
+
+parameter_mappings:
+  model: model
+  messages: messages
+  max_tokens: max_tokens
+  temperature: temperature
+  stream: stream
+  tools: tools
+  tool_choice: tool_choice
+
+streaming:
+  decoder:
+    format: "sse"
+    strategy: "cohere_v2" # Custom strategy might be needed if exact SSE format differs standard
+  event_map:
+    - match: { "path": "$.type", "op": "eq", "value": "content-delta" }
+      emit: "PartialContentDelta"
+      extract:
+        content: "$.delta.message.content.text"
+    - match: { "path": "$.type", "op": "eq", "value": "tool-call-start" }
+      emit: "ToolCallStarted"
+      extract:
+        tool_call_id: "$.delta.message.tool_calls[0].id"
+        tool_name: "$.delta.message.tool_calls[0].function.name"
+
+retry_policy:
+  strategy: "exponential_backoff"
+  min_delay_ms: 500
+  retry_on_http_status: [429, 500, 502]
+
+rate_limit_headers:
+  requests_limit: "x-ratelimit-limit"
+  requests_remaining: "x-ratelimit-remaining"
+  requests_reset: "x-ratelimit-reset"
