@@ -13,7 +13,7 @@ endpoint:
 
 availability:
   required: true
-  regions: ["azure-global"]
+  regions: ["global"]
   check:
     method: "GET"
     path: "/models?api-version=2024-02-01"

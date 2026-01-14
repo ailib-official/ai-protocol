@@ -40,11 +40,11 @@ streaming:
     format: "sse"
     strategy: "cohere_v2" # Custom strategy might be needed if exact SSE format differs standard
   event_map:
-    - match: { "path": "$.type", "op": "eq", "value": "content-delta" }
+    - match: "$.type == 'content-delta'"
       emit: "PartialContentDelta"
       extract:
         content: "$.delta.message.content.text"
-    - match: { "path": "$.type", "op": "eq", "value": "tool-call-start" }
+    - match: "$.type == 'tool-call-start'"
       emit: "ToolCallStarted"
       extract:
         tool_call_id: "$.delta.message.tool_calls[0].id"

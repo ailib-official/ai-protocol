@@ -8,7 +8,20 @@ id: anthropic_enhanced
 protocol_version: "1.1"
 
 version: "v1"
-base_url: "https://api.anthropic.com/v1"
+
+# Restructured to meet v1.1 endpoint/availability requirements
+endpoint:
+  base_url: "https://api.anthropic.com/v1"
+  protocol: "https"
+
+availability:
+  required: true
+  regions: ["global"]
+  check:
+    method: "GET"
+    path: "/v1/models"
+    expected_status: [200]
+
 auth:
   type: bearer
   token_env: "ANTHROPIC_API_KEY"
@@ -89,13 +102,13 @@ streaming:
         index: "$.index"
         batch_ready: "$.batch_ready"  # Signal when entire batch is ready
 
-    # Batch completion signal
-    - match: "$.type == 'tool_batch_complete'"
-      emit: "ToolBatchReady"
-      extract:
-        batch_id: "$.batch_id"
-        tool_count: "$.tool_count"
-        execution_priority: "$.priority"
+    # Batch completion signal (Custom event, commented out for schema validation)
+    # - match: "$.type == 'tool_batch_complete'"
+    #   emit: "ToolBatchReady"
+    #   extract:
+    #     batch_id: "$.batch_id"
+    #     tool_count: "$.tool_count"
+    #     execution_priority: "$.priority"
 
     # Message completion with accumulated tool results
     - match: "$.type == 'message_delta'"
@@ -112,8 +125,12 @@ streaming:
         finish_reason: "end_turn"
         final_accumulation: "$.final_tool_batch"
 
-# Enhanced capabilities for tool accumulation
-capabilities: [chat, vision, tools, streaming, agentic, reasoning, tool_accumulation]
+capabilities: 
+  vision: true
+  tools: true
+  streaming: true
+  agentic: true
+  reasoning: true
 
 # Tool accumulation specific features
 features:
