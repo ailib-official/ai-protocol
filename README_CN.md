@@ -7,7 +7,7 @@ AI-Protocol 是一个**供应商无关**（provider-agnostic）的 AI 模型规�
 ## 🎯 项目愿景
 
 - **数据态的规则书**: 专注于定义 AI 模型的标准化接口和行为规范
-- **语言态的运行时**: 专注于实现高效、可扩展的 AI 模型运行时（如 ai-lib）
+- **语言态的运行时**: 专注于实现高效、可扩展的 AI 模型运行时（如 ai-lib-rust）
 - **生态系统解耦**: 协议规范与实现分离，支持多语言、多框架的统一生态
 - **供应商无关**: 统一不同 AI 供应商的 API，实现真正的跨供应商互操作性
 - **跨模态支持**: 标准化文本、视觉、音频、视频等多种模态的交互方式
@@ -75,18 +75,18 @@ AI-Protocol 通过**算子**的概念来标准化 AI 模型的行为：
 
 ```yaml
 # v1/providers/anthropic.yaml
-$schema: "https://github.com/hiddenpath/ai-protocol/tree/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 
 id: anthropic
-protocol_version: "1.1"
+protocol_version: "1.5"
 
 streaming:
   decoder:
-    format: "sse"
+    format: "anthropic_sse"
     strategy: "anthropic_event_stream"
 
   event_map:
-    - match: { "path": "$.type", "op": "eq", "value": "content_block_delta" }
+    - match: "$.type == 'content_block_delta' && $.delta.type == 'text_delta'"
       emit: "PartialContentDelta"
       extract:
         content: "$.delta.text"
@@ -121,7 +121,7 @@ retry_policy:
 
 ```yaml
 # v1/models/claude.yaml
-$schema: "https://github.com/hiddenpath/ai-protocol/tree/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 
 models:
   claude-3-5-sonnet:
@@ -137,7 +137,7 @@ models:
 ### 4. 运行时集成
 
 ```rust
-// ai-lib 中的动态加载示例
+// ai-lib-rust 中的动态加载示例
 use ai_protocol::{ProtocolRegistry, ProviderConfig};
 
 let registry = ProtocolRegistry::new();
@@ -148,15 +148,14 @@ let model = registry.get_model("claude-3-5-sonnet").await?;
 ## 📋 验证与测试
 
 ```bash
-# 运行 JSON Schema 校验
-npm install -g ajv-cli
-ajv validate -s schemas/v1.json -d "v1/providers/*.yaml"
+# 运行 JSON Schema 校验（全部）
+npm run validate
 
 # 运行兼容性测试
 cargo test --package ai-protocol-validation
 ```
 
-验证脚本也可在 `scripts/validate-configs.sh` 中找到。
+验证脚本也可在 `scripts/validate-configs.sh` 与 `scripts/validate.js` 中找到。
 
 ## 🛣️ 路线图
 
@@ -216,7 +215,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 ## 🔗 相关项目
 
-- **[ai-lib](https://github.com/hiddenpath/ai-lib)**: Rust 运行时实现
+- **[ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)**: Rust 运行时实现
 - **[ai-lib-python](https://github.com/hiddenpath/ai-lib-python)**: Python 运行时实现 (规划中)
 
 > **说明**: AI-Protocol 本身已经包含配置注册功能。社区可以通过 PR 直接贡献新的供应商配置和模型注册到本仓库的 `v1/providers/` 和 `v1/models/` 目录，无需单独的配置仓库。

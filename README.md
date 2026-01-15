@@ -7,7 +7,7 @@
 ## 🎯 Project Vision
 
 - **Data-State Rulebook**: Focuses on defining standardized interfaces and behavioral norms for AI models
-- **Language-State Runtime**: Focuses on implementing efficient, scalable AI model runtimes (like ai-lib)
+- **Language-State Runtime**: Focuses on implementing efficient, scalable AI model runtimes (like ai-lib-rust)
 - **Ecosystem Decoupling**: Protocol specifications are separated from implementations, supporting unified ecosystems across multiple languages and frameworks
 - **Provider-Agnostic**: Unifies APIs from different AI providers, enabling true cross-provider interoperability
 - **Cross-Modality Support**: Standardizes interactions across text, vision, audio, video, and other modalities
@@ -91,15 +91,15 @@ AI-Protocol standardizes AI model behavior through the concept of **operators**:
 $schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 
 id: anthropic
-protocol_version: "1.1"
+protocol_version: "1.5"
 
 streaming:
   decoder:
-    format: "sse"
+    format: "anthropic_sse"
     strategy: "anthropic_event_stream"
 
   event_map:
-    - match: { "path": "$.type", "op": "eq", "value": "content_block_delta" }
+    - match: "$.type == 'content_block_delta' && $.delta.type == 'text_delta'"
       emit: "PartialContentDelta"
       extract:
         content: "$.delta.text"
@@ -134,7 +134,7 @@ retry_policy:
 
 ```yaml
 # v1/models/claude.yaml
-$schema: "https://github.com/hiddenpath/ai-protocol/tree/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 
 models:
   claude-3-5-sonnet:
@@ -150,7 +150,7 @@ models:
 ### 4. Runtime Integration
 
 ```rust
-// Dynamic loading example in ai-lib
+// Dynamic loading example in ai-lib-rust
 use ai_protocol::{ProtocolRegistry, ProviderConfig};
 
 let registry = ProtocolRegistry::new();
@@ -161,15 +161,14 @@ let model = registry.get_model("claude-3-5-sonnet").await?;
 ## 📋 Validation and Testing
 
 ```bash
-# Run JSON Schema validation
-npm install -g ajv-cli
-ajv validate -s schemas/v1.json -d "v1/providers/*.yaml"
+# Run JSON Schema validation (all)
+npm run validate
 
 # Run compatibility tests
 cargo test --package ai-protocol-validation
 ```
 
-Validation scripts are also available in `scripts/validate-configs.sh`.
+Validation scripts are also available in `scripts/validate-configs.sh` and `scripts/validate.js`.
 
 ## 🛣️ Roadmap
 
@@ -229,7 +228,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 ## 🔗 Related Projects
 
-- **[ai-lib](https://github.com/hiddenpath/ai-lib)**: Rust runtime implementation
+- **[ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)**: Rust runtime implementation
 - **[ai-lib-python](https://github.com/hiddenpath/ai-lib-python)**: Python runtime implementation (planned)
 
 > **Note**: AI-Protocol itself already includes configuration registry functionality. Community contributions for new provider configurations and model registrations can be submitted directly via PRs to this repository's `v1/providers/` and `v1/models/` directories, without needing a separate configuration repository.
