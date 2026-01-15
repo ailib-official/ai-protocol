@@ -36,6 +36,10 @@ const colors = {
   bold: '\x1b[1m',
 };
 
+// Expected schema URLs (raw GitHub or relative local path)
+const SCHEMA_V1_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/hiddenpath\/ai-protocol\/(main|master|v\d+\.\d+)\/schemas\/v1\.json|(\.\.\/)+schemas\/v1\.json)$/;
+const SCHEMA_V2_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/hiddenpath\/ai-protocol\/(main|master|v\d+\.\d+)\/schemas\/v2\/provider\.json|(\.\.\/)+schemas\/v2\/provider\.json)$/;
+
 // Validation results tracking
 const results = {
   passed: 0,
@@ -48,14 +52,13 @@ const results = {
  */
 function createValidator() {
   const ajv = new Ajv({
-    strict: false, // Allow 2020-12 features
     allErrors: true,
     verbose: true,
     validateFormats: true,
     allowUnionTypes: true,
     strictSchema: false,
     strictNumbers: false,
-    // Use 2020-12 draft
+    // Allow 2020-12 features
     strict: false,
   });
 
@@ -74,6 +77,9 @@ function createValidator() {
 function loadSchema(schemaPath, removeMetaSchema = false) {
   try {
     const schemaContent = readFileSync(schemaPath, 'utf-8').replace(/^\uFEFF/, '');
+    if (schemaContent.includes('\uFFFD')) {
+      throw new Error('Invalid UTF-8 encoding detected in schema (replacement character found).');
+    }
     const schema = JSON.parse(schemaContent);
 
     // Ensure schema uses 2020-12 draft
@@ -101,6 +107,13 @@ function loadSchema(schemaPath, removeMetaSchema = false) {
 function loadYaml(filePath) {
   try {
     const content = readFileSync(filePath, 'utf-8').replace(/^\uFEFF/, '');
+    if (content.includes('\uFFFD')) {
+      return {
+        error: true,
+        message: 'Invalid UTF-8 encoding detected (replacement character found).',
+        mark: null,
+      };
+    }
     return yaml.load(content, {
       schema: yaml.DEFAULT_SAFE_SCHEMA,
       json: true,
@@ -147,7 +160,7 @@ function formatError(error, filePath) {
 /**
  * Validate a single file against a schema
  */
-function validateFile(filePath, schemaPath, validator, schemaCache) {
+function validateFile(filePath, schemaPath, validator, schemaCache, expectedSchemaPattern) {
   // Get or compile schema
   let validate;
   if (schemaCache.has(schemaPath)) {
@@ -179,7 +192,30 @@ function validateFile(filePath, schemaPath, validator, schemaCache) {
 
   // Remove $schema from data if present (it's metadata, not part of the actual data)
   const dataToValidate = { ...data };
-  if (dataToValidate.$schema) {
+  if (expectedSchemaPattern) {
+    if (!dataToValidate.$schema) {
+      results.failed++;
+      results.errors.push({
+        file: filePath,
+        error: 'Missing $schema field; expected canonical schema reference.',
+      });
+      console.error(`${colors.red}✖ ${filePath}${colors.reset}`);
+      console.error('   Missing $schema field; expected canonical schema reference.');
+      return false;
+    }
+
+    if (!expectedSchemaPattern.test(dataToValidate.$schema)) {
+      results.failed++;
+      results.errors.push({
+        file: filePath,
+        error: `Invalid $schema value: ${dataToValidate.$schema}`,
+      });
+      console.error(`${colors.red}✖ ${filePath}${colors.reset}`);
+      console.error(`   Invalid $schema value: ${dataToValidate.$schema}`);
+      console.error(`   Expected schema matching: ${expectedSchemaPattern}`);
+      return false;
+    }
+
     delete dataToValidate.$schema;
   }
 
@@ -209,15 +245,38 @@ function validateFile(filePath, schemaPath, validator, schemaCache) {
  * Get all YAML files in a directory
  */
 function getYamlFiles(dir) {
-  try {
-    const files = readdirSync(dir);
-    return files
-      .filter(file => file.endsWith('.yaml') || file.endsWith('.yml'))
-      .map(file => join(dir, file))
-      .filter(file => statSync(file).isFile());
-  } catch (error) {
-    return [];
-  }
+  const collected = [];
+
+  const walk = (currentDir) => {
+    let entries = [];
+    try {
+      entries = readdirSync(currentDir);
+    } catch (error) {
+      return;
+    }
+
+    entries.forEach(entry => {
+      const fullPath = join(currentDir, entry);
+      let stats;
+      try {
+        stats = statSync(fullPath);
+      } catch (error) {
+        return;
+      }
+
+      if (stats.isDirectory()) {
+        if (entry === 'node_modules' || entry.startsWith('.')) {
+          return;
+        }
+        walk(fullPath);
+      } else if (stats.isFile() && (entry.endsWith('.yaml') || entry.endsWith('.yml'))) {
+        collected.push(fullPath);
+      }
+    });
+  };
+
+  walk(dir);
+  return collected;
 }
 
 /**
@@ -255,7 +314,7 @@ function main() {
       console.log(`${colors.yellow}鈿狅笍  No provider files found in ${providerDir}${colors.reset}`);
     } else {
       providerFiles.forEach(file => {
-        validateFile(file, schemaPath, validator, schemaCache);
+        validateFile(file, schemaPath, validator, schemaCache, SCHEMA_V1_PATTERN);
       });
     }
     console.log('');
@@ -274,7 +333,7 @@ function main() {
       console.log(`${colors.yellow}鈿狅笍  No model files found in ${modelDir}${colors.reset}`);
     } else {
       modelFiles.forEach(file => {
-        validateFile(file, schemaPath, validator, schemaCache);
+        validateFile(file, schemaPath, validator, schemaCache, SCHEMA_V1_PATTERN);
       });
     }
     console.log('');
@@ -293,7 +352,26 @@ function main() {
       console.log(`${colors.yellow}鈿狅笍  No example files found in ${exampleDir}${colors.reset}`);
     } else {
       exampleFiles.forEach(file => {
-        validateFile(file, schemaPath, validator, schemaCache);
+        validateFile(file, schemaPath, validator, schemaCache, SCHEMA_V1_PATTERN);
+      });
+    }
+    console.log('');
+  }
+
+  // Validate v2-alpha providers (if any)
+  if (validateProviders) {
+    console.log(`${colors.blue}馃搵 Validating v2-alpha provider configurations...${colors.reset}`);
+    console.log('-----------------------------------------------');
+
+    const providerDirV2 = join(ROOT_DIR, 'v2-alpha', 'providers');
+    const providerFilesV2 = getYamlFiles(providerDirV2);
+    const schemaPathV2 = join(ROOT_DIR, 'schemas', 'v2', 'provider.json');
+
+    if (providerFilesV2.length === 0) {
+      console.log(`${colors.yellow}鈿狅笍  No provider files found in ${providerDirV2}${colors.reset}`);
+    } else {
+      providerFilesV2.forEach(file => {
+        validateFile(file, schemaPathV2, validator, schemaCache, SCHEMA_V2_PATTERN);
       });
     }
     console.log('');

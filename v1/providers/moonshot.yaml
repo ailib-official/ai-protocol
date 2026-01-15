@@ -1,5 +1,5 @@
 # AI-Protocol Provider Manifest for Moonshot (Kimi)
-$schema: "../../../schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 id: moonshot
 protocol_version: "1.1"
 

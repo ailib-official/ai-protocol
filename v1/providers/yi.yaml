@@ -1,5 +1,5 @@
 # AI-Protocol Provider Manifest for Yi (01.ai)
-$schema: "../../../schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 id: yi
 protocol_version: "1.1"
 

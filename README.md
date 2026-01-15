@@ -88,7 +88,7 @@ AI-Protocol standardizes AI model behavior through the concept of **operators**:
 
 ```yaml
 # v1/providers/anthropic.yaml
-$schema: "https://github.com/hiddenpath/ai-protocol/tree/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 
 id: anthropic
 protocol_version: "1.1"

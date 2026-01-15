@@ -46,10 +46,6 @@ services:
     path: "/models"
     method: "GET"
     response_binding: "data"
-  get_usage:
-    path: "/usage"
-    method: "GET"
-    response_binding: "data"
   list_files:
     path: "/files"
     method: "GET"

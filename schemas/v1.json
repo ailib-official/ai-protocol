@@ -232,6 +232,44 @@
     "parameter_mappings": {
       "type": "object",
       "description": "Mapping from standard parameters to provider-specific parameters",
+      "propertyNames": {
+        "enum": [
+          "temperature",
+          "max_tokens",
+          "stream",
+          "top_p",
+          "stop_sequences",
+          "frequency_penalty",
+          "presence_penalty",
+          "top_k",
+          "logprobs",
+          "top_logprobs",
+          "seed",
+          "tools",
+          "tool_choice",
+          "system_message",
+          "response_format_mode",
+          "response_format",
+          "reasoning_effort",
+          "messages",
+          "input",
+          "inputs",
+          "prompt",
+          "stop",
+          "metadata",
+          "logit_bias",
+          "model",
+          "random_seed",
+          "n",
+          "parallel_tool_calls",
+          "safe_prompt",
+          "prompt_mode",
+          "prediction"
+          ,
+          "tool_accumulation_strategy",
+          "max_tool_calls_per_turn"
+        ]
+      },
       "additionalProperties": {
         "type": "string"
       }
@@ -738,7 +776,7 @@
         },
         "min_delay_ms": {
           "type": "integer",
-          "minimum": 0,
+          "minimum": 1,
           "description": "Minimum delay before the first retry."
         },
         "max_delay_ms": {
@@ -854,6 +892,10 @@
             "display_name": {
               "type": "string"
             },
+        "name": {
+          "type": "string",
+          "description": "Optional short name for the model (alias for display_name)."
+        },
             "context_window": {
               "type": "integer"
             },
@@ -871,6 +913,24 @@
               "items": {
                 "type": "string"
               }
+        },
+        "pricing": {
+          "type": "object",
+          "description": "Pricing information (per-token costs).",
+          "properties": {
+            "input_per_token": {
+              "type": "number"
+            },
+            "output_per_token": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": true
+        },
+        "agentic_capabilities": {
+          "type": "object",
+          "description": "Agentic / reasoning capability hints.",
+          "additionalProperties": true
             }
           },
           "required": [

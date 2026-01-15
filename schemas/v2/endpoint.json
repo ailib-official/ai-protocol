@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-protocol.dev/schema/v2/endpoint.json",
   "title": "Endpoint Definition",
