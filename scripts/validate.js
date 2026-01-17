@@ -177,15 +177,19 @@ function validateFile(filePath, schemaPath, validator, schemaCache, expectedSche
   // Check for YAML parsing errors
   if (data.error) {
     results.failed++;
+    const errorMsg = `YAML parsing error: ${data.message}`;
     results.errors.push({
       file: filePath,
-      error: `YAML parsing error: ${data.message}`,
+      error: errorMsg,
       mark: data.mark,
     });
-    console.error(`${colors.red}鉂?${filePath}${colors.reset}`);
-    console.error(`   YAML Error: ${data.message}`);
+    console.error(`${colors.red}✗ ${filePath}${colors.reset}`);
+    console.error(`   ${colors.yellow}YAML Parsing Error:${colors.reset} ${data.message}`);
     if (data.mark) {
-      console.error(`   Line ${data.mark.line + 1}, Column ${data.mark.column + 1}`);
+      console.error(`   ${colors.cyan}Location:${colors.reset} Line ${data.mark.line + 1}, Column ${data.mark.column + 1}`);
+      if (data.mark.line > 0) {
+        console.error(`   ${colors.cyan}Tip:${colors.reset} Check for syntax errors, indentation issues, or special characters around this location`);
+      }
     }
     return false;
   }
@@ -211,8 +215,9 @@ function validateFile(filePath, schemaPath, validator, schemaCache, expectedSche
         error: `Invalid $schema value: ${dataToValidate.$schema}`,
       });
       console.error(`${colors.red}✖ ${filePath}${colors.reset}`);
-      console.error(`   Invalid $schema value: ${dataToValidate.$schema}`);
-      console.error(`   Expected schema matching: ${expectedSchemaPattern}`);
+      console.error(`   ${colors.yellow}Invalid $schema value:${colors.reset} ${dataToValidate.$schema}`);
+      console.error(`   ${colors.cyan}Expected pattern:${colors.reset} ${expectedSchemaPattern}`);
+      console.error(`   ${colors.cyan}Tip:${colors.reset} Use a raw GitHub URL or relative path matching the pattern`);
       return false;
     }
 
@@ -230,8 +235,10 @@ function validateFile(filePath, schemaPath, validator, schemaCache, expectedSche
     }));
     results.errors.push(...fileErrors);
 
-    console.error(`${colors.red}鉂?${filePath}${colors.reset}`);
-    validate.errors.forEach(err => {
+    console.error(`${colors.red}✗ ${filePath}${colors.reset}`);
+    console.error(`   ${colors.yellow}Validation Errors (${validate.errors.length}):${colors.reset}`);
+    validate.errors.forEach((err, idx) => {
+      console.error(`   ${colors.cyan}[${idx + 1}]${colors.reset}`);
       console.error(formatError(err, filePath));
     });
     return false;
