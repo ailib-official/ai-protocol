@@ -42,11 +42,11 @@ streaming:
   event_map:
     - match: "$.type == 'content-delta'"
       emit: "PartialContentDelta"
-      extract:
+      fields:
         content: "$.delta.message.content.text"
     - match: "$.type == 'tool-call-start'"
       emit: "ToolCallStarted"
-      extract:
+      fields:
         tool_call_id: "$.delta.message.tool_calls[0].id"
         tool_name: "$.delta.message.tool_calls[0].function.name"
 

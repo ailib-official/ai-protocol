@@ -127,41 +127,41 @@ streaming:
     # Text content streaming
     - match: "$.type == 'content_block_delta' && $.delta.type == 'text_delta'"
       emit: "PartialContentDelta"
-      extract:
+      fields:
         content: "$.delta.text"
     # Thinking/reasoning delta (Claude 3.5+ extended thinking)
     - match: "$.type == 'content_block_delta' && $.delta.type == 'thinking_delta'"
       emit: "ThinkingDelta"
-      extract:
+      fields:
         thinking: "$.delta.thinking"
     # Tool call start (for multi-tool scenarios)
     - match: "$.type == 'content_block_start' && $.content_block.type == 'tool_use'"
       emit: "ToolCallStarted"
-      extract:
+      fields:
         tool_call_id: "$.content_block.id"
         tool_name: "$.content_block.name"
         index: "$.index"
     # Tool call arguments streaming
     - match: "$.type == 'content_block_delta' && $.delta.type == 'input_json_delta'"
       emit: "PartialToolCall"
-      extract:
+      fields:
         arguments: "$.delta.partial_json"
         index: "$.index"
     # Tool call end
     - match: "$.type == 'content_block_stop'"
       emit: "ToolCallEnded"
-      extract:
+      fields:
         index: "$.index"
     # Message delta with usage and stop_reason
     - match: "$.type == 'message_delta'"
       emit: "Metadata"
-      extract:
+      fields:
         stop_reason: "$.delta.stop_reason"
         usage: "$.usage"
     # Stream end
     - match: "$.type == 'message_stop'"
       emit: "StreamEnd"
-      extract:
+      fields:
         finish_reason: "end_turn"
   stop_condition: "$.type == 'message_stop'"
   extra_metadata_path: "$.usage"
