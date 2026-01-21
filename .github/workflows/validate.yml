@@ -10,7 +10,6 @@ on:
       - 'schemas/**'
       - 'scripts/**'
       - 'package.json'
-      - 'package-lock.json'
       - '.github/workflows/validate.yml'
   pull_request:
     branches: [ main, develop ]
@@ -21,7 +20,6 @@ on:
       - 'schemas/**'
       - 'scripts/**'
       - 'package.json'
-      - 'package-lock.json'
       - '.github/workflows/validate.yml'
 
 jobs:
@@ -36,11 +34,10 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
 
     - name: Install dependencies and run canonical validator
       run: |
-        npm ci
+        npm install
         npm run validate
 
     - name: Setup Python and yamllint
