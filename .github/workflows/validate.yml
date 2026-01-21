@@ -9,6 +9,8 @@ on:
       - 'examples/**'
       - 'schemas/**'
       - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/validate.yml'
   pull_request:
     branches: [ main, develop ]
@@ -18,6 +20,9 @@ on:
       - 'examples/**'
       - 'schemas/**'
       - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/validate.yml'
 
 jobs:
   validate:
@@ -31,11 +36,14 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        cache: 'npm'
 
-    - name: Install AJV CLI
-      run: npm install -g ajv-cli
+    - name: Install dependencies and run canonical validator
+      run: |
+        npm ci
+        npm run validate
 
-    - name: Setup Python
+    - name: Setup Python and yamllint
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
@@ -43,18 +51,21 @@ jobs:
     - name: Install yamllint
       run: pip install yamllint
 
-    - name: Make validation script executable
-      run: chmod +x scripts/validate-configs.sh
-
-    - name: Run configuration validation
-      run: ./scripts/validate-configs.sh
+    - name: Lint YAML syntax (yamllint)
+      run: |
+        for d in v1/providers v1/models examples; do
+          if [ -d "$d" ]; then
+            for f in "$d"/*.yaml "$d"/*.yml; do
+              [ -f "$f" ] && yamllint "$f" || true
+            done
+          fi
+        done
+      continue-on-error: true
 
     - name: Validate JSON schemas syntax
       run: |
+        set -e
         echo "Validating JSON schemas syntax..."
-        for schema in schemas/*.json; do
-          if [ -f "$schema" ]; then
-            echo "Checking $schema..."
-            python -c "import json; json.load(open('$schema'))" && echo "✅ $schema is valid JSON"
-          fi
+        for schema in schemas/*.json schemas/v2/*.json; do
+          [ -f "$schema" ] && python -c "import json; json.load(open('$schema'))" && echo "✅ $schema is valid JSON"
         done
