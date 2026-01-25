@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "deepseek-chat": {
+      "provider": "deepseek",
+      "model_id": "deepseek-chat",
+      "display_name": "DeepSeek Chat",
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools"
+      ],
+      "pricing": {
+        "input_per_token": 1.4e-7,
+        "output_per_token": 2.8e-7
+      },
+      "status": "active",
+      "tags": [
+        "deepseek",
+        "chat",
+        "tools"
+      ]
+    }
+  }
+}

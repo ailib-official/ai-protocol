@@ -154,6 +154,16 @@ standard_schema:
           description: "Model reached a natural stopping point."
         - id: "max_tokens"
           description: "Generation stopped because max tokens or context constraints were hit."
+        - id: "stop_sequence"
+          description: "Generation stopped because a user-provided stop sequence was encountered."
+        - id: "tool_use"
+          description: "Model decided to invoke one or more tools / function calls."
+        - id: "refusal"
+          description: "Model refused or safety classifiers intervened (policy)."
+        - id: "pause_turn"
+          description: "Turn was paused and may be continued in a subsequent request."
+        - id: "other"
+          description: "Provider-specific or unknown termination."
 
   # =========================================================
   # Telemetry & Feedback (optional, application-controlled)
@@ -194,16 +204,7 @@ standard_schema:
             items: string
             required: false
             description: "Optional hashes for the rendered candidates; enables audit/linkage without uploading full text."
-        - id: "stop_sequence"
-          description: "Generation stopped because a user-provided stop sequence was encountered."
-        - id: "tool_use"
-          description: "Model decided to invoke one or more tools / function calls."
-        - id: "refusal"
-          description: "Model refused or safety classifiers intervened (policy)."
-        - id: "pause_turn"
-          description: "Turn was paused and may be continued in a subsequent request."
-        - id: "other"
-          description: "Provider-specific or unknown termination."
+
 
       # Informative mapping guidance (NOT exhaustive; providers may evolve)
       provider_mappings:

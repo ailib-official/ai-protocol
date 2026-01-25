@@ -1,0 +1,45 @@
+$schema: ../../schemas/v1.json
+protocol_version: "1.1"
+id: "siliconflow"
+name: "SiliconFlow"
+status: "stable"
+category: "model_provider"
+official_url: "https://siliconflow.cn/"
+support_contact: "https://siliconflow.cn/support"
+
+endpoint:
+  base_url: "https://api.siliconflow.cn/v1"
+  protocol: "https"
+  timeout_ms: 60000
+
+availability:
+  required: false
+  regions: ["cn", "global"]
+  check:
+    method: "GET"
+    path: "/models"
+    expected_status: [200]
+
+capabilities:
+  streaming: true
+  tools: true
+  vision: true
+  agentic: false
+  reasoning: true
+  parallel_tools: true
+
+# SiliconCloud is OpenAI-Compatible
+features:
+  response_mapping:
+    error:
+      message_path: "error.message"
+      code_path: "error.code"
+  
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "403": "permission_denied"
+    "429": "rate_limited"
+    "500": "server_error"
+    "503": "overloaded"

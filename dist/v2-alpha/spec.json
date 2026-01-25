@@ -1,0 +1,151 @@
+{
+  "version": "2.0-alpha",
+  "metadata": {
+    "description": "AI-Protocol v2.0-alpha - Experimental Specification for Multimodal and Real-time AI",
+    "last_updated": "2025-12-XX",
+    "authors": [
+      "AI-Protocol Team"
+    ],
+    "license": "MIT OR Apache-2.0"
+  },
+  "multimodal_interleave": {
+    "frame_interleave": {
+      "operators": [
+        "audio_frame",
+        "video_frame",
+        "text_delta",
+        "image_generation_progress"
+      ],
+      "synchronization": {
+        "timestamp_alignment": "utc_microseconds",
+        "frame_rate_matching": "adaptive",
+        "buffer_strategy": "sliding_window"
+      }
+    },
+    "content_fusion": {
+      "fusion_rules": [
+        {
+          "match": [
+            "audio_frame",
+            "text_delta"
+          ],
+          "operator": "speech_to_text_alignment"
+        },
+        {
+          "match": [
+            "video_frame",
+            "text_delta"
+          ],
+          "operator": "visual_captioning"
+        },
+        {
+          "match": [
+            "image_generation_progress",
+            "text_delta"
+          ],
+          "operator": "progress_annotation"
+        }
+      ]
+    }
+  },
+  "rtc_events": {
+    "state_sync": {
+      "operators": [
+        "agent_state_delta",
+        "ui_state_mirror",
+        "action_confirmation"
+      ],
+      "state_model": {
+        "internal_monologue": "observable_stream",
+        "working_memory": "shared_buffer",
+        "action_queue": "priority_fifo"
+      }
+    },
+    "tool_streaming": {
+      "execution_feedback": [
+        "tool_started",
+        "tool_progress",
+        "tool_partial_result",
+        "tool_completed",
+        "tool_error"
+      ],
+      "coordination": {
+        "parallel_execution": true,
+        "dependency_resolution": "dynamic",
+        "rollback_support": true
+      }
+    }
+  },
+  "schema_less_mapping": {
+    "dynamic_fields": {
+      "strategy": "auto_discover",
+      "validation": "permissive",
+      "metadata_extraction": "intelligent"
+    },
+    "type_inference": {
+      "primitives": [
+        "string",
+        "number",
+        "boolean",
+        "null"
+      ],
+      "complex_types": [
+        "array",
+        "object",
+        "binary"
+      ],
+      "custom_types": [
+        "datetime",
+        "uuid",
+        "uri"
+      ]
+    },
+    "extra_metadata": {
+      "storage": "key_value_store",
+      "indexing": "full_text",
+      "querying": "json_path"
+    }
+  },
+  "streaming_events_v2": {
+    "supported_events": [
+      "PartialContentDelta",
+      "ThinkingDelta",
+      "PartialToolCall",
+      "ToolCallStarted",
+      "ToolCallEnded",
+      "MultimodalFrame",
+      "AgentStateSync",
+      "ToolExecutionFeedback",
+      "SchemaLessField"
+    ],
+    "event_correlation": {
+      "session_id": "uuid_v4",
+      "sequence_number": "incremental",
+      "causal_dependencies": "vector_clock"
+    }
+  },
+  "performance": {
+    "adaptive_batching": {
+      "strategy": "latency_optimized",
+      "max_batch_size": 32,
+      "timeout_ms": 100
+    },
+    "circuit_breaker": {
+      "failure_threshold": 0.5,
+      "recovery_timeout_ms": 30000,
+      "monitoring_window_ms": 60000
+    },
+    "qos": {
+      "priority_levels": [
+        "realtime",
+        "interactive",
+        "batch"
+      ],
+      "sla_guarantees": [
+        "latency",
+        "throughput",
+        "reliability"
+      ]
+    }
+  }
+}

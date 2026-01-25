@@ -1,0 +1,783 @@
+{
+  "version": "1.1",
+  "metadata": {
+    "description": "AI-Protocol v1.1 - Standard Specification for AI Model Integration",
+    "last_updated": "2026-01-04",
+    "release_version": "1.1.1",
+    "authors": [
+      "AI-Protocol Team"
+    ],
+    "license": "MIT OR Apache-2.0"
+  },
+  "standard_schema": {
+    "parameters": {
+      "temperature": {
+        "type": "float",
+        "range": [
+          0,
+          2
+        ],
+        "default": 1,
+        "description": "Controls randomness in the output"
+      },
+      "max_tokens": {
+        "type": "integer",
+        "min": 1,
+        "max": 32768,
+        "description": "Maximum number of tokens to generate"
+      },
+      "stream": {
+        "type": "boolean",
+        "default": false,
+        "description": "Enable streaming responses"
+      },
+      "top_p": {
+        "type": "float",
+        "range": [
+          0,
+          1
+        ],
+        "default": 1,
+        "description": "Nucleus sampling parameter"
+      },
+      "frequency_penalty": {
+        "type": "float",
+        "range": [
+          -2,
+          2
+        ],
+        "default": 0,
+        "description": "Penalize frequent tokens (OpenAI-compatible)"
+      },
+      "presence_penalty": {
+        "type": "float",
+        "range": [
+          -2,
+          2
+        ],
+        "default": 0,
+        "description": "Penalize repeated presence (OpenAI-compatible)"
+      },
+      "top_k": {
+        "type": "integer",
+        "min": 1,
+        "max": 500,
+        "description": "Top-K filtering (Gemini/open-source compatible)"
+      },
+      "stop_sequences": {
+        "type": "array",
+        "description": "Stop sequences to truncate generation"
+      },
+      "logprobs": {
+        "type": "boolean",
+        "default": false,
+        "description": "Return token logprobs when provider supports"
+      },
+      "top_logprobs": {
+        "type": "integer",
+        "min": 1,
+        "max": 5,
+        "description": "Number of top logprobs to return"
+      },
+      "seed": {
+        "type": "integer",
+        "description": "Deterministic seed when supported"
+      },
+      "tool_choice": {
+        "type": "string_or_object",
+        "values": [
+          "auto",
+          "none",
+          "required",
+          "specific"
+        ],
+        "default": "auto",
+        "description": "Tool choice policy per request. Runtimes SHOULD accept either a simple string policy (auto/none/required) or a provider-specific object (e.g., OpenAI tool_choice object for selecting a specific tool).",
+        "object_shape": {
+          "description": "Minimum object contract when tool selection is explicit.",
+          "fields": {
+            "type": {
+              "type": "string",
+              "values": [
+                "function",
+                "tool"
+              ],
+              "required": true
+            },
+            "name": {
+              "type": "string",
+              "required": true,
+              "description": "Function/tool name to invoke when type indicates a specific tool."
+            },
+            "id": {
+              "type": "string",
+              "required": false,
+              "description": "Provider-specific tool identifier when available."
+            }
+          }
+        }
+      },
+      "response_format_mode": {
+        "type": "string",
+        "values": [
+          "auto",
+          "text",
+          "json_object",
+          "json_schema"
+        ],
+        "default": "auto",
+        "description": "Structured output selection (OpenAI Responses / JSON mode)"
+      },
+      "reasoning_effort": {
+        "type": "string",
+        "values": [
+          "low",
+          "medium",
+          "high",
+          "auto"
+        ],
+        "default": "auto",
+        "description": "Reasoning effort for agentic tasks"
+      }
+    },
+    "tools": {
+      "schema": "standard_tool_definition",
+      "choice_policy": [
+        "auto",
+        "none",
+        "required",
+        "specific"
+      ],
+      "strict_mode": true,
+      "parallel_calls": true
+    },
+    "response_format": {
+      "types": [
+        "text",
+        "json",
+        "structured"
+      ],
+      "schema_validation": true
+    },
+    "multimodal": {
+      "image": {
+        "formats": [
+          "png",
+          "jpeg",
+          "gif",
+          "webp"
+        ],
+        "max_size": "10MB"
+      }
+    },
+    "agentic_loop": {
+      "max_iterations": 10,
+      "stop_conditions": [
+        "tool_result",
+        "final_answer"
+      ],
+      "reasoning_effort": "auto"
+    },
+    "streaming_events": {
+      "supported_events": [
+        "PartialContentDelta",
+        "ThinkingDelta",
+        "PartialToolCall",
+        "ToolCallStarted",
+        "ToolCallEnded",
+        "StreamError"
+      ],
+      "thinking_blocks": true,
+      "citations_enabled": true,
+      "transport_definitions": {
+        "sse": {
+          "description": "Server-Sent Events (SSE) framing contract used by multiple providers.",
+          "framing": {
+            "delimiter": "\\n\\n",
+            "data_prefix": "data: ",
+            "done_signal": "[DONE]"
+          },
+          "notes": [
+            "Runtimes should split frames by delimiter and parse each data payload as JSON when applicable.",
+            "Providers MAY emit non-data lines; runtimes should ignore unknown lines unless a provider-specific decoder.strategy says otherwise."
+          ]
+        }
+      },
+      "termination_reasons": {
+        "standard_reasons": [
+          {
+            "id": "end_turn",
+            "description": "Model reached a natural stopping point."
+          },
+          {
+            "id": "max_tokens",
+            "description": "Generation stopped because max tokens or context constraints were hit."
+          },
+          {
+            "id": "stop_sequence",
+            "description": "Generation stopped because a user-provided stop sequence was encountered."
+          },
+          {
+            "id": "tool_use",
+            "description": "Model decided to invoke one or more tools / function calls."
+          },
+          {
+            "id": "refusal",
+            "description": "Model refused or safety classifiers intervened (policy)."
+          },
+          {
+            "id": "pause_turn",
+            "description": "Turn was paused and may be continued in a subsequent request."
+          },
+          {
+            "id": "other",
+            "description": "Provider-specific or unknown termination."
+          }
+        ]
+      }
+    },
+    "telemetry": {
+      "principles": [
+        "Telemetry MUST be opt-in. Runtimes MUST NOT force collection or transmission.",
+        "Generation and feedback reporting MUST be decoupled; feedback is asynchronous and may be dropped.",
+        "Data minimization is required. Prefer ids, indices, and hashes over raw prompt/output text.",
+        "A stable request_id (client-generated if necessary) is REQUIRED for closed-loop linkage."
+      ],
+      "feedback_events": {
+        "ChoiceSelection": {
+          "description": "User selection among multiple candidates (n > 1).",
+          "fields": {
+            "request_id": {
+              "type": "string",
+              "required": true,
+              "description": "Runtime-generated request identifier used for linkage (not necessarily provider's request id)."
+            },
+            "chosen_index": {
+              "type": "integer",
+              "required": true,
+              "description": "0-based index of the chosen candidate."
+            },
+            "rejected_indices": {
+              "type": "array",
+              "items": "integer",
+              "required": false,
+              "description": "Optional list of 0-based indices that were shown but not chosen."
+            },
+            "latency_to_select_ms": {
+              "type": "integer",
+              "required": false,
+              "description": "Time from rendering candidates to the user making a selection (milliseconds)."
+            },
+            "ui_context": {
+              "type": "object",
+              "required": false,
+              "description": "Optional UI / experiment context (A/B bucket, component, etc.)."
+            },
+            "candidate_hashes": {
+              "type": "array",
+              "items": "string",
+              "required": false,
+              "description": "Optional hashes for the rendered candidates; enables audit/linkage without uploading full text."
+            }
+          }
+        },
+        "provider_mappings": {
+          "anthropic": {
+            "source_field": "stop_reason",
+            "notes": [
+              "Non-streaming: stop_reason is always non-null.",
+              "Streaming: stop_reason is null in message_start, then non-null otherwise."
+            ],
+            "map": {
+              "end_turn": "end_turn",
+              "max_tokens": "max_tokens",
+              "stop_sequence": "stop_sequence",
+              "tool_use": "tool_use",
+              "pause_turn": "pause_turn",
+              "refusal": "refusal"
+            }
+          },
+          "openai": {
+            "source_field": "finish_reason",
+            "notes": [
+              "finish_reason is reported per candidate."
+            ],
+            "map": {
+              "stop": "end_turn",
+              "length": "max_tokens",
+              "tool_calls": "tool_use",
+              "content_filter": "refusal",
+              "null": "other"
+            }
+          }
+        },
+        "runtime_behavior": [
+          "Runtimes SHOULD surface standardized termination reasons to users and logs.",
+          "Runtimes SHOULD preserve the original provider-specific reason in extra metadata for debugging."
+        ]
+      },
+      "event_definitions": {
+        "StreamError": {
+          "description": "A stream-level error event emitted after a streaming/realtime session has been established. Most errors are recoverable and the session may stay open; runtimes SHOULD monitor and log error messages by default.",
+          "payload": {
+            "type": "object",
+            "required": [
+              "error"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Optional event type when provided by the stream (e.g., 'error')."
+              },
+              "event_id": {
+                "type": "string",
+                "description": "Optional unique ID of the server event when provided."
+              },
+              "error": {
+                "type": "any",
+                "description": "Error payload. May be an object (rich error) or a string (human-readable message), depending on provider."
+              },
+              "model_version": {
+                "type": "string",
+                "description": "Optional model version string when provided by the stream."
+              }
+            }
+          }
+        }
+      }
+    },
+    "content_blocks": {
+      "types": [
+        "text",
+        "tool_use",
+        "tool_result",
+        "thinking"
+      ],
+      "tool_use": {
+        "description": "A request from the model to invoke a tool.",
+        "required_fields": [
+          "type",
+          "id",
+          "name",
+          "input"
+        ],
+        "fields": {
+          "type": {
+            "const": "tool_use"
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for this tool invocation (tool_use id / tool_call id)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Tool name to invoke."
+          },
+          "input": {
+            "type": "object",
+            "description": "Tool input parameters (structured object)."
+          }
+        }
+      },
+      "tool_result": {
+        "description": "A tool execution result provided back to the model.",
+        "required_fields": [
+          "type",
+          "tool_use_id",
+          "content"
+        ],
+        "fields": {
+          "type": {
+            "const": "tool_result"
+          },
+          "tool_use_id": {
+            "type": "string",
+            "description": "The id of the corresponding tool_use/tool_call."
+          },
+          "content": {
+            "type": "any",
+            "description": "Result content (provider/runtime-defined). Prefer a structured object or an array of text blocks."
+          },
+          "is_error": {
+            "type": "boolean",
+            "description": "Optional: whether the tool execution failed."
+          }
+        }
+      }
+    },
+    "retry_policy": {
+      "fields": {
+        "strategy": {
+          "values": [
+            "none",
+            "exponential_backoff"
+          ]
+        },
+        "max_retries": {
+          "type": "integer",
+          "min": 0
+        },
+        "min_delay_ms": {
+          "type": "integer",
+          "min": 0
+        },
+        "max_delay_ms": {
+          "type": "integer",
+          "min": 0
+        },
+        "jitter": {
+          "values": [
+            "none",
+            "full",
+            "equal"
+          ]
+        },
+        "retry_on_http_status": {
+          "type": "array",
+          "items": "integer"
+        },
+        "retry_on_error_status": {
+          "type": "array",
+          "items": "string"
+        }
+      },
+      "runtime_notes": [
+        "Runtimes SHOULD treat retry_policy as guidance; user overrides may apply.",
+        "Runtimes SHOULD apply exponential backoff with an upper bound and optional jitter when enabled."
+      ]
+    },
+    "rate_limit_headers": {
+      "fields": {
+        "requests_limit": {
+          "type": "string",
+          "description": "Header name that reports request limit."
+        },
+        "requests_remaining": {
+          "type": "string",
+          "description": "Header name that reports remaining requests."
+        },
+        "requests_reset": {
+          "type": "string",
+          "description": "Header name that reports time until request limit resets (format is provider-specific)."
+        },
+        "tokens_limit": {
+          "type": "string",
+          "description": "Header name that reports token limit."
+        },
+        "tokens_remaining": {
+          "type": "string",
+          "description": "Header name that reports remaining tokens."
+        },
+        "tokens_reset": {
+          "type": "string",
+          "description": "Header name that reports time until token limit resets (format is provider-specific)."
+        },
+        "retry_after": {
+          "type": "string",
+          "description": "Header name that reports seconds until retry allowed (Retry-After style), if provided."
+        }
+      },
+      "runtime_notes": [
+        "Runtimes SHOULD treat rate_limit_headers as optional; not all providers return all headers.",
+        "When retry_after is present on 429, runtimes SHOULD respect it."
+      ]
+    },
+    "error_handling": {
+      "error_classes": [
+        {
+          "id": "invalid_request",
+          "description": "Malformed request body, invalid parameters, or unsupported operation.",
+          "default_retryable": false
+        },
+        {
+          "id": "authentication",
+          "description": "Missing/invalid credentials (API key/token).",
+          "default_retryable": false
+        },
+        {
+          "id": "permission_denied",
+          "description": "Caller is authenticated but not permitted to access the resource.",
+          "default_retryable": false
+        },
+        {
+          "id": "not_found",
+          "description": "Requested resource not found.",
+          "default_retryable": false
+        },
+        {
+          "id": "quota_exhausted",
+          "description": "Account quota/billing/spend limit exceeded.",
+          "default_retryable": false
+        },
+        {
+          "id": "rate_limited",
+          "description": "Throttled due to request/token limits; typically retryable with backoff.",
+          "default_retryable": true
+        },
+        {
+          "id": "request_too_large",
+          "description": "Payload too large (e.g., context too long, request too big).",
+          "default_retryable": false
+        },
+        {
+          "id": "timeout",
+          "description": "Request timed out or deadline exceeded.",
+          "default_retryable": true
+        },
+        {
+          "id": "conflict",
+          "description": "Request conflict (often safe to retry depending on semantics).",
+          "default_retryable": true
+        },
+        {
+          "id": "cancelled",
+          "description": "Request was cancelled by client or upstream.",
+          "default_retryable": false
+        },
+        {
+          "id": "server_error",
+          "description": "Transient server-side failure (5xx).",
+          "default_retryable": true
+        },
+        {
+          "id": "overloaded",
+          "description": "Service overloaded / temporarily unavailable.",
+          "default_retryable": true
+        },
+        {
+          "id": "other",
+          "description": "Unknown or provider-specific classification.",
+          "default_retryable": false
+        }
+      ],
+      "envelope_patterns": {
+        "openai_style": {
+          "shape": "{ \"error\": { \"message\": string, \"type\": string, \"code\"?: string|null, \"param\"?: string|null } }",
+          "extraction": {
+            "message": "error.message",
+            "type": "error.type",
+            "code": "error.code",
+            "param": "error.param"
+          }
+        },
+        "anthropic_style": {
+          "shape": "{ \"type\": \"error\", \"error\": { \"type\": string, \"message\": string }, \"request_id\": string }",
+          "extraction": {
+            "message": "error.message",
+            "type": "error.type",
+            "request_id": "request_id"
+          }
+        },
+        "google_cloud_style": {
+          "shape": "{ \"error\": { \"code\": integer, \"message\": string, \"status\": string, \"errors\"?: [], \"details\"?: [] } }",
+          "extraction": {
+            "message": "error.message",
+            "http_code": "error.code",
+            "status": "error.status",
+            "errors": "error.errors",
+            "details": "error.details"
+          }
+        }
+      },
+      "runtime_behavior": [
+        "Runtimes SHOULD map provider-specific errors into error_classes for logs/UI, while preserving raw fields.",
+        "Runtimes SHOULD treat HTTP 401/403 as authentication/permission_denied and avoid retries by default.",
+        "Runtimes SHOULD treat HTTP 400/422 as invalid_request and avoid retries by default.",
+        "On HTTP 429, runtimes SHOULD distinguish rate-limited vs quota-exhausted when possible (often via message/type/code).",
+        "On HTTP 429, if a Retry-After header (or provider-declared retry_after) is present, runtimes SHOULD respect it.",
+        "On transient 5xx/overloaded errors, runtimes SHOULD retry with exponential backoff and a cap (see retry_policy).",
+        "Runtimes SHOULD cap retries and add jitter to avoid retry storms."
+      ],
+      "provider_field_contract": {
+        "purpose": "Clarify how provider configs work together to enable consistent error handling and retry behavior.",
+        "fields_relationship": [
+          "response_mapping.error: Extracts raw error fields (message, code, type, etc.) from provider responses.",
+          "error_classification: Maps HTTP status / provider status strings to standard error_classes.",
+          "retry_policy: Declares which errors are retryable and how to retry (strategy, delays, caps).",
+          "rate_limit_headers: Declares which HTTP headers expose rate limit state (for throttling/monitoring)."
+        ],
+        "runtime_integration": [
+          "Runtimes SHOULD use error_classification output to determine retry eligibility (default_retryable from error_class + explicit retry_policy overrides).",
+          "Runtimes SHOULD combine error_classification with retry_policy.retry_on_http_status and retry_policy.retry_on_error_status to finalize retry decisions.",
+          "Runtimes SHOULD respect rate_limit_headers.retry_after when present on 429 responses.",
+          "Runtimes SHOULD preserve raw provider error fields (via response_mapping) alongside normalized error_class for debugging."
+        ]
+      }
+    }
+  },
+  "provider_manifest": {
+    "identity": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-_]{1,63}$",
+        "required": true,
+        "description": "Stable provider identifier (lowercase, alphanumeric, hyphens, underscores)"
+      },
+      "name": {
+        "type": "string",
+        "required": false,
+        "description": "Human-readable provider name"
+      },
+      "status": {
+        "type": "string",
+        "values": [
+          "stable",
+          "beta",
+          "deprecated"
+        ],
+        "default": "stable",
+        "description": "Provider status"
+      },
+      "category": {
+        "type": "string",
+        "values": [
+          "ai_provider",
+          "model_provider",
+          "third_party_aggregator"
+        ],
+        "required": false,
+        "description": "Provider category"
+      },
+      "official_url": {
+        "type": "string",
+        "format": "uri",
+        "required": false,
+        "description": "Official documentation website"
+      },
+      "support_contact": {
+        "type": "string",
+        "format": "uri",
+        "required": false,
+        "description": "Support or feedback link"
+      }
+    },
+    "endpoint": {
+      "base_url": {
+        "type": "string",
+        "format": "uri",
+        "required": true,
+        "description": "Absolute base URL of the provider API"
+      },
+      "protocol": {
+        "type": "string",
+        "values": [
+          "https",
+          "http",
+          "ws",
+          "wss"
+        ],
+        "default": "https",
+        "description": "Protocol used for communication"
+      },
+      "timeout_ms": {
+        "type": "integer",
+        "min": 100,
+        "default": 10000,
+        "description": "Default timeout for requests in milliseconds"
+      }
+    },
+    "availability": {
+      "required": {
+        "type": "boolean",
+        "required": true,
+        "description": "Whether the provider must be reachable at runtime startup"
+      },
+      "regions": {
+        "type": "array",
+        "min_items": 1,
+        "items": {
+          "type": "string",
+          "values": [
+            "cn",
+            "global",
+            "us",
+            "eu"
+          ]
+        },
+        "unique_items": true,
+        "required": true,
+        "description": "Geographic regions where the provider is available",
+        "semantics": {
+          "cn": "Reachable from mainland China without special routing",
+          "global": "Reachable from the general international Internet. This does NOT imply reachability from mainland China.",
+          "us": "Explicitly deployed in US region only",
+          "eu": "Explicitly deployed in EU region only"
+        },
+        "notes": [
+          "Multiple regions MAY be listed (e.g., ['cn', 'global']) to explicitly declare dual availability",
+          "Runtimes MUST NOT assume implicit region coverage"
+        ]
+      },
+      "check": {
+        "method": {
+          "type": "string",
+          "values": [
+            "HEAD",
+            "GET"
+          ],
+          "required": true,
+          "description": "HTTP method for health check"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/",
+          "required": true,
+          "description": "Path relative to base_url for health check"
+        },
+        "expected_status": {
+          "type": "array",
+          "min_items": 1,
+          "items": {
+            "type": "integer",
+            "min": 100,
+            "max": 599
+          },
+          "required": true,
+          "description": "HTTP status codes that indicate healthy state"
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "min": 100,
+          "default": 3000,
+          "description": "Timeout for health check in milliseconds"
+        },
+        "notes": [
+          "Health checks SHOULD NOT require authentication",
+          "Unauthorized responses (401) MAY be considered healthy if they indicate the service is reachable"
+        ]
+      }
+    },
+    "capabilities": {
+      "streaming": {
+        "type": "boolean",
+        "required": true,
+        "description": "Supports streaming responses"
+      },
+      "tools": {
+        "type": "boolean",
+        "required": true,
+        "description": "Supports tool / function calling"
+      },
+      "vision": {
+        "type": "boolean",
+        "required": true,
+        "description": "Supports image or multimodal inputs"
+      },
+      "agentic": {
+        "type": "boolean",
+        "default": false,
+        "description": "Supports agentic reasoning and multi-turn tool sequences"
+      },
+      "reasoning": {
+        "type": "boolean",
+        "default": false,
+        "description": "Supports extended reasoning / thinking blocks"
+      },
+      "parallel_tools": {
+        "type": "boolean",
+        "default": false,
+        "description": "Supports parallel tool invocations"
+      }
+    }
+  }
+}

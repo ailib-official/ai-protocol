@@ -1,0 +1,32 @@
+{
+  "$schema": "../../schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "siliconflow/deepseek-ai/DeepSeek-V2.5": {
+      "provider": "siliconflow",
+      "model_id": "deepseek-ai/DeepSeek-V2.5",
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "reasoning"
+      ]
+    },
+    "siliconflow/Qwen/Qwen2.5-72B-Instruct": {
+      "provider": "siliconflow",
+      "model_id": "Qwen/Qwen2.5-72B-Instruct",
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "tools"
+      ]
+    },
+    "siliconflow/meta-llama/Meta-Llama-3.1-70B-Instruct": {
+      "provider": "siliconflow",
+      "model_id": "meta-llama/Meta-Llama-3.1-70B-Instruct",
+      "context_window": 128000,
+      "capabilities": [
+        "chat"
+      ]
+    }
+  }
+}

@@ -1,0 +1,279 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "id": "gemini",
+  "protocol_version": "1.5",
+  "name": "Google Gemini",
+  "version": "v1beta",
+  "status": "stable",
+  "category": "ai_provider",
+  "official_url": "https://ai.google.dev/docs",
+  "support_contact": "https://support.google.com/gemini",
+  "endpoint": {
+    "base_url": "https://generativelanguage.googleapis.com/v1beta",
+    "protocol": "https",
+    "timeout_ms": 10000
+  },
+  "auth": {
+    "type": "query_param",
+    "param_name": "key",
+    "token_env": "GEMINI_API_KEY"
+  },
+  "payload_format": "gemini_style",
+  "api_families": [
+    "generate_content"
+  ],
+  "default_api_family": "generate_content",
+  "endpoints": {
+    "chat": {
+      "path": "/models/{model}:generateContent",
+      "method": "POST",
+      "adapter": "gemini"
+    }
+  },
+  "services": {
+    "list_models": {
+      "path": "/models",
+      "method": "GET",
+      "response_binding": "models"
+    },
+    "list_files": {
+      "path": "/files",
+      "method": "GET",
+      "response_binding": "files"
+    },
+    "get_model": {
+      "path": "/models/{model}",
+      "method": "GET"
+    }
+  },
+  "termination": {
+    "source_field": "finishReason",
+    "mapping": {
+      "FINISH_REASON_UNSPECIFIED": "other",
+      "STOP": "end_turn",
+      "MAX_TOKENS": "max_tokens",
+      "SAFETY": "refusal",
+      "RECITATION": "refusal",
+      "LANGUAGE": "refusal",
+      "OTHER": "other",
+      "BLOCKLIST": "refusal",
+      "PROHIBITED_CONTENT": "refusal",
+      "SPII": "refusal",
+      "MALFORMED_FUNCTION_CALL": "other",
+      "IMAGE_SAFETY": "refusal",
+      "IMAGE_PROHIBITED_CONTENT": "refusal",
+      "IMAGE_OTHER": "other",
+      "NO_IMAGE": "other",
+      "IMAGE_RECITATION": "refusal",
+      "UNEXPECTED_TOOL_CALL": "other",
+      "TOO_MANY_TOOL_CALLS": "other",
+      "MISSING_THOUGHT_SIGNATURE": "other"
+    },
+    "notes": [
+      "finishReason enum is VERIFIED in research/providers/gemini.md (from official generate-content reference).",
+      "STOP covers both natural stop and provided stop sequence; this mapping chooses end_turn because stop_sequence cannot be distinguished from finishReason alone."
+    ]
+  },
+  "tooling": {
+    "source_model": "gemini_function_call",
+    "tool_use": {
+      "name_path": "functionCall.name",
+      "input_path": "functionCall.args",
+      "input_format": "json_object"
+    },
+    "tool_result": {
+      "id_path": "functionResponse.id",
+      "name_path": "functionResponse.name",
+      "response_path": "functionResponse.response",
+      "output_path": "functionResponse.response.output",
+      "error_path": "functionResponse.response.error",
+      "format": "json_object"
+    },
+    "notes": [
+      "Gemini represents tool invocations via functionCall in content parts; normalization to tool_use/tool_result should follow the runtime's part-parsing logic."
+    ]
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "max_retries": 2,
+    "min_delay_ms": 1000,
+    "max_delay_ms": 8000,
+    "jitter": "full",
+    "retry_on_http_status": [
+      429,
+      503,
+      504
+    ],
+    "retry_on_error_status": [
+      "RESOURCE_EXHAUSTED",
+      "UNAVAILABLE",
+      "DEADLINE_EXCEEDED"
+    ],
+    "notes": [
+      "On 429/RESOURCE_EXHAUSTED: retry after a few seconds; recommend no more than two retries; min 1s with exponential backoff."
+    ]
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "403": "permission_denied",
+      "404": "not_found",
+      "429": "rate_limited",
+      "499": "cancelled",
+      "500": "server_error",
+      "503": "overloaded",
+      "504": "timeout"
+    },
+    "by_error_status": {
+      "INVALID_ARGUMENT": "invalid_request",
+      "FAILED_PRECONDITION": "invalid_request",
+      "PERMISSION_DENIED": "permission_denied",
+      "NOT_FOUND": "not_found",
+      "RESOURCE_EXHAUSTED": "rate_limited",
+      "CANCELLED": "cancelled",
+      "UNKNOWN": "server_error",
+      "INTERNAL": "server_error",
+      "UNAVAILABLE": "overloaded",
+      "DEADLINE_EXCEEDED": "timeout"
+    },
+    "notes": [
+      "Vertex/Gemini follows the Google Cloud API error model; prefer mapping by canonical error.status when present."
+    ]
+  },
+  "parameter_mappings": {
+    "temperature": "generationConfig.temperature",
+    "max_tokens": "generationConfig.maxOutputTokens",
+    "top_p": "generationConfig.topP",
+    "top_k": "generationConfig.topK",
+    "stop_sequences": "stopSequences",
+    "tools": "tools",
+    "tool_choice": "toolConfig"
+  },
+  "response_format": "gemini_style",
+  "response_paths": {
+    "content": "candidates[0].content.parts[0].text",
+    "tool_calls": "candidates[0].content.parts[0].functionCall",
+    "usage": "usageMetadata",
+    "finish_reason": "candidates[0].finishReason"
+  },
+  "streaming": {
+    "event_format": "sse_data_lines",
+    "decoder": {
+      "format": "sse",
+      "delimiter": "\n\n",
+      "prefix": "data: "
+    },
+    "frame_selector": "exists($.candidates) || exists($.error)",
+    "candidate": {
+      "candidate_id_path": "$.candidates[*].index",
+      "fan_out": true
+    },
+    "event_map": [
+      {
+        "match": "exists($.error)",
+        "emit": "StreamError",
+        "fields": {
+          "error": "$.error",
+          "model_version": "$.modelVersion"
+        }
+      },
+      {
+        "match": "exists($.candidates[*].content.parts[*].text)",
+        "emit": "PartialContentDelta",
+        "fields": {
+          "content": "$.candidates[*].content.parts[*].text"
+        }
+      },
+      {
+        "match": "exists($.candidates[*].content.parts[*].functionCall.name)",
+        "emit": "ToolCallStarted",
+        "fields": {
+          "tool_name": "$.candidates[*].content.parts[*].functionCall.name",
+          "tool_call_id": "_generate_uuid"
+        }
+      },
+      {
+        "match": "exists($.candidates[*].content.parts[*].functionCall.args)",
+        "emit": "PartialToolCall",
+        "fields": {
+          "arguments": "$.candidates[*].content.parts[*].functionCall.args",
+          "tool_name": "$.candidates[*].content.parts[*].functionCall.name",
+          "tool_call_id": "_generate_uuid"
+        }
+      },
+      {
+        "match": "exists($.usageMetadata)",
+        "emit": "Metadata",
+        "fields": {
+          "usage": "$.usageMetadata",
+          "prompt_tokens": "$.usageMetadata.promptTokenCount",
+          "completion_tokens": "$.usageMetadata.candidatesTokenCount"
+        }
+      },
+      {
+        "match": "exists($.candidates[*].finishReason)",
+        "emit": "FinalCandidate",
+        "fields": {
+          "finish_reason": "$.candidates[*].finishReason",
+          "candidate_index": "$.candidates[*].index"
+        }
+      }
+    ],
+    "stop_condition": "exists($.candidates[*].finishReason)",
+    "extra_metadata_path": "$.usageMetadata",
+    "content_path": "candidates[0].content.parts[0].text",
+    "tool_call_path": "candidates[0].content.parts[0].functionCall.args"
+  },
+  "features": {
+    "multi_candidate": {
+      "support_type": "native",
+      "param_name": "candidateCount"
+    },
+    "response_mapping": {
+      "tool_calls": {
+        "path": "candidates[0].content.parts",
+        "filter": "exists(functionCall)",
+        "fields": {
+          "id": "_generate_uuid",
+          "name": "functionCall.name",
+          "args": "functionCall.args",
+          "id_strategy": "generate_uuid"
+        },
+        "array_fan_out": true
+      },
+      "error": {
+        "message_path": "error.message",
+        "code_path": "error.code",
+        "status_path": "error.status",
+        "errors_path": "error.errors"
+      }
+    }
+  },
+  "capabilities": {
+    "streaming": true,
+    "tools": true,
+    "vision": true,
+    "agentic": false,
+    "parallel_tools": false,
+    "reasoning": false
+  },
+  "availability": {
+    "required": false,
+    "regions": [
+      "global"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/models",
+      "expected_status": [
+        200,
+        401
+      ],
+      "timeout_ms": 3000
+    }
+  },
+  "experimental_features": [
+    "multimodal_video",
+    "multimodal_audio"
+  ]
+}

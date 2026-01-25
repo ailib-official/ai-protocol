@@ -1,0 +1,44 @@
+$schema: ../../schemas/v1.json
+protocol_version: "1.1"
+id: "together"
+name: "Together AI"
+status: "stable"
+category: "model_provider"
+official_url: "https://www.together.ai/"
+support_contact: "https://www.together.ai/contact"
+
+endpoint:
+  base_url: "https://api.together.xyz/v1"
+  protocol: "https"
+  timeout_ms: 60000
+
+availability:
+  required: false
+  regions: ["global"]
+  check:
+    method: "GET"
+    path: "/models"
+    expected_status: [200]
+
+capabilities:
+  streaming: true
+  tools: true
+  vision: true
+  agentic: false
+  reasoning: false
+  parallel_tools: false
+
+features:
+  response_mapping:
+    error:
+      message_path: "error.message"
+      code_path: "error.code"
+      type_path: "error.type"
+
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "429": "rate_limited"
+    "500": "server_error"
+    "503": "overloaded"

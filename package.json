@@ -3,7 +3,15 @@
   "version": "1.1.0",
   "description": "Provider-agnostic AI provider + model registry specification",
   "type": "module",
+  "main": "dist/index.json",
+  "files": [
+    "dist",
+    "v1",
+    "v2-alpha",
+    "schemas"
+  ],
   "scripts": {
+    "build": "node scripts/build.js",
     "validate": "node scripts/validate.js",
     "validate:providers": "node scripts/validate.js --providers",
     "validate:models": "node scripts/validate.js --models",

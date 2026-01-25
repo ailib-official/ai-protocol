@@ -1,0 +1,53 @@
+{
+  "$schema": "../../schemas/v1.json",
+  "protocol_version": "1.1",
+  "id": "deepinfra",
+  "name": "DeepInfra",
+  "status": "stable",
+  "category": "model_provider",
+  "official_url": "https://deepinfra.com/",
+  "support_contact": "https://deepinfra.com/support",
+  "endpoint": {
+    "base_url": "https://api.deepinfra.com/v1/openai",
+    "protocol": "https",
+    "timeout_ms": 60000
+  },
+  "availability": {
+    "required": false,
+    "regions": [
+      "global"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/models",
+      "expected_status": [
+        200
+      ]
+    }
+  },
+  "capabilities": {
+    "streaming": true,
+    "tools": true,
+    "vision": true,
+    "agentic": false,
+    "reasoning": false,
+    "parallel_tools": true
+  },
+  "features": {
+    "response_mapping": {
+      "error": {
+        "message_path": "error.message",
+        "code_path": "error.code"
+      }
+    }
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "422": "invalid_request",
+      "429": "rate_limited",
+      "500": "server_error"
+    }
+  }
+}

@@ -1,0 +1,252 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "id": "anthropic",
+  "protocol_version": "1.5",
+  "name": "Anthropic",
+  "version": "v1",
+  "status": "stable",
+  "category": "ai_provider",
+  "official_url": "https://docs.anthropic.com",
+  "support_contact": "https://support.anthropic.com",
+  "endpoint": {
+    "base_url": "https://api.anthropic.com/v1",
+    "protocol": "https",
+    "timeout_ms": 10000
+  },
+  "auth": {
+    "type": "bearer",
+    "token_env": "ANTHROPIC_API_KEY",
+    "extra_headers": [
+      {
+        "name": "anthropic-version",
+        "value": "2023-06-01"
+      }
+    ]
+  },
+  "payload_format": "anthropic_style",
+  "rate_limit_headers": {
+    "retry_after": "retry-after",
+    "requests_limit": "anthropic-ratelimit-requests-limit",
+    "requests_remaining": "anthropic-ratelimit-requests-remaining",
+    "requests_reset": "anthropic-ratelimit-requests-reset",
+    "tokens_limit": "anthropic-ratelimit-tokens-limit",
+    "tokens_remaining": "anthropic-ratelimit-tokens-remaining",
+    "tokens_reset": "anthropic-ratelimit-tokens-reset"
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "max_retries": 2,
+    "min_delay_ms": 1000,
+    "jitter": "full",
+    "retry_on_http_status": [
+      408,
+      409,
+      429,
+      500,
+      529
+    ],
+    "notes": [
+      "On 429, Anthropic returns a retry-after header (seconds) indicating how long to wait.",
+      "SDKs commonly auto-retry certain errors 2 times with a short exponential backoff (429 and >=500 among others)."
+    ]
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "403": "permission_denied",
+      "404": "not_found",
+      "413": "request_too_large",
+      "429": "rate_limited",
+      "500": "server_error",
+      "529": "overloaded"
+    },
+    "notes": [
+      "Anthropic uses error.type values (e.g., rate_limit_error, overloaded_error); runtimes SHOULD preserve error.type as raw metadata."
+    ]
+  },
+  "api_families": [
+    "messages"
+  ],
+  "default_api_family": "messages",
+  "endpoints": {
+    "chat": {
+      "path": "/messages",
+      "method": "POST",
+      "adapter": "anthropic"
+    }
+  },
+  "services": {
+    "list_models": {
+      "path": "/models",
+      "method": "GET",
+      "response_binding": "data"
+    },
+    "get_usage_report": {
+      "path": "/organizations/usage_report/messages",
+      "method": "POST",
+      "headers": {
+        "anthropic-beta": "message-batches-2024-09-24"
+      }
+    }
+  },
+  "termination": {
+    "source_field": "stop_reason",
+    "mapping": {
+      "end_turn": "end_turn",
+      "max_tokens": "max_tokens",
+      "stop_sequence": "stop_sequence",
+      "tool_use": "tool_use",
+      "pause_turn": "pause_turn",
+      "refusal": "refusal"
+    },
+    "notes": [
+      "Non-streaming: stop_reason is always non-null.",
+      "Streaming: stop_reason is null in message_start, then non-null otherwise."
+    ]
+  },
+  "parameter_mappings": {
+    "temperature": "temperature",
+    "max_tokens": "max_tokens",
+    "stream": "stream",
+    "top_p": "top_p",
+    "stop_sequences": "stop_sequences",
+    "tools": "tools",
+    "tool_choice": "tool_choice",
+    "system_message": "system",
+    "reasoning_effort": "reasoning_effort"
+  },
+  "response_format": "anthropic_style",
+  "response_paths": {
+    "content": "content[0].text",
+    "tool_calls": "content[0].tool_calls",
+    "usage": "usage",
+    "stop_reason": "stop_reason"
+  },
+  "streaming": {
+    "event_format": "anthropic_sse",
+    "decoder": {
+      "format": "anthropic_sse",
+      "strategy": "anthropic_event_stream",
+      "delimiter": "\n\n",
+      "prefix": "data: ",
+      "done_signal": "[DONE]"
+    },
+    "frame_selector": "$.type in ['message_start', 'content_block_start', 'content_block_delta', 'content_block_stop', 'message_delta', 'message_stop', 'ping']",
+    "accumulator": {
+      "stateful_tool_parsing": true,
+      "key_path": "$.delta.partial_json",
+      "flush_on": "$.type == 'content_block_stop'"
+    },
+    "event_map": [
+      {
+        "match": "$.type == 'content_block_delta' && $.delta.type == 'text_delta'",
+        "emit": "PartialContentDelta",
+        "fields": {
+          "content": "$.delta.text"
+        }
+      },
+      {
+        "match": "$.type == 'content_block_delta' && $.delta.type == 'thinking_delta'",
+        "emit": "ThinkingDelta",
+        "fields": {
+          "thinking": "$.delta.thinking"
+        }
+      },
+      {
+        "match": "$.type == 'content_block_start' && $.content_block.type == 'tool_use'",
+        "emit": "ToolCallStarted",
+        "fields": {
+          "tool_call_id": "$.content_block.id",
+          "tool_name": "$.content_block.name",
+          "index": "$.index"
+        }
+      },
+      {
+        "match": "$.type == 'content_block_delta' && $.delta.type == 'input_json_delta'",
+        "emit": "PartialToolCall",
+        "fields": {
+          "arguments": "$.delta.partial_json",
+          "index": "$.index"
+        }
+      },
+      {
+        "match": "$.type == 'content_block_stop'",
+        "emit": "ToolCallEnded",
+        "fields": {
+          "index": "$.index"
+        }
+      },
+      {
+        "match": "$.type == 'message_delta'",
+        "emit": "Metadata",
+        "fields": {
+          "stop_reason": "$.delta.stop_reason",
+          "usage": "$.usage"
+        }
+      },
+      {
+        "match": "$.type == 'message_stop'",
+        "emit": "StreamEnd",
+        "fields": {
+          "finish_reason": "end_turn"
+        }
+      }
+    ],
+    "stop_condition": "$.type == 'message_stop'",
+    "extra_metadata_path": "$.usage",
+    "content_path": "delta.text",
+    "tool_call_path": "delta.tool_calls"
+  },
+  "features": {
+    "multi_candidate": {
+      "support_type": "simulated",
+      "max_concurrent": 4
+    },
+    "response_mapping": {
+      "tool_calls": {
+        "path": "content",
+        "filter": "type == 'tool_use'",
+        "fields": {
+          "id": "id",
+          "name": "name",
+          "args": "input",
+          "id_strategy": "path"
+        },
+        "array_fan_out": true
+      },
+      "error": {
+        "message_path": "error.message",
+        "code_path": "error.type",
+        "request_id_path": "request_id"
+      }
+    }
+  },
+  "capabilities": {
+    "streaming": true,
+    "tools": true,
+    "vision": true,
+    "agentic": true,
+    "parallel_tools": false,
+    "reasoning": true
+  },
+  "experimental_features": [
+    "thinking_blocks",
+    "mcp"
+  ],
+  "availability": {
+    "required": false,
+    "regions": [
+      "global"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/models",
+      "expected_status": [
+        200,
+        401
+      ],
+      "timeout_ms": 3000
+    }
+  }
+}

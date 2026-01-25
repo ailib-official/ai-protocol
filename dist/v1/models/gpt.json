@@ -1,0 +1,117 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "gpt-4o": {
+      "provider": "openai",
+      "model_id": "gpt-4o",
+      "display_name": "GPT-4o",
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "vision",
+        "tools",
+        "streaming",
+        "agentic",
+        "parallel_tools",
+        "reasoning"
+      ],
+      "pricing": {
+        "input_per_token": 0.000005,
+        "output_per_token": 0.000015
+      },
+      "status": "active",
+      "tags": [
+        "gpt",
+        "vision",
+        "tools",
+        "agentic",
+        "reasoning"
+      ],
+      "agentic_capabilities": {
+        "reasoning_effort": "high",
+        "thinking_blocks": false,
+        "parallel_tools": true,
+        "max_parallel_tools": 5,
+        "builtin_tools": [
+          "web_search",
+          "code_execution"
+        ]
+      }
+    },
+    "gpt-4o-mini": {
+      "provider": "openai",
+      "model_id": "gpt-4o-mini",
+      "display_name": "GPT-4o Mini",
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "vision",
+        "tools",
+        "streaming",
+        "agentic",
+        "parallel_tools"
+      ],
+      "pricing": {
+        "input_per_token": 1.5e-7,
+        "output_per_token": 6e-7
+      },
+      "status": "active",
+      "tags": [
+        "gpt",
+        "vision",
+        "tools",
+        "cost-effective",
+        "agentic"
+      ]
+    },
+    "gpt-4-turbo": {
+      "provider": "openai",
+      "model_id": "gpt-4-turbo",
+      "display_name": "GPT-4 Turbo",
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "vision",
+        "tools",
+        "streaming",
+        "agentic",
+        "parallel_tools"
+      ],
+      "pricing": {
+        "input_per_token": 0.00001,
+        "output_per_token": 0.00003
+      },
+      "status": "active",
+      "tags": [
+        "gpt",
+        "vision",
+        "tools",
+        "agentic"
+      ]
+    },
+    "gpt-35-turbo": {
+      "provider": "openai",
+      "model_id": "gpt-3.5-turbo",
+      "display_name": "GPT-3.5 Turbo",
+      "context_window": 16385,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming",
+        "agentic"
+      ],
+      "pricing": {
+        "input_per_token": 0.0000015,
+        "output_per_token": 0.000002
+      },
+      "status": "active",
+      "tags": [
+        "gpt",
+        "tools",
+        "cost-effective",
+        "agentic"
+      ]
+    }
+  }
+}

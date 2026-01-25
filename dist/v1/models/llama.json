@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "llama-3-8b-8192": {
+      "provider": "groq",
+      "model_id": "llama-3-8b-8192",
+      "display_name": "Llama 3 8B",
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "fast",
+        "groq"
+      ]
+    }
+  }
+}

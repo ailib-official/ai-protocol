@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "id": "moonshot",
+  "protocol_version": "1.1",
+  "endpoint": {
+    "base_url": "https://api.moonshot.cn/v1",
+    "protocol": "https"
+  },
+  "availability": {
+    "required": true,
+    "regions": [
+      "cn"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/models",
+      "expected_status": [
+        200
+      ]
+    }
+  },
+  "capabilities": {
+    "streaming": true,
+    "tools": true,
+    "vision": true
+  },
+  "auth": {
+    "type": "bearer",
+    "key_env": "MOONSHOT_API_KEY"
+  },
+  "parameter_mappings": {
+    "model": "model",
+    "messages": "messages",
+    "max_tokens": "max_tokens",
+    "temperature": "temperature",
+    "stream": "stream",
+    "tools": "tools",
+    "tool_choice": "tool_choice"
+  },
+  "streaming": {
+    "decoder": {
+      "format": "sse"
+    },
+    "content_path": "$.choices[0].delta.content",
+    "tool_call_path": "$.choices[0].delta.tool_calls",
+    "usage_path": "$.usage",
+    "stop_condition": "$.choices[0].finish_reason"
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "retry_on_http_status": [
+      429,
+      500,
+      502,
+      503
+    ]
+  }
+}
