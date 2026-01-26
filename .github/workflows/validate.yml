@@ -40,6 +40,15 @@ jobs:
         npm install
         npm run validate
 
+    - name: Build JSON artifacts
+      run: npm run build
+
+    - name: Upload dist folder
+      uses: actions/upload-artifact@v4
+      with:
+        name: ai-protocol-dist
+        path: dist/
+
     - name: Setup Python and yamllint
       uses: actions/setup-python@v4
       with:

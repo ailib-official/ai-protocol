@@ -138,11 +138,11 @@ models:
 
 ```rust
 // ai-lib-rust 中的动态加载示例
-use ai_protocol::{ProtocolRegistry, ProviderConfig};
+use ai_lib_rust::protocol::ProtocolLoader;
 
-let registry = ProtocolRegistry::new();
-let provider = registry.load_provider("anthropic").await?;
-let model = registry.get_model("claude-3-5-sonnet").await?;
+let loader = ProtocolLoader::new();
+let provider = loader.load_provider("anthropic").await?;
+let model = loader.load_model("anthropic/claude-3-5-sonnet").await?;
 ```
 
 ## 📋 验证与测试
@@ -156,6 +156,22 @@ cargo test --package ai-protocol-validation
 ```
 
 验证脚本也可在 `scripts/validate-configs.sh` 与 `scripts/validate.js` 中找到。
+
+## 📦 构建与分发
+
+AI-Protocol 以预编译的 JSON 文件形式分发，以确保运行时效率和零解析开销。
+
+```bash
+# 构建 JSON 制品
+npm run build
+```
+
+此命令将：
+1.  校验所有 YAML 配置文件。
+2.  将它们转换为优化后的 JSON 文件，输出到 `dist/` 目录。
+3.  生成 `dist/index.json` 索引文件。
+
+运行时（如 `ai-lib-rust`）应当直接消费 `dist/` 目录。
 
 ## 🛣️ 路线图
 

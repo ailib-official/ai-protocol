@@ -1,24 +1,24 @@
-# ai-lib Copilot 编码代理说明
-# Copilot Coding Agent Instructions for ai-lib
+# ai-lib-rust Copilot 编码代理说明
+# Copilot Coding Agent Instructions for ai-lib-rust
 
 ## Project Overview
-- **ai-lib** is a unified AI SDK for Rust, providing a single interface for multiple AI model providers (Groq, DeepSeek, Anthropic, Gemini, OpenAI).
-- The architecture is hybrid: some providers use configuration-driven adapters, others use custom adapters for API compatibility.
-- All provider logic is abstracted behind the `ChatApi` trait and accessed via the `AiClient`.
+- **ai-lib-rust** is a high-performance, declarative AI SDK for Rust, powered by **AI-Protocol**.
+- It decouples provider logic from the runtime using `ProtocolManifests` (YAML/JSON), requiring **zero code changes** to add new providers.
+- The core architecture revolves around `ProtocolLoader` (data state) and `AiClient` (execution state).
 
 ## Key Components
-- `src/client.rs`: Main entry point, implements `AiClient` and provider selection logic.
-- `src/provider/`: Contains provider adapters and configuration logic. Use `GenericAdapter` for most providers; custom adapters for OpenAI/Gemini.
-- `src/types/`: Unified data structures (`ChatCompletionRequest`, `ChatCompletionResponse`, `Message`, `Role`, etc.).
-- `src/api/`: API traits and streaming logic.
-- `src/transport/`: HTTP transport abstraction, proxy support, error handling.
+- `src/client/`: Main client logic (`AiClient`, `AiClientBuilder`).
+- `src/protocol/`: **Core Protocol Layer**.
+    - `loader.rs`: Loads manifests from `dist/` (JSON) or local sources.
+    - `validator.rs`: Validates manifests against schema.
+- `src/transport/`: HTTP transport layer (Reqwest).
+- `src/pipeline/`: Request/Response processing pipeline (Tokenizers, Templating).
 
 ## Patterns & Conventions
-- **Provider Switching**: Use `AiClient::new(Provider::X)` to switch backend with unified API.
-- **Adapters**: For Groq, DeepSeek, Anthropic use `GenericAdapter::new(ProviderConfigs::X())`. For OpenAI/Gemini use their respective adapters.
-- **Error Handling**: All errors use the `AiLibError` enum in `src/types/error.rs`.
-- **Streaming**: All providers support streaming via `chat_completion_stream`.
-- **Proxy Support**: Set `AI_PROXY_URL` env variable for HTTP/HTTPS proxy (with/without auth).
+- **Protocol-First**: Everything is driven by the `ProtocolRegistry`. Providers are data, not code.
+- **Client Usage**: Use `AiClient::builder().with_provider(id).build()` to create a client instance.
+- **Manifest Loading**: Favor loading pre-compiled JSONs from `dist/` for production.
+- **Error Handling**: Uses `AiLibError` mapped from `ProtocolError`.
 
 ## Developer Workflow
 - **Build**: `cargo build` or `cargo check`.
@@ -32,14 +32,24 @@
 
 ## Example Usage
 ```rust
-let client = AiClient::new(Provider::Groq)?;
-let request = ChatCompletionRequest::new("llama3-8b-8192".to_string(), vec![Message { role: Role::User, content: crate::types::common::Content::Text("Hello".to_string()), function_call: None }]);
-let response = client.chat_completion(request).await?;
+use ai_lib_rust::client::AiClient;
+use ai_lib_rust::protocol::ProtocolLoader;
+
+// Load protocol
+let loader = ProtocolLoader::new();
+let provider = loader.load_provider("groq").await?;
+
+// Initialize client
+let client = AiClient::builder()
+    .with_provider_config(provider)
+    .build()?;
+
+// Send request
+let response = client.chat().say("Hello").await?;
 ```
 
 ## References
-- See `README.md` and `README_CN.md` for more usage and architecture details.
-- Key files: `src/client.rs`, `src/provider/`, `src/types/`, `src/api/`, `src/transport/`, `examples/`
-
+- See `README.md` for build instructions (`npm run build`).
+- Key files: `src/protocol/loader.rs`, `src/client.rs`.
 ---
 If any section is unclear or missing, please provide feedback for further refinement.

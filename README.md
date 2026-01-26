@@ -151,11 +151,11 @@ models:
 
 ```rust
 // Dynamic loading example in ai-lib-rust
-use ai_protocol::{ProtocolRegistry, ProviderConfig};
+use ai_lib_rust::protocol::ProtocolLoader;
 
-let registry = ProtocolRegistry::new();
-let provider = registry.load_provider("anthropic").await?;
-let model = registry.get_model("claude-3-5-sonnet").await?;
+let loader = ProtocolLoader::new();
+let provider = loader.load_provider("anthropic").await?;
+let model = loader.load_model("anthropic/claude-3-5-sonnet").await?;
 ```
 
 ## 📋 Validation and Testing
@@ -169,6 +169,22 @@ cargo test --package ai-protocol-validation
 ```
 
 Validation scripts are also available in `scripts/validate-configs.sh` and `scripts/validate.js`.
+
+## 📦 Build & Distribution
+
+AI-Protocol is distributed as pre-compiled JSON files to ensure runtime efficiency and zero-parsing overhead.
+
+```bash
+# Build JSON artifacts
+npm run build
+```
+
+This command:
+1.  Validates all YAML configuration files.
+2.  Converts them into optimized JSON files in the `dist/` directory.
+3.  Generates a `dist/index.json` manifest index.
+
+Runtimes (like `ai-lib-rust`) should consume the `dist/` directory directly.
 
 ## 🛣️ Roadmap
 
