@@ -17,7 +17,8 @@ AI-Protocol 是一个**供应商无关**（provider-agnostic）的 AI 模型规�
 ```
 ai-protocol/
 ├── schemas/                    # JSON Schema 校验规范
-│   └── v1.json                # v1.x 稳定版 Schema
+│   ├── v1.json                # v1.x 供应商/模型配置 Schema
+│   └── spec.json              # 规范文件 (spec.yaml) Schema
 ├── v1/                        # v1.x 稳定版规范
 │   ├── spec.yaml              # 基础规约：标准参数、事件枚举
 │   ├── providers/             # 供应商配置（按厂商拆分，便于 PR）
@@ -148,14 +149,21 @@ let model = loader.load_model("anthropic/claude-3-5-sonnet").await?;
 ## 📋 验证与测试
 
 ```bash
+# 安装依赖
+npm install
+
 # 运行 JSON Schema 校验（全部）
 npm run validate
 
-# 运行兼容性测试
-cargo test --package ai-protocol-validation
+# 运行特定验证
+npm run validate:providers   # 仅验证供应商配置
+npm run validate:models      # 仅验证模型配置
+npm run validate:examples    # 仅验证示例
+npm run validate:specs       # 仅验证规范文件
+npm run validate:schemas     # 仅验证 JSON Schema 语法
 ```
 
-验证脚本也可在 `scripts/validate-configs.sh` 与 `scripts/validate.js` 中找到。
+规范验证脚本为 `scripts/validate.js`，使用 AJV v8 配合 JSON Schema 2020-12 和 ajv-formats 进行全面验证。
 
 ## 📦 构建与分发
 
@@ -167,11 +175,21 @@ npm run build
 ```
 
 此命令将：
-1.  校验所有 YAML 配置文件。
-2.  将它们转换为优化后的 JSON 文件，输出到 `dist/` 目录。
-3.  生成 `dist/index.json` 索引文件。
+1.  清理 `dist/` 目录以移除之前构建的陈旧文件。
+2.  将所有 YAML 配置文件转换为优化后的 JSON 文件。
+3.  生成 `dist/index.json` 版本索引文件。
 
 运行时（如 `ai-lib-rust`）应当直接消费 `dist/` 目录。
+
+### CI/CD 流水线
+
+GitHub Actions 工作流 (`validate.yml`) 自动执行：
+- 使用 `npm ci` + `npm run validate` 验证所有配置
+- 使用 `npm run build` 构建 JSON 制品
+- 将 `dist/` 目录作为构建产物上传
+- 运行额外的 yamllint 检查 YAML 风格（不阻塞）
+
+详细 CI 文档请参见 [docs/CI_VALIDATION_EXPLAINED.md](docs/CI_VALIDATION_EXPLAINED.md)。
 
 ## 🛣️ 路线图
 

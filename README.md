@@ -17,7 +17,8 @@
 ```
 ai-protocol/
 ├── schemas/                    # JSON Schema validation specifications
-│   └── v1.json                # v1.x stable version Schema
+│   ├── v1.json                # v1.x provider/model configuration Schema
+│   └── spec.json              # Specification file (spec.yaml) Schema
 ├── v1/                        # v1.x stable version specification
 │   ├── spec.yaml              # Basic specifications: standard parameters, event enumeration
 │   ├── providers/             # Provider configurations (split by vendor for easy PR)
@@ -161,14 +162,21 @@ let model = loader.load_model("anthropic/claude-3-5-sonnet").await?;
 ## 📋 Validation and Testing
 
 ```bash
+# Install dependencies
+npm install
+
 # Run JSON Schema validation (all)
 npm run validate
 
-# Run compatibility tests
-cargo test --package ai-protocol-validation
+# Run specific validations
+npm run validate:providers   # Validate provider configs only
+npm run validate:models      # Validate model configs only
+npm run validate:examples    # Validate examples only
+npm run validate:specs       # Validate spec files only
+npm run validate:schemas     # Validate JSON schema syntax only
 ```
 
-Validation scripts are also available in `scripts/validate-configs.sh` and `scripts/validate.js`.
+The canonical validation script is `scripts/validate.js`, which uses AJV v8 with JSON Schema 2020-12 and ajv-formats for comprehensive validation.
 
 ## 📦 Build & Distribution
 
@@ -180,11 +188,21 @@ npm run build
 ```
 
 This command:
-1.  Validates all YAML configuration files.
-2.  Converts them into optimized JSON files in the `dist/` directory.
-3.  Generates a `dist/index.json` manifest index.
+1.  Cleans the `dist/` directory to remove stale files from previous builds.
+2.  Converts all YAML configuration files into optimized JSON files.
+3.  Generates a `dist/index.json` manifest index with version information.
 
 Runtimes (like `ai-lib-rust`) should consume the `dist/` directory directly.
+
+### CI/CD Pipeline
+
+The GitHub Actions workflow (`validate.yml`) automatically:
+- Validates all configurations using `npm ci` + `npm run validate`
+- Builds JSON artifacts using `npm run build`
+- Uploads the `dist/` folder as a build artifact
+- Runs additional yamllint checks for YAML style (non-blocking)
+
+See [docs/CI_VALIDATION_EXPLAINED.md](docs/CI_VALIDATION_EXPLAINED.md) for detailed CI documentation.
 
 ## 🛣️ Roadmap
 
