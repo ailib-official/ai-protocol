@@ -16,7 +16,8 @@
     "validate:providers": "node scripts/validate.js --providers",
     "validate:models": "node scripts/validate.js --models",
     "validate:examples": "node scripts/validate.js --examples",
-    "validate:schemas": "node scripts/validate.js --schemas"
+    "validate:schemas": "node scripts/validate.js --schemas",
+    "validate:specs": "node scripts/validate.js --specs"
   },
   "engines": {
     "node": ">=18.0.0"

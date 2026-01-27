@@ -295,6 +295,7 @@ function main() {
   const validateModels = args.includes('--models') || args.length === 0;
   const validateExamples = args.includes('--examples') || args.length === 0;
   const validateSchemas = args.includes('--schemas') || args.length === 0;
+  const validateSpecs = args.includes('--specs') || args.length === 0;
 
   console.log(`${colors.bold}${colors.cyan}馃攳 AI-Protocol Configuration Validator${colors.reset}`);
   console.log(`${colors.cyan}=====================================${colors.reset}`);
@@ -384,14 +385,39 @@ function main() {
     console.log('');
   }
 
+  // Validate specification files (v1/spec.yaml, v2-alpha/spec.yaml)
+  if (validateSpecs) {
+    console.log(`${colors.blue}📋 Validating specification files...${colors.reset}`);
+    console.log('-------------------------------------');
+
+    const specSchemaPath = join(ROOT_DIR, 'schemas', 'spec.json');
+    const specFiles = [
+      join(ROOT_DIR, 'v1', 'spec.yaml'),
+      join(ROOT_DIR, 'v2-alpha', 'spec.yaml'),
+    ];
+
+    specFiles.forEach(specFile => {
+      try {
+        // Spec files don't have $schema field, validate without pattern check
+        validateFile(specFile, specSchemaPath, validator, schemaCache, null);
+        console.log(`${colors.green}✓ ${specFile}${colors.reset}`);
+      } catch (error) {
+        console.error(`${colors.red}✗ ${specFile}${colors.reset}`);
+        console.error(`   ${error.message}`);
+      }
+    });
+    console.log('');
+  }
+
   // Validate JSON schemas themselves
   if (validateSchemas) {
-    console.log(`${colors.blue}馃搵 Validating JSON schema syntax...${colors.reset}`);
+    console.log(`${colors.blue}📋 Validating JSON schema syntax...${colors.reset}`);
     console.log('---------------------------------------');
 
     const schemaDir = join(ROOT_DIR, 'schemas');
     const schemaFiles = [
       join(schemaDir, 'v1.json'),
+      join(schemaDir, 'spec.json'),
       join(schemaDir, 'v2', 'provider.json'),
       join(schemaDir, 'v2', 'endpoint.json'),
       join(schemaDir, 'v2', 'availability.json'),
@@ -407,12 +433,12 @@ function main() {
           throw new Error('Schema must be an object');
         }
         if (!schema.type && !schema.$ref && !schema.allOf && !schema.anyOf && !schema.oneOf) {
-          console.warn(`${colors.yellow}鈿狅笍  ${schemaPath} may be missing type definition${colors.reset}`);
+          console.warn(`${colors.yellow}⚠️  ${schemaPath} may be missing type definition${colors.reset}`);
         }
-        console.log(`${colors.green}鉁?${schemaPath}${colors.reset}`);
+        console.log(`${colors.green}✓ ${schemaPath}${colors.reset}`);
         results.passed++;
       } catch (error) {
-        console.error(`${colors.red}鉂?${schemaPath}${colors.reset}`);
+        console.error(`${colors.red}✗ ${schemaPath}${colors.reset}`);
         console.error(`   ${error.message}`);
         results.failed++;
       }

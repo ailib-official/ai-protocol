@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync, statSync, readdirSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, statSync, readdirSync, existsSync, rmSync } from 'fs';
 import { join, dirname, resolve, extname, relative } from 'path';
 import { fileURLToPath } from 'url';
 import yaml from 'js-yaml';
@@ -79,10 +79,22 @@ function createIndex(distDir) {
     console.log(`${colors.green}鉁?Created index.json${colors.reset}`);
 }
 
-function main() {
-    console.log(`${colors.blue}馃捀 Starting Build: YAML -> JSON${colors.reset}`);
+/**
+ * Clean the dist directory to remove stale files from previous builds.
+ * This ensures that deleted source YAML files don't leave orphaned JSON files.
+ */
+function cleanDist() {
+    if (existsSync(DIST_DIR)) {
+        console.log(`${colors.yellow}🧹 Cleaning dist directory...${colors.reset}`);
+        rmSync(DIST_DIR, { recursive: true, force: true });
+    }
+}
 
-    // Clean dist? maybe later. For now just overwrite.
+function main() {
+    console.log(`${colors.blue}📦 Starting Build: YAML -> JSON${colors.reset}`);
+
+    // Clean dist directory before building to remove stale files
+    cleanDist();
     ensureDir(DIST_DIR);
 
     const targets = ['v1', 'v2-alpha'];

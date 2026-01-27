@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/spec.json",
+  "title": "AI-Protocol Specification Schema",
+  "description": "JSON Schema for validating AI-Protocol specification files (v1/spec.yaml, v2-alpha/spec.yaml)",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+(-alpha|-beta)?$",
+      "description": "Specification version (e.g., '1.1', '2.0-alpha')"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the specification"
+        },
+        "last_updated": {
+          "type": "string",
+          "description": "Last update date (YYYY-MM-DD or YYYY-MM-XX for placeholder)"
+        },
+        "release_version": {
+          "type": "string",
+          "description": "Release version string"
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of authors"
+        },
+        "license": {
+          "type": "string",
+          "description": "License identifier (e.g., 'MIT OR Apache-2.0')"
+        }
+      },
+      "required": ["description", "authors", "license"]
+    },
+    "standard_schema": {
+      "type": "object",
+      "description": "Standard schema definitions for AI-Protocol v1",
+      "properties": {
+        "parameters": {
+          "type": "object",
+          "description": "Standard parameter definitions",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "range": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "default": {},
+              "min": {
+                "type": ["number", "integer"]
+              },
+              "max": {
+                "type": ["number", "integer"]
+              },
+              "values": {
+                "type": "array"
+              },
+              "description": {
+                "type": "string"
+              },
+              "object_shape": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "tools": {
+          "type": "object",
+          "description": "Tool definition standards"
+        },
+        "response_format": {
+          "type": "object",
+          "description": "Response format standards"
+        },
+        "multimodal": {
+          "type": "object",
+          "description": "Multimodal content standards"
+        },
+        "agentic_loop": {
+          "type": "object",
+          "description": "Agentic loop configuration"
+        },
+        "streaming_events": {
+          "type": "object",
+          "description": "Streaming events model"
+        },
+        "content_blocks": {
+          "type": "object",
+          "description": "Standard content block model"
+        },
+        "retry_policy": {
+          "type": "object",
+          "description": "Retry policy model"
+        },
+        "rate_limit_headers": {
+          "type": "object",
+          "description": "Rate limit headers model"
+        },
+        "error_handling": {
+          "type": "object",
+          "description": "Error handling model"
+        },
+        "telemetry": {
+          "type": "object",
+          "description": "Telemetry and feedback model"
+        }
+      }
+    },
+    "provider_manifest": {
+      "type": "object",
+      "description": "Provider manifest schema definition",
+      "properties": {
+        "identity": {
+          "type": "object",
+          "description": "Provider identity and core metadata"
+        },
+        "endpoint": {
+          "type": "object",
+          "description": "Endpoint definition"
+        },
+        "availability": {
+          "type": "object",
+          "description": "Availability and health checking"
+        },
+        "capabilities": {
+          "type": "object",
+          "description": "Capabilities declaration"
+        }
+      }
+    },
+    "multimodal_interleave": {
+      "type": "object",
+      "description": "V2: Multimodal interleave operators"
+    },
+    "rtc_events": {
+      "type": "object",
+      "description": "V2: Real-time actions (RTC events)"
+    },
+    "schema_less_mapping": {
+      "type": "object",
+      "description": "V2: Schema-less mapping extensions"
+    },
+    "streaming_events_v2": {
+      "type": "object",
+      "description": "V2: Advanced streaming events"
+    },
+    "performance": {
+      "type": "object",
+      "description": "V2: Performance and reliability extensions"
+    }
+  },
+  "required": ["version", "metadata"],
+  "oneOf": [
+    {
+      "description": "V1 Specification",
+      "properties": {
+        "version": {
+          "pattern": "^1\\.\\d+$"
+        }
+      },
+      "required": ["version", "metadata", "standard_schema", "provider_manifest"]
+    },
+    {
+      "description": "V2-Alpha Specification",
+      "properties": {
+        "version": {
+          "pattern": "^2\\.\\d+(-alpha)?$"
+        }
+      },
+      "required": ["version", "metadata"]
+    }
+  ]
+}
