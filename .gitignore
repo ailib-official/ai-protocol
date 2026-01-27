@@ -41,7 +41,6 @@ scripts/README.md
 # Development files
 .publishignore
 node_modules/
-package-lock.json
 validation*.log
 
 # IDE and editor files

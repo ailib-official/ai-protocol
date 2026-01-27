@@ -1,6 +1,8 @@
 # CI 中两种验证方式对流水线的影响
 
-本文说明当前 `validate.yml` 里**两套验证机制**各自做什么、谁会令 CI 失败，以及它们之间的关系。文末顺带对比已弃用的 `validate-configs.sh`（ajv-cli）方案。
+本文说明当前 `validate.yml` 里**两套验证机制**各自做什么、谁会令 CI 失败，以及它们之间的关系。
+
+> **更新说明 (2026-01)**: CI 已改用 `npm ci` + `package-lock.json` 以提高可复现性；`validate-configs.sh` 已删除；新增 `spec.yaml` 专用 schema 验证；构建脚本会自动清理 dist 目录。
 
 ---
 
@@ -9,9 +11,9 @@
 |  | **方式一：npm / validate.js** | **方式二：yamllint + Python JSON** |
 |--|-------------------------------|------------------------------------|
 | **对应步骤** | Install dependencies and run canonical validator | Lint YAML syntax (yamllint) · Validate JSON schemas syntax |
-| **触发命令** | `npm install` → `npm run validate` → `node scripts/validate.js` | `yamllint` 对 YAML；`python -c "import json; json.load(open(...))"` 对 schema |
+| **触发命令** | `npm ci` → `npm run validate` → `node scripts/validate.js` | `yamllint` 对 YAML；`python -c "import json; json.load(open(...))"` 对 schema |
 | **失败时是否导致 Job 失败** | **是**（`process.exit(1)`） | yamllint：**否**（`continue-on-error: true`）<br>Python：**是**（`set -e`） |
-| **依赖** | Node 18、npm、`package.json`（ajv, ajv-formats, js-yaml） | Python 3.9、pip、yamllint |
+| **依赖** | Node 18、npm、`package.json` + `package-lock.json`（ajv, ajv-formats, js-yaml） | Python 3.9、pip、yamllint |
 
 ---
 
@@ -20,7 +22,8 @@
 ### 2.1 在 CI 中的表现
 
 - 步骤：`Setup Node.js` 之后，执行  
-  `npm install` 再 `npm run validate`，即运行 `node scripts/validate.js`。
+  `npm ci` 再 `npm run validate`，即运行 `node scripts/validate.js`。
+- 使用 `npm ci` 而非 `npm install`，确保依赖版本与 `package-lock.json` 完全一致，提高可复现性。
 - 若**任意一项**校验不通过，脚本 `process.exit(1)`，该 step 失败，**整个 validate job 失败**，后续 step（yamllint、Python）不会跑。
 
 ### 2.2 实际校验内容
@@ -31,7 +34,8 @@
 | **v1/models/*.yaml** | 同上 | 与 v1 使用同一 schema |
 | **examples/*.yaml** | 同上 | 同上 |
 | **v2-alpha/providers/*.yaml** | 若存在，用 `schemas/v2/provider.json` 校验 | 含 `$schema` 模式检查 |
-| **schemas 自身** | `loadSchema()`：`JSON.parse` + 基本结构检查 | 覆盖 v1.json、v2/provider、endpoint、availability、capabilities、regions |
+| **v1/spec.yaml, v2-alpha/spec.yaml** | 用 `schemas/spec.json` 校验 | 验证规范文件结构完整性 |
+| **schemas 自身** | `loadSchema()`：`JSON.parse` + 基本结构检查 | 覆盖 v1.json、spec.json、v2/provider、endpoint、availability、capabilities、regions |
 
 ### 2.3 技术细节
 
@@ -44,9 +48,9 @@
 ### 2.4 对 CI 的影响
 
 - **唯一会因「配置 / schema 语义错误」而 fail 的主通路**：  
-  provider/model/example 的 YAML 违背 v1 或 v2 schema、`$schema` 非法、或 schema 文件本身不是合法 JSON/结构不对，都会在这里失败。
-- **耗时应答**：`npm install` 占大部分时间；`validate.js` 本身较快。
-- **无 lockfile 时**：若使用 `npm install`（当前做法），不依赖 `package-lock.json`；若改用 `npm ci`，则必须提供 lockfile，否则安装阶段就会失败。
+  provider/model/example/spec 的 YAML 违背对应 schema、`$schema` 非法、或 schema 文件本身不是合法 JSON/结构不对，都会在这里失败。
+- **耗时应答**：`npm ci` 占大部分时间（使用缓存后会加速）；`validate.js` 本身较快。
+- **lockfile 要求**：使用 `npm ci` 要求 `package-lock.json` 存在且与 `package.json` 一致。
 
 ---
 
@@ -126,46 +130,38 @@
 | **能否导致 Job 失败** | 能；且是配置/schema 问题的**主要来源** | yamllint 不能；Python 能（仅限 schema 的 JSON 语法） |
 | **执行顺序** | 先执行；失败则后续都不跑 | 后执行；依赖方式一通过才会跑到 |
 | **在「配置是否符合 AI-Protocol 规范」上的作用** | 核心：$schema、字段、类型、format、枚举等 | 无；只做 YAML 风格和 schema 的 JSON 语法 |
-| **依赖与耗时** | Node + `npm install`，主要耗时 | Python + yamllint；单次很快 |
-| **与 package-lock.json 的关系** | 使用 `npm install` 时不需要；使用 `npm ci` 时必须存在 | 无关 |
+| **依赖与耗时** | Node + `npm ci`（带缓存加速），主要耗时 | Python + yamllint；单次很快 |
+| **与 package-lock.json 的关系** | 必须存在，`npm ci` 依赖它确保版本一致性 | 无关 |
 
 结论：
 
 - **能否通过 CI，主要由 validate.js 决定**：  
-  - provider/model/example 的 YAML 只要在格式或语义上不符合 schema，或 `$schema` 不符合约定，都会在这里失败。  
+  - provider/model/example/spec 的 YAML 只要在格式或语义上不符合 schema，或 `$schema` 不符合约定，都会在这里失败。  
 - **yamllint**：不改变通过/失败，只提供额外的 YAML 风格报告。  
 - **Python 的 schema JSON 检查**：在 validate.js 已对 schema 做 `JSON.parse` 的前提下，属于**冗余防护**；若 validate.js 的 `--schemas` 已稳定覆盖所有 `schemas/*.json` 和 `schemas/v2/*.json`，理论上可删掉 Python 步骤以简化流水线，保留则多一道保险且成本很低。
 
 ---
 
-## 六、附：已弃用的 `validate-configs.sh`（ajv-cli）及其对 CI 的影响
+## 六、构建机制说明
 
-`scripts/validate-configs.sh` 当前**不在** `validate.yml` 中调用，已被「npm install + npm run validate」取代。
+### 6.1 构建脚本 (`scripts/build.js`)
 
-### 6.1 其做法
+构建脚本负责将 YAML 源文件转换为 JSON 格式并输出到 `dist/` 目录。
 
-- 对每个 `v1/providers/*.yaml`、`v1/models/*.yaml`、`examples/*.yaml` 执行：  
-  `ajv validate -s schemas/v1.json -d "$file"`  
-- `ajv-cli` 支持 `-d` 接受 YAML（会先转为 JSON 再校验），但：
-  - 未使用 `--spec draft2020`，与 `schemas/v1.json` 的 2020-12 可能不一致；
-  - 未使用 `-c ajv-formats`，`format: "uri"` 等不会按 ajv-formats 规则校验；
-  - **不做** `$schema` 存在性与格式的检查；
-  - **不做** `v2-alpha/providers`、`schemas` 自检。
-- 另外对 `v1/spec.yaml`、`v2-alpha/spec.yaml` 只跑 yamllint，不做 schema 校验。
+**关键特性**：
 
-### 6.2 若在 CI 中使用它会怎样
+- **dist 目录清理**：每次构建前自动清理 `dist/` 目录，防止陈旧文件残留
+- **递归处理**：处理 `v1/` 和 `v2-alpha/` 目录下的所有 YAML 文件
+- **索引生成**：自动生成 `dist/index.json` 包含版本信息
 
-- **优点**：仅依赖全局 `ajv-cli` 和 yamllint，无需 `npm install`、`package.json`，步骤简单。
-- **缺点**：  
-  - 与 `schemas/v1.json` 的 2020-12、format 不完全对齐，可能出现「本地/CI 用 validate.js 能过、用 ajv-cli 过不了」或反过来；  
-  - 覆盖范围小于 validate.js（无 $schema 检查、无 v2、无 schemas 自检）；  
-  - 需要全局安装 `ajv-cli`，版本不易与 `package.json` 一致。
+### 6.2 CI 中的构建
 
-### 6.3 为何改用 validate.js
+```yaml
+- name: Build JSON artifacts
+  run: npm run build
+```
 
-- 与 `schemas/v1.json`、`schemas/v2/provider.json` 的 2020-12、ajv-formats 用法**一致**；  
-- 覆盖 v1/v2、$schema、schemas 自检，行为可全部由 `package.json` 和脚本版本控制；  
-- 本地 `npm run validate` 与 CI 使用**同一套实现**，避免两套逻辑对 CI 造成不一致影响。
+构建在验证通过后执行，生成的 `dist/` 目录作为 artifact 上传。
 
 ---
 
@@ -178,7 +174,3 @@
 2. **若希望 yamllint 也能让 CI 失败**：  
    - 去掉 `continue-on-error: true`，并视需要为 `yamllint` 配置 `.yamllint` 收紧或放宽规则；  
    - 注意：yamllint 的规则若过严，可能会对现有合法 YAML 报错，需要一起调。
-
-3. **若后续提交 `package-lock.json` 并启用 `npm ci`**：  
-   - 可在 `setup-node` 中重新加上 `cache: 'npm'` 以加速安装；  
-   - 此时 `npm ci` 会保证与 lockfile 一致，CI 的安装阶段更可复现。

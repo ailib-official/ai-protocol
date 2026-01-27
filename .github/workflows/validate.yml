@@ -10,6 +10,7 @@ on:
       - 'schemas/**'
       - 'scripts/**'
       - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/validate.yml'
   pull_request:
     branches: [ main, develop ]
@@ -20,6 +21,7 @@ on:
       - 'schemas/**'
       - 'scripts/**'
       - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/validate.yml'
 
 jobs:
@@ -34,10 +36,11 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        cache: 'npm'
 
     - name: Install dependencies and run canonical validator
       run: |
-        npm install
+        npm ci
         npm run validate
 
     - name: Build JSON artifacts
@@ -73,5 +76,7 @@ jobs:
         set -e
         echo "Validating JSON schemas syntax..."
         for schema in schemas/*.json schemas/v2/*.json; do
-          [ -f "$schema" ] && python -c "import json; json.load(open('$schema'))" && echo "✅ $schema is valid JSON"
+          if [ -f "$schema" ]; then
+            python -c "import json; json.load(open('$schema'))" && echo "✅ $schema is valid JSON"
+          fi
         done

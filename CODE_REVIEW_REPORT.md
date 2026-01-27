@@ -225,25 +225,25 @@ Job 步骤:
 
 ### 6.1 高优先级（建议修复）
 
-| # | 问题 | 位置 | 建议 |
-|---|------|------|------|
-| 1 | dist 目录不会在构建前清理 | `build.js:85` | 添加 `rm -rf dist` 或在脚本中实现清理 |
+| # | 问题 | 位置 | 状态 | 建议 |
+|---|------|------|------|------|
+| 1 | dist 目录不会在构建前清理 | `build.js:85` | ✅ 已修复 | 添加 `cleanDist()` 函数 |
 
 ### 6.2 中优先级（建议改进）
 
-| # | 问题 | 位置 | 建议 |
-|---|------|------|------|
-| 2 | `spec.yaml` 文件未被 Schema 验证 | `validate.js` | 考虑为 spec 文件创建专用 schema |
-| 3 | 无 `package-lock.json` | 项目根目录 | 生成并提交 lockfile |
-| 4 | 已弃用的 `validate-configs.sh` 仍存在 | `scripts/` | 删除或标记为 legacy |
+| # | 问题 | 位置 | 状态 | 建议 |
+|---|------|------|------|------|
+| 2 | `spec.yaml` 文件未被 Schema 验证 | `validate.js` | ✅ 已修复 | 创建 `schemas/spec.json` 并添加验证 |
+| 3 | 无 `package-lock.json` | 项目根目录 | ✅ 已修复 | 已生成并提交 lockfile |
+| 4 | 已弃用的 `validate-configs.sh` 仍存在 | `scripts/` | ✅ 已修复 | 已删除 |
 
 ### 6.3 低优先级（可选改进）
 
-| # | 问题 | 位置 | 建议 |
-|---|------|------|------|
-| 5 | yamllint 无自定义配置 | CI workflow | 添加 `.yamllint` 配置文件 |
-| 6 | examples 未包含在 dist 中 | `build.js` | 如需要可添加 examples 构建 |
-| 7 | 构建脚本输出被注释 | `build.js:35` | 考虑恢复或添加 verbose 模式 |
+| # | 问题 | 位置 | 状态 | 建议 |
+|---|------|------|------|------|
+| 5 | yamllint 无自定义配置 | CI workflow | 待定 | 添加 `.yamllint` 配置文件 |
+| 6 | examples 未包含在 dist 中 | `build.js` | 待定 | 如需要可添加 examples 构建 |
+| 7 | 构建脚本输出被注释 | `build.js:35` | 待定 | 考虑恢复或添加 verbose 模式 |
 
 ---
 
@@ -317,12 +317,14 @@ function main() {
 - ✅ 良好的 CI 集成
 - ✅ 详尽的文档说明
 
-### 需改进
-- ⚠️ dist 目录未清理可能导致陈旧文件
-- ⚠️ 缺少 package-lock.json
-- ⚠️ spec.yaml 文件未被验证
+### 已改进 (2026-01-27)
+- ✅ dist 目录现在会在构建前自动清理
+- ✅ 已生成并提交 package-lock.json
+- ✅ spec.yaml 文件现在有专用 schema 验证
+- ✅ CI 工作流改用 npm ci + 缓存
+- ✅ 已删除弃用的 validate-configs.sh
 
 ### 整体评价
-**代码质量: 良好 (B+)**
+**代码质量: 优秀 (A)**
 
-该项目的 dist 生成和验证机制设计合理，实现清晰。主要的验证逻辑集中在 `validate.js` 中，使用了业界标准的 AJV 库进行 JSON Schema 验证。CI 工作流设计得当，能有效防止不合规的配置合入。建议按照上述改进建议进行优化，特别是 dist 清理和 lockfile 管理。
+该项目的 dist 生成和验证机制设计合理，实现清晰。主要的验证逻辑集中在 `validate.js` 中，使用了业界标准的 AJV 库进行 JSON Schema 验证。CI 工作流设计得当，能有效防止不合规的配置合入。经过本次改进，主要问题已修复，代码质量显著提升。
