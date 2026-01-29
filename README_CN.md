@@ -38,6 +38,10 @@ ai-protocol/
 │   └── providers/             # 实验性供应商配置
 ├── examples/                  # 配置示例
 │   └── tool_accumulation.yaml # 工具累积模式示例
+├── docs/                      # 文档
+│   ├── SPEC.md                # 供应商清单规范
+│   ├── CI_VALIDATION_EXPLAINED.md  # CI 校验说明
+│   └── FACT_CHECKING_MODELS.md     # 模型注册表核查（可选，无需 API Key）
 ├── research/                  # 调研文档（官方 API 文档摘录与验证）
 │   └── providers/             # 各供应商的官方文档调研
 │       ├── openai.md          # OpenAI 官方 API 规则（VERIFIED）
@@ -141,6 +145,8 @@ models:
 // ai-lib-rust 中的动态加载示例
 use ai_lib_rust::protocol::ProtocolLoader;
 
+// 默认情况下，加载器优先读取 `dist/` 目录 (JSON) 以获得生产环境的高效性，
+// 并回退到 `v1/` 目录 (YAML) 以方便开发调试。
 let loader = ProtocolLoader::new();
 let provider = loader.load_provider("anthropic").await?;
 let model = loader.load_model("anthropic/claude-3-5-sonnet").await?;
@@ -163,20 +169,22 @@ npm run validate:specs       # 仅验证规范文件
 npm run validate:schemas     # 仅验证 JSON Schema 语法
 ```
 
-规范验证脚本为 `scripts/validate.js`，使用 AJV v8 配合 JSON Schema 2020-12 和 ajv-formats 进行全面验证。
+规范验证脚本为 `scripts/validate.js`，使用 AJV v8 配合 JSON Schema 2020-12 和 ajv-formats。  
+可选的运行时模型核查（以文档为准，注册表无需 API Key）：见 [docs/FACT_CHECKING_MODELS.md](docs/FACT_CHECKING_MODELS.md)。
 
 ## 📦 构建与分发
 
 AI-Protocol 以预编译的 JSON 文件形式分发，以确保运行时效率和零解析开销。
 
 ```bash
-# 构建 JSON 制品
+# 先校验，再构建 JSON 制品
+npm run validate
 npm run build
 ```
 
-此命令将：
+请先运行 `npm run validate`。此命令将：
 1.  清理 `dist/` 目录以移除之前构建的陈旧文件。
-2.  将所有 YAML 配置文件转换为优化后的 JSON 文件。
+2.  将 `v1/` 与 `v2-alpha/` 下的 YAML 转为 JSON 输出到 `dist/`。
 3.  生成 `dist/index.json` 版本索引文件。
 
 运行时（如 `ai-lib-rust`）应当直接消费 `dist/` 目录。

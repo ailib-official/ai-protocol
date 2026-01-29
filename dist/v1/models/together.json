@@ -5,6 +5,10 @@
     "together/meta-llama/Llama-3-70b-chat-hf": {
       "provider": "together",
       "model_id": "meta-llama/Llama-3-70b-chat-hf",
+      "verification": {
+        "status": "unverified",
+        "source": "manual"
+      },
       "context_window": 8192,
       "capabilities": [
         "chat",
@@ -14,6 +18,10 @@
     "together/mistralai/Mixtral-8x22B-Instruct-v0.1": {
       "provider": "together",
       "model_id": "mistralai/Mixtral-8x22B-Instruct-v0.1",
+      "verification": {
+        "status": "unverified",
+        "source": "manual"
+      },
       "context_window": 65536,
       "capabilities": [
         "chat"
@@ -22,6 +30,10 @@
     "together/google/gemma-2-27b-it": {
       "provider": "together",
       "model_id": "google/gemma-2-27b-it",
+      "verification": {
+        "status": "unverified",
+        "source": "manual"
+      },
       "context_window": 8192,
       "capabilities": [
         "chat"

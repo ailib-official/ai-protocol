@@ -35,6 +35,13 @@
       "adapter": "openai"
     }
   },
+  "services": {
+    "list_models": {
+      "path": "/models",
+      "method": "GET",
+      "response_binding": "data"
+    }
+  },
   "termination": {
     "source_field": "finish_reason",
     "mapping": {

@@ -1,4 +1,4 @@
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 protocol_version: "1.1"
 
 # GPT Model Instances
@@ -7,6 +7,10 @@ models:
     provider: openai
     model_id: "gpt-4o"
     display_name: "GPT-4o"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 128000
     capabilities: [chat, vision, tools, streaming, agentic, parallel_tools, reasoning]
     pricing:
@@ -25,6 +29,10 @@ models:
     provider: openai
     model_id: "gpt-4o-mini"
     display_name: "GPT-4o Mini"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 128000
     capabilities: [chat, vision, tools, streaming, agentic, parallel_tools]
     pricing:
@@ -37,18 +45,42 @@ models:
     provider: openai
     model_id: "gpt-4-turbo"
     display_name: "GPT-4 Turbo"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
+      notes: "Not present in current /models list for this key; marked deprecated."
     context_window: 128000
     capabilities: [chat, vision, tools, streaming, agentic, parallel_tools]
     pricing:
       input_per_token: 0.00001
       output_per_token: 0.00003
-    status: active
+    # VERIFIED_AT: 2026-01-28 (via OpenAI list_models: GET /v1/models) -> not present for this key.
+    status: deprecated
     tags: ["gpt", "vision", "tools", "agentic"]
+
+  # VERIFIED_AT: 2026-01-28 (via OpenAI list_models: GET /v1/models)
+  gpt-4.1:
+    provider: openai
+    model_id: "gpt-4.1"
+    display_name: "GPT-4.1"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
+    context_window: 128000
+    capabilities: [chat, vision, tools, streaming, agentic, parallel_tools, reasoning]
+    status: active
+    tags: ["gpt", "vision", "tools", "agentic", "reasoning"]
 
   gpt-35-turbo:
     provider: openai
     model_id: "gpt-3.5-turbo"
     display_name: "GPT-3.5 Turbo"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 16385
     capabilities: [chat, tools, streaming, agentic]
     pricing:

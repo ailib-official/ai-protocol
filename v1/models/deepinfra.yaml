@@ -4,17 +4,26 @@ models:
   "deepinfra/meta-llama/Meta-Llama-3-8B-Instruct":
     provider: "deepinfra"
     model_id: "meta-llama/Meta-Llama-3-8B-Instruct"
+    verification:
+      status: unverified
+      source: "manual"
     context_window: 8192
     capabilities: ["chat"]
 
   "deepinfra/mistralai/Mistral-7B-Instruct-v0.3":
     provider: "deepinfra"
     model_id: "mistralai/Mistral-7B-Instruct-v0.3"
+    verification:
+      status: unverified
+      source: "manual"
     context_window: 32768
     capabilities: ["chat", "tools"]
     
   "deepinfra/microsoft/WizardLM-2-8x22B":
     provider: "deepinfra"
     model_id: "microsoft/WizardLM-2-8x22B"
+    verification:
+      status: unverified
+      source: "manual"
     context_window: 65536
     capabilities: ["chat"]

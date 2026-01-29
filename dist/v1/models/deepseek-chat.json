@@ -6,6 +6,11 @@
       "provider": "deepseek",
       "model_id": "deepseek-chat",
       "display_name": "DeepSeek Chat",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-01-28",
+        "source": "list_models:/models"
+      },
       "context_window": 32768,
       "capabilities": [
         "chat",

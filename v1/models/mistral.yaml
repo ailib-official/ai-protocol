@@ -9,6 +9,10 @@ models:
     provider: mistral
     model_id: "mistral-small-latest"
     display_name: "Mistral Small"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 32000
     capabilities: [chat, tools, streaming, parallel_tools]
     status: active
@@ -18,6 +22,10 @@ models:
     provider: mistral
     model_id: "mistral-medium-latest"
     display_name: "Mistral Medium"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 32000
     capabilities: [chat, tools, streaming, parallel_tools]
     status: active
@@ -27,24 +35,36 @@ models:
     provider: mistral
     model_id: "mistral-large-latest"
     display_name: "Mistral Large"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 32000
     capabilities: [chat, tools, streaming, parallel_tools, agentic]
     status: active
     tags: ["mistral", "large", "tools", "agentic", "latest"]
 
-  pixtral-small-latest:
+  pixtral-12b-latest:
     provider: mistral
-    model_id: "pixtral-small-latest"
-    display_name: "Pixtral Small"
+    model_id: "pixtral-12b-latest"
+    display_name: "Pixtral 12B"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 128000
     capabilities: [chat, vision, tools, streaming, parallel_tools]
     status: active
-    tags: ["mistral", "pixtral", "vision", "small", "latest"]
+    tags: ["mistral", "pixtral", "vision", "12b", "latest"]
 
   pixtral-large-latest:
     provider: mistral
     model_id: "pixtral-large-latest"
     display_name: "Pixtral Large"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 128000
     capabilities: [chat, vision, tools, streaming, parallel_tools, agentic]
     status: active
@@ -54,24 +74,26 @@ models:
     provider: mistral
     model_id: "open-mistral-7b"
     display_name: "Open Mistral 7B"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 32000
     capabilities: [chat, streaming]
     status: active
     tags: ["mistral", "open", "7b", "base"]
 
-  open-mixtral-8x7b:
-    provider: mistral
-    model_id: "open-mixtral-8x7b"
-    display_name: "Open Mixtral 8x7B"
-    context_window: 32000
-    capabilities: [chat, streaming]
-    status: active
-    tags: ["mistral", "open", "mixtral", "8x7b", "base"]
+  # NOTE: `open-mixtral-8x7b` is not present in the current /v1/models list for this provider.
+  # Keep it removed to prevent 404 model_not_found. If it returns, re-add with evidence.
 
   mistral-tiny:
     provider: mistral
     model_id: "mistral-tiny"
     display_name: "Mistral Tiny"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 32000
     capabilities: [chat, streaming]
     status: active

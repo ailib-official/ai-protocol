@@ -2,12 +2,90 @@ $schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/
 protocol_version: "1.1"
 
 # Groq Llama Model Instances
+#
+# VERIFIED_AT: 2026-01-28 (via Groq list_models: GET /openai/v1/models)
+#
+# Notes:
+# - Groq model ids evolve over time; keep deprecated entries for historical reference.
 models:
-  llama-3-8b-8192:
+  # Historical ids (no longer present in current /models list for this key)
+  llama3-8b-8192:
     provider: groq
-    model_id: "llama-3-8b-8192"
-    display_name: "Llama 3 8B"
+    model_id: "llama3-8b-8192"
+    display_name: "Llama 3 8B (legacy id)"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
+      notes: "Legacy id (not present in current /models list); kept for reference."
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: deprecated
+    tags: ["meta", "llama", "groq", "legacy"]
+
+  llama3-70b-8192:
+    provider: groq
+    model_id: "llama3-70b-8192"
+    display_name: "Llama 3 70B (legacy id)"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
+      notes: "Legacy id (not present in current /models list); kept for reference."
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: deprecated
+    tags: ["meta", "llama", "groq", "legacy"]
+
+  # Current Groq-available Llama family (examples)
+  llama-3.1-8b-instant:
+    provider: groq
+    model_id: "llama-3.1-8b-instant"
+    display_name: "Llama 3.1 8B Instant"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 8192
     capabilities: [chat, tools, streaming]
     status: active
     tags: ["meta", "llama", "fast", "groq"]
+
+  llama-3.3-70b-versatile:
+    provider: groq
+    model_id: "llama-3.3-70b-versatile"
+    display_name: "Llama 3.3 70B Versatile"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["meta", "llama", "groq"]
+
+  "meta-llama/llama-4-maverick-17b-128e-instruct":
+    provider: groq
+    model_id: "meta-llama/llama-4-maverick-17b-128e-instruct"
+    display_name: "Llama 4 Maverick 17B (128e) Instruct"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["meta", "llama", "groq"]
+
+  "meta-llama/llama-4-scout-17b-16e-instruct":
+    provider: groq
+    model_id: "meta-llama/llama-4-scout-17b-16e-instruct"
+    display_name: "Llama 4 Scout 17B (16e) Instruct"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["meta", "llama", "groq"]

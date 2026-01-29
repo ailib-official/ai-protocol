@@ -2,10 +2,15 @@
   "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
   "protocol_version": "1.1",
   "models": {
-    "gemini-1.5-pro": {
+    "gemini-2.5-pro": {
       "provider": "gemini",
-      "model_id": "gemini-1.5-pro",
-      "name": "Gemini 1.5 Pro",
+      "model_id": "gemini-2.5-pro",
+      "name": "Gemini 2.5 Pro",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-01-28",
+        "source": "list_models:/v1beta/models"
+      },
       "context_window": 2000000,
       "capabilities": [
         "chat",
@@ -23,10 +28,15 @@
         "large-context"
       ]
     },
-    "gemini-1.5-flash": {
+    "gemini-2.5-flash": {
       "provider": "gemini",
-      "model_id": "gemini-1.5-flash",
-      "name": "Gemini 1.5 Flash",
+      "model_id": "gemini-2.5-flash",
+      "name": "Gemini 2.5 Flash",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-01-28",
+        "source": "list_models:/v1beta/models"
+      },
       "context_window": 1000000,
       "capabilities": [
         "chat",

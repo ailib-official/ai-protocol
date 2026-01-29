@@ -2,6 +2,22 @@
 
 All notable changes to AI-Protocol specifications and schemas will be documented here.
 
+## 0.1.3 (2026-01-28)
+
+### Added
+- Model registry verification: `verification` block on model entries (`status`, `verified_at`, `source`, `notes`); schema-enforced.
+- Optional runtime fact-check script `scripts/fact-check-models.js`: compare registry to providers' list_models (no API keys required for the registry).
+- Documentation: [docs/FACT_CHECKING_MODELS.md](docs/FACT_CHECKING_MODELS.md) ? sustainability-first (document verification primary; runtime tool optional).
+
+### Changed
+- Build script: recursive file count fixed so "Converted N files" includes all YAML under v1/ and v2-alpha/.
+- README / README_CN: project structure includes `docs/`; validation vs build clarified; link to fact-check doc.
+
+### Fixed
+- Build.js: `processDirectory` return value from subdirectories is now accumulated into total converted file count.
+
+---
+
 ## 0.2.0 (2026-01-27)
 
 ### Added

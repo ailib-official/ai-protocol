@@ -38,6 +38,10 @@ ai-protocol/
 │   └── providers/             # Experimental provider configurations
 ├── examples/                  # Configuration examples
 │   └── tool_accumulation.yaml # Tool accumulation pattern example
+├── docs/                      # Documentation
+│   ├── SPEC.md                # Provider manifest specification
+│   ├── CI_VALIDATION_EXPLAINED.md  # How CI validation works
+│   └── FACT_CHECKING_MODELS.md     # Model registry verification (optional, no API keys required)
 ├── research/                  # Research documents (official API excerpts and verification)
 │   └── providers/             # Provider-specific official documentation research
 │       ├── openai.md          # OpenAI official API rules (VERIFIED)
@@ -154,6 +158,8 @@ models:
 // Dynamic loading example in ai-lib-rust
 use ai_lib_rust::protocol::ProtocolLoader;
 
+// By default, the loader prioritizes the `dist/` directory (JSON) for production efficiency,
+// falling back to `v1/` (YAML) for development convenience if JSON is missing.
 let loader = ProtocolLoader::new();
 let provider = loader.load_provider("anthropic").await?;
 let model = loader.load_model("anthropic/claude-3-5-sonnet").await?;
@@ -176,20 +182,22 @@ npm run validate:specs       # Validate spec files only
 npm run validate:schemas     # Validate JSON schema syntax only
 ```
 
-The canonical validation script is `scripts/validate.js`, which uses AJV v8 with JSON Schema 2020-12 and ajv-formats for comprehensive validation.
+The canonical validation script is `scripts/validate.js`, which uses AJV v8 with JSON Schema 2020-12 and ajv-formats.  
+Optional runtime model verification (document-first; no API keys required for the registry): see [docs/FACT_CHECKING_MODELS.md](docs/FACT_CHECKING_MODELS.md).
 
 ## 📦 Build & Distribution
 
 AI-Protocol is distributed as pre-compiled JSON files to ensure runtime efficiency and zero-parsing overhead.
 
 ```bash
-# Build JSON artifacts
+# Validate first, then build JSON artifacts
+npm run validate
 npm run build
 ```
 
-This command:
+Build: run `npm run validate` first. This command then:
 1.  Cleans the `dist/` directory to remove stale files from previous builds.
-2.  Converts all YAML configuration files into optimized JSON files.
+2.  Converts all YAML under `v1/` and `v2-alpha/` into JSON in `dist/`.
 3.  Generates a `dist/index.json` manifest index with version information.
 
 Runtimes (like `ai-lib-rust`) should consume the `dist/` directory directly.

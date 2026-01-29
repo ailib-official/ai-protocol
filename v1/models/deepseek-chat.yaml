@@ -1,4 +1,4 @@
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
 protocol_version: "1.1"
 
 models:
@@ -6,6 +6,10 @@ models:
     provider: deepseek
     model_id: "deepseek-chat"
     display_name: "DeepSeek Chat"
+    verification:
+      status: verified
+      verified_at: "2026-01-28"
+      source: "list_models:/models"
     context_window: 32768
     capabilities: [chat, streaming, tools]
     pricing:

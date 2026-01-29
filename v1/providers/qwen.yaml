@@ -33,6 +33,13 @@ endpoints:
     method: "POST"
     adapter: "openai"
 
+# Service endpoints (used by online fact-checking / registry verification)
+services:
+  list_models:
+    path: "/models"
+    method: "GET"
+    response_binding: "data"
+
 # Termination reason normalization (see v1/spec.yaml: standard_schema.streaming_events.termination_reasons)
 termination:
   source_field: "finish_reason"

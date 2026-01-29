@@ -7,6 +7,9 @@ models:
     provider: qwen
     model_id: "qwen-max"
     display_name: "Qwen Max"
+    verification:
+      status: unverified
+      source: "manual"
     context_window: 262144
     capabilities: [chat, tools, streaming]
     status: active
@@ -16,6 +19,9 @@ models:
     provider: qwen
     model_id: "qwen-turbo"
     display_name: "Qwen Turbo"
+    verification:
+      status: unverified
+      source: "manual"
     capabilities: [chat, vision, tools, streaming, agentic]
     status: active
     tags: ["alibaba", "qwen", "fast"]

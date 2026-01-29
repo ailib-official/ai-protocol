@@ -51,7 +51,7 @@ function processDirectory(srcDir, destDir) {
         const stats = statSync(srcPath);
 
         if (stats.isDirectory()) {
-            processDirectory(srcPath, destPath);
+            count += processDirectory(srcPath, destPath);
         } else if (stats.isFile()) {
             const ext = extname(entry).toLowerCase();
             if (ext === '.yaml' || ext === '.yml') {

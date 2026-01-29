@@ -879,8 +879,12 @@
     "models": {
       "type": "object",
       "description": "Static model definitions (v1.1 extension).",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9-_\\./]+$"
+      },
       "patternProperties": {
-        "^[a-zA-Z0-9-_\\.]+$": {
+        "^.*$": {
           "type": "object",
           "properties": {
             "provider": {
@@ -914,6 +918,28 @@
                 "type": "string"
               }
         },
+        "verification": {
+          "type": "object",
+          "description": "Fact-check metadata for this registry entry.",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": ["verified", "unverified"]
+            },
+            "verified_at": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            },
+            "source": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "string"
+            }
+          },
+          "required": ["status"],
+          "additionalProperties": true
+        },
         "pricing": {
           "type": "object",
           "description": "Pricing information (per-token costs).",
@@ -935,11 +961,13 @@
           },
           "required": [
             "provider",
-            "model_id"
+            "model_id",
+            "verification"
           ],
           "additionalProperties": false
         }
-      }
+      },
+      "additionalProperties": false
     }
   },
   "oneOf": [

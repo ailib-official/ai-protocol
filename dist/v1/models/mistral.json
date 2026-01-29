@@ -6,6 +6,11 @@
       "provider": "mistral",
       "model_id": "mistral-small-latest",
       "display_name": "Mistral Small",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-01-28",
+        "source": "list_models:/models"
+      },
       "context_window": 32000,
       "capabilities": [
         "chat",
@@ -25,6 +30,11 @@
       "provider": "mistral",
       "model_id": "mistral-medium-latest",
       "display_name": "Mistral Medium",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-01-28",
+        "source": "list_models:/models"
+      },
       "context_window": 32000,
       "capabilities": [
         "chat",
@@ -44,6 +54,11 @@
       "provider": "mistral",
       "model_id": "mistral-large-latest",
       "display_name": "Mistral Large",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-01-28",
+        "source": "list_models:/models"
+      },
       "context_window": 32000,
       "capabilities": [
         "chat",
@@ -61,10 +76,15 @@
         "latest"
       ]
     },
-    "pixtral-small-latest": {
+    "pixtral-12b-latest": {
       "provider": "mistral",
-      "model_id": "pixtral-small-latest",
-      "display_name": "Pixtral Small",
+      "model_id": "pixtral-12b-latest",
+      "display_name": "Pixtral 12B",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-01-28",
+        "source": "list_models:/models"
+      },
       "context_window": 128000,
       "capabilities": [
         "chat",
@@ -78,7 +98,7 @@
         "mistral",
         "pixtral",
         "vision",
-        "small",
+        "12b",
         "latest"
       ]
     },
@@ -86,6 +106,11 @@
       "provider": "mistral",
       "model_id": "pixtral-large-latest",
       "display_name": "Pixtral Large",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-01-28",
+        "source": "list_models:/models"
+      },
       "context_window": 128000,
       "capabilities": [
         "chat",
@@ -109,6 +134,11 @@
       "provider": "mistral",
       "model_id": "open-mistral-7b",
       "display_name": "Open Mistral 7B",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-01-28",
+        "source": "list_models:/models"
+      },
       "context_window": 32000,
       "capabilities": [
         "chat",
@@ -122,28 +152,15 @@
         "base"
       ]
     },
-    "open-mixtral-8x7b": {
-      "provider": "mistral",
-      "model_id": "open-mixtral-8x7b",
-      "display_name": "Open Mixtral 8x7B",
-      "context_window": 32000,
-      "capabilities": [
-        "chat",
-        "streaming"
-      ],
-      "status": "active",
-      "tags": [
-        "mistral",
-        "open",
-        "mixtral",
-        "8x7b",
-        "base"
-      ]
-    },
     "mistral-tiny": {
       "provider": "mistral",
       "model_id": "mistral-tiny",
       "display_name": "Mistral Tiny",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-01-28",
+        "source": "list_models:/models"
+      },
       "context_window": 32000,
       "capabilities": [
         "chat",

@@ -6,6 +6,10 @@
       "provider": "anthropic",
       "model_id": "claude-3-5-sonnet-20241022",
       "display_name": "Claude 3.5 Sonnet",
+      "verification": {
+        "status": "unverified",
+        "source": "manual"
+      },
       "context_window": 200000,
       "capabilities": [
         "chat",
@@ -41,6 +45,10 @@
       "provider": "anthropic",
       "model_id": "claude-3-5-haiku-20241022",
       "display_name": "Claude 3.5 Haiku",
+      "verification": {
+        "status": "unverified",
+        "source": "manual"
+      },
       "context_window": 200000,
       "capabilities": [
         "chat",
@@ -66,6 +74,10 @@
       "provider": "anthropic",
       "model_id": "claude-3-opus-20240229",
       "display_name": "Claude 3 Opus",
+      "verification": {
+        "status": "unverified",
+        "source": "manual"
+      },
       "context_window": 200000,
       "capabilities": [
         "chat",

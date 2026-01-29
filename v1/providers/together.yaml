@@ -12,6 +12,18 @@ endpoint:
   protocol: "https"
   timeout_ms: 60000
 
+# Auth + payload format are required for online model fact-checking.
+auth:
+  type: bearer
+  token_env: "TOGETHER_API_KEY"
+payload_format: "openai_style"
+
+services:
+  list_models:
+    path: "/models"
+    method: "GET"
+    response_binding: "data"
+
 availability:
   required: false
   regions: ["global"]

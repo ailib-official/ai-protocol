@@ -5,6 +5,10 @@
     "siliconflow/deepseek-ai/DeepSeek-V2.5": {
       "provider": "siliconflow",
       "model_id": "deepseek-ai/DeepSeek-V2.5",
+      "verification": {
+        "status": "unverified",
+        "source": "manual"
+      },
       "context_window": 128000,
       "capabilities": [
         "chat",
@@ -14,6 +18,10 @@
     "siliconflow/Qwen/Qwen2.5-72B-Instruct": {
       "provider": "siliconflow",
       "model_id": "Qwen/Qwen2.5-72B-Instruct",
+      "verification": {
+        "status": "unverified",
+        "source": "manual"
+      },
       "context_window": 128000,
       "capabilities": [
         "chat",
@@ -23,6 +31,10 @@
     "siliconflow/meta-llama/Meta-Llama-3.1-70B-Instruct": {
       "provider": "siliconflow",
       "model_id": "meta-llama/Meta-Llama-3.1-70B-Instruct",
+      "verification": {
+        "status": "unverified",
+        "source": "manual"
+      },
       "context_window": 128000,
       "capabilities": [
         "chat"

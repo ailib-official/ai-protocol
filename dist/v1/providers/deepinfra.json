@@ -12,6 +12,18 @@
     "protocol": "https",
     "timeout_ms": 60000
   },
+  "auth": {
+    "type": "bearer",
+    "token_env": "DEEPINFRA_API_KEY"
+  },
+  "payload_format": "openai_style",
+  "services": {
+    "list_models": {
+      "path": "/models",
+      "method": "GET",
+      "response_binding": "data"
+    }
+  },
   "availability": {
     "required": false,
     "regions": [
