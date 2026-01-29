@@ -2,7 +2,7 @@
 
 All notable changes to AI-Protocol specifications and schemas will be documented here.
 
-## 0.1.3 (2026-01-28)
+## 0.2.1 (2026-01-28)
 
 ### Added
 - Model registry verification: `verification` block on model entries (`status`, `verified_at`, `source`, `notes`); schema-enforced.
