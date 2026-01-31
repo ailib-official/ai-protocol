@@ -97,6 +97,10 @@ streaming:
         content: "$.delta.text"
 ```
 
+> **Schema URL 最佳实践**: 你可以将 `$schema` URL 锁定到特定的发布版本以保证稳定性：
+> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/v0.2.1/schemas/v1.json` (锁定到特定版本)
+> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json` (跟随 main 分支最新版本)
+
 ### 2. 错误处理和限流配置示例
 
 ```yaml

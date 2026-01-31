@@ -110,6 +110,10 @@ streaming:
         content: "$.delta.text"
 ```
 
+> **Schema URL Best Practice**: You can pin the `$schema` URL to a specific release tag for version stability:
+> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/v0.2.1/schemas/v1.json` (pinned to release)
+> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json` (latest on main)
+
 ### 2. Error Handling and Rate Limiting Example
 
 ```yaml
