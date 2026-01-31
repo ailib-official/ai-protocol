@@ -1,10 +1,35 @@
 version: "1.1"
 metadata:
   description: "AI-Protocol v1.1 - Standard Specification for AI Model Integration"
-  last_updated: "2026-01-04"
+  last_updated: "2026-01-31"
   release_version: "1.1.1"
   authors: ["AI-Protocol Team"]
   license: "MIT OR Apache-2.0"
+
+# =========================================================
+# Version Semantics (Important for Runtime Compatibility)
+# =========================================================
+# This specification uses a layered versioning model:
+#
+# 1. spec_version (this file's `version` field):
+#    - Defines the schema structure and field definitions
+#    - Runtimes MUST validate manifests against the matching schema version
+#    - Format: MAJOR.MINOR (e.g., "1.1")
+#
+# 2. protocol_version (in provider manifests):
+#    - Indicates which protocol features the provider config uses
+#    - Runtimes SHOULD select appropriate adapters based on this
+#    - Format: MAJOR.MINOR (e.g., "1.5")
+#
+# 3. release_version (in metadata):
+#    - Full semantic version for this specification release
+#    - Format: MAJOR.MINOR.PATCH (e.g., "1.1.1")
+#
+# Runtime Alignment Guidelines:
+# - Runtimes MUST check `protocol_version` before processing provider configs
+# - Runtimes SHOULD support multiple protocol versions for backward compatibility
+# - Runtimes SHOULD NOT hard-code branch names; use version tags or schema URLs
+# - Schema URL example: https://raw.githubusercontent.com/hiddenpath/ai-protocol/v0.2.1/schemas/v1.json
 
 # =========================================================
 # Standard Schema (2025 Extensions)

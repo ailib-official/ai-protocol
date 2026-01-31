@@ -285,6 +285,68 @@ This specification follows semantic versioning:
 * **Minor**: New fields and capabilities
 * **Major**: Behavioral changes
 
+---
+
+## 11. Version Semantics and Runtime Alignment
+
+### 11.1 Layered Versioning Model
+
+AI-Protocol uses a **layered versioning model** to enable independent evolution of different components:
+
+| Version Field | Location | Format | Purpose |
+|---------------|----------|--------|---------|
+| `spec_version` | `v1/spec.yaml` | MAJOR.MINOR | Schema structure and field definitions |
+| `protocol_version` | Provider manifests | MAJOR.MINOR | Protocol features used by the config |
+| `release_version` | Metadata | MAJOR.MINOR.PATCH | Full release version |
+
+### 11.2 Runtime Version Alignment
+
+A compliant runtime MUST implement the following version handling:
+
+1. **Schema Validation**
+   - Load the schema corresponding to the manifest's `$schema` URL
+   - Validate manifest structure before processing
+
+2. **Protocol Version Check**
+   - Read `protocol_version` from provider configs
+   - Select appropriate adapters/handlers based on version
+   - Reject configs with unsupported protocol versions
+
+3. **Backward Compatibility**
+   - Support multiple protocol versions when feasible
+   - Provide clear migration paths for deprecated versions
+
+### 11.3 Best Practices
+
+#### For Manifest Authors
+
+```yaml
+# Pin to specific release for stability
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/v0.2.1/schemas/v1.json"
+protocol_version: "1.5"
+```
+
+#### For Runtime Implementers
+
+```text
+load_manifest(path):
+  1. Parse YAML
+  2. Extract $schema URL → resolve schema version
+  3. Validate against schema
+  4. Check protocol_version is supported
+  5. Initialize version-appropriate handlers
+```
+
+### 11.4 Version Independence
+
+> **Key Principle**: Manifests MUST NOT depend on Git branch names.
+
+- Use **version tags** or **explicit schema URLs** for version pinning
+- Runtimes SHOULD resolve `default` references via API, not branch assumptions
+- This enables:
+  - Historical repository compatibility
+  - Enterprise private repository support
+  - Branch-agnostic CI/CD pipelines
 
 ---
 
