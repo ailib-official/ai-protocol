@@ -291,7 +291,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 ## 🔗 Related Projects
 
 - **[ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)**: Rust runtime implementation
-- **[ai-lib-python](https://github.com/hiddenpath/ai-lib-python)**: Python runtime implementation (planned)
+- **[ai-lib-python](https://github.com/hiddenpath/ai-lib-python)**: Python runtime implementation
 
 > **Note**: AI-Protocol itself already includes configuration registry functionality. Community contributions for new provider configurations and model registrations can be submitted directly via PRs to this repository's `v1/providers/` and `v1/models/` directories, without needing a separate configuration repository.
 

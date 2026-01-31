@@ -291,7 +291,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 ## 🔗 相关项目
 
 - **[ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)**: Rust 运行时实现
-- **[ai-lib-python](https://github.com/hiddenpath/ai-lib-python)**: Python 运行时实现 (规划中)
+- **[ai-lib-python](https://github.com/hiddenpath/ai-lib-python)**: Python 运行时实现
 
 > **说明**: AI-Protocol 本身已经包含配置注册功能。社区可以通过 PR 直接贡献新的供应商配置和模型注册到本仓库的 `v1/providers/` 和 `v1/models/` 目录，无需单独的配置仓库。
 

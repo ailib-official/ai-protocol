@@ -2,6 +2,29 @@
 
 All notable changes to AI-Protocol specifications and schemas will be documented here.
 
+## 0.3.0 (2026-01-31)
+
+### Added
+- **11 New Providers**: Expanded coverage to 30+ AI providers
+  - Global: Fireworks AI, Replicate, AI21 Labs, Cerebras, Lepton AI
+  - China: Doubao (ByteDance), Baidu ERNIE, iFlytek Spark, Tencent Hunyuan, SenseNova, Tiangong
+- **11 New Model Configurations**: Comprehensive model registries for all new providers
+  - Fireworks: Llama 3.1, Mixtral, Qwen, DeepSeek, FireFunction
+  - AI21: Jamba 1.5 series, Jurassic-2
+  - Cerebras: Llama 3.1/3.3, Qwen 2.5, DeepSeek R1 Distill
+  - Lepton/Replicate: Various open-source models
+  - China providers: Full model lineups including Pro/Lite/Vision variants
+- **Version Semantics Documentation**: Added Section 11 to SPEC.md covering layered versioning model and runtime alignment guidelines
+- **Schema URL Versioning**: Support for semantic version tags in `$schema` URLs (e.g., `v0.3.0`)
+
+### Changed
+- **README**: Updated to reflect 30+ providers with comprehensive provider listings
+- **README_CN**: Aligned with English version, added Release Packaging Policy section
+- **Python Runtime**: Updated status from "planned" to "implemented" (ai-lib-python is now available)
+
+### Fixed
+- **CI Workflow**: Fixed fact-check workflow secrets access syntax for GitHub Actions
+
 ## 0.2.1 (2026-01-28)
 
 ### Added
