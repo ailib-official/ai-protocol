@@ -1,0 +1,192 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "id": "replicate",
+  "protocol_version": "1.5",
+  "name": "Replicate",
+  "version": "v1",
+  "status": "stable",
+  "category": "model_provider",
+  "official_url": "https://replicate.com/docs",
+  "support_contact": "https://replicate.com/contact",
+  "endpoint": {
+    "base_url": "https://api.replicate.com/v1",
+    "protocol": "https",
+    "timeout_ms": 60000
+  },
+  "auth": {
+    "type": "bearer",
+    "token_env": "REPLICATE_API_TOKEN"
+  },
+  "payload_format": "replicate_style",
+  "api_families": [
+    "predictions",
+    "openai_compatible"
+  ],
+  "default_api_family": "predictions",
+  "endpoints": {
+    "chat": {
+      "path": "/models/{owner}/{model}/predictions",
+      "method": "POST",
+      "adapter": "replicate"
+    },
+    "openai_chat": {
+      "path": "/openai/v1/chat/completions",
+      "method": "POST",
+      "adapter": "openai"
+    }
+  },
+  "services": {
+    "list_models": {
+      "path": "/models",
+      "method": "GET",
+      "response_binding": "results"
+    },
+    "get_prediction": {
+      "path": "/predictions/{id}",
+      "method": "GET"
+    },
+    "cancel_prediction": {
+      "path": "/predictions/{id}/cancel",
+      "method": "POST"
+    }
+  },
+  "termination": {
+    "source_field": "status",
+    "mapping": {
+      "succeeded": "end_turn",
+      "failed": "other",
+      "canceled": "cancelled"
+    },
+    "notes": [
+      "Replicate uses async predictions with status polling.",
+      "For streaming, use the stream parameter."
+    ]
+  },
+  "tooling": {
+    "source_model": "unknown",
+    "notes": [
+      "Tool calling support varies by model.",
+      "Some models support OpenAI-compatible function calling via the openai endpoint."
+    ]
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "max_retries": 3,
+    "min_delay_ms": 1000,
+    "max_delay_ms": 30000,
+    "jitter": "full",
+    "retry_on_http_status": [
+      429,
+      500,
+      502,
+      503,
+      504
+    ],
+    "notes": [
+      "Replicate may return 503 when models are cold-starting.",
+      "Consider longer timeouts for initial requests."
+    ]
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "402": "quota_exhausted",
+      "403": "permission_denied",
+      "404": "not_found",
+      "422": "invalid_request",
+      "429": "rate_limited",
+      "500": "server_error",
+      "503": "overloaded"
+    }
+  },
+  "parameter_mappings": {
+    "temperature": "input.temperature",
+    "max_tokens": "input.max_tokens",
+    "stream": "stream",
+    "top_p": "input.top_p",
+    "stop_sequences": "input.stop",
+    "prompt": "input.prompt",
+    "system_message": "input.system_prompt"
+  },
+  "response_format": "replicate_style",
+  "response_paths": {
+    "content": "output",
+    "status": "status",
+    "error": "error"
+  },
+  "streaming": {
+    "event_format": "sse",
+    "decoder": {
+      "format": "sse",
+      "delimiter": "\n\n",
+      "prefix": "data: ",
+      "done_signal": "done"
+    },
+    "content_path": "output",
+    "event_map": [
+      {
+        "match": "$.event == 'output'",
+        "emit": "PartialContentDelta",
+        "fields": {
+          "content": "$.data"
+        }
+      },
+      {
+        "match": "$.event == 'done'",
+        "emit": "StreamEnd",
+        "fields": {
+          "finish_reason": "end_turn"
+        }
+      },
+      {
+        "match": "$.event == 'error'",
+        "emit": "StreamError",
+        "fields": {
+          "error": "$.data"
+        }
+      }
+    ],
+    "stop_condition": "$.event == 'done'"
+  },
+  "features": {
+    "multi_candidate": {
+      "support_type": "simulated",
+      "max_concurrent": 4
+    },
+    "response_mapping": {
+      "error": {
+        "message_path": "detail",
+        "type_path": "type"
+      }
+    }
+  },
+  "capabilities": {
+    "streaming": true,
+    "tools": false,
+    "vision": true,
+    "agentic": false,
+    "parallel_tools": false,
+    "reasoning": false
+  },
+  "availability": {
+    "required": false,
+    "regions": [
+      "global"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/models",
+      "expected_status": [
+        200,
+        401
+      ],
+      "timeout_ms": 5000
+    }
+  },
+  "experimental_features": [
+    "async_predictions",
+    "webhooks",
+    "cold_boot_optimization"
+  ]
+}

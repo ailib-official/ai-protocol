@@ -1,0 +1,147 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "llama3.1-8b": {
+      "provider": "cerebras",
+      "model_id": "llama3.1-8b",
+      "display_name": "Llama 3.1 8B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Based on public documentation. Cerebras achieves ~2100 tokens/sec."
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "cerebras",
+        "fast"
+      ],
+      "pricing": {
+        "input_per_token": 1e-7,
+        "output_per_token": 1e-7
+      }
+    },
+    "llama3.1-70b": {
+      "provider": "cerebras",
+      "model_id": "llama3.1-70b",
+      "display_name": "Llama 3.1 70B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Cerebras achieves ~450 tokens/sec for this model."
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "cerebras",
+        "fast"
+      ],
+      "pricing": {
+        "input_per_token": 6e-7,
+        "output_per_token": 6e-7
+      }
+    },
+    "llama-3.3-70b": {
+      "provider": "cerebras",
+      "model_id": "llama-3.3-70b",
+      "display_name": "Llama 3.3 70B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Cerebras achieves ~970 tokens/sec for this model."
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "cerebras",
+        "fast",
+        "latest"
+      ],
+      "pricing": {
+        "input_per_token": 8.5e-7,
+        "output_per_token": 8.5e-7
+      }
+    },
+    "qwen-2.5-32b": {
+      "provider": "cerebras",
+      "model_id": "qwen-2.5-32b",
+      "display_name": "Qwen 2.5 32B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "alibaba",
+        "qwen",
+        "cerebras",
+        "fast"
+      ],
+      "pricing": {
+        "input_per_token": 3e-7,
+        "output_per_token": 3e-7
+      }
+    },
+    "deepseek-r1-distill-llama-70b": {
+      "provider": "cerebras",
+      "model_id": "deepseek-r1-distill-llama-70b",
+      "display_name": "DeepSeek R1 Distill Llama 70B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "deepseek",
+        "distill",
+        "cerebras",
+        "fast",
+        "reasoning"
+      ],
+      "pricing": {
+        "input_per_token": 8.5e-7,
+        "output_per_token": 8.5e-7
+      }
+    }
+  }
+}

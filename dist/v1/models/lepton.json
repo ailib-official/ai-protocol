@@ -1,0 +1,188 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "llama3-1-8b": {
+      "provider": "lepton",
+      "model_id": "llama3-1-8b",
+      "display_name": "Llama 3.1 8B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Endpoint: https://llama3-1-8b.lepton.run/api/v1"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "lepton"
+      ]
+    },
+    "llama3-1-70b": {
+      "provider": "lepton",
+      "model_id": "llama3-1-70b",
+      "display_name": "Llama 3.1 70B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Endpoint: https://llama3-1-70b.lepton.run/api/v1"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "lepton"
+      ]
+    },
+    "llama3-1-405b": {
+      "provider": "lepton",
+      "model_id": "llama3-1-405b",
+      "display_name": "Llama 3.1 405B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Endpoint: https://llama3-1-405b.lepton.run/api/v1"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "lepton",
+        "flagship"
+      ]
+    },
+    "mixtral-8x7b": {
+      "provider": "lepton",
+      "model_id": "mixtral-8x7b",
+      "display_name": "Mixtral 8x7B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Endpoint: https://mixtral-8x7b.lepton.run/api/v1"
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "mistral",
+        "mixtral",
+        "moe",
+        "lepton"
+      ]
+    },
+    "qwen2-72b": {
+      "provider": "lepton",
+      "model_id": "qwen2-72b",
+      "display_name": "Qwen 2 72B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Endpoint: https://qwen2-72b.lepton.run/api/v1"
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "alibaba",
+        "qwen",
+        "lepton"
+      ]
+    },
+    "mistral-7b": {
+      "provider": "lepton",
+      "model_id": "mistral-7b",
+      "display_name": "Mistral 7B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Endpoint: https://mistral-7b.lepton.run/api/v1"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "mistral",
+        "lepton"
+      ]
+    },
+    "wizardlm-2-8x22b": {
+      "provider": "lepton",
+      "model_id": "wizardlm-2-8x22b",
+      "display_name": "WizardLM 2 8x22B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Endpoint: https://wizardlm-2-8x22b.lepton.run/api/v1"
+      },
+      "context_window": 65536,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "wizardlm",
+        "moe",
+        "lepton"
+      ]
+    },
+    "dolphin-mixtral-8x7b": {
+      "provider": "lepton",
+      "model_id": "dolphin-mixtral-8x7b",
+      "display_name": "Dolphin Mixtral 8x7B",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Endpoint: https://dolphin-mixtral-8x7b.lepton.run/api/v1"
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "dolphin",
+        "mixtral",
+        "lepton",
+        "uncensored"
+      ]
+    }
+  }
+}

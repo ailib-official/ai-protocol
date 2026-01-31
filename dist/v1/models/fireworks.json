@@ -1,0 +1,222 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "accounts/fireworks/models/llama-v3p1-8b-instruct": {
+      "provider": "fireworks",
+      "model_id": "accounts/fireworks/models/llama-v3p1-8b-instruct",
+      "display_name": "Llama 3.1 8B Instruct",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Based on public documentation. Runtime verification recommended."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "fireworks",
+        "instruct"
+      ],
+      "pricing": {
+        "input_per_token": 2e-7,
+        "output_per_token": 2e-7
+      }
+    },
+    "accounts/fireworks/models/llama-v3p1-70b-instruct": {
+      "provider": "fireworks",
+      "model_id": "accounts/fireworks/models/llama-v3p1-70b-instruct",
+      "display_name": "Llama 3.1 70B Instruct",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "fireworks",
+        "instruct"
+      ],
+      "pricing": {
+        "input_per_token": 9e-7,
+        "output_per_token": 9e-7
+      }
+    },
+    "accounts/fireworks/models/llama-v3p1-405b-instruct": {
+      "provider": "fireworks",
+      "model_id": "accounts/fireworks/models/llama-v3p1-405b-instruct",
+      "display_name": "Llama 3.1 405B Instruct",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "fireworks",
+        "instruct",
+        "flagship"
+      ],
+      "pricing": {
+        "input_per_token": 0.000003,
+        "output_per_token": 0.000003
+      }
+    },
+    "accounts/fireworks/models/mixtral-8x7b-instruct": {
+      "provider": "fireworks",
+      "model_id": "accounts/fireworks/models/mixtral-8x7b-instruct",
+      "display_name": "Mixtral 8x7B Instruct",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation"
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "mistral",
+        "mixtral",
+        "moe",
+        "fireworks"
+      ],
+      "pricing": {
+        "input_per_token": 5e-7,
+        "output_per_token": 5e-7
+      }
+    },
+    "accounts/fireworks/models/mixtral-8x22b-instruct": {
+      "provider": "fireworks",
+      "model_id": "accounts/fireworks/models/mixtral-8x22b-instruct",
+      "display_name": "Mixtral 8x22B Instruct",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation"
+      },
+      "context_window": 65536,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "mistral",
+        "mixtral",
+        "moe",
+        "fireworks"
+      ],
+      "pricing": {
+        "input_per_token": 0.0000012,
+        "output_per_token": 0.0000012
+      }
+    },
+    "accounts/fireworks/models/qwen2p5-72b-instruct": {
+      "provider": "fireworks",
+      "model_id": "accounts/fireworks/models/qwen2p5-72b-instruct",
+      "display_name": "Qwen 2.5 72B Instruct",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation"
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "alibaba",
+        "qwen",
+        "fireworks"
+      ],
+      "pricing": {
+        "input_per_token": 9e-7,
+        "output_per_token": 9e-7
+      }
+    },
+    "accounts/fireworks/models/deepseek-v3": {
+      "provider": "fireworks",
+      "model_id": "accounts/fireworks/models/deepseek-v3",
+      "display_name": "DeepSeek V3",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "deepseek",
+        "fireworks",
+        "moe"
+      ],
+      "pricing": {
+        "input_per_token": 9e-7,
+        "output_per_token": 9e-7
+      }
+    },
+    "accounts/fireworks/models/firefunction-v2": {
+      "provider": "fireworks",
+      "model_id": "accounts/fireworks/models/firefunction-v2",
+      "display_name": "FireFunction V2",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming",
+        "function_calling"
+      ],
+      "status": "active",
+      "tags": [
+        "fireworks",
+        "function_calling",
+        "specialized"
+      ],
+      "pricing": {
+        "input_per_token": 9e-7,
+        "output_per_token": 9e-7
+      }
+    }
+  }
+}

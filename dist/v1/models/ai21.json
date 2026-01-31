@@ -1,0 +1,140 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "jamba-1.5-mini": {
+      "provider": "ai21",
+      "model_id": "jamba-1.5-mini",
+      "display_name": "Jamba 1.5 Mini",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Based on public documentation. Runtime verification recommended."
+      },
+      "context_window": 256000,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "ai21",
+        "jamba",
+        "ssm",
+        "long_context"
+      ],
+      "pricing": {
+        "input_per_token": 2e-7,
+        "output_per_token": 4e-7
+      }
+    },
+    "jamba-1.5-large": {
+      "provider": "ai21",
+      "model_id": "jamba-1.5-large",
+      "display_name": "Jamba 1.5 Large",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation"
+      },
+      "context_window": 256000,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "ai21",
+        "jamba",
+        "ssm",
+        "long_context",
+        "flagship"
+      ],
+      "pricing": {
+        "input_per_token": 0.000002,
+        "output_per_token": 0.000008
+      }
+    },
+    "jamba-instruct": {
+      "provider": "ai21",
+      "model_id": "jamba-instruct",
+      "display_name": "Jamba Instruct",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation"
+      },
+      "context_window": 256000,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "ai21",
+        "jamba",
+        "ssm",
+        "instruct"
+      ],
+      "pricing": {
+        "input_per_token": 5e-7,
+        "output_per_token": 7e-7
+      }
+    },
+    "j2-ultra": {
+      "provider": "ai21",
+      "model_id": "j2-ultra",
+      "display_name": "Jurassic-2 Ultra",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Legacy model; Jamba recommended for new projects."
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "completion",
+        "streaming"
+      ],
+      "status": "deprecated",
+      "tags": [
+        "ai21",
+        "jurassic",
+        "legacy"
+      ],
+      "pricing": {
+        "input_per_token": 0.000015,
+        "output_per_token": 0.000015
+      }
+    },
+    "j2-mid": {
+      "provider": "ai21",
+      "model_id": "j2-mid",
+      "display_name": "Jurassic-2 Mid",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-29",
+        "source": "documentation",
+        "notes": "Legacy model; Jamba recommended for new projects."
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "completion",
+        "streaming"
+      ],
+      "status": "deprecated",
+      "tags": [
+        "ai21",
+        "jurassic",
+        "legacy"
+      ],
+      "pricing": {
+        "input_per_token": 0.00001,
+        "output_per_token": 0.00001
+      }
+    }
+  }
+}
