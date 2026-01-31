@@ -1,0 +1,205 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "id": "baidu",
+  "protocol_version": "1.5",
+  "name": "百度文心 (Baidu ERNIE)",
+  "version": "v1",
+  "status": "stable",
+  "category": "ai_provider",
+  "official_url": "https://cloud.baidu.com/doc/WENXINWORKSHOP/index.html",
+  "support_contact": "https://cloud.baidu.com/support",
+  "endpoint": {
+    "base_url": "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop",
+    "protocol": "https",
+    "timeout_ms": 60000
+  },
+  "auth": {
+    "type": "bearer",
+    "token_env": "BAIDU_ACCESS_TOKEN"
+  },
+  "payload_format": "baidu_style",
+  "api_families": [
+    "chat"
+  ],
+  "default_api_family": "chat",
+  "endpoints": {
+    "chat_ernie4": {
+      "path": "/chat/completions_pro",
+      "method": "POST",
+      "adapter": "baidu"
+    },
+    "chat_ernie35": {
+      "path": "/chat/completions",
+      "method": "POST",
+      "adapter": "baidu"
+    },
+    "chat_ernie_speed": {
+      "path": "/chat/ernie_speed",
+      "method": "POST",
+      "adapter": "baidu"
+    },
+    "chat_ernie_lite": {
+      "path": "/chat/ernie-lite-8k",
+      "method": "POST",
+      "adapter": "baidu"
+    }
+  },
+  "termination": {
+    "source_field": "finish_reason",
+    "mapping": {
+      "normal": "end_turn",
+      "stop": "end_turn",
+      "length": "max_tokens",
+      "content_filter": "refusal",
+      "function_call": "tool_use"
+    },
+    "notes": [
+      "Baidu ERNIE uses finish_reason in response.",
+      "文心一言 (ERNIE Bot) is Baidu's flagship conversational AI."
+    ]
+  },
+  "tooling": {
+    "source_model": "openai_tool_calls",
+    "tool_use": {
+      "id_path": "id",
+      "name_path": "name",
+      "input_path": "arguments",
+      "input_format": "json_string"
+    },
+    "notes": [
+      "ERNIE supports function calling with similar semantics to OpenAI."
+    ]
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "max_retries": 3,
+    "min_delay_ms": 1000,
+    "max_delay_ms": 30000,
+    "jitter": "full",
+    "retry_on_http_status": [
+      429,
+      500,
+      502,
+      503
+    ]
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "403": "permission_denied",
+      "404": "not_found",
+      "429": "rate_limited",
+      "500": "server_error",
+      "503": "overloaded"
+    }
+  },
+  "parameter_mappings": {
+    "temperature": "temperature",
+    "max_tokens": "max_output_tokens",
+    "stream": "stream",
+    "top_p": "top_p",
+    "stop_sequences": "stop",
+    "tools": "functions",
+    "system_message": "system"
+  },
+  "response_format": "baidu_style",
+  "response_paths": {
+    "content": "result",
+    "function_call": "function_call",
+    "usage": "usage",
+    "finish_reason": "finish_reason"
+  },
+  "streaming": {
+    "event_format": "data_lines",
+    "decoder": {
+      "format": "sse",
+      "delimiter": "\n\n",
+      "prefix": "data: ",
+      "done_signal": ""
+    },
+    "content_path": "result",
+    "usage_path": "usage",
+    "frame_selector": "exists($.result) || exists($.error_code)",
+    "event_map": [
+      {
+        "match": "exists($.result)",
+        "emit": "PartialContentDelta",
+        "fields": {
+          "content": "$.result"
+        }
+      },
+      {
+        "match": "exists($.function_call)",
+        "emit": "ToolCallStarted",
+        "fields": {
+          "tool_name": "$.function_call.name",
+          "arguments": "$.function_call.arguments"
+        }
+      },
+      {
+        "match": "exists($.usage)",
+        "emit": "Metadata",
+        "fields": {
+          "usage": "$.usage"
+        }
+      },
+      {
+        "match": "$.is_end == true",
+        "emit": "FinalCandidate",
+        "fields": {
+          "finish_reason": "$.finish_reason"
+        }
+      }
+    ],
+    "stop_condition": "$.is_end == true"
+  },
+  "features": {
+    "multi_candidate": {
+      "support_type": "simulated",
+      "max_concurrent": 1
+    },
+    "response_mapping": {
+      "function_call": {
+        "path": "function_call",
+        "fields": {
+          "name": "name",
+          "args": "arguments"
+        }
+      },
+      "error": {
+        "message_path": "error_msg",
+        "code_path": "error_code"
+      }
+    }
+  },
+  "capabilities": {
+    "streaming": true,
+    "tools": true,
+    "vision": true,
+    "agentic": true,
+    "parallel_tools": false,
+    "reasoning": false
+  },
+  "availability": {
+    "required": false,
+    "regions": [
+      "cn"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/chat/completions",
+      "expected_status": [
+        200,
+        401,
+        403
+      ],
+      "timeout_ms": 5000
+    }
+  },
+  "experimental_features": [
+    "knowledge_base",
+    "plugins",
+    "image_understanding"
+  ]
+}

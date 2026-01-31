@@ -1,0 +1,197 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "doubao-pro-32k": {
+      "provider": "doubao",
+      "model_id": "doubao-pro-32k",
+      "display_name": "豆包 Pro 32K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Based on Volcengine documentation. Endpoint ID required."
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "bytedance",
+        "doubao",
+        "pro",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 8e-7,
+        "output_per_token": 0.000002
+      }
+    },
+    "doubao-pro-128k": {
+      "provider": "doubao",
+      "model_id": "doubao-pro-128k",
+      "display_name": "豆包 Pro 128K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "bytedance",
+        "doubao",
+        "pro",
+        "long_context",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000005,
+        "output_per_token": 0.000009
+      }
+    },
+    "doubao-pro-256k": {
+      "provider": "doubao",
+      "model_id": "doubao-pro-256k",
+      "display_name": "豆包 Pro 256K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 262144,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "bytedance",
+        "doubao",
+        "pro",
+        "ultra_long_context",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000005,
+        "output_per_token": 0.000009
+      }
+    },
+    "doubao-lite-32k": {
+      "provider": "doubao",
+      "model_id": "doubao-lite-32k",
+      "display_name": "豆包 Lite 32K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "bytedance",
+        "doubao",
+        "lite",
+        "cost_effective",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 3e-7,
+        "output_per_token": 6e-7
+      }
+    },
+    "doubao-lite-128k": {
+      "provider": "doubao",
+      "model_id": "doubao-lite-128k",
+      "display_name": "豆包 Lite 128K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "bytedance",
+        "doubao",
+        "lite",
+        "long_context",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 8e-7,
+        "output_per_token": 0.000001
+      }
+    },
+    "doubao-vision-pro-32k": {
+      "provider": "doubao",
+      "model_id": "doubao-vision-pro-32k",
+      "display_name": "豆包 Vision Pro 32K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "vision",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "bytedance",
+        "doubao",
+        "vision",
+        "multimodal",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000003,
+        "output_per_token": 0.000009
+      }
+    },
+    "doubao-embedding": {
+      "provider": "doubao",
+      "model_id": "doubao-embedding",
+      "display_name": "豆包 Embedding",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 4096,
+      "capabilities": [
+        "embedding"
+      ],
+      "status": "active",
+      "tags": [
+        "bytedance",
+        "doubao",
+        "embedding",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 5e-7,
+        "output_per_token": 0
+      }
+    }
+  }
+}

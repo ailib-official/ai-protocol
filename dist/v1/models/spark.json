@@ -1,0 +1,173 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "spark-4.0-ultra": {
+      "provider": "spark",
+      "model_id": "4.0Ultra",
+      "display_name": "星火 4.0 Ultra",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Spark's most capable model with multimodal support."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "vision",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "iflytek",
+        "spark",
+        "ultra",
+        "flagship",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00014,
+        "output_per_token": 0.00014
+      }
+    },
+    "spark-max": {
+      "provider": "spark",
+      "model_id": "max-32k",
+      "display_name": "星火 Max 32K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "iflytek",
+        "spark",
+        "max",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00003,
+        "output_per_token": 0.00003
+      }
+    },
+    "spark-max-128k": {
+      "provider": "spark",
+      "model_id": "max-128k",
+      "display_name": "星火 Max 128K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "iflytek",
+        "spark",
+        "max",
+        "long_context",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00003,
+        "output_per_token": 0.00003
+      }
+    },
+    "spark-pro": {
+      "provider": "spark",
+      "model_id": "pro-128k",
+      "display_name": "星火 Pro 128K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "iflytek",
+        "spark",
+        "pro",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000021,
+        "output_per_token": 0.000021
+      }
+    },
+    "spark-lite": {
+      "provider": "spark",
+      "model_id": "lite",
+      "display_name": "星火 Lite",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Free tier available with rate limits."
+      },
+      "context_window": 4096,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "iflytek",
+        "spark",
+        "lite",
+        "free_tier",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0,
+        "output_per_token": 0
+      }
+    },
+    "spark-v3.5": {
+      "provider": "spark",
+      "model_id": "generalv3.5",
+      "display_name": "星火 V3.5",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "iflytek",
+        "spark",
+        "v3.5",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000003,
+        "output_per_token": 0.000003
+      }
+    }
+  }
+}

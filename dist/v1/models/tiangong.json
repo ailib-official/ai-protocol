@@ -1,0 +1,169 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "tiangong-4.0": {
+      "provider": "tiangong",
+      "model_id": "SkyChat-MegaVerse",
+      "display_name": "天工 4.0",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Tiangong's most advanced model."
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "kunlun",
+        "tiangong",
+        "flagship",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000015,
+        "output_per_token": 0.000015
+      }
+    },
+    "skychat-plus": {
+      "provider": "tiangong",
+      "model_id": "SkyChat-Plus",
+      "display_name": "天工 SkyChat Plus",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "kunlun",
+        "tiangong",
+        "plus",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000012,
+        "output_per_token": 0.000012
+      }
+    },
+    "skychat-standard": {
+      "provider": "tiangong",
+      "model_id": "SkyChat",
+      "display_name": "天工 SkyChat",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 4096,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "kunlun",
+        "tiangong",
+        "standard",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000005,
+        "output_per_token": 0.000005
+      }
+    },
+    "tiangong-128k": {
+      "provider": "tiangong",
+      "model_id": "SkyChat-128K",
+      "display_name": "天工 128K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "kunlun",
+        "tiangong",
+        "long_context",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00002,
+        "output_per_token": 0.00002
+      }
+    },
+    "tiangong-music": {
+      "provider": "tiangong",
+      "model_id": "SkyMusic",
+      "display_name": "天工 Music",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 4096,
+      "capabilities": [
+        "chat",
+        "audio_generation"
+      ],
+      "status": "active",
+      "tags": [
+        "kunlun",
+        "tiangong",
+        "music",
+        "creative",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00001,
+        "output_per_token": 0.00001
+      }
+    },
+    "tiangong-search": {
+      "provider": "tiangong",
+      "model_id": "SkyChat-Search",
+      "display_name": "天工 Search",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "web_search",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "kunlun",
+        "tiangong",
+        "search",
+        "rag",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000012,
+        "output_per_token": 0.000012
+      }
+    }
+  }
+}

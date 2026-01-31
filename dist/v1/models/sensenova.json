@@ -1,0 +1,144 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "sensechat-v5": {
+      "provider": "sensenova",
+      "model_id": "SenseChat-5",
+      "display_name": "日日新 SenseChat 5",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "SenseNova's flagship chat model."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "sensetime",
+        "sensenova",
+        "v5",
+        "flagship",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00012,
+        "output_per_token": 0.00012
+      }
+    },
+    "sensechat-turbo": {
+      "provider": "sensenova",
+      "model_id": "SenseChat-Turbo",
+      "display_name": "日日新 SenseChat Turbo",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "sensetime",
+        "sensenova",
+        "turbo",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00001,
+        "output_per_token": 0.00001
+      }
+    },
+    "sensechat-128k": {
+      "provider": "sensenova",
+      "model_id": "SenseChat-128K",
+      "display_name": "日日新 SenseChat 128K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "sensetime",
+        "sensenova",
+        "long_context",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00006,
+        "output_per_token": 0.00006
+      }
+    },
+    "sensechat-vision": {
+      "provider": "sensenova",
+      "model_id": "SenseChat-Vision",
+      "display_name": "日日新 SenseChat Vision",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "vision",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "sensetime",
+        "sensenova",
+        "vision",
+        "multimodal",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00012,
+        "output_per_token": 0.00012
+      }
+    },
+    "nova-ptq-xl": {
+      "provider": "sensenova",
+      "model_id": "nova-ptq-xl-v1",
+      "display_name": "日日新 Nova PTQ XL",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 4096,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "sensetime",
+        "sensenova",
+        "ptq",
+        "optimized",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000006,
+        "output_per_token": 0.000006
+      }
+    }
+  }
+}

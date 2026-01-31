@@ -1,0 +1,223 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "ernie-4.0-8k": {
+      "provider": "baidu",
+      "model_id": "ernie-4.0-8k",
+      "display_name": "文心一言 4.0 8K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "ERNIE 4.0 flagship model with enhanced reasoning."
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "baidu",
+        "ernie",
+        "flagship",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00012,
+        "output_per_token": 0.00012
+      }
+    },
+    "ernie-4.0-turbo-8k": {
+      "provider": "baidu",
+      "model_id": "ernie-4.0-turbo-8k",
+      "display_name": "文心一言 4.0 Turbo 8K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "baidu",
+        "ernie",
+        "turbo",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00003,
+        "output_per_token": 0.00006
+      }
+    },
+    "ernie-3.5-8k": {
+      "provider": "baidu",
+      "model_id": "ernie-3.5-8k",
+      "display_name": "文心一言 3.5 8K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "baidu",
+        "ernie",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000012,
+        "output_per_token": 0.000012
+      }
+    },
+    "ernie-3.5-128k": {
+      "provider": "baidu",
+      "model_id": "ernie-3.5-128k",
+      "display_name": "文心一言 3.5 128K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "baidu",
+        "ernie",
+        "long_context",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000024,
+        "output_per_token": 0.000024
+      }
+    },
+    "ernie-speed-8k": {
+      "provider": "baidu",
+      "model_id": "ernie-speed-8k",
+      "display_name": "文心一言 Speed 8K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "baidu",
+        "ernie",
+        "speed",
+        "cost_effective",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000001,
+        "output_per_token": 0.000001
+      }
+    },
+    "ernie-speed-128k": {
+      "provider": "baidu",
+      "model_id": "ernie-speed-128k",
+      "display_name": "文心一言 Speed 128K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "baidu",
+        "ernie",
+        "speed",
+        "long_context",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000001,
+        "output_per_token": 0.000001
+      }
+    },
+    "ernie-lite-8k": {
+      "provider": "baidu",
+      "model_id": "ernie-lite-8k",
+      "display_name": "文心一言 Lite 8K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Free tier available with rate limits."
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "baidu",
+        "ernie",
+        "lite",
+        "free_tier",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0,
+        "output_per_token": 0
+      }
+    },
+    "ernie-character-8k": {
+      "provider": "baidu",
+      "model_id": "ernie-char-8k",
+      "display_name": "文心一言 Character 8K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "baidu",
+        "ernie",
+        "character",
+        "roleplay",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000004,
+        "output_per_token": 0.000008
+      }
+    }
+  }
+}
