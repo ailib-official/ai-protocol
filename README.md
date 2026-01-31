@@ -27,8 +27,10 @@ ai-protocol/
 │   │   ├── gemini.yaml        # Google Gemini interface
 │   │   ├── groq.yaml          # Groq compatible interface
 │   │   ├── deepseek.yaml      # DeepSeek compatible interface
-│   │   ├── qwen.yaml          # Qwen (DashScope) compatible interface
-│   │   └── ...                # More providers
+│   │   ├── qwen.yaml          # Qwen (Alibaba) compatible interface
+│   │   ├── doubao.yaml        # Doubao (ByteDance) compatible interface
+│   │   ├── hunyuan.yaml       # Hunyuan (Tencent) compatible interface
+│   │   └── ...                # 30+ providers (see full list below)
 │   └── models/                # Model instance registry
 │       ├── gpt.yaml           # GPT series models
 │       ├── claude.yaml        # Claude series models
@@ -219,7 +221,7 @@ See [docs/CI_VALIDATION_EXPLAINED.md](docs/CI_VALIDATION_EXPLAINED.md) for detai
 ## 🛣️ Roadmap
 
 ### v1.x (Current Stable)
-- ✅ Mainstream AI provider support (OpenAI, Anthropic, Gemini, Groq, DeepSeek, Qwen)
+- ✅ **30+ AI providers** supported across global and China regions
 - ✅ Standardized parameters and event normalization
 - ✅ Tool calling and streaming response support
 - ✅ JSON Schema constraints
@@ -227,6 +229,20 @@ See [docs/CI_VALIDATION_EXPLAINED.md](docs/CI_VALIDATION_EXPLAINED.md) for detai
 - ✅ Rate limiting and retry policy standardization (`rate_limit_headers`, `retry_policy`)
 - ✅ API family declarations (`api_families`, `endpoints`) to avoid request/response model confusion
 - ✅ Termination reason normalization (`termination_reasons`) unified across providers
+
+#### Supported Providers
+
+**Global Providers:**
+- OpenAI, Anthropic, Google Gemini, Groq, Mistral, Cohere, Perplexity
+- Together AI, DeepInfra, OpenRouter, Azure OpenAI
+- Fireworks AI, Replicate, AI21 Labs, Cerebras, Lepton AI
+
+**China Region Providers:**
+- 通义千问 (Qwen/Alibaba), 深度求索 (DeepSeek), 智谱 (Zhipu GLM)
+- 豆包 (Doubao/ByteDance), 文心一言 (Baidu ERNIE), 星火 (iFlytek Spark)
+- 混元 (Tencent Hunyuan), 日日新 (SenseNova), 天工 (Tiangong)
+- 月之暗面 (Moonshot/Kimi), MiniMax, 百川 (Baichuan), 零一万物 (Yi)
+- 硅基流动 (SiliconFlow)
 
 ### v2-alpha (Experimental In Progress)
 - 🔄 Multimodal stream interleaving (`FrameInterleave` operator)

@@ -27,8 +27,10 @@ ai-protocol/
 │   │   ├── gemini.yaml        # Google Gemini 接口
 │   │   ├── groq.yaml          # Groq 兼容接口
 │   │   ├── deepseek.yaml      # DeepSeek 兼容接口
-│   │   ├── qwen.yaml          # Qwen (DashScope) 兼容接口
-│   │   └── ...                # 更多供应商
+│   │   ├── qwen.yaml          # 通义千问（阿里巴巴）兼容接口
+│   │   ├── doubao.yaml        # 豆包（字节跳动）兼容接口
+│   │   ├── hunyuan.yaml       # 混元（腾讯）兼容接口
+│   │   └── ...                # 30+ 供应商（见下方完整列表）
 │   └── models/                # 模型实例注册表
 │       ├── gpt.yaml           # GPT 系列模型
 │       ├── claude.yaml        # Claude 系列模型
@@ -50,6 +52,19 @@ ai-protocol/
 │       └── ...                # 更多供应商调研
 └── scripts/                   # 维护脚本
 ```
+
+## 📦 发布打包策略 (发布内容)
+
+为避免默认发布工作/讨论/内部文档，发布包应排除：
+- `research/`
+- `scripts/`
+- `v2-alpha/`
+
+规范性、可发布的制品包括：
+- `schemas/`
+- `v1/` (spec + providers + models)
+- `examples/`
+- `README.md`, `LICENSE-*`, `CHANGELOG.md`
 
 ## 🔧 核心概念
 
@@ -206,7 +221,7 @@ GitHub Actions 工作流 (`validate.yml`) 自动执行：
 ## 🛣️ 路线图
 
 ### v1.x (当前稳定版)
-- ✅ 主流 AI 供应商支持 (OpenAI, Anthropic, Gemini, Groq, DeepSeek, Qwen)
+- ✅ **30+ AI 供应商**支持，覆盖全球和中国地区
 - ✅ 标准参数和事件规范化
 - ✅ 工具调用和流式响应支持
 - ✅ JSON Schema 约束
@@ -214,6 +229,20 @@ GitHub Actions 工作流 (`validate.yml`) 自动执行：
 - ✅ 限流和重试策略标准化（`rate_limit_headers`, `retry_policy`）
 - ✅ API 家族声明（`api_families`, `endpoints`）避免请求/响应模型混淆
 - ✅ 终止原因归一化（`termination_reasons`）跨供应商统一
+
+#### 已支持的供应商
+
+**全球供应商：**
+- OpenAI, Anthropic, Google Gemini, Groq, Mistral, Cohere, Perplexity
+- Together AI, DeepInfra, OpenRouter, Azure OpenAI
+- Fireworks AI, Replicate, AI21 Labs, Cerebras, Lepton AI
+
+**中国地区供应商：**
+- 通义千问 (Qwen/阿里巴巴), 深度求索 (DeepSeek), 智谱 (Zhipu GLM)
+- 豆包 (Doubao/字节跳动), 文心一言 (Baidu ERNIE), 星火 (讯飞 Spark)
+- 混元 (腾讯 Hunyuan), 日日新 (商汤 SenseNova), 天工 (昆仑万维 Tiangong)
+- 月之暗面 (Moonshot/Kimi), MiniMax, 百川 (Baichuan), 零一万物 (Yi)
+- 硅基流动 (SiliconFlow)
 
 ### v2-alpha (实验版进行中)
 - 🔄 多模态流交织 (`FrameInterleave` 算子)
