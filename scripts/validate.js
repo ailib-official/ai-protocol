@@ -37,8 +37,9 @@ const colors = {
 };
 
 // Expected schema URLs (raw GitHub or relative local path)
-const SCHEMA_V1_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/hiddenpath\/ai-protocol\/(main|master|v\d+\.\d+)\/schemas\/v1\.json|(\.\.\/)+schemas\/v1\.json)$/;
-const SCHEMA_V2_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/hiddenpath\/ai-protocol\/(main|master|v\d+\.\d+)\/schemas\/v2\/provider\.json|(\.\.\/)+schemas\/v2\/provider\.json)$/;
+// Supports: main, master, or semantic version tags (v1.0, v1.0.0, v0.2.1, etc.)
+const SCHEMA_V1_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/hiddenpath\/ai-protocol\/(main|master|v\d+\.\d+(\.\d+)?)\/schemas\/v1\.json|(\.\.\/)+schemas\/v1\.json)$/;
+const SCHEMA_V2_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/hiddenpath\/ai-protocol\/(main|master|v\d+\.\d+(\.\d+)?)\/schemas\/v2\/provider\.json|(\.\.\/)+schemas\/v2\/provider\.json)$/;
 
 // Validation results tracking
 const results = {
