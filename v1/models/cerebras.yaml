@@ -1,0 +1,99 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.1"
+
+# Cerebras Model Instances
+#
+# VERIFIED_AT: 2026-01-29 (based on public Cerebras documentation)
+#
+# Notes:
+# - Cerebras offers extremely fast inference using Wafer-Scale Engine technology.
+# - Known for achieving thousands of tokens per second.
+# - Primarily hosts Llama models.
+
+models:
+  # Llama 3.1 models
+  llama3.1-8b:
+    provider: cerebras
+    model_id: "llama3.1-8b"
+    display_name: "Llama 3.1 8B"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+      notes: "Based on public documentation. Cerebras achieves ~2100 tokens/sec."
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["meta", "llama", "cerebras", "fast"]
+    pricing:
+      input_per_token: 0.0000001
+      output_per_token: 0.0000001
+
+  llama3.1-70b:
+    provider: cerebras
+    model_id: "llama3.1-70b"
+    display_name: "Llama 3.1 70B"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+      notes: "Cerebras achieves ~450 tokens/sec for this model."
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["meta", "llama", "cerebras", "fast"]
+    pricing:
+      input_per_token: 0.0000006
+      output_per_token: 0.0000006
+
+  # Llama 3.3 models
+  llama-3.3-70b:
+    provider: cerebras
+    model_id: "llama-3.3-70b"
+    display_name: "Llama 3.3 70B"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+      notes: "Cerebras achieves ~970 tokens/sec for this model."
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["meta", "llama", "cerebras", "fast", "latest"]
+    pricing:
+      input_per_token: 0.00000085
+      output_per_token: 0.00000085
+
+  # Qwen models
+  qwen-2.5-32b:
+    provider: cerebras
+    model_id: "qwen-2.5-32b"
+    display_name: "Qwen 2.5 32B"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["alibaba", "qwen", "cerebras", "fast"]
+    pricing:
+      input_per_token: 0.0000003
+      output_per_token: 0.0000003
+
+  # DeepSeek models
+  deepseek-r1-distill-llama-70b:
+    provider: cerebras
+    model_id: "deepseek-r1-distill-llama-70b"
+    display_name: "DeepSeek R1 Distill Llama 70B"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+    context_window: 8192
+    capabilities: [chat, tools, streaming, reasoning]
+    status: active
+    tags: ["deepseek", "distill", "cerebras", "fast", "reasoning"]
+    pricing:
+      input_per_token: 0.00000085
+      output_per_token: 0.00000085

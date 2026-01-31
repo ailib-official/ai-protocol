@@ -1,0 +1,136 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.1"
+
+# Replicate Model Instances
+#
+# VERIFIED_AT: 2026-01-29 (based on public Replicate documentation)
+#
+# Notes:
+# - Replicate is a model hosting platform with async prediction API.
+# - Model IDs follow the pattern: {owner}/{model_name}
+# - Supports both native Replicate API and OpenAI-compatible endpoints for some models.
+
+models:
+  # Meta Llama models
+  "meta/llama-2-70b-chat":
+    provider: replicate
+    model_id: "meta/llama-2-70b-chat"
+    display_name: "Llama 2 70B Chat"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+      notes: "Based on public documentation. Runtime verification recommended."
+    context_window: 4096
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["meta", "llama", "replicate", "chat"]
+
+  "meta/meta-llama-3-70b-instruct":
+    provider: replicate
+    model_id: "meta/meta-llama-3-70b-instruct"
+    display_name: "Llama 3 70B Instruct"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+    context_window: 8192
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["meta", "llama", "replicate", "instruct"]
+
+  "meta/meta-llama-3.1-405b-instruct":
+    provider: replicate
+    model_id: "meta/meta-llama-3.1-405b-instruct"
+    display_name: "Llama 3.1 405B Instruct"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+    context_window: 131072
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["meta", "llama", "replicate", "instruct", "flagship"]
+
+  # Mistral models
+  "mistralai/mistral-7b-instruct-v0.2":
+    provider: replicate
+    model_id: "mistralai/mistral-7b-instruct-v0.2"
+    display_name: "Mistral 7B Instruct v0.2"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+    context_window: 8192
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["mistral", "replicate", "instruct"]
+
+  "mistralai/mixtral-8x7b-instruct-v0.1":
+    provider: replicate
+    model_id: "mistralai/mixtral-8x7b-instruct-v0.1"
+    display_name: "Mixtral 8x7B Instruct"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+    context_window: 32768
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["mistral", "mixtral", "moe", "replicate"]
+
+  # Stability AI models (text)
+  "stability-ai/stablelm-tuned-alpha-7b":
+    provider: replicate
+    model_id: "stability-ai/stablelm-tuned-alpha-7b"
+    display_name: "StableLM Tuned Alpha 7B"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+    context_window: 4096
+    capabilities: [chat, streaming]
+    status: deprecated
+    tags: ["stability", "stablelm", "replicate"]
+
+  # Snowflake models
+  "snowflake/snowflake-arctic-instruct":
+    provider: replicate
+    model_id: "snowflake/snowflake-arctic-instruct"
+    display_name: "Snowflake Arctic Instruct"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+    context_window: 4096
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["snowflake", "arctic", "replicate", "enterprise"]
+
+  # Vision-language models
+  "yorickvp/llava-13b":
+    provider: replicate
+    model_id: "yorickvp/llava-13b"
+    display_name: "LLaVA 13B"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+    context_window: 2048
+    capabilities: [chat, vision, streaming]
+    status: active
+    tags: ["llava", "vision", "multimodal", "replicate"]
+
+  # Code models
+  "meta/codellama-70b-instruct":
+    provider: replicate
+    model_id: "meta/codellama-70b-instruct"
+    display_name: "Code Llama 70B Instruct"
+    verification:
+      status: unverified
+      verified_at: "2026-01-29"
+      source: "documentation"
+    context_window: 16384
+    capabilities: [chat, code, streaming]
+    status: active
+    tags: ["meta", "codellama", "code", "replicate"]
