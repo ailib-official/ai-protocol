@@ -1,0 +1,164 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.1"
+
+# 腾讯混元 (Tencent Hunyuan) Model Instances
+#
+# VERIFIED_AT: 2026-01-31 (based on public Tencent Cloud documentation)
+#
+# Notes:
+# - Hunyuan (混元) is Tencent's flagship LLM series.
+# - Strong performance in Chinese language tasks.
+
+models:
+  # Hunyuan Pro (flagship)
+  hunyuan-pro:
+    provider: hunyuan
+    model_id: "hunyuan-pro"
+    display_name: "混元 Pro"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Hunyuan flagship model with best quality."
+    context_window: 32768
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["tencent", "hunyuan", "pro", "flagship", "cn"]
+    pricing:
+      input_per_token: 0.00003
+      output_per_token: 0.0001
+
+  # Hunyuan Standard
+  hunyuan-standard:
+    provider: hunyuan
+    model_id: "hunyuan-standard"
+    display_name: "混元 Standard"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 32768
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["tencent", "hunyuan", "standard", "cn"]
+    pricing:
+      input_per_token: 0.0000045
+      output_per_token: 0.000005
+
+  hunyuan-standard-256k:
+    provider: hunyuan
+    model_id: "hunyuan-standard-256K"
+    display_name: "混元 Standard 256K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 262144
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["tencent", "hunyuan", "standard", "ultra_long_context", "cn"]
+    pricing:
+      input_per_token: 0.000015
+      output_per_token: 0.00006
+
+  # Hunyuan Lite (cost-effective)
+  hunyuan-lite:
+    provider: hunyuan
+    model_id: "hunyuan-lite"
+    display_name: "混元 Lite"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Free tier available with rate limits."
+    context_window: 4096
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["tencent", "hunyuan", "lite", "free_tier", "cn"]
+    pricing:
+      input_per_token: 0
+      output_per_token: 0
+
+  # Hunyuan Turbo (balanced speed and quality)
+  hunyuan-turbo:
+    provider: hunyuan
+    model_id: "hunyuan-turbo"
+    display_name: "混元 Turbo"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 32768
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["tencent", "hunyuan", "turbo", "cn"]
+    pricing:
+      input_per_token: 0.000015
+      output_per_token: 0.00005
+
+  hunyuan-turbo-latest:
+    provider: hunyuan
+    model_id: "hunyuan-turbo-latest"
+    display_name: "混元 Turbo Latest"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 32768
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["tencent", "hunyuan", "turbo", "latest", "cn"]
+    pricing:
+      input_per_token: 0.000015
+      output_per_token: 0.00005
+
+  # Hunyuan Vision
+  hunyuan-vision:
+    provider: hunyuan
+    model_id: "hunyuan-vision"
+    display_name: "混元 Vision"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 8192
+    capabilities: [chat, vision, streaming]
+    status: active
+    tags: ["tencent", "hunyuan", "vision", "multimodal", "cn"]
+    pricing:
+      input_per_token: 0.00002
+      output_per_token: 0.00002
+
+  # Hunyuan Code
+  hunyuan-code:
+    provider: hunyuan
+    model_id: "hunyuan-code"
+    display_name: "混元 Code"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 8192
+    capabilities: [chat, code, streaming]
+    status: active
+    tags: ["tencent", "hunyuan", "code", "cn"]
+    pricing:
+      input_per_token: 0.0000045
+      output_per_token: 0.000005
+
+  # Hunyuan Role (角色扮演)
+  hunyuan-role:
+    provider: hunyuan
+    model_id: "hunyuan-role"
+    display_name: "混元 Role"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 32768
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["tencent", "hunyuan", "role", "roleplay", "cn"]
+    pricing:
+      input_per_token: 0.0000045
+      output_per_token: 0.000005

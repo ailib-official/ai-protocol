@@ -1,0 +1,114 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.1"
+
+# 讯飞星火 (iFlytek Spark) Model Instances
+#
+# VERIFIED_AT: 2026-01-31 (based on public iFlytek documentation)
+#
+# Notes:
+# - Spark (星火大模型) is iFlytek's flagship LLM series.
+# - Known for strong Chinese language capabilities.
+
+models:
+  # Spark 4.0 Ultra (flagship)
+  spark-4.0-ultra:
+    provider: spark
+    model_id: "4.0Ultra"
+    display_name: "星火 4.0 Ultra"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Spark's most capable model with multimodal support."
+    context_window: 131072
+    capabilities: [chat, tools, vision, streaming]
+    status: active
+    tags: ["iflytek", "spark", "ultra", "flagship", "cn"]
+    pricing:
+      input_per_token: 0.00014
+      output_per_token: 0.00014
+
+  # Spark Max series
+  spark-max:
+    provider: spark
+    model_id: "max-32k"
+    display_name: "星火 Max 32K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 32768
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["iflytek", "spark", "max", "cn"]
+    pricing:
+      input_per_token: 0.00003
+      output_per_token: 0.00003
+
+  spark-max-128k:
+    provider: spark
+    model_id: "max-128k"
+    display_name: "星火 Max 128K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 131072
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["iflytek", "spark", "max", "long_context", "cn"]
+    pricing:
+      input_per_token: 0.00003
+      output_per_token: 0.00003
+
+  # Spark Pro series
+  spark-pro:
+    provider: spark
+    model_id: "pro-128k"
+    display_name: "星火 Pro 128K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 131072
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["iflytek", "spark", "pro", "cn"]
+    pricing:
+      input_per_token: 0.000021
+      output_per_token: 0.000021
+
+  # Spark Lite series (cost-effective)
+  spark-lite:
+    provider: spark
+    model_id: "lite"
+    display_name: "星火 Lite"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Free tier available with rate limits."
+    context_window: 4096
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["iflytek", "spark", "lite", "free_tier", "cn"]
+    pricing:
+      input_per_token: 0
+      output_per_token: 0
+
+  # Spark V3.5 (legacy but stable)
+  spark-v3.5:
+    provider: spark
+    model_id: "generalv3.5"
+    display_name: "星火 V3.5"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["iflytek", "spark", "v3.5", "cn"]
+    pricing:
+      input_per_token: 0.000003
+      output_per_token: 0.000003

@@ -1,0 +1,129 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.1"
+
+# 字节跳动豆包 (Doubao) Model Instances
+#
+# VERIFIED_AT: 2026-01-31 (based on public Volcengine documentation)
+#
+# Notes:
+# - Doubao (豆包) is ByteDance's flagship LLM series.
+# - Accessed via Volcengine (火山引擎) platform.
+# - Model IDs are endpoint IDs that need to be created in Volcengine console.
+
+models:
+  # Doubao Pro series
+  doubao-pro-32k:
+    provider: doubao
+    model_id: "doubao-pro-32k"
+    display_name: "豆包 Pro 32K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Based on Volcengine documentation. Endpoint ID required."
+    context_window: 32768
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["bytedance", "doubao", "pro", "cn"]
+    pricing:
+      input_per_token: 0.0000008
+      output_per_token: 0.000002
+
+  doubao-pro-128k:
+    provider: doubao
+    model_id: "doubao-pro-128k"
+    display_name: "豆包 Pro 128K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 131072
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["bytedance", "doubao", "pro", "long_context", "cn"]
+    pricing:
+      input_per_token: 0.000005
+      output_per_token: 0.000009
+
+  doubao-pro-256k:
+    provider: doubao
+    model_id: "doubao-pro-256k"
+    display_name: "豆包 Pro 256K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 262144
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["bytedance", "doubao", "pro", "ultra_long_context", "cn"]
+    pricing:
+      input_per_token: 0.000005
+      output_per_token: 0.000009
+
+  # Doubao Lite series (cost-effective)
+  doubao-lite-32k:
+    provider: doubao
+    model_id: "doubao-lite-32k"
+    display_name: "豆包 Lite 32K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 32768
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["bytedance", "doubao", "lite", "cost_effective", "cn"]
+    pricing:
+      input_per_token: 0.0000003
+      output_per_token: 0.0000006
+
+  doubao-lite-128k:
+    provider: doubao
+    model_id: "doubao-lite-128k"
+    display_name: "豆包 Lite 128K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 131072
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["bytedance", "doubao", "lite", "long_context", "cn"]
+    pricing:
+      input_per_token: 0.0000008
+      output_per_token: 0.000001
+
+  # Doubao Vision
+  doubao-vision-pro-32k:
+    provider: doubao
+    model_id: "doubao-vision-pro-32k"
+    display_name: "豆包 Vision Pro 32K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 32768
+    capabilities: [chat, vision, streaming]
+    status: active
+    tags: ["bytedance", "doubao", "vision", "multimodal", "cn"]
+    pricing:
+      input_per_token: 0.000003
+      output_per_token: 0.000009
+
+  # Doubao Embedding
+  doubao-embedding:
+    provider: doubao
+    model_id: "doubao-embedding"
+    display_name: "豆包 Embedding"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 4096
+    capabilities: [embedding]
+    status: active
+    tags: ["bytedance", "doubao", "embedding", "cn"]
+    pricing:
+      input_per_token: 0.0000005
+      output_per_token: 0
