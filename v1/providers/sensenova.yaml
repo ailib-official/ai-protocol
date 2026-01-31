@@ -1,0 +1,153 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
+id: sensenova
+protocol_version: "1.5"
+
+name: 商汤日日新 (SenseNova)
+version: "v1"
+status: stable
+category: ai_provider
+official_url: "https://platform.sensenova.cn/doc"
+support_contact: "https://www.sensetime.com/contact"
+
+endpoint:
+  base_url: "https://api.sensenova.cn/v1"
+  protocol: https
+  timeout_ms: 60000
+
+auth:
+  type: bearer
+  token_env: "SENSENOVA_API_KEY"
+
+payload_format: "openai_style"
+
+# SenseNova uses OpenAI-compatible API
+api_families: ["chat_completions"]
+default_api_family: "chat_completions"
+
+endpoints:
+  chat:
+    path: "/llm/chat-completions"
+    method: "POST"
+    adapter: "sensenova"
+
+services:
+  list_models:
+    path: "/llm/models"
+    method: "GET"
+
+termination:
+  source_field: "finish_reason"
+  mapping:
+    stop: "end_turn"
+    length: "max_tokens"
+    tool_calls: "tool_use"
+  notes:
+    - "日日新 (SenseNova) is SenseTime's flagship AI platform."
+    - "Includes SenseChat and other foundation models."
+
+tooling:
+  source_model: "openai_tool_calls"
+  tool_use:
+    id_path: "id"
+    name_path: "function.name"
+    input_path: "function.arguments"
+    input_format: "json_string"
+  notes:
+    - "Supports function calling similar to OpenAI."
+
+retry_policy:
+  strategy: "exponential_backoff"
+  max_retries: 3
+  min_delay_ms: 1000
+  max_delay_ms: 30000
+  jitter: "full"
+  retry_on_http_status: [429, 500, 502, 503]
+
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "403": "permission_denied"
+    "404": "not_found"
+    "429": "rate_limited"
+    "500": "server_error"
+    "503": "overloaded"
+
+parameter_mappings:
+  temperature: "temperature"
+  max_tokens: "max_new_tokens"
+  stream: "stream"
+  top_p: "top_p"
+  frequency_penalty: "repetition_penalty"
+  tools: "tools"
+  tool_choice: "tool_choice"
+
+response_format: "sensenova_style"
+
+response_paths:
+  content: "data.choices[0].message"
+  tool_calls: "data.choices[0].tool_calls"
+  usage: "data.usage"
+  finish_reason: "data.choices[0].finish_reason"
+
+streaming:
+  event_format: "sse"
+  decoder:
+    format: "sse"
+    delimiter: "\n\n"
+    prefix: "data: "
+    done_signal: "[DONE]"
+  content_path: "data.choices[0].delta"
+  usage_path: "data.usage"
+  frame_selector: "exists($.data.choices) || exists($.error)"
+  event_map:
+    - match: "exists($.data.choices[*].delta)"
+      emit: "PartialContentDelta"
+      fields:
+        content: "$.data.choices[*].delta"
+    - match: "exists($.data.choices[*].tool_calls[*].function.name)"
+      emit: "ToolCallStarted"
+      fields:
+        tool_name: "$.data.choices[*].tool_calls[*].function.name"
+    - match: "exists($.data.usage)"
+      emit: "Metadata"
+      fields:
+        usage: "$.data.usage"
+    - match: "exists($.data.choices[*].finish_reason)"
+      emit: "FinalCandidate"
+      fields:
+        finish_reason: "$.data.choices[*].finish_reason"
+  stop_condition: "$.data.choices[0].finish_reason != null"
+
+features:
+  multi_candidate:
+    support_type: "native"
+    param_name: "n"
+  response_mapping:
+    error:
+      message_path: "error.message"
+      code_path: "error.code"
+
+capabilities:
+  streaming: true
+  tools: true
+  vision: true
+  agentic: true
+  parallel_tools: false
+  reasoning: false
+
+availability:
+  required: false
+  regions:
+    - cn
+  check:
+    method: GET
+    path: "/llm/models"
+    expected_status: [200, 401]
+    timeout_ms: 5000
+
+experimental_features:
+  - "multimodal"
+  - "code_generation"
+  - "knowledge_base"
