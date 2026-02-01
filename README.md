@@ -288,10 +288,73 @@ at your option.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you shall be dual licensed as above, without any additional terms or conditions.
 
-## 🔗 Related Projects
+## 🔗 Related Projects & Runtime Installation
 
-- **[ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)**: Rust runtime implementation
-- **[ai-lib-python](https://github.com/hiddenpath/ai-lib-python)**: Python runtime implementation
+AI-Protocol has official runtime implementations in multiple languages:
+
+### Python Runtime
+
+```bash
+# Install from PyPI
+pip install ai-lib-python
+
+# Or with optional dependencies
+pip install ai-lib-python[all]
+```
+
+```python
+from ai_lib import Client
+
+# Unified API across all providers
+client = Client(provider="openai")
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+```
+
+📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **Docs**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
+
+### Rust Runtime
+
+```toml
+# Add to Cargo.toml
+[dependencies]
+ai-lib-rust = "0.1"
+```
+
+```rust
+use ai_lib_rust::Client;
+
+// Unified API across all providers
+let client = Client::new("anthropic")?;
+let response = client.chat()
+    .model("claude-3-5-sonnet-20241022")
+    .message("user", "Hello!")
+    .send()
+    .await?;
+```
+
+📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **Docs**: [github.com/hiddenpath/ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)
+
+### Ecosystem Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      AI-Protocol                            │
+│            (Provider-agnostic Specification)                │
+├─────────────────────────────────────────────────────────────┤
+│  schemas/     │  v1/providers/  │  v1/models/              │
+│  JSON Schema  │  30+ Providers  │  Model Registry          │
+└───────────────┴────────────────┴───────────────────────────┘
+                          │
+            ┌─────────────┼─────────────┐
+            ▼             ▼             ▼
+    ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+    │ ai-lib-rust  │ │ai-lib-python │ │  Your App    │
+    │   (Rust)     │ │  (Python)    │ │   (Any)      │
+    └──────────────┘ └──────────────┘ └──────────────┘
+```
 
 > **Note**: AI-Protocol itself already includes configuration registry functionality. Community contributions for new provider configurations and model registrations can be submitted directly via PRs to this repository's `v1/providers/` and `v1/models/` directories, without needing a separate configuration repository.
 

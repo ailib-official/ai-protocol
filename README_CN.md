@@ -288,10 +288,73 @@ at your option.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you shall be dual licensed as above, without any additional terms or conditions.
 
-## 🔗 相关项目
+## 🔗 相关项目与运行时安装
 
-- **[ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)**: Rust 运行时实现
-- **[ai-lib-python](https://github.com/hiddenpath/ai-lib-python)**: Python 运行时实现
+AI-Protocol 提供多语言官方运行时实现：
+
+### Python 运行时
+
+```bash
+# 从 PyPI 安装
+pip install ai-lib-python
+
+# 或安装全部可选依赖
+pip install ai-lib-python[all]
+```
+
+```python
+from ai_lib import Client
+
+# 统一的跨供应商 API
+client = Client(provider="openai")
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "你好！"}]
+)
+```
+
+📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **文档**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
+
+### Rust 运行时
+
+```toml
+# 添加到 Cargo.toml
+[dependencies]
+ai-lib-rust = "0.1"
+```
+
+```rust
+use ai_lib_rust::Client;
+
+// 统一的跨供应商 API
+let client = Client::new("anthropic")?;
+let response = client.chat()
+    .model("claude-3-5-sonnet-20241022")
+    .message("user", "你好！")
+    .send()
+    .await?;
+```
+
+📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **文档**: [github.com/hiddenpath/ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)
+
+### 生态系统概览
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      AI-Protocol                            │
+│               (供应商无关的规范协议)                          │
+├─────────────────────────────────────────────────────────────┤
+│  schemas/     │  v1/providers/  │  v1/models/              │
+│  JSON Schema  │  30+ 供应商     │  模型注册表               │
+└───────────────┴────────────────┴───────────────────────────┘
+                          │
+            ┌─────────────┼─────────────┐
+            ▼             ▼             ▼
+    ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+    │ ai-lib-rust  │ │ai-lib-python │ │  你的应用     │
+    │   (Rust)     │ │  (Python)    │ │   (任意)      │
+    └──────────────┘ └──────────────┘ └──────────────┘
+```
 
 > **说明**: AI-Protocol 本身已经包含配置注册功能。社区可以通过 PR 直接贡献新的供应商配置和模型注册到本仓库的 `v1/providers/` 和 `v1/models/` 目录，无需单独的配置仓库。
 
