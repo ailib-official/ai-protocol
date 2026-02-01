@@ -1,0 +1,250 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "glm-4-plus": {
+      "provider": "zhipu",
+      "model_id": "glm-4-plus",
+      "display_name": "GLM-4 Plus",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Latest flagship model with best performance."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "zhipu",
+        "glm",
+        "flagship",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00005,
+        "output_per_token": 0.00005
+      }
+    },
+    "glm-4-0520": {
+      "provider": "zhipu",
+      "model_id": "glm-4-0520",
+      "display_name": "GLM-4 0520",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "zhipu",
+        "glm",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.0001,
+        "output_per_token": 0.0001
+      }
+    },
+    "glm-4-air": {
+      "provider": "zhipu",
+      "model_id": "glm-4-air",
+      "display_name": "GLM-4 Air",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Cost-effective model with good performance."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "zhipu",
+        "glm",
+        "cost_effective",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000001,
+        "output_per_token": 0.000001
+      }
+    },
+    "glm-4-airx": {
+      "provider": "zhipu",
+      "model_id": "glm-4-airx",
+      "display_name": "GLM-4 AirX",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Fast inference version of GLM-4 Air."
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "zhipu",
+        "glm",
+        "fast",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00001,
+        "output_per_token": 0.00001
+      }
+    },
+    "glm-4-flash": {
+      "provider": "zhipu",
+      "model_id": "glm-4-flash",
+      "display_name": "GLM-4 Flash",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Free tier model with rate limits."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "zhipu",
+        "glm",
+        "free_tier",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0,
+        "output_per_token": 0
+      }
+    },
+    "glm-4-long": {
+      "provider": "zhipu",
+      "model_id": "glm-4-long",
+      "display_name": "GLM-4 Long",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 1048576,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "zhipu",
+        "glm",
+        "ultra_long_context",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000001,
+        "output_per_token": 0.000001
+      }
+    },
+    "glm-4v-plus": {
+      "provider": "zhipu",
+      "model_id": "glm-4v-plus",
+      "display_name": "GLM-4V Plus",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "vision",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "zhipu",
+        "glm",
+        "vision",
+        "multimodal",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00001,
+        "output_per_token": 0.00001
+      }
+    },
+    "glm-4v": {
+      "provider": "zhipu",
+      "model_id": "glm-4v",
+      "display_name": "GLM-4V",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 2048,
+      "capabilities": [
+        "chat",
+        "vision",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "zhipu",
+        "glm",
+        "vision",
+        "multimodal",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00005,
+        "output_per_token": 0.00005
+      }
+    },
+    "embedding-3": {
+      "provider": "zhipu",
+      "model_id": "embedding-3",
+      "display_name": "Zhipu Embedding 3",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "embedding"
+      ],
+      "status": "active",
+      "tags": [
+        "zhipu",
+        "embedding",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 5e-7,
+        "output_per_token": 0
+      }
+    }
+  }
+}

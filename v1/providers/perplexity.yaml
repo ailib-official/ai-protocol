@@ -1,44 +1,144 @@
-# AI-Protocol Provider Manifest for Perplexity
 $schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
 id: perplexity
-protocol_version: "1.1"
+protocol_version: "1.5"
+
+name: Perplexity
+version: "v1"
+status: stable
+category: ai_provider
+official_url: "https://docs.perplexity.ai"
+support_contact: "https://www.perplexity.ai/contact"
 
 endpoint:
   base_url: "https://api.perplexity.ai"
-  protocol: "https"
-
-availability:
-  required: true
-  regions: ["global"]
-  check:
-    method: "GET"
-    path: "/models" # Check access
-    expected_status: [200]
-
-capabilities:
-  streaming: true
-  tools: false # Perplexity mostly strictly search/chat
-  vision: false 
+  protocol: https
+  timeout_ms: 60000
 
 auth:
-  type: "bearer"
-  key_env: "PPLX_API_KEY"
+  type: bearer
+  token_env: "PPLX_API_KEY"
 
-parameter_mappings:
-  model: model
-  messages: messages
-  max_tokens: max_tokens
-  temperature: temperature
-  stream: stream
+payload_format: "openai_style"
 
-streaming:
-  decoder:
-    format: "sse"
-  # Standard OpenAI-compatible streaming
-  content_path: "$.choices[0].delta.content"
-  usage_path: "$.usage"
-  stop_condition: "$.choices[0].finish_reason"
+# OpenAI-compatible API
+api_families: ["chat_completions"]
+default_api_family: "chat_completions"
+
+endpoints:
+  chat:
+    path: "/chat/completions"
+    method: "POST"
+    adapter: "openai"
+
+services:
+  list_models:
+    path: "/models"
+    method: "GET"
+    response_binding: "data"
+
+termination:
+  source_field: "finish_reason"
+  mapping:
+    stop: "end_turn"
+    length: "max_tokens"
+  notes:
+    - "Perplexity is known for search-augmented AI responses."
+    - "Returns citations in responses when using online models."
+
+tooling:
+  source_model: "unknown"
+  notes:
+    - "Perplexity focuses on search/RAG, limited tool support."
 
 retry_policy:
   strategy: "exponential_backoff"
-  retry_on_http_status: [429, 500, 503]
+  max_retries: 3
+  min_delay_ms: 1000
+  max_delay_ms: 30000
+  jitter: "full"
+  retry_on_http_status: [429, 500, 502, 503]
+
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "403": "permission_denied"
+    "404": "not_found"
+    "429": "rate_limited"
+    "500": "server_error"
+    "503": "overloaded"
+
+parameter_mappings:
+  temperature: "temperature"
+  max_tokens: "max_tokens"
+  stream: "stream"
+  top_p: "top_p"
+  frequency_penalty: "frequency_penalty"
+  presence_penalty: "presence_penalty"
+
+response_format: "openai_style"
+
+response_paths:
+  content: "choices[0].message.content"
+  usage: "usage"
+  finish_reason: "choices[0].finish_reason"
+  citations: "citations"
+
+streaming:
+  event_format: "data_lines"
+  decoder:
+    format: "sse"
+    delimiter: "\n\n"
+    prefix: "data: "
+    done_signal: "[DONE]"
+  content_path: "choices[0].delta.content"
+  usage_path: "usage"
+  frame_selector: "exists($.choices) || exists($.error)"
+  event_map:
+    - match: "exists($.choices[*].delta.content)"
+      emit: "PartialContentDelta"
+      fields:
+        content: "$.choices[*].delta.content"
+    - match: "exists($.usage)"
+      emit: "Metadata"
+      fields:
+        usage: "$.usage"
+    - match: "exists($.choices[*].finish_reason)"
+      emit: "FinalCandidate"
+      fields:
+        finish_reason: "$.choices[*].finish_reason"
+  stop_condition: "$.choices[0].finish_reason != null"
+
+features:
+  multi_candidate:
+    support_type: "simulated"
+    max_concurrent: 1
+  response_mapping:
+    error:
+      message_path: "error.message"
+      code_path: "error.code"
+      type_path: "error.type"
+
+capabilities:
+  streaming: true
+  tools: false
+  vision: false
+  agentic: false
+  parallel_tools: false
+  reasoning: false
+
+availability:
+  required: false
+  regions:
+    - global
+  check:
+    method: GET
+    path: "/models"
+    expected_status: [200, 401]
+    timeout_ms: 5000
+
+experimental_features:
+  - "online_search"
+  - "citations"
+  - "related_questions"

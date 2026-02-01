@@ -1,0 +1,144 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "moonshot-v1-8k": {
+      "provider": "moonshot",
+      "model_id": "moonshot-v1-8k",
+      "display_name": "Kimi v1 8K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Standard context model, cost-effective."
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "moonshot",
+        "kimi",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000012,
+        "output_per_token": 0.000012
+      }
+    },
+    "moonshot-v1-32k": {
+      "provider": "moonshot",
+      "model_id": "moonshot-v1-32k",
+      "display_name": "Kimi v1 32K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "moonshot",
+        "kimi",
+        "long_context",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000024,
+        "output_per_token": 0.000024
+      }
+    },
+    "moonshot-v1-128k": {
+      "provider": "moonshot",
+      "model_id": "moonshot-v1-128k",
+      "display_name": "Kimi v1 128K",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "moonshot",
+        "kimi",
+        "ultra_long_context",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00006,
+        "output_per_token": 0.00006
+      }
+    },
+    "kimi-latest": {
+      "provider": "moonshot",
+      "model_id": "kimi-latest",
+      "display_name": "Kimi Latest",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Alias for the latest Kimi model."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "vision",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "moonshot",
+        "kimi",
+        "latest",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.00006,
+        "output_per_token": 0.00006
+      }
+    },
+    "moonshot-v1-auto": {
+      "provider": "moonshot",
+      "model_id": "moonshot-v1-auto",
+      "display_name": "Kimi v1 Auto",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Auto-selects context window based on input."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "moonshot",
+        "kimi",
+        "auto",
+        "cn"
+      ],
+      "pricing": {
+        "input_per_token": 0.000024,
+        "output_per_token": 0.000024
+      }
+    }
+  }
+}

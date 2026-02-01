@@ -1,0 +1,234 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "command-r-plus": {
+      "provider": "cohere",
+      "model_id": "command-r-plus",
+      "display_name": "Command R+",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Flagship model with 128K context, optimized for RAG."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "cohere",
+        "command",
+        "flagship",
+        "rag"
+      ],
+      "pricing": {
+        "input_per_token": 0.000003,
+        "output_per_token": 0.000015
+      }
+    },
+    "command-r-plus-08-2024": {
+      "provider": "cohere",
+      "model_id": "command-r-plus-08-2024",
+      "display_name": "Command R+ (08-2024)",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "cohere",
+        "command",
+        "flagship"
+      ],
+      "pricing": {
+        "input_per_token": 0.0000025,
+        "output_per_token": 0.00001
+      }
+    },
+    "command-r": {
+      "provider": "cohere",
+      "model_id": "command-r",
+      "display_name": "Command R",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "cohere",
+        "command",
+        "standard"
+      ],
+      "pricing": {
+        "input_per_token": 5e-7,
+        "output_per_token": 0.0000015
+      }
+    },
+    "command-r-08-2024": {
+      "provider": "cohere",
+      "model_id": "command-r-08-2024",
+      "display_name": "Command R (08-2024)",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "cohere",
+        "command"
+      ],
+      "pricing": {
+        "input_per_token": 1.5e-7,
+        "output_per_token": 6e-7
+      }
+    },
+    "command-light": {
+      "provider": "cohere",
+      "model_id": "command-light",
+      "display_name": "Command Light",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation",
+        "notes": "Lightweight model, being deprecated in favor of Command R."
+      },
+      "context_window": 4096,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "deprecated",
+      "tags": [
+        "cohere",
+        "command",
+        "light",
+        "legacy"
+      ],
+      "pricing": {
+        "input_per_token": 3e-7,
+        "output_per_token": 6e-7
+      }
+    },
+    "embed-english-v3.0": {
+      "provider": "cohere",
+      "model_id": "embed-english-v3.0",
+      "display_name": "Embed English v3",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 512,
+      "capabilities": [
+        "embedding"
+      ],
+      "status": "active",
+      "tags": [
+        "cohere",
+        "embed",
+        "english"
+      ],
+      "pricing": {
+        "input_per_token": 1e-7,
+        "output_per_token": 0
+      }
+    },
+    "embed-multilingual-v3.0": {
+      "provider": "cohere",
+      "model_id": "embed-multilingual-v3.0",
+      "display_name": "Embed Multilingual v3",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 512,
+      "capabilities": [
+        "embedding"
+      ],
+      "status": "active",
+      "tags": [
+        "cohere",
+        "embed",
+        "multilingual"
+      ],
+      "pricing": {
+        "input_per_token": 1e-7,
+        "output_per_token": 0
+      }
+    },
+    "rerank-english-v3.0": {
+      "provider": "cohere",
+      "model_id": "rerank-english-v3.0",
+      "display_name": "Rerank English v3",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 4096,
+      "capabilities": [
+        "rerank"
+      ],
+      "status": "active",
+      "tags": [
+        "cohere",
+        "rerank",
+        "english"
+      ],
+      "pricing": {
+        "input_per_token": 0.000002,
+        "output_per_token": 0
+      }
+    },
+    "rerank-multilingual-v3.0": {
+      "provider": "cohere",
+      "model_id": "rerank-multilingual-v3.0",
+      "display_name": "Rerank Multilingual v3",
+      "verification": {
+        "status": "unverified",
+        "verified_at": "2026-01-31",
+        "source": "documentation"
+      },
+      "context_window": 4096,
+      "capabilities": [
+        "rerank"
+      ],
+      "status": "active",
+      "tags": [
+        "cohere",
+        "rerank",
+        "multilingual"
+      ],
+      "pricing": {
+        "input_per_token": 0.000002,
+        "output_per_token": 0
+      }
+    }
+  }
+}

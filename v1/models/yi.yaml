@@ -1,0 +1,132 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.1"
+
+# 零一万物 (Yi/01.AI) Model Instances
+#
+# VERIFIED_AT: 2026-01-31 (based on public Yi documentation)
+#
+# Notes:
+# - Yi is founded by Kai-Fu Lee.
+# - Known for open-source Yi model series.
+# - Strong bilingual (Chinese/English) capabilities.
+
+models:
+  # Yi Large series (flagship)
+  yi-large:
+    provider: yi
+    model_id: "yi-large"
+    display_name: "Yi Large"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Flagship model with best performance."
+    context_window: 32768
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["yi", "01ai", "flagship", "cn"]
+    pricing:
+      input_per_token: 0.00002
+      output_per_token: 0.00002
+
+  yi-large-rag:
+    provider: yi
+    model_id: "yi-large-rag"
+    display_name: "Yi Large RAG"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Optimized for retrieval-augmented generation."
+    context_window: 16384
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["yi", "01ai", "rag", "cn"]
+    pricing:
+      input_per_token: 0.000025
+      output_per_token: 0.000025
+
+  yi-large-turbo:
+    provider: yi
+    model_id: "yi-large-turbo"
+    display_name: "Yi Large Turbo"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Faster inference with good quality."
+    context_window: 16384
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["yi", "01ai", "turbo", "cn"]
+    pricing:
+      input_per_token: 0.000012
+      output_per_token: 0.000012
+
+  # Yi Medium series
+  yi-medium:
+    provider: yi
+    model_id: "yi-medium"
+    display_name: "Yi Medium"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 16384
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["yi", "01ai", "medium", "cn"]
+    pricing:
+      input_per_token: 0.0000025
+      output_per_token: 0.0000025
+
+  yi-medium-200k:
+    provider: yi
+    model_id: "yi-medium-200k"
+    display_name: "Yi Medium 200K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 204800
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["yi", "01ai", "medium", "ultra_long_context", "cn"]
+    pricing:
+      input_per_token: 0.000012
+      output_per_token: 0.000012
+
+  # Yi Spark (lightweight)
+  yi-spark:
+    provider: yi
+    model_id: "yi-spark"
+    display_name: "Yi Spark"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Lightweight model for simple tasks."
+    context_window: 16384
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["yi", "01ai", "spark", "lightweight", "cn"]
+    pricing:
+      input_per_token: 0.000001
+      output_per_token: 0.000001
+
+  # Yi Vision
+  yi-vision:
+    provider: yi
+    model_id: "yi-vision"
+    display_name: "Yi Vision"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 16384
+    capabilities: [chat, vision, streaming]
+    status: active
+    tags: ["yi", "01ai", "vision", "multimodal", "cn"]
+    pricing:
+      input_per_token: 0.000006
+      output_per_token: 0.000006

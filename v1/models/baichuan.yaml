@@ -1,0 +1,95 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.1"
+
+# 百川智能 (Baichuan) Model Instances
+#
+# VERIFIED_AT: 2026-01-31 (based on public Baichuan documentation)
+#
+# Notes:
+# - Baichuan is a leading Chinese AI company.
+# - Known for strong Chinese language understanding.
+
+models:
+  # Baichuan 4 series (latest)
+  Baichuan4:
+    provider: baichuan
+    model_id: "Baichuan4"
+    display_name: "百川 4"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Latest flagship model with best performance."
+    context_window: 32768
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["baichuan", "flagship", "cn"]
+    pricing:
+      input_per_token: 0.0001
+      output_per_token: 0.0001
+
+  # Baichuan 3 Turbo series
+  Baichuan3-Turbo:
+    provider: baichuan
+    model_id: "Baichuan3-Turbo"
+    display_name: "百川 3 Turbo"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 32768
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["baichuan", "turbo", "cn"]
+    pricing:
+      input_per_token: 0.000012
+      output_per_token: 0.000012
+
+  Baichuan3-Turbo-128k:
+    provider: baichuan
+    model_id: "Baichuan3-Turbo-128k"
+    display_name: "百川 3 Turbo 128K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 131072
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["baichuan", "turbo", "long_context", "cn"]
+    pricing:
+      input_per_token: 0.000024
+      output_per_token: 0.000024
+
+  # Baichuan 2 series (legacy)
+  Baichuan2-Turbo:
+    provider: baichuan
+    model_id: "Baichuan2-Turbo"
+    display_name: "百川 2 Turbo"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 8192
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["baichuan", "turbo", "legacy", "cn"]
+    pricing:
+      input_per_token: 0.000008
+      output_per_token: 0.000008
+
+  Baichuan2-Turbo-192k:
+    provider: baichuan
+    model_id: "Baichuan2-Turbo-192k"
+    display_name: "百川 2 Turbo 192K"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 196608
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["baichuan", "turbo", "ultra_long_context", "cn"]
+    pricing:
+      input_per_token: 0.000016
+      output_per_token: 0.000016

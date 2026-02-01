@@ -1,49 +1,128 @@
 {
   "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
   "id": "cohere",
-  "protocol_version": "1.1",
+  "protocol_version": "1.5",
+  "name": "Cohere",
+  "version": "v2",
+  "status": "stable",
+  "category": "ai_provider",
+  "official_url": "https://docs.cohere.com",
+  "support_contact": "https://cohere.com/contact",
   "endpoint": {
-    "base_url": "https://api.cohere.ai/v2",
-    "protocol": "https"
-  },
-  "availability": {
-    "required": true,
-    "regions": [
-      "global"
-    ],
-    "check": {
-      "method": "GET",
-      "path": "/check-api-key",
-      "expected_status": [
-        200
-      ]
-    }
-  },
-  "capabilities": {
-    "streaming": true,
-    "tools": true,
-    "vision": false,
-    "agentic": true
+    "base_url": "https://api.cohere.com/v2",
+    "protocol": "https",
+    "timeout_ms": 60000
   },
   "auth": {
     "type": "bearer",
-    "key_env": "COHERE_API_KEY",
-    "header_name": "Authorization"
+    "token_env": "COHERE_API_KEY"
+  },
+  "payload_format": "cohere_v2",
+  "api_families": [
+    "chat"
+  ],
+  "default_api_family": "chat",
+  "endpoints": {
+    "chat": {
+      "path": "/chat",
+      "method": "POST",
+      "adapter": "cohere_v2"
+    }
+  },
+  "services": {
+    "list_models": {
+      "path": "/models",
+      "method": "GET",
+      "response_binding": "models"
+    }
+  },
+  "termination": {
+    "source_field": "finish_reason",
+    "mapping": {
+      "COMPLETE": "end_turn",
+      "MAX_TOKENS": "max_tokens",
+      "STOP_SEQUENCE": "stop_sequence",
+      "TOOL_CALL": "tool_use",
+      "ERROR": "error"
+    },
+    "notes": [
+      "Cohere uses uppercase finish reasons.",
+      "Known for Command R+ and enterprise-grade RAG capabilities."
+    ]
+  },
+  "tooling": {
+    "source_model": "openai_tool_calls",
+    "tool_use": {
+      "id_path": "id",
+      "name_path": "name",
+      "input_path": "parameters",
+      "input_format": "json_object"
+    },
+    "notes": [
+      "Cohere V2 uses 'tools' array similar to OpenAI."
+    ]
+  },
+  "rate_limit_headers": {
+    "requests_limit": "x-ratelimit-limit",
+    "requests_remaining": "x-ratelimit-remaining",
+    "requests_reset": "x-ratelimit-reset"
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "max_retries": 3,
+    "min_delay_ms": 500,
+    "max_delay_ms": 30000,
+    "jitter": "full",
+    "retry_on_http_status": [
+      429,
+      500,
+      502,
+      503
+    ]
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "403": "permission_denied",
+      "404": "not_found",
+      "422": "invalid_request",
+      "429": "rate_limited",
+      "500": "server_error",
+      "503": "overloaded"
+    }
   },
   "parameter_mappings": {
-    "model": "model",
-    "messages": "messages",
-    "max_tokens": "max_tokens",
     "temperature": "temperature",
+    "max_tokens": "max_tokens",
     "stream": "stream",
+    "top_p": "p",
+    "top_k": "k",
+    "stop_sequences": "stop_sequences",
     "tools": "tools",
-    "tool_choice": "tool_choice"
+    "frequency_penalty": "frequency_penalty",
+    "presence_penalty": "presence_penalty",
+    "seed": "seed"
+  },
+  "response_format": "cohere_v2",
+  "response_paths": {
+    "content": "message.content[0].text",
+    "tool_calls": "message.tool_calls",
+    "usage": "usage",
+    "finish_reason": "finish_reason"
   },
   "streaming": {
+    "event_format": "sse",
     "decoder": {
       "format": "sse",
-      "strategy": "cohere_v2"
+      "delimiter": "\n",
+      "prefix": "data: ",
+      "done_signal": ""
     },
+    "content_path": "delta.message.content.text",
+    "tool_call_path": "delta.message.tool_calls",
+    "usage_path": "usage",
+    "frame_selector": "exists($.type)",
     "event_map": [
       {
         "match": "$.type == 'content-delta'",
@@ -56,24 +135,75 @@
         "match": "$.type == 'tool-call-start'",
         "emit": "ToolCallStarted",
         "fields": {
-          "tool_call_id": "$.delta.message.tool_calls[0].id",
-          "tool_name": "$.delta.message.tool_calls[0].function.name"
+          "tool_call_id": "$.delta.message.tool_calls.id",
+          "tool_name": "$.delta.message.tool_calls.name"
+        }
+      },
+      {
+        "match": "$.type == 'tool-call-delta'",
+        "emit": "PartialToolCall",
+        "fields": {
+          "arguments": "$.delta.message.tool_calls.parameters"
+        }
+      },
+      {
+        "match": "$.type == 'message-end'",
+        "emit": "FinalCandidate",
+        "fields": {
+          "finish_reason": "$.delta.finish_reason",
+          "usage": "$.delta.usage"
         }
       }
-    ]
+    ],
+    "stop_condition": "$.type == 'message-end'"
   },
-  "retry_policy": {
-    "strategy": "exponential_backoff",
-    "min_delay_ms": 500,
-    "retry_on_http_status": [
-      429,
-      500,
-      502
-    ]
+  "features": {
+    "multi_candidate": {
+      "support_type": "simulated",
+      "max_concurrent": 1
+    },
+    "response_mapping": {
+      "tool_calls": {
+        "path": "message.tool_calls",
+        "fields": {
+          "id": "id",
+          "name": "name",
+          "args": "parameters"
+        }
+      },
+      "error": {
+        "message_path": "message",
+        "code_path": "code"
+      }
+    }
   },
-  "rate_limit_headers": {
-    "requests_limit": "x-ratelimit-limit",
-    "requests_remaining": "x-ratelimit-remaining",
-    "requests_reset": "x-ratelimit-reset"
-  }
+  "capabilities": {
+    "streaming": true,
+    "tools": true,
+    "vision": false,
+    "agentic": true,
+    "parallel_tools": false,
+    "reasoning": false
+  },
+  "availability": {
+    "required": false,
+    "regions": [
+      "global"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/models",
+      "expected_status": [
+        200,
+        401
+      ],
+      "timeout_ms": 5000
+    }
+  },
+  "experimental_features": [
+    "rag",
+    "connectors",
+    "rerank",
+    "embed"
+  ]
 }

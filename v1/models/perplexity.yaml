@@ -1,0 +1,97 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.1"
+
+# Perplexity Model Instances
+#
+# VERIFIED_AT: 2026-01-31 (based on public Perplexity documentation)
+#
+# Notes:
+# - Perplexity is known for search-augmented AI.
+# - "Online" models include real-time web search.
+# - "Chat" models are standard conversational models.
+
+models:
+  # Sonar Online models (with web search)
+  llama-3.1-sonar-small-128k-online:
+    provider: perplexity
+    model_id: "llama-3.1-sonar-small-128k-online"
+    display_name: "Sonar Small Online (8B)"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Llama 3.1 8B with real-time web search."
+    context_window: 127072
+    capabilities: [chat, streaming, online_search]
+    status: active
+    tags: ["perplexity", "sonar", "online", "search"]
+    pricing:
+      input_per_token: 0.0000002
+      output_per_token: 0.0000002
+
+  llama-3.1-sonar-large-128k-online:
+    provider: perplexity
+    model_id: "llama-3.1-sonar-large-128k-online"
+    display_name: "Sonar Large Online (70B)"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Llama 3.1 70B with real-time web search."
+    context_window: 127072
+    capabilities: [chat, streaming, online_search]
+    status: active
+    tags: ["perplexity", "sonar", "online", "search", "large"]
+    pricing:
+      input_per_token: 0.000001
+      output_per_token: 0.000001
+
+  llama-3.1-sonar-huge-128k-online:
+    provider: perplexity
+    model_id: "llama-3.1-sonar-huge-128k-online"
+    display_name: "Sonar Huge Online (405B)"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Llama 3.1 405B with real-time web search."
+    context_window: 127072
+    capabilities: [chat, streaming, online_search]
+    status: active
+    tags: ["perplexity", "sonar", "online", "search", "flagship"]
+    pricing:
+      input_per_token: 0.000005
+      output_per_token: 0.000005
+
+  # Sonar Chat models (without web search)
+  llama-3.1-sonar-small-128k-chat:
+    provider: perplexity
+    model_id: "llama-3.1-sonar-small-128k-chat"
+    display_name: "Sonar Small Chat (8B)"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 131072
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["perplexity", "sonar", "chat"]
+    pricing:
+      input_per_token: 0.0000002
+      output_per_token: 0.0000002
+
+  llama-3.1-sonar-large-128k-chat:
+    provider: perplexity
+    model_id: "llama-3.1-sonar-large-128k-chat"
+    display_name: "Sonar Large Chat (70B)"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 131072
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["perplexity", "sonar", "chat", "large"]
+    pricing:
+      input_per_token: 0.000001
+      output_per_token: 0.000001
