@@ -292,7 +292,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 AI-Protocol has official runtime implementations in multiple languages:
 
-### Python Runtime
+### Python Runtime (v0.4.0+)
 
 ```bash
 # Install from PyPI
@@ -315,12 +315,12 @@ response = client.chat.completions.create(
 
 📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **Docs**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
 
-### Rust Runtime
+### Rust Runtime (v0.6.5+)
 
 ```toml
 # Add to Cargo.toml
 [dependencies]
-ai-lib-rust = "0.1"
+ai-lib-rust = "0.6"
 ```
 
 ```rust

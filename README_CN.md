@@ -292,7 +292,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 AI-Protocol 提供多语言官方运行时实现：
 
-### Python 运行时
+### Python 运行时 (v0.4.0+)
 
 ```bash
 # 从 PyPI 安装
@@ -315,12 +315,12 @@ response = client.chat.completions.create(
 
 📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **文档**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
 
-### Rust 运行时
+### Rust 运行时 (v0.6.5+)
 
 ```toml
 # 添加到 Cargo.toml
 [dependencies]
-ai-lib-rust = "0.1"
+ai-lib-rust = "0.6"
 ```
 
 ```rust
