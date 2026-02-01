@@ -2,6 +2,34 @@
 
 All notable changes to AI-Protocol specifications and schemas will be documented here.
 
+## 0.3.5 (2026-01-31)
+
+### Added
+- **6 New Model Configuration Files**: Added comprehensive model registries
+  - Perplexity: Sonar Small/Large/Huge (Online + Chat variants)
+  - Baichuan: Baichuan 2/3/4 series
+  - Moonshot (Kimi): moonshot-v1-8k/32k/128k, kimi-latest
+  - Yi (01.AI): yi-large, yi-medium-200k, yi-vision, yi-spark
+  - Zhipu (GLM): glm-4-plus, glm-4-air, glm-4-flash, glm-4-long (1M context)
+  - Cohere: Command R/R+, Embed v3, Rerank v3
+- **MiniMax Models**: Added abab 5.5/6.5 series, embedding, and speech models
+
+### Changed
+- **7 Providers Enhanced to v1.5**: Complete configuration overhaul
+  - Perplexity, Baichuan, Moonshot, Yi, OpenRouter, Zhipu, Cohere
+  - All now include: streaming event_map, error_classification, tooling, retry_policy
+- **MiniMax Provider**: Upgraded from basic v1.1 to complete v1.5 configuration
+- **README**: Added runtime installation instructions (Python pip, Rust cargo)
+- **Runtime Versions**: Updated to ai-lib-python v0.4.0, ai-lib-rust v0.6.5
+
+### Removed
+- Internal code review documents (moved to separate tracking)
+
+### Statistics
+- Total Providers: 30
+- Total Model Configurations: 28
+- Validation Files: 68
+
 ## 0.3.0 (2026-01-31)
 
 ### Added
