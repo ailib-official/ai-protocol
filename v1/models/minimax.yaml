@@ -1,0 +1,132 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.1"
+
+# MiniMax Model Instances
+#
+# VERIFIED_AT: 2026-01-31 (based on public MiniMax platform documentation)
+#
+# Notes:
+# - MiniMax is a leading Chinese AI company.
+# - abab series are their flagship LLM models.
+# - Official docs: https://platform.minimaxi.com/document/ChatCompletion%20v2
+
+models:
+  # abab 6.5 series (latest flagship)
+  abab6.5s-chat:
+    provider: minimax
+    model_id: "abab6.5s-chat"
+    display_name: "MiniMax abab 6.5s Chat"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Latest flagship model with enhanced capabilities."
+    context_window: 245760
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["minimax", "abab", "flagship", "long_context", "cn"]
+    pricing:
+      input_per_token: 0.000001
+      output_per_token: 0.000001
+
+  abab6.5g-chat:
+    provider: minimax
+    model_id: "abab6.5g-chat"
+    display_name: "MiniMax abab 6.5g Chat"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "General purpose flagship model."
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["minimax", "abab", "flagship", "cn"]
+    pricing:
+      input_per_token: 0.000001
+      output_per_token: 0.000001
+
+  abab6.5t-chat:
+    provider: minimax
+    model_id: "abab6.5t-chat"
+    display_name: "MiniMax abab 6.5t Chat"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Optimized for specific tasks."
+    context_window: 8192
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["minimax", "abab", "cn"]
+    pricing:
+      input_per_token: 0.000001
+      output_per_token: 0.000001
+
+  # abab 5.5 series (stable)
+  abab5.5s-chat:
+    provider: minimax
+    model_id: "abab5.5s-chat"
+    display_name: "MiniMax abab 5.5s Chat"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 16384
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["minimax", "abab", "stable", "cn"]
+    pricing:
+      input_per_token: 0.000001
+      output_per_token: 0.000001
+
+  abab5.5-chat:
+    provider: minimax
+    model_id: "abab5.5-chat"
+    display_name: "MiniMax abab 5.5 Chat"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 16384
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["minimax", "abab", "stable", "cn"]
+    pricing:
+      input_per_token: 0.0000005
+      output_per_token: 0.0000005
+
+  # Embedding model
+  embo-01:
+    provider: minimax
+    model_id: "embo-01"
+    display_name: "MiniMax Embedding"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+    context_window: 4096
+    capabilities: [embedding]
+    status: active
+    tags: ["minimax", "embedding", "cn"]
+    pricing:
+      input_per_token: 0.0000001
+      output_per_token: 0
+
+  # Speech model (T2A - Text to Audio)
+  speech-01-turbo:
+    provider: minimax
+    model_id: "speech-01-turbo"
+    display_name: "MiniMax Speech Turbo"
+    verification:
+      status: unverified
+      verified_at: "2026-01-31"
+      source: "documentation"
+      notes: "Text-to-speech model with multiple voice options."
+    context_window: 10000
+    capabilities: [speech_synthesis]
+    status: active
+    tags: ["minimax", "speech", "tts", "cn"]
+    pricing:
+      input_per_token: 0.000001
+      output_per_token: 0
