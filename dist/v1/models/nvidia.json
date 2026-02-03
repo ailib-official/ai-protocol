@@ -1,0 +1,158 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "protocol_version": "1.1",
+  "models": {
+    "nvidia-nemotron-4-340b-instruct": {
+      "provider": "nvidia",
+      "model_id": "nvidia-nemotron-4-340b-instruct",
+      "display_name": "Nemotron 4 340B Instruct",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-02-04",
+        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
+        "notes": "NVIDIA flagship 340B chat model; OpenAI-compatible chat completions."
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "vision",
+        "tools",
+        "streaming",
+        "agentic",
+        "parallel_tools",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "nemotron",
+        "flagship",
+        "reasoning",
+        "tools"
+      ]
+    },
+    "nvidia/llama3-chatqa-1.5-70b": {
+      "provider": "nvidia",
+      "model_id": "nvidia/llama3-chatqa-1.5-70b",
+      "display_name": "Llama 3 ChatQA 1.5 70B",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-02-04",
+        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
+        "notes": "70B chat QA model on NVIDIA API Catalog."
+      },
+      "context_window": 32768,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming",
+        "agentic"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "llama",
+        "chatqa",
+        "70b"
+      ]
+    },
+    "deepseek-ai/deepseek-r1": {
+      "provider": "nvidia",
+      "model_id": "deepseek-ai/deepseek-r1",
+      "display_name": "DeepSeek R1 (via NVIDIA)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-02-04",
+        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
+        "notes": "Reasoning model available on NVIDIA API Catalog."
+      },
+      "context_window": 64000,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "deepseek",
+        "reasoning",
+        "nvidia-catalog"
+      ]
+    },
+    "mistralai/mistral-large-2-instruct": {
+      "provider": "nvidia",
+      "model_id": "mistralai/mistral-large-2-instruct",
+      "display_name": "Mistral Large 2 Instruct (via NVIDIA)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-02-04",
+        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
+        "notes": "Mistral flagship instruct model on NVIDIA API Catalog."
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "vision",
+        "tools",
+        "streaming",
+        "agentic"
+      ],
+      "status": "active",
+      "tags": [
+        "mistral",
+        "instruct",
+        "nvidia-catalog"
+      ]
+    },
+    "mistralai/mixtral-8x22b-instruct": {
+      "provider": "nvidia",
+      "model_id": "mistralai/mixtral-8x22b-instruct",
+      "display_name": "Mixtral 8x22B Instruct (via NVIDIA)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-02-04",
+        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
+        "notes": "MoE 8x22B instruct model on NVIDIA API Catalog."
+      },
+      "context_window": 65536,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming",
+        "agentic"
+      ],
+      "status": "active",
+      "tags": [
+        "mistral",
+        "mixtral",
+        "moe",
+        "nvidia-catalog"
+      ]
+    },
+    "meta/llama3-70b": {
+      "provider": "nvidia",
+      "model_id": "meta/llama3-70b",
+      "display_name": "Llama 3 70B (via NVIDIA)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-02-04",
+        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
+        "notes": "Meta Llama 3 70B on NVIDIA API Catalog."
+      },
+      "context_window": 8192,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "70b",
+        "nvidia-catalog"
+      ]
+    }
+  }
+}

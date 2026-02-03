@@ -76,6 +76,7 @@ Examples:
 - `MISTRAL_API_KEY`
 - `DEEPSEEK_API_KEY`
 - `GEMINI_API_KEY` (Gemini uses `auth.type=query_param` and `param_name=key`)
+- `NVIDIA_API_KEY` (NVIDIA API Catalog / NVIDIA Build; keys from https://build.nvidia.com/explore/discover)
 
 ### Proxy / network
 
