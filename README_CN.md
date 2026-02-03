@@ -234,7 +234,7 @@ GitHub Actions 工作流 (`validate.yml`) 自动执行：
 
 **全球供应商：**
 - OpenAI, Anthropic, Google Gemini, Groq, Mistral, Cohere, Perplexity
-- Together AI, DeepInfra, OpenRouter, Azure OpenAI
+- Together AI, DeepInfra, OpenRouter, Azure OpenAI, NVIDIA API Catalog（NVIDIA Build）
 - Fireworks AI, Replicate, AI21 Labs, Cerebras, Lepton AI
 
 **中国地区供应商：**

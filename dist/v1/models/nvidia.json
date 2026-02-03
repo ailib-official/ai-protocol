@@ -153,6 +153,60 @@
         "70b",
         "nvidia-catalog"
       ]
+    },
+    "moonshotai/kimi-k2-instruct": {
+      "provider": "nvidia",
+      "model_id": "moonshotai/kimi-k2-instruct",
+      "display_name": "Kimi K2 Instruct (via NVIDIA)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-02-04",
+        "source": "https://docs.api.nvidia.com/nim/reference/moonshotai-kimi-k2-instruct",
+        "notes": "Moonshot Kimi K2 MoE 1T/32B; agentic, tools, 128K context on NVIDIA API Catalog."
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming",
+        "agentic",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "moonshot",
+        "kimi",
+        "moe",
+        "nvidia-catalog",
+        "agentic"
+      ]
+    },
+    "minimaxai/minimax-m2": {
+      "provider": "nvidia",
+      "model_id": "minimaxai/minimax-m2",
+      "display_name": "MiniMax M2 (via NVIDIA)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-02-04",
+        "source": "https://docs.api.nvidia.com/nim/reference/minimaxai-minimax-m2",
+        "notes": "MiniMax M2 MoE 230B/10B; coding, reasoning, tool-use, 128K context on NVIDIA API Catalog."
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "tools",
+        "streaming",
+        "agentic",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "minimax",
+        "moe",
+        "nvidia-catalog",
+        "coding",
+        "agentic"
+      ]
     }
   }
 }

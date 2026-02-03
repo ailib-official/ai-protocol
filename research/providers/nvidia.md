@@ -27,8 +27,8 @@
 - **Payload**: OpenAI-compatible (`openai_style`)
 - Same request/response shape as OpenAI Chat Completions (messages, model, stream, temperature, max_tokens, tools, etc.).
 
-## Models (6 selected – capability / tech leading)
-Verified against [LLM APIs – Models](https://docs.api.nvidia.com/nim/reference/llm-apis):
+## Models (8 selected – capability / tech leading, incl. Minimax & Kimi latest)
+Verified against [LLM APIs – Models](https://docs.api.nvidia.com/nim/reference/llm-apis) and per-model reference pages:
 
 | model_id | Display / notes |
 |----------|------------------|
@@ -38,6 +38,8 @@ Verified against [LLM APIs – Models](https://docs.api.nvidia.com/nim/reference
 | `mistralai/mistral-large-2-instruct` | Mistral Large 2 Instruct |
 | `mistralai/mixtral-8x22b-instruct` | Mixtral 8x22B Instruct |
 | `meta/llama3-70b` | Meta Llama 3 70B |
+| `moonshotai/kimi-k2-instruct` | Kimi K2 Instruct (MoE 1T/32B; agentic, 128K) |
+| `minimaxai/minimax-m2` | MiniMax M2 (MoE 230B/10B; coding, reasoning, 128K) |
 
 ## Termination / tooling
 - Same as OpenAI: `finish_reason` (stop, length, tool_calls, content_filter); tool_calls as `function.name` / `function.arguments`.

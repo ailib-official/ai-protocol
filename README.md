@@ -234,7 +234,7 @@ See [docs/CI_VALIDATION_EXPLAINED.md](docs/CI_VALIDATION_EXPLAINED.md) for detai
 
 **Global Providers:**
 - OpenAI, Anthropic, Google Gemini, Groq, Mistral, Cohere, Perplexity
-- Together AI, DeepInfra, OpenRouter, Azure OpenAI
+- Together AI, DeepInfra, OpenRouter, Azure OpenAI, NVIDIA API Catalog (NVIDIA Build)
 - Fireworks AI, Replicate, AI21 Labs, Cerebras, Lepton AI
 
 **China Region Providers:**
