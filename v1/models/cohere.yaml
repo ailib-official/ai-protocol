@@ -4,26 +4,27 @@ protocol_version: "1.1"
 # Cohere Model Instances
 #
 # VERIFIED_AT: 2026-01-31 (based on public Cohere documentation)
+# FACT-CHECK 2026-02: https://docs.cohere.com/docs/models — command-r, command-r-plus
+#   deprecated Sept 15, 2025. Use command-r-plus-08-2024 or command-r-08-2024 (Live).
 #
 # Notes:
 # - Cohere is known for enterprise-grade LLMs.
-# - Command R+ is their flagship model.
-# - Strong RAG and retrieval capabilities.
+# - For Chat API use Live models: command-r-plus-08-2024, command-r-08-2024, command-a-03-2025, etc.
 
 models:
-  # Command R+ (flagship)
+  # Command R+ (deprecated Sept 15, 2025 — use command-r-plus-08-2024)
   command-r-plus:
     provider: cohere
     model_id: "command-r-plus"
-    display_name: "Command R+"
+    display_name: "Command R+ (deprecated)"
     verification:
       status: unverified
-      verified_at: "2026-01-31"
-      source: "documentation"
-      notes: "Flagship model with 128K context, optimized for RAG."
+      verified_at: "2026-02-04"
+      source: "https://docs.cohere.com/docs/models"
+      notes: "Deprecated Sept 15, 2025. Use command-r-plus-08-2024."
     context_window: 131072
     capabilities: [chat, tools, streaming]
-    status: active
+    status: deprecated
     tags: ["cohere", "command", "flagship", "rag"]
     pricing:
       input_per_token: 0.000003
@@ -45,18 +46,19 @@ models:
       input_per_token: 0.0000025
       output_per_token: 0.00001
 
-  # Command R (standard)
+  # Command R (deprecated Sept 15, 2025 — use command-r-08-2024)
   command-r:
     provider: cohere
     model_id: "command-r"
-    display_name: "Command R"
+    display_name: "Command R (deprecated)"
     verification:
       status: unverified
-      verified_at: "2026-01-31"
-      source: "documentation"
+      verified_at: "2026-02-04"
+      source: "https://docs.cohere.com/docs/models"
+      notes: "Deprecated Sept 15, 2025. Use command-r-08-2024."
     context_window: 131072
     capabilities: [chat, tools, streaming]
-    status: active
+    status: deprecated
     tags: ["cohere", "command", "standard"]
     pricing:
       input_per_token: 0.0000005
