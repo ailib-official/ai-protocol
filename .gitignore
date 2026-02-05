@@ -32,6 +32,8 @@ RELEASE_CHECKLIST.md
 # Internal documentation (moved to docs/ but should not be committed)
 docs/HEALTH_CHECK_VERIFICATION.md
 docs/MIGRATION_GUIDE.md
+docs/FACT_CHECK_CONNECTIVITY.md
+docs/FACT_CHECKING_MODELS.md
 
 # Scripts documentation (internal use only)
 scripts/CHANGELOG.md
