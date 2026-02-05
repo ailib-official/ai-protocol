@@ -1,0 +1,100 @@
+# AI-Protocol v1.1 Example: Simple Streaming Chat
+# A minimal example demonstrating basic streaming chat setup
+
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
+# Example: OpenAI with simplified streaming configuration
+id: openai_simple_stream
+protocol_version: "1.5"
+
+version: "v1"
+
+endpoint:
+  base_url: "https://api.openai.com/v1"
+  protocol: "https"
+
+auth:
+  type: bearer
+  token_env: "OPENAI_API_KEY"
+
+# Simplified parameter mappings for basic use
+parameter_mappings:
+  temperature: "temperature"
+  max_tokens: "max_tokens"
+  stream: "stream"
+  top_p: "top_p"
+  model: "model"
+
+# Basic streaming configuration
+streaming:
+  decoder:
+    format: "openai_sse"
+    strategy: "openai_event_stream"
+  
+  # Filter for content deltas only
+  frame_selector: "$.type == 'content_block_delta'"
+  
+  # Simple event mapping
+  event_map:
+    - match: "$.type == 'content_block_delta'"
+      emit: "PartialContentDelta"
+      extract:
+        content: "$.delta.text"
+        sequence_id: "$.index"
+    
+    - match: "$.type == 'message_stop'"
+      emit: "StreamEnd"
+      extract:
+        finish_reason: "$.reason"
+
+# Capabilities for this example
+capabilities: 
+  chat: true
+  streaming: true
+  tools: false
+  vision: false
+  multimodal: false
+  agentic: false
+  reasoning: false
+
+# Simple error handling
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "429": "rate_limited"
+    "500": "server_error"
+
+# Basic retry policy
+retry_policy:
+  strategy: "exponential_backoff"
+  min_delay_ms: 1000
+  max_delay_ms: 30000
+  jitter: "full"
+  max_retries: 3
+  retry_on_http_status: [429, 500]
+
+# Usage tracking
+response_mapping:
+  usage:
+    prompt_tokens_path: "usage.prompt_tokens"
+    completion_tokens_path: "usage.completion_tokens"
+    total_tokens_path: "usage.total_tokens"
+
+# Features enabled in this example
+features:
+  streaming:
+    enabled: true
+    auto_reconnect: true
+    max_reconnect_attempts: 3
+  
+  simple:
+    minimal_configurations: true
+    beginner_friendly: true
+
+# Notes for users
+notes:
+  - "This example shows minimal streaming configuration"
+  - "Tool calling is disabled for simplicity"
+  - "For full features, see v1/providers/openai.yaml"
+  - "Perfect for learning AI-Protocol basics"

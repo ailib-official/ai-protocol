@@ -1,0 +1,176 @@
+# AI-Protocol v1.1 Example: Batch Processing Pattern
+# Demonstrates configuration for efficient batch request handling
+
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
+# Example: Anthropic optimized for batch operations
+id: anthropic_batch
+protocol_version: "1.5"
+
+version: "v1"
+
+endpoint:
+  base_url: "https://api.anthropic.com/v1"
+  protocol: "https"
+
+  # Optimized for batch workflows
+  api_families:
+    - id: "chat"
+      name: "Chat Completions"
+      purpose: "Batch text generation"
+
+auth:
+  type: bearer
+  token_env: "ANTHROPIC_API_KEY"
+  extra_headers:
+    - name: "anthropic-version"
+      value: "2023-06-01"
+
+parameter_mappings:
+  temperature: "temperature"
+  max_tokens: "max_tokens"
+  stream: "stream"
+  system: "system"
+  model: "model"
+
+# Batch-optimized settings
+streaming:
+  # No streaming for batch operations
+  decoder:
+    format: "none"
+
+# Batch-specific configuration
+batching:
+  enabled: true
+  max_batch_size: 64
+  default_concurrency: 10
+  
+  # Performance hints for batch
+  preferences:
+    - "Optimize for throughput over latency"
+    - "Allow parallel processing within batch"
+    - "Use connection pooling"
+
+# Efficient error handling for batch
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "429": "rate_limited"
+    "500": "server_error"
+
+  # Batch-specific error patterns
+  by_error_code:
+    "partial_failure": "batch_partial_failure"
+
+# Conservative retry for batch operations
+retry_policy:
+  strategy: "exponential_backoff"
+  min_delay_ms: 2000
+  max_delay_ms: 60000
+  jitter: "full"
+  max_retries: 2
+  retry_on_http_status: [429, 500]
+  
+  notes:
+    - "Lower retry attempt limit for batch to avoid timeout"
+    - "Longer delays between retries"
+
+capabilities: 
+  chat: true
+  streaming: false
+  tools: false
+  vision: false
+  multimodal: false
+  agentic: false
+  reasoning: false
+
+# Response optimization for batch
+response_mapping:
+  content:
+    path: "content[0].text"
+    parse_as: "string"
+  
+  usage:
+    prompt_tokens_path: "usage.input_tokens"
+    completion_tokens_path: "usage.output_tokens"
+    total_tokens_path: "usage.total_tokens"
+
+  # Batch-specific metadata
+  metadata:
+    batch_id_path: "x-request-id"
+    batch_index_path: "index"
+
+# Monitoring and observability
+telemetry:
+  enabled: true
+  collect:
+    - "batch_size"
+    - "batch_duration_ms"
+    - "success_rate"
+    - "failure_count"
+    - "average_tokens_per_request"
+
+# Features optimized for batch workflows
+features:
+  batch:
+    enabled: true
+    supports_concurrent_batches: true
+    max_concurrent_batches: 5
+    batch_timeout_ms: 300000  # 5 minutes
+    
+  performance:
+    connection_pooling: true
+    max_connections: 50
+    idle_timeout_ms: 30000
+  
+  rate_limiting:
+    adaptive: true
+    initial_rpm: 100
+    max_rpm: 500
+
+# Use patterns
+usage_patterns:
+  - name: "Bulk Content Generation"
+    description: "Generate multiple pieces of content in parallel"
+    recommended_batch_size: 20
+    ideal_concurrency: 5
+  
+  - name: "Summarization Pipeline"
+    description: "Summarize multiple documents"
+    recommended_batch_size: 32
+    ideal_concurrency: 8
+  
+  - name: "Translation Batch"
+    description: "Translate to multiple languages"
+    recommended_batch_size: 50
+    ideal_concurrency: 10
+
+# Example code snippets (for documentation)
+examples:
+  - name: "Python Batch Processing"
+    language: "python"
+    code: |
+      from ai_lib_python import AiClient, ChatBatchRequest
+
+      client = await AiClient.create("anthropic/claude-3-5-sonnet")
+
+      # Create batch requests
+      requests = [
+          ChatBatchRequest.new([Message("user", "Summarize doc 1")]),
+          ChatBatchRequest.new([Message("user", "Summarize doc 2")]),
+          ChatBatchRequest.new([Message("user", "Summarize doc 3")]),
+      ]
+
+      # Execute batch with controlled concurrency
+      results = await client.chat_batch(requests, concurrency=5)
+      
+      for i, result in enumerate(results):
+          print(f"Doc {i+1}: {result.content}")
+
+# Notes
+notes:
+  - "This configuration prioritizes throughput over latency"
+  - "Connection pooling is enabled for batch efficiency"
+  - "Adaptive rate limiting protects against quota exhaustion"
+  - "Monitoring helps identify bottlenecks in batch processing"

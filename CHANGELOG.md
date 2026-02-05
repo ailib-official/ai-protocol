@@ -2,6 +2,52 @@
 
 All notable changes to AI-Protocol specifications and schemas will be documented here.
 
+## 0.4.0 (2026-02-05) - Documentation & Examples Release ✨
+
+This release focuses on documentation, examples, and developer experience improvements.
+
+### Added
+
+- **3 New User Documentation Files**:
+  - `docs/GETTING_STARTED.md` - Comprehensive user guide for beginners
+  - `docs/CONTRIBUTING_PROVIDER.md` - Step-by-step tutorial for adding new providers
+  - `docs/RUNTIME_INTEGRATION.md` - In-depth guide for integrating AI-Protocol into runtimes
+
+- **4 New Example Configurations**:
+  - `examples/simple_streaming.yaml` - Minimal streaming chat example
+  - `examples/batch_processing.yaml` - Batch processing patterns with Anthropic
+  - `examples/multimodal_vision.yaml` - Vision/multimodal example with Gemini
+  - `examples/function_calling.yaml` - Function/tool calling patterns with OpenAI
+
+### Improved
+
+- **Documentation Coverage**: Significantly expanded documentation for:
+  - Getting started with Python and Runtimes
+  - Provider contribution workflow
+  - Runtime implementation patterns
+  - Example code snippets for common use cases
+
+- **Example Quality**: New examples include:
+  - Detailed comments explaining configurations
+  - Usage patterns and best practices
+  - Real-world code examples (Python and Rust)
+  - Error handling and troubleshooting tips
+
+### Changed
+
+- **README.md**: Documentation references updated to point to new docs
+
+### Documentation
+
+Total documentation files: 8 (up from 4)
+
+| Directory | Files | Description |
+|-----------|-------|-------------|
+| `docs/` | 5 | Specification, CI validation, user guides |
+| `examples/` | 5 | Configuration examples for common patterns |
+
+## 0.3.5 (2026-01-31)
+
 ## 0.3.5 (2026-01-31)
 
 ### Added
