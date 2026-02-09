@@ -1,11 +1,12 @@
 # Work and internal documents (should not be committed)
-*-*.txt
+*-*-*.txt
 *讨论*.txt
 *演进*.txt
 *草案*.txt
 *Schema*.txt
 AI-Protocol 项目审查.md
 *审查*.md
+AI-Protocol*.md
 
 # Work and planning documents
 CHANGE_PLAN.md
