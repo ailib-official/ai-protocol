@@ -1,0 +1,98 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.5"
+
+# Jina AI Model Instances
+# Notes: Jina AI provides embeddings, rerank, and reader APIs (not chat LLM)
+# These models are primarily for RAG (Retrieval-Augmented Generation) infrastructure
+
+models:
+  # Text Embeddings
+  jina-embeddings-v3:
+    provider: jina
+    model_id: "jina-embeddings-v3"
+    display_name: "Jina Embeddings v3"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "State-of-the-art text embeddings"
+    context_window: 8192
+    capabilities: [embeddings]
+    modality: "text"
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["jina", "embeddings", "rag", "search"]
+    dimensions: 1024
+
+  jina-embeddings-v2-base-en:
+    provider: jina
+    model_id: "jina-embeddings-v2-base-en"
+    display_name: "Jina Embeddings v2 Base EN"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "English-only embeddings model"
+    context_window: 8192
+    capabilities: [embeddings]
+    modality: "text"
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["jina", "embeddings", "en", "fast"]
+    dimensions: 768
+
+  # Code Embeddings
+  jina-embeddings-v2-base-code:
+    provider: jina
+    model_id: "jina-embeddings-v2-base-code"
+    display_name: "Jina Embeddings v2 Base Code"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Code embeddings for semantic code search"
+    context_window: 8192
+    capabilities: [embeddings]
+    modality: "code"
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["jina", "embeddings", "code", "search"]
+    dimensions: 768
+
+  # Rerank Models
+  jina-reranker-v2-base-en:
+    provider: jina
+    model_id: "jina-reranker-v2-base-en"
+    display_name: "Jina Reranker v2 Base EN"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Re-ranking model for RAG"
+    context_window: 512
+    capabilities: [rerank]
+    modality: "text"
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["jina", "rerank", "rag", "search"]
+
+  jina-colbert-v2:
+    provider: jina
+    model_id: "jina-colbert-v2"
+    display_name: "Jina ColBERT v2"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Late interaction reranking"
+    context_window: 512
+    capabilities: [rerank]
+    modality: "text"
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["jina", "rerank", "colbert", "rag"]

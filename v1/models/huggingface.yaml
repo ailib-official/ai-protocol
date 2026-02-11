@@ -1,0 +1,110 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.5"
+
+# Hugging Face Popular Model Instances
+# Notes: Hugging Face has 100K+ models; this is a curated list of popular open-source models
+# Model ID format: {organization}/{model-name}
+# Use connection_vars or path parameter to specify dynamic model_id
+
+models:
+  # Meta Llama Series
+  llama-3.1-70b-instruct:
+    provider: huggingface
+    model_id: "meta-llama/Meta-Llama-3.1-70B-Instruct"
+    display_name: "Llama 3.1 70B Instruct"
+    verification:
+      status: verified
+      verified_at: "2026-01-31"
+      source: "models_hub"
+      notes: "Popular open-source model on Hugging Face"
+    context_window: 131072
+    capabilities: [chat, tools, streaming, agentic]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["llama", "meta", "open-source", "instruct", "large-context"]
+
+  llama-3.1-8b-instruct:
+    provider: huggingface
+    model_id: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+    display_name: "Llama 3.1 8B Instruct"
+    verification:
+      status: verified
+      verified_at: "2026-01-31"
+      source: "models_hub"
+    context_window: 131072
+    capabilities: [chat, tools, streaming, agentic]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["llama", "meta", "open-source", "fast", "cost-effective"]
+
+  # Mistral Series
+  mistral-large:
+    provider: huggingface
+    model_id: "mistralai/Mistral-Large-Instruct-2407"
+    display_name: "Mistral Large"
+    verification:
+      status: verified
+      verified_at: "2026-01-31"
+      source: "models_hub"
+    context_window: 128000
+    capabilities: [chat, tools, streaming, agentic, reasoning]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["mistral", "open-source", "reasoning", "agentic"]
+
+  # Qwen Series
+  qwen-2.5-72b-instruct:
+    provider: huggingface
+    model_id: "Qwen/Qwen2.5-72B-Instruct"
+    display_name: "Qwen 2.5 72B Instruct"
+    verification:
+      status: verified
+      verified_at: "2026-01-31"
+      source: "models_hub"
+    context_window: 131072
+    capabilities: [chat, vision, tools, streaming, agentic, reasoning]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["qwen", "alibaba", "open-source", "multimodal", "reasoning"]
+
+  # DeepSeek Series
+  deepseek-coder:
+    provider: huggingface
+    model_id: "deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct"
+    display_name: "DeepSeek Coder V2 Lite"
+    verification:
+      status: verified
+      verified_at: "2026-01-31"
+      source: "models_hub"
+    context_window: 128000
+    capabilities: [chat, tools, streaming, agentic, reasoning]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["deepseek", "code", "open-source", "reasoning"]
+
+  # Code Models
+  codestral:
+    provider: huggingface
+    model_id: "mistralai/Codestral-22B-v0.1"
+    display_name: "Codestral"
+    verification:
+      status: verified
+      verified_at: "2026-01-31"
+      source: "models_hub"
+    context_window: 32000
+    capabilities: [chat, tools, streaming, agentic, reasoning]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["mistral", "code", "open-source", "agentic"]

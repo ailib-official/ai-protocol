@@ -1,0 +1,59 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.5"
+
+# Writer Model Instances (Palmyra Series)
+# Notes: Writer provides enterprise-focused AI writing and content generation
+
+models:
+  palmyra-x-004:
+    provider: writer
+    model_id: "palmyra-x-004"
+    display_name: "Palmyra X 004"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Flagship model for enterprise writing"
+    context_window: 128000
+    capabilities: [chat, tools, streaming, agentic, reasoning]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["palmyra", "writer", "enterprise", "writing", "reasoning"]
+    agentic_capabilities:
+      reasoning_effort: "medium"
+      thinking_blocks: false
+      parallel_tools: false
+      builtin_tools: ["web_search", "fact_check", "compliance"]
+
+  palmyra-med:
+    provider: writer
+    model_id: "palmyra-med"
+    display_name: "Palmyra Med"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Specialized for medical and healthcare content"
+    context_window: 64000
+    capabilities: [chat, tools, streaming, agentic]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["palmyra", "writer", "medical", "healthcare", "enterprise"]
+
+  palmyra-fin:
+    provider: writer
+    model_id: "palmyra-fin"
+    display_name: "Palmyra Fin"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Specialized for financial content"
+    context_window: 64000
+    capabilities: [chat, tools, streaming, agentic]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["palmyra", "writer", "finance", "enterprise"]

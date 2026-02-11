@@ -1,0 +1,74 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.5"
+
+# Grok Model Instances (xAI)
+models:
+  grok-2:
+    provider: xai
+    model_id: "grok-2"
+    display_name: "Grok-2"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Pending API access for verification"
+    context_window: 128000
+    capabilities: [chat, vision, tools, streaming, agentic, parallel_tools, reasoning]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["grok", "vision", "reasoning", "agentic", "real-time"]
+    agentic_capabilities:
+      reasoning_effort: "high"
+      thinking_blocks: false
+      parallel_tools: true
+      max_parallel_tools: 5
+      builtin_tools: ["web_search", "knowledge_access"]
+
+  grok-1.5-vision:
+    provider: xai
+    model_id: "grok-1.5-vision"
+    display_name: "Grok-1.5 Vision"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Multimodal version with vision capabilities"
+    context_window: 128000
+    capabilities: [chat, vision, tools, streaming, agentic, parallel_tools, reasoning]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["grok", "vision", "multimodal", "agentic", "reasoning"]
+
+  grok-1.5:
+    provider: xai
+    model_id: "grok-1.5"
+    display_name: "Grok-1.5"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Enhanced reasoning capabilities"
+    context_window: 128000
+    capabilities: [chat, vision, tools, streaming, agentic, parallel_tools, reasoning]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["grok", "reasoning", "agentic", "streaming"]
+
+  grok-beta:
+    provider: xai
+    model_id: "grok-beta"
+    display_name: "Grok Beta"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Early access version"
+    context_window: 48000
+    capabilities: [chat, tools, streaming, agentic]
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: beta
+    tags: ["grok", "beta", "agentic"]

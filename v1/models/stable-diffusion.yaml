@@ -1,0 +1,113 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+protocol_version: "1.5"
+
+# Stability AI Model Instances
+# Notes: Stability AI primarily provides generative AI for images, videos, and audio
+# Text generation capabilities are limited or model-specific
+
+models:
+  # Stable Diffusion 3
+  sd3-turbo:
+    provider: stability
+    model_id: "stable-diffusion-3-turbo"
+    display_name: "Stable Diffusion 3 Turbo"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Fast text-to-image generation"
+    context_window: 2048
+    capabilities: [vision]
+    modality: "image"
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["stability", "diffusion", "image", "fast"]
+
+  sd3-ultra:
+    provider: stability
+    model_id: "stable-diffusion-3-ultra"
+    display_name: "Stable Diffusion 3 Ultra"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "High-quality text-to-image generation"
+    context_window: 4096
+    capabilities: [vision]
+    modality: "image"
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["stability", "diffusion", "image", "premium"]
+
+  # Stable Diffusion XL
+  sdxl-turbo:
+    provider: stability
+    model_id: "stable-diffusion-xl-turbo"
+    display_name: "Stable Diffusion XL Turbo"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Fast high-resolution image generation"
+    context_window: 2048
+    capabilities: [vision]
+    modality: "image"
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["stability", "sdxl", "image", "fast"]
+
+  sdxl:
+    provider: stability
+    model_id: "stable-diffusion-xl"
+    display_name: "Stable Diffusion XL"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Standard SDXL model"
+    context_window: 2048
+    capabilities: [vision]
+    modality: "image"
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["stability", "sdxl", "image", "standard"]
+
+  # Video Generation
+  stable-video-diffusion:
+    provider: stability
+    model_id: "stable-video-diffusion-xt"
+    display_name: "Stable Video Diffusion XT"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Text-to-video generation"
+    context_window: 1024
+    capabilities: [vision]
+    modality: "video"
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["stability", "video", "generation"]
+
+  # Image Editing
+  stable-edit:
+    provider: stability
+    model_id: "stable-edit"
+    display_name: "Stable Edit"
+    verification:
+      status: unverified
+      source: "manual"
+      notes: "Image editing and inpainting"
+    context_window: 2048
+    capabilities: [vision]
+    modality: "image"
+    pricing:
+      input_per_token: null
+      output_per_token: null
+    status: active
+    tags: ["stability", "image", "editing", "inpainting"]
