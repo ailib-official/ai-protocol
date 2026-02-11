@@ -1,0 +1,170 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
+id: jina
+protocol_version: "1.5"
+
+name: Jina AI
+version: "v1"
+status: stable
+category: ai_provider
+official_url: "https://jina.ai/docs"
+support_contact: "https://jina.ai/contact"
+
+# Structured endpoint definition (v1.1+ extension)
+endpoint:
+  base_url: "https://api.jina.ai"
+  protocol: https
+  timeout_ms: 30000
+
+auth:
+  type: bearer
+  token_env: "JINA_API_KEY"
+  payload_format: "jina_api"
+
+# Jina AI supports embeddings and search APIs
+api_families: ["embeddings", "rerank", "reader", "search"]
+default_api_family: "embeddings"
+endpoints:
+  embeddings:
+    path: "/v1/embeddings"
+    method: "POST"
+    adapter: "openai"
+  rerank:
+    path: "/v1/rerank"
+    method: "POST"
+    adapter: "jina"
+  reader:
+    path: "/v1/reader"
+    method: "POST"
+    adapter: "jina"
+
+# V1.5 Service Endpoints
+services:
+  list_models:
+    path: "/v1/models"
+    method: "GET"
+    response_binding: "data"
+
+# Termination reason normalization
+termination:
+  source_field: "finish_reason"
+  mapping:
+    stop: "end_turn"
+    length: "max_tokens"
+  notes:
+    - "Jina Reader uses finish_reason for completion"
+    - "Embeddings API does not use finish_reason"
+
+# Tool invocation normalization
+tooling:
+  source_model: "unknown"
+  notes:
+    - "Jina AI is primarily embeddings and search"
+    - "Does not support traditional tool calling"
+
+# Retry policy
+retry_policy:
+  strategy: "exponential_backoff"
+  max_retries: 3
+  min_delay_ms: 1000
+  jitter: "full"
+  retry_on_http_status: [429, 500, 502, 503]
+  notes:
+    - "Jina API is generally fast but may experience spikes"
+    - "Exponential backoff recommended for rate limits"
+
+# Error classification hints
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "403": "permission_denied"
+    "404": "not_found"
+    "429": "rate_limited"
+    "500": "server_error"
+    "502": "overloaded"
+    "503": "overloaded"
+  notes:
+    - "Jina returns clear error messages in JSON format"
+    - "Rate limit info included in error responses"
+
+parameter_mappings:
+  model: "model"
+  input: "input"
+  encoding_format: "encoding_format"
+  dimensions: "dimensions"
+  top_n: "top_n"
+  query: "query"
+  documents: "documents"
+  return_documents: "return_documents"
+  url: "url"
+  question: "question"
+
+response_format: "jina_style"
+response_paths:
+  content: "output"
+  embedding: "data.embedding"
+  data: "data"
+  results: "results"
+
+streaming:
+  event_format: "jina_stream"
+  decoder:
+    format: "sse"
+    delimiter: "\n\n"
+    prefix: "data: "
+    done_signal: "[DONE]"
+  frame_selector: "exists($.delta) || exists($.embedding) || exists($.results)"
+  event_map:
+    - match: "exists($.delta)"
+      emit: "PartialContentDelta"
+      fields:
+        content: "$.delta.content"
+    - match: "exists($.embedding)"
+      emit: "Metadata"
+      fields:
+        embedding: "$.embedding"
+        index: "$.index"
+    - match: "exists($.results)"
+      emit: "FinalCandidate"
+      fields:
+        results: "$.results"
+  stop_condition: "exists($.finish_reason) || exists($.results)"
+  extra_metadata_path: "$.usage"
+
+features:
+  multi_candidate:
+    support_type: "native"
+    param_name: "top_n"
+  response_mapping:
+    error:
+      message_path: "message"
+      code_path: "code"
+      type_path: "error"
+
+capabilities:
+  streaming: false
+  tools: false
+  vision: false
+  agentic: false
+  parallel_tools: false
+  reasoning: false
+
+experimental_features:
+  - "rerank_api"
+  - "reader_api"
+  - "multimodal_embeddings"
+  - "code_embeddings"
+
+# Availability and health checking (v1.1+ extension)
+availability:
+  required: false
+  regions:
+    - global
+  check:
+    method: GET
+    path: "/v1/models"
+    expected_status: [200]
+    timeout_ms: 3000
+  notes:
+    - "Check v1/models endpoint to verify service health"

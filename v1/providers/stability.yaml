@@ -1,0 +1,185 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
+id: stability
+protocol_version: "1.5"
+
+name: Stability AI
+version: "v1"
+status: stable
+category: ai_provider
+official_url: "https://platform.stability.ai/docs"
+support_contact: "https://stability.ai/contact"
+
+# Structured endpoint definition (v1.1+ extension)
+endpoint:
+  base_url: "https://api.stability.ai"
+  protocol: https
+  timeout_ms: 60000
+
+auth:
+  type: bearer
+  token_env: "STABILITY_API_KEY"
+  extra_headers:
+    - name: "Content-Type"
+      value: "application/json"
+    - name: "Accept"
+      value: "application/json"
+  payload_format: "stability_api"
+
+# Stability AI supports multiple creative AI APIs
+api_families: ["text_to_image", "image_to_image", "image_to_image_masking", "inpainting", "outpainting", "image_upscale", "video_generation"]
+default_api_family: "text_to_image"
+endpoints:
+  text_to_image:
+    path: "/v2beta/stable-image/generate/sd3"
+    method: "POST"
+    adapter: "stability"
+  image_to_image:
+    path: "/v2beta/stable-image/generate/sd3"
+    method: "POST"
+    adapter: "stability"
+  image_edit:
+    path: "/v2beta/stable-image/edit/erase"
+    method: "POST"
+    adapter: "stability"
+  image_search_and_replace:
+    path: "/v2beta/stable-image/edit/search-and-replace"
+    method: "POST"
+    adapter: "stability"
+  upscale:
+    path: "/v2beta/stable-image/upscale/conservative"
+    method: "POST"
+    adapter: "stability"
+
+# V1.5 Service Endpoints
+services:
+  list_models:
+    path: "/v2beta/models/list"
+    method: "GET"
+    response_binding: "data"
+
+# Stability AI doesn't use finish_reason in the same way as LLMs
+termination:
+  source_field: "finish"
+  mapping:
+    complete: "completed"
+    failed: "error"
+  notes:
+    - "Image generation uses async workflow with job IDs"
+    - "finish_field indicates completion status"
+
+# Tool invocation normalization
+tooling:
+  source_model: "unknown"
+  notes:
+    - "Stability AI is not designed for text-based tool calling"
+    - "Focuses on image/video generation workflows"
+
+# Retry policy
+retry_policy:
+  strategy: "exponential_backoff"
+  max_retries: 3
+  min_delay_ms: 1000
+  max_delay_ms: 10000
+  jitter: "full"
+  retry_on_http_status: [429, 500, 502, 503]
+  notes:
+    - "Image generation can be resource-intensive"
+    - "502/503 common during high load"
+    - "429 indicates rate limit exceeded"
+
+# Error classification hints
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "403": "permission_denied"
+    "404": "not_found"
+    "429": "rate_limited"
+    "500": "server_error"
+    "502": "overloaded"
+    "503": "overloaded"
+  notes:
+    - "502/503 often indicate generation queue or resource constraints"
+    - "Error messages may include quota information"
+
+parameter_mappings:
+  prompt: "prompt"
+  negative_prompt: "negative_prompt"
+  aspect_ratio: "aspect_ratio"
+  seed: "seed"
+  steps: "steps"
+  cfg_scale: "cfg_scale"
+  mode: "mode"
+  output_format: "output_format"
+  strength: "strength"
+  image: "image"
+  init_image_mode: "init_image_mode"
+
+response_format: "stability_image"
+response_paths:
+  content: "image"
+  artifacts: "artifacts"
+  finish_reason: "finish"
+  image_url: "image"
+
+streaming:
+  event_format: "stability_async"
+  decoder:
+    format: "sse"
+    delimiter: "\n\n"
+    prefix: "data: "
+    done_signal: "[DONE]"
+  # Stability uses job-based async generation
+  frame_selector: "exists($.id) || exists($.image) || exists($.artifacts)"
+  event_map:
+    - match: "exists($.id) && !exists($.image)"
+      emit: "Metadata"
+      fields:
+        job_id: "$.id"
+        status: "$.status"
+        timestamp: "$.timestamp"
+    - match: "exists($.image)"
+      emit: "FinalCandidate"
+      fields:
+        image: "$.image"
+        finish_reason: "finish"
+    - match: "exists($.artifacts)"
+      emit: "FinalCandidate"
+      fields:
+        artifacts: "$.artifacts"
+        finish: "$.finish"
+  stop_condition: "exists($.image) || exists($.artifacts) || exists($.finish) && $.finish == 'complete'"
+  extra_metadata_path: "$.finish"
+
+capabilities:
+  streaming: false
+  tools: false
+  vision: true
+  agentic: false
+  parallel_tools: false
+  reasoning: false
+
+experimental_features:
+  - "async_generation"
+  - "video_generation"
+  - "3d_generation"
+  - "inpainting"
+  - "outpainting"
+
+# Connection vars for model selection
+connection_vars:
+  model: "model_id"
+
+# Availability and health checking (v1.1+ extension)
+availability:
+  required: false
+  regions:
+    - global
+  check:
+    method: GET
+    path: "/v2beta/models/list"
+    expected_status: [200]
+    timeout_ms: 5000
+  notes:
+    - "Check models/list endpoint to verify service health"
