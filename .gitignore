@@ -10,6 +10,11 @@ AI-Protocol*.md
 *FEASIBILITY*.md
 *AUDIT_REPORT*.md
 *研发计划*.md
+*摘要*.md
+*分析报告*.md
+
+# Background discussion and planning directories
+background-discuss/
 
 # Work and planning documents
 CHANGE_PLAN.md
