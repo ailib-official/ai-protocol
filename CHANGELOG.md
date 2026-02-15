@@ -2,7 +2,44 @@
 
 All notable changes to AI-Protocol specifications and schemas will be documented here.
 
-## 0.4.0 (2026-02-05) - Documentation & Examples Release ✨
+## 0.5.0 (2026-02-15) - V2 Architecture & Cross-Runtime Compliance
+
+This release introduces the V2 protocol architecture, standardized error codes, capability declarations, and a cross-runtime compliance test suite.
+
+### Added
+
+#### V2 Protocol Architecture
+- **`docs/V2_ARCHITECTURE.md`**: Three-layer pyramid (L1 Core / L2 Extensions / L3 Environment) with concentric circle manifest model
+- **`v2-alpha/spec.yaml`**: V2 manifest specification — Ring 1 (Core Skeleton), Ring 2 (Capability Mapping), Ring 3 (Advanced Extensions)
+- **`v2-alpha/providers/`**: 3 V2-alpha provider manifests (OpenAI, Anthropic, Gemini) in three-ring format
+
+#### Unified Error Code System
+- **`schemas/v2/errors.json`**: JSON Schema for standard error response format
+- **`schemas/v2/error-codes.yaml`**: 13 standard error codes (E1001–E9999) with categories, HTTP status mappings, and retry/fallback semantics
+
+#### Capability Declaration
+- **`schemas/v2/capabilities.json`**: Capability declaration schema with required/optional capabilities and feature flags
+
+#### Cross-Runtime Compliance Testing
+- **`tests/compliance/`**: Declarative YAML-based test suite with 42 test cases across 6 categories
+- **`tests/compliance/schema.json`**: Test case schema definition
+- **`docs/CROSS_RUNTIME.md`**: 5 mandatory consistency rules + 8 permitted differences + verification checklist
+- Both Rust and Python runtimes pass 20/20 compliance tests
+
+#### V2 Schema Upgrades
+- **`schemas/v2/endpoint.json`**: V2 endpoint configuration schema
+- **`schemas/v2/provider.json`**: V2 provider manifest schema (three-ring model)
+
+### Changed
+- **`scripts/validate.js`**: V2 schema `$ref` resolution support
+- **`.gitignore`**: Strengthened wildcard patterns for work/internal documents
+
+### Ecosystem Status
+- **ai-lib-rust**: v0.7.0 (V2 error codes + feature flags + structured output)
+- **ai-lib-python**: v0.6.0 (V2 error codes + feature flags + compliance tests)
+- **Cross-runtime compliance**: 100% (20/20 test cases, both runtimes)
+
+## 0.4.0 (2026-02-05) - Documentation & Examples Release
 
 This release focuses on documentation, examples, and developer experience improvements.
 
@@ -45,8 +82,6 @@ Total documentation files: 8 (up from 4)
 |-----------|-------|-------------|
 | `docs/` | 5 | Specification, CI validation, user guides |
 | `examples/` | 5 | Configuration examples for common patterns |
-
-## 0.3.5 (2026-01-31)
 
 ## 0.3.5 (2026-01-31)
 

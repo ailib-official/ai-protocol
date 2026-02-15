@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-protocol.dev/schema/v2/endpoint.json",
   "title": "Endpoint Definition",
-  "description": "Network-level endpoint configuration",
+  "description": "Network-level endpoint configuration for V2 provider manifests",
   "type": "object",
   "required": ["base_url"],
   "properties": {
@@ -22,6 +22,54 @@
       "minimum": 100,
       "default": 10000,
       "description": "Default timeout for requests in milliseconds"
+    },
+    "chat": {
+      "type": "string",
+      "description": "Chat completions endpoint path (relative to base_url)"
+    },
+    "embeddings": {
+      "type": "string",
+      "description": "Embeddings endpoint path (relative to base_url)"
+    },
+    "auth": {
+      "type": "object",
+      "description": "Authentication configuration",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["bearer", "custom_header", "query_param"],
+          "description": "Authentication method"
+        },
+        "header": {
+          "type": "string",
+          "description": "HTTP header name for authentication"
+        },
+        "prefix": {
+          "type": "string",
+          "description": "Prefix for the auth token (e.g., 'Bearer')"
+        },
+        "param_name": {
+          "type": "string",
+          "description": "Query parameter name for query_param auth"
+        },
+        "token_env": {
+          "type": "string",
+          "description": "Environment variable name for the API key"
+        },
+        "extra_headers": {
+          "type": "array",
+          "description": "Additional headers to include in requests",
+          "items": {
+            "type": "object",
+            "required": ["name", "value"],
+            "properties": {
+              "name": { "type": "string" },
+              "value": { "type": "string" }
+            }
+          }
+        }
+      },
+      "required": ["type"]
     }
   },
   "additionalProperties": false

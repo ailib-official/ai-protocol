@@ -1,0 +1,139 @@
+# Streaming - Event Mapping from Decoded Frames
+# Tests mapping decoded frames to StreamingEvent variants
+
+---
+suite: "streaming"
+name: "Map content delta to PartialContentDelta"
+id: "str-003"
+description: "Verify decoded frame with content delta maps to PartialContentDelta event"
+tags: ["streaming", "event-mapping", "PartialContentDelta", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "event_mapping"
+  frames:
+    - choices:
+        - delta:
+            content: "Hello"
+          index: 0
+  event_map:
+    - match: "$.choices[0].delta.content"
+      emit: "PartialContentDelta"
+      extract:
+        content: "$.choices[0].delta.content"
+  provider: "mock-openai"
+expected:
+  events:
+    - type: "PartialContentDelta"
+      content: "Hello"
+
+---
+suite: "streaming"
+name: "Map tool call delta to PartialToolCall"
+id: "str-004"
+description: "Verify decoded frame with tool_calls delta maps to PartialToolCall event"
+tags: ["streaming", "event-mapping", "PartialToolCall", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "event_mapping"
+  frames:
+    - choices:
+        - delta:
+            tool_calls:
+              - index: 0
+                id: "call_abc123"
+                type: "function"
+                function:
+                  name: "get_weather"
+                  arguments: "{\"location\":\""
+          index: 0
+  event_map:
+    - match: "$.choices[0].delta.tool_calls"
+      emit: "PartialToolCall"
+      extract:
+        tool_calls: "$.choices[0].delta.tool_calls"
+  provider: "mock-openai"
+expected:
+  events:
+    - type: "PartialToolCall"
+      tool_calls:
+        - index: 0
+          id: "call_abc123"
+          type: "function"
+          function:
+            name: "get_weather"
+            arguments: "{\"location\":\""
+
+---
+suite: "streaming"
+name: "Map finish_reason to StreamEnd"
+id: "str-005"
+description: "Verify decoded frame with finish_reason maps to StreamEnd event"
+tags: ["streaming", "event-mapping", "StreamEnd", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "event_mapping"
+  frames:
+    - choices:
+        - delta: {}
+          finish_reason: "stop"
+          index: 0
+  event_map:
+    - match: "$.choices[0].finish_reason"
+      emit: "StreamEnd"
+      extract:
+        finish_reason: "$.choices[0].finish_reason"
+  provider: "mock-openai"
+expected:
+  events:
+    - type: "StreamEnd"
+      finish_reason: "stop"
+
+---
+suite: "streaming"
+name: "Map sequence of events"
+id: "str-006"
+description: "Verify multiple frames map to correct event sequence"
+tags: ["streaming", "event-mapping", "sequence", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "event_mapping"
+  frames:
+    - choices:
+        - delta:
+            content: "Hi"
+          index: 0
+    - choices:
+        - delta:
+            content: " there"
+          index: 0
+    - choices:
+        - delta: {}
+          finish_reason: "stop"
+          index: 0
+  event_map:
+    - match: "$.choices[0].delta.content"
+      emit: "PartialContentDelta"
+      extract:
+        content: "$.choices[0].delta.content"
+    - match: "$.choices[0].finish_reason"
+      emit: "StreamEnd"
+      extract:
+        finish_reason: "$.choices[0].finish_reason"
+  provider: "mock-openai"
+expected:
+  events:
+    - type: "PartialContentDelta"
+      content: "Hi"
+    - type: "PartialContentDelta"
+      content: " there"
+    - type: "StreamEnd"
+      finish_reason: "stop"
+  event_count: 3

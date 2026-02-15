@@ -1,0 +1,84 @@
+# Streaming - Tool Call Argument Accumulation
+# Tests assembling partial tool call chunks into complete arguments
+
+---
+suite: "streaming"
+name: "Accumulate tool call arguments from partial chunks"
+id: "str-007"
+description: "Verify partial JSON chunks are accumulated into complete tool call arguments"
+tags: ["streaming", "tool-accumulation", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "tool_accumulation"
+  partial_chunks:
+    - index: 0
+      id: "call_xyz"
+      type: "function"
+      function:
+        name: "get_weather"
+        arguments: "{\"location\":\""
+    - index: 0
+      id: "call_xyz"
+      type: "function"
+      function:
+        name: "get_weather"
+        arguments: "New York\"}"
+  accumulator_config:
+    stateful_tool_parsing: true
+    key_path: "$.choices[0].delta.tool_calls[0].function.arguments"
+  provider: "mock-openai"
+expected:
+  assembled_tool_calls:
+    - index: 0
+      id: "call_xyz"
+      type: "function"
+      function:
+        name: "get_weather"
+        arguments: "{\"location\":\"New York\"}"
+  complete: true
+
+---
+suite: "streaming"
+name: "Accumulate multi-argument tool call"
+id: "str-008"
+description: "Verify accumulation of tool call with multiple JSON fields across chunks"
+tags: ["streaming", "tool-accumulation", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "tool_accumulation"
+  partial_chunks:
+    - index: 0
+      id: "call_abc"
+      type: "function"
+      function:
+        name: "search"
+        arguments: "{\"query\":\""
+    - index: 0
+      id: "call_abc"
+      type: "function"
+      function:
+        name: "search"
+        arguments: "AI protocol\",\"limit\":"
+    - index: 0
+      id: "call_abc"
+      type: "function"
+      function:
+        name: "search"
+        arguments: "10}"
+  accumulator_config:
+    stateful_tool_parsing: true
+    key_path: "$.choices[0].delta.tool_calls[0].function.arguments"
+  provider: "mock-openai"
+expected:
+  assembled_tool_calls:
+    - index: 0
+      id: "call_abc"
+      type: "function"
+      function:
+        name: "search"
+        arguments: "{\"query\":\"AI protocol\",\"limit\":10}"
+  complete: true

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/compliance-test.json",
+  "title": "AI-Protocol Compliance Test Case",
+  "description": "Schema for cross-runtime compliance test case YAML files",
+  "type": "object",
+  "required": ["suite", "name", "id", "input", "expected"],
+  "properties": {
+    "suite": {
+      "type": "string",
+      "description": "Test suite / category name",
+      "enum": [
+        "protocol-loading",
+        "error-classification",
+        "message-building",
+        "streaming",
+        "request-building",
+        "resilience"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable test name"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z]+-[0-9]{3}$",
+      "description": "Unique test ID (e.g., 'err-001')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of what this test verifies"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tags for filtering (e.g., 'P0', 'error', 'streaming')"
+    },
+    "setup": {
+      "type": "object",
+      "description": "Test setup and prerequisites",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "description": "Provider ID to use (from fixtures)"
+        },
+        "manifest_path": {
+          "type": "string",
+          "description": "Path to manifest file (relative to compliance root)"
+        },
+        "env": {
+          "type": "object",
+          "description": "Environment variables to set",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": ["type"],
+      "description": "Test input data",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Test operation type",
+          "enum": [
+            "protocol_loading",
+            "error_classification",
+            "message_building",
+            "stream_decode",
+            "event_mapping",
+            "tool_accumulation",
+            "parameter_mapping",
+            "retry_decision"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "expected": {
+      "type": "object",
+      "description": "Expected output / assertions",
+      "additionalProperties": true
+    }
+  }
+}

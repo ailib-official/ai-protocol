@@ -1,0 +1,134 @@
+# AI-Protocol V2-Alpha: Google Gemini Provider Manifest
+# Migrated from v1/providers/gemini.yaml with V2 structured capabilities
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+
+# === Ring 1: Core Skeleton ===
+id: gemini
+protocol_version: "2.0"
+name: "Google Gemini"
+version: "v1beta"
+status: stable
+category: ai_provider
+official_url: "https://ai.google.dev/docs"
+support_contact: "https://support.google.com/gemini"
+
+endpoint:
+  base_url: "https://generativelanguage.googleapis.com/v1beta"
+  chat: "/models/{model}:generateContent"
+  auth:
+    type: "query_param"
+    param_name: "key"
+    token_env: "GEMINI_API_KEY"
+
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "403": "permission_denied"
+    "404": "not_found"
+    "429": "rate_limited"
+    "500": "server_error"
+    "503": "overloaded"
+  by_error_code:
+    "INVALID_ARGUMENT": "invalid_request"
+    "UNAUTHENTICATED": "authentication"
+    "PERMISSION_DENIED": "permission_denied"
+    "NOT_FOUND": "not_found"
+    "RESOURCE_EXHAUSTED": "rate_limited"
+    "INTERNAL": "server_error"
+    "UNAVAILABLE": "overloaded"
+    "DEADLINE_EXCEEDED": "timeout"
+
+# === Ring 2: Capability Mapping ===
+capabilities:
+  required:
+    - text
+    - streaming
+  optional:
+    - vision
+    - audio
+    - video
+    - tools
+    - parallel_tools
+    - reasoning
+    - embeddings
+    - structured_output
+  feature_flags:
+    structured_output: true
+    parallel_tool_calls: true
+    extended_thinking: true
+    streaming_usage: false
+    system_messages: true
+
+parameters:
+  temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
+  maxOutputTokens: { type: integer, min: 1, max: 65536, alias: "max_tokens" }
+  topP: { type: float, range: [0.0, 1.0], alias: "top_p" }
+  topK: { type: integer, min: 0, alias: "top_k" }
+
+streaming:
+  decoder:
+    format: "gemini_sse"
+    strategy: "gemini_generate"
+  event_map:
+    - match: "$.candidates[0].content.parts[0].text"
+      emit: "PartialContentDelta"
+      extract:
+        content: "$.candidates[0].content.parts[0].text"
+    - match: "$.candidates[0].content.parts[0].functionCall"
+      emit: "PartialToolCall"
+      extract:
+        tool_call: "$.candidates[0].content.parts[0].functionCall"
+    - match: "$.candidates[0].finishReason"
+      emit: "StreamEnd"
+      extract:
+        finish_reason: "$.candidates[0].finishReason"
+  candidate:
+    candidate_id_path: "$.candidates[*].index"
+    fan_out: true
+
+# === Ring 3: Advanced Extensions ===
+api_families: ["generate_content"]
+default_api_family: "generate_content"
+
+endpoints:
+  chat:
+    path: "/models/{model}:generateContent"
+    method: "POST"
+    adapter: "gemini"
+  stream_chat:
+    path: "/models/{model}:streamGenerateContent"
+    method: "POST"
+    adapter: "gemini"
+  embeddings:
+    path: "/models/{model}:embedContent"
+    method: "POST"
+    adapter: "gemini"
+
+services:
+  list_models:
+    path: "/models"
+    method: "GET"
+    response_binding: "models"
+  get_model:
+    path: "/models/{model}"
+    method: "GET"
+
+retry_policy:
+  strategy: "exponential_backoff"
+  max_retries: 3
+  min_delay_ms: 1000
+  max_delay_ms: 30000
+  jitter: "full"
+  retry_on_http_status: [429, 500, 503]
+
+termination:
+  source_field: "finishReason"
+  mapping:
+    STOP: "end_turn"
+    MAX_TOKENS: "max_tokens"
+    SAFETY: "refusal"
+    RECITATION: "refusal"
+    OTHER: "other"
+    BLOCKLIST: "refusal"
+    PROHIBITED_CONTENT: "refusal"

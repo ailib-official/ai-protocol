@@ -18,38 +18,36 @@ AI-Protocol 是一个**供应商无关**（provider-agnostic）的 AI 模型规�
 ai-protocol/
 ├── schemas/                    # JSON Schema 校验规范
 │   ├── v1.json                # v1.x 供应商/模型配置 Schema
-│   └── spec.json              # 规范文件 (spec.yaml) Schema
+│   ├── spec.json              # 规范文件 (spec.yaml) Schema
+│   └── v2/                    # V2 协议 Schema
+│       ├── provider.json      # V2 供应商清单 Schema
+│       ├── capabilities.json  # 能力声明 Schema
+│       ├── errors.json        # 标准错误码定义
+│       ├── endpoint.json      # 端点配置 Schema
+│       ├── availability.json  # 可用性 Schema
+│       └── regions.json       # 区域配置 Schema
 ├── v1/                        # v1.x 稳定版规范
 │   ├── spec.yaml              # 基础规约：标准参数、事件枚举
 │   ├── providers/             # 供应商配置（按厂商拆分，便于 PR）
 │   │   ├── openai.yaml        # OpenAI 兼容接口
 │   │   ├── anthropic.yaml     # Anthropic Claude 接口
 │   │   ├── gemini.yaml        # Google Gemini 接口
-│   │   ├── groq.yaml          # Groq 兼容接口
-│   │   ├── deepseek.yaml      # DeepSeek 兼容接口
-│   │   ├── qwen.yaml          # 通义千问（阿里巴巴）兼容接口
-│   │   ├── doubao.yaml        # 豆包（字节跳动）兼容接口
-│   │   ├── hunyuan.yaml       # 混元（腾讯）兼容接口
 │   │   └── ...                # 30+ 供应商（见下方完整列表）
 │   └── models/                # 模型实例注册表
 │       ├── gpt.yaml           # GPT 系列模型
 │       ├── claude.yaml        # Claude 系列模型
 │       └── ...                # 更多模型
-├── v2-alpha/                  # v2-alpha 实验版：多模态与实时特性
-│   ├── spec.yaml              # 实验性算子定义
-│   └── providers/             # 实验性供应商配置
+├── v2-alpha/                  # v2-alpha 实验版
+│   └── spec.yaml              # 实验性算子定义
+├── tests/                     # 跨运行时兼容性测试套件
+│   └── compliance/            # YAML 定义的 Rust/Python 一致性测试用例
 ├── examples/                  # 配置示例
-│   └── tool_accumulation.yaml # 工具累积模式示例
 ├── docs/                      # 文档
+│   ├── V2_ARCHITECTURE.md     # V2 三层金字塔架构设计
 │   ├── SPEC.md                # 供应商清单规范
-│   ├── CI_VALIDATION_EXPLAINED.md  # CI 校验说明
-│   └── FACT_CHECKING_MODELS.md     # 模型注册表核查（可选，无需 API Key）
+│   └── ...                    # 更多文档
 ├── research/                  # 调研文档（官方 API 文档摘录与验证）
 │   └── providers/             # 各供应商的官方文档调研
-│       ├── openai.md          # OpenAI 官方 API 规则（VERIFIED）
-│       ├── anthropic.md       # Anthropic 官方 API 规则（VERIFIED）
-│       ├── gemini.md          # Gemini 官方 API 规则（VERIFIED）
-│       └── ...                # 更多供应商调研
 └── scripts/                   # 维护脚本
 ```
 
@@ -244,17 +242,24 @@ GitHub Actions 工作流 (`validate.yml`) 自动执行：
 - 月之暗面 (Moonshot/Kimi), MiniMax, 百川 (Baichuan), 零一万物 (Yi)
 - 硅基流动 (SiliconFlow)
 
-### v2-alpha (实验版进行中)
+### v2 (进行中)
+- 🔄 **V2 三层金字塔架构** (L1 核心 / L2 扩展 / L3 环境)
+- 🔄 **统一错误码体系** — 跨供应商的标准化错误码
+- 🔄 **Capability 声明机制** — 结构化的 `required`/`optional` 能力声明
+- 🔄 **Feature Flag 机制** — 按需加载所需模块
+- 🔄 **兼容性测试套件** — 机器验证的跨运行时一致性
+
+### v2-alpha (实验版)
 - 🔄 多模态流交织 (`FrameInterleave` 算子)
 - 🔄 实时指令 (`StateSync` 算子)
 - 🔄 无模式映射 (Schema-less Mapping)
 - 🔄 高级工具累积模式
 
 ### v2.x (未来规划)
-- 📅 音频/视频流式处理
-- 📅 实时协作会话
-- 📅 模型切换和迁移
-- 📅 性能监控和 QoS
+- 📅 ProviderContract 抽象
+- 📅 CLI 工具链（`init`, `validate`, `convert`, `check-compat`）
+- 📅 WASM 支持（浏览器/边缘端运行）
+- 📅 框架集成（LangChain, LlamaIndex）
 
 ## 🤝 贡献指南
 
@@ -292,7 +297,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 AI-Protocol 提供多语言官方运行时实现：
 
-### Python 运行时 (v0.4.0+)
+### Python 运行时 (v0.5.0+)
 
 ```bash
 # 从 PyPI 安装
@@ -315,7 +320,7 @@ response = client.chat.completions.create(
 
 📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **文档**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
 
-### Rust 运行时 (v0.6.5+)
+### Rust 运行时 (v0.6.6+)
 
 ```toml
 # 添加到 Cargo.toml

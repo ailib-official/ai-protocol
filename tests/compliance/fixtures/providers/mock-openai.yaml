@@ -1,0 +1,86 @@
+# Mock OpenAI provider manifest for compliance testing
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+
+id: openai
+protocol_version: "1.5"
+name: "OpenAI (Mock)"
+status: "stable"
+
+endpoint:
+  base_url: "https://api.openai.com/v1"
+  chat: "/chat/completions"
+  auth:
+    type: "bearer"
+    header: "Authorization"
+    prefix: "Bearer"
+
+api_families:
+  chat:
+    request_format: "openai"
+    response_format: "openai"
+  embeddings:
+    request_format: "openai"
+    response_format: "openai"
+
+capabilities: [chat, streaming, tools, vision, parallel_tools]
+
+parameters:
+  temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
+  max_tokens: { type: integer, min: 1, max: 128000 }
+  top_p: { type: float, range: [0.0, 1.0] }
+  frequency_penalty: { type: float, range: [-2.0, 2.0] }
+  presence_penalty: { type: float, range: [-2.0, 2.0] }
+  stream: { type: boolean }
+  n: { type: integer, min: 1 }
+
+streaming:
+  decoder:
+    format: "sse"
+    strategy: "openai_chat"
+    done_signal: "[DONE]"
+    prefix: "data: "
+  event_map:
+    - match: "$.choices[0].delta.content"
+      emit: "PartialContentDelta"
+      extract:
+        content: "$.choices[0].delta.content"
+    - match: "$.choices[0].delta.tool_calls"
+      emit: "PartialToolCall"
+      extract:
+        tool_calls: "$.choices[0].delta.tool_calls"
+    - match: "$.choices[0].finish_reason"
+      emit: "StreamEnd"
+      extract:
+        finish_reason: "$.choices[0].finish_reason"
+  candidate:
+    candidate_id_path: "$.choices[*].index"
+    fan_out: true
+  accumulator:
+    stateful_tool_parsing: true
+    key_path: "$.choices[0].delta.tool_calls[0].function.arguments"
+    flush_on: "$.choices[0].finish_reason == 'tool_calls'"
+
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "403": "permission_denied"
+    "404": "not_found"
+    "429": "rate_limited"
+    "500": "server_error"
+    "503": "overloaded"
+
+rate_limit_headers:
+  requests_limit: "x-ratelimit-limit-requests"
+  requests_remaining: "x-ratelimit-remaining-requests"
+  tokens_limit: "x-ratelimit-limit-tokens"
+  tokens_remaining: "x-ratelimit-remaining-tokens"
+  retry_after: null
+
+retry_policy:
+  strategy: "exponential_backoff"
+  max_retries: 3
+  min_delay_ms: 1000
+  max_delay_ms: 30000
+  jitter: "full"
+  retry_on_http_status: [429, 500, 502, 503]

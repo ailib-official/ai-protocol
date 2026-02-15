@@ -1,0 +1,140 @@
+# Error Classification - Provider-Specific Error Code Mapping
+# Tests provider error codes for OpenAI and Anthropic
+
+---
+suite: "error-classification"
+name: "OpenAI invalid_api_key maps to authentication"
+id: "err-008"
+description: "Verify OpenAI error code invalid_api_key maps to authentication (E1002)"
+tags: ["error", "classification", "provider-codes", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 401
+  response_body:
+    error:
+      message: "Invalid API key"
+      type: "invalid_request_error"
+      code: "invalid_api_key"
+expected:
+  error_code: "E1002"
+  error_name: "authentication"
+  retryable: false
+  fallbackable: true
+
+---
+suite: "error-classification"
+name: "OpenAI model_not_found maps to not_found"
+id: "err-009"
+description: "Verify OpenAI error code model_not_found maps to not_found (E1004)"
+tags: ["error", "classification", "provider-codes", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 404
+  response_body:
+    error:
+      message: "The model does not exist"
+      type: "invalid_request_error"
+      code: "model_not_found"
+expected:
+  error_code: "E1004"
+  error_name: "not_found"
+  retryable: false
+  fallbackable: false
+
+---
+suite: "error-classification"
+name: "OpenAI context_length_exceeded maps to request_too_large"
+id: "err-010"
+description: "Verify OpenAI error code context_length_exceeded maps to request_too_large (E1005)"
+tags: ["error", "classification", "provider-codes", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 400
+  response_body:
+    error:
+      message: "This model's maximum context length is 128000 tokens"
+      type: "invalid_request_error"
+      code: "context_length_exceeded"
+expected:
+  error_code: "E1005"
+  error_name: "request_too_large"
+  retryable: false
+  fallbackable: false
+
+---
+suite: "error-classification"
+name: "OpenAI insufficient_quota maps to quota_exhausted"
+id: "err-011"
+description: "Verify OpenAI error code insufficient_quota maps to quota_exhausted (E2002)"
+tags: ["error", "classification", "provider-codes", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 429
+  response_body:
+    error:
+      message: "You exceeded your current quota"
+      type: "insufficient_quota"
+      code: "insufficient_quota"
+expected:
+  error_code: "E2002"
+  error_name: "quota_exhausted"
+  retryable: false
+  fallbackable: true
+
+---
+suite: "error-classification"
+name: "Anthropic authentication_error maps to authentication"
+id: "err-012"
+description: "Verify Anthropic error code authentication_error maps to authentication (E1002)"
+tags: ["error", "classification", "provider-codes", "anthropic", "P0"]
+setup:
+  provider: "mock-anthropic"
+  manifest_path: "fixtures/providers/mock-anthropic.yaml"
+input:
+  type: "error_classification"
+  http_status: 401
+  response_body:
+    type: "error"
+    error:
+      type: "authentication_error"
+      message: "Invalid API key"
+expected:
+  error_code: "E1002"
+  error_name: "authentication"
+  retryable: false
+  fallbackable: true
+
+---
+suite: "error-classification"
+name: "Anthropic overloaded_error maps to overloaded"
+id: "err-013"
+description: "Verify Anthropic error code overloaded_error maps to overloaded (E3002)"
+tags: ["error", "classification", "provider-codes", "anthropic", "P0"]
+setup:
+  provider: "mock-anthropic"
+  manifest_path: "fixtures/providers/mock-anthropic.yaml"
+input:
+  type: "error_classification"
+  http_status: 529
+  response_body:
+    type: "error"
+    error:
+      type: "overloaded_error"
+      message: "Overloaded"
+expected:
+  error_code: "E3002"
+  error_name: "overloaded"
+  retryable: true
+  fallbackable: true

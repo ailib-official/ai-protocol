@@ -1,0 +1,55 @@
+# Streaming - SSE Stream Decoding
+# Tests raw SSE data decoding
+
+---
+suite: "streaming"
+name: "Decode basic SSE stream with content delta"
+id: "str-001"
+description: "Verify decoding of raw SSE stream produces content delta frames"
+tags: ["streaming", "sse", "decode", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "stream_decode"
+  raw_chunks:
+    - "data: {\"choices\":[{\"delta\":{\"content\":\"Hello\"},\"index\":0}]}\n\n"
+    - "data: {\"choices\":[{\"delta\":{\"content\":\" world\"},\"index\":0}]}\n\n"
+    - "data: [DONE]\n\n"
+  decoder_config:
+    format: "sse"
+    prefix: "data: "
+  provider: "mock-openai"
+expected:
+  events:
+    - type: "frame"
+      has_content: true
+  frame_count:
+    min: 2
+    max: 4
+
+---
+suite: "streaming"
+name: "Decode SSE stream with done signal"
+id: "str-002"
+description: "Verify SSE decoder handles [DONE] signal and empty data lines"
+tags: ["streaming", "sse", "decode", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "stream_decode"
+  raw_chunks:
+    - "data: {\"id\":\"chatcmpl-123\",\"choices\":[{\"delta\":{},\"index\":0}]}\n\n"
+    - "data: {\"choices\":[{\"delta\":{\"content\":\"Hi\"},\"index\":0}]}\n\n"
+    - "data: [DONE]\n\n"
+  decoder_config:
+    format: "sse"
+    prefix: "data: "
+    done_signal: "[DONE]"
+  provider: "mock-openai"
+expected:
+  events:
+    - type: "frame"
+  completed: true
+  done_received: true

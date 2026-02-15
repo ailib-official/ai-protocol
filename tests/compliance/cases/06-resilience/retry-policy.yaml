@@ -1,0 +1,102 @@
+# Resilience - Retry Policy Decision Logic
+# Tests retry decision logic based on error and policy
+
+---
+suite: "resilience"
+name: "Retry on rate_limited error"
+id: "res-001"
+description: "Verify retry_decision returns should_retry true for rate_limited error"
+tags: ["resilience", "retry", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "retry_decision"
+  error:
+    error_code: "E2001"
+    error_name: "rate_limited"
+    retryable: true
+  retry_policy:
+    max_retries: 3
+    retry_on_http_status: [429, 500, 502, 503]
+    retry_on_error_code: ["rate_limited", "server_error", "overloaded"]
+  attempt: 1
+expected:
+  should_retry: true
+  delay_ms:
+    min: 1000
+    max: 30000
+
+---
+suite: "resilience"
+name: "No retry on invalid_request error"
+id: "res-002"
+description: "Verify retry_decision returns should_retry false for invalid_request"
+tags: ["resilience", "retry", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "retry_decision"
+  error:
+    error_code: "E1001"
+    error_name: "invalid_request"
+    retryable: false
+  retry_policy:
+    max_retries: 3
+    retry_on_http_status: [429, 500, 502, 503]
+    retry_on_error_code: ["rate_limited", "server_error", "overloaded"]
+  attempt: 1
+expected:
+  should_retry: false
+
+---
+suite: "resilience"
+name: "No retry when max_retries exceeded"
+id: "res-003"
+description: "Verify retry_decision returns should_retry false when attempt exceeds max_retries"
+tags: ["resilience", "retry", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "retry_decision"
+  error:
+    error_code: "E3001"
+    error_name: "server_error"
+    retryable: true
+  retry_policy:
+    max_retries: 3
+    retry_on_http_status: [429, 500, 502, 503]
+    retry_on_error_code: ["rate_limited", "server_error", "overloaded"]
+  attempt: 4
+expected:
+  should_retry: false
+
+---
+suite: "resilience"
+name: "Retry on server_error within limit"
+id: "res-004"
+description: "Verify retry_decision returns should_retry true for server_error on attempt 2"
+tags: ["resilience", "retry", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "retry_decision"
+  error:
+    error_code: "E3001"
+    error_name: "server_error"
+    retryable: true
+  retry_policy:
+    max_retries: 3
+    min_delay_ms: 1000
+    max_delay_ms: 30000
+    retry_on_http_status: [429, 500, 502, 503]
+    retry_on_error_code: ["rate_limited", "server_error", "overloaded"]
+  attempt: 2
+expected:
+  should_retry: true
+  delay_ms:
+    min: 1000
+    max: 30000

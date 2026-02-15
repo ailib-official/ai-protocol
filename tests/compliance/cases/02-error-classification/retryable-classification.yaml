@@ -1,0 +1,163 @@
+# Error Classification - Retryable and Fallbackable Classification
+# Tests retryable/fallbackable flags for various error types
+
+---
+suite: "error-classification"
+name: "rate_limited is retryable and fallbackable"
+id: "err-014"
+description: "Verify rate_limited (E2001) is classified as retryable and fallbackable"
+tags: ["error", "retryable", "fallbackable", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 429
+  response_body:
+    error:
+      message: "Rate limit exceeded"
+      type: "rate_limit_exceeded"
+      code: "rate_limit_exceeded"
+expected:
+  error_code: "E2001"
+  error_name: "rate_limited"
+  retryable: true
+  fallbackable: true
+
+---
+suite: "error-classification"
+name: "server_error is retryable and fallbackable"
+id: "err-015"
+description: "Verify server_error (E3001) is classified as retryable and fallbackable"
+tags: ["error", "retryable", "fallbackable", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 500
+  response_body:
+    error:
+      message: "Internal server error"
+      type: "server_error"
+      code: "server_error"
+expected:
+  error_code: "E3001"
+  error_name: "server_error"
+  retryable: true
+  fallbackable: true
+
+---
+suite: "error-classification"
+name: "overloaded is retryable and fallbackable"
+id: "err-016"
+description: "Verify overloaded (E3002) is classified as retryable and fallbackable"
+tags: ["error", "retryable", "fallbackable", "P0"]
+setup:
+  provider: "mock-anthropic"
+  manifest_path: "fixtures/providers/mock-anthropic.yaml"
+input:
+  type: "error_classification"
+  http_status: 529
+  response_body:
+    type: "error"
+    error:
+      type: "overloaded_error"
+      message: "Overloaded"
+expected:
+  error_code: "E3002"
+  error_name: "overloaded"
+  retryable: true
+  fallbackable: true
+
+---
+suite: "error-classification"
+name: "invalid_request is non-retryable and non-fallbackable"
+id: "err-017"
+description: "Verify invalid_request (E1001) is non-retryable and non-fallbackable"
+tags: ["error", "retryable", "fallbackable", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 400
+  response_body:
+    error:
+      message: "Invalid request parameters"
+      type: "invalid_request_error"
+      code: "invalid_request_error"
+expected:
+  error_code: "E1001"
+  error_name: "invalid_request"
+  retryable: false
+  fallbackable: false
+
+---
+suite: "error-classification"
+name: "authentication is non-retryable but fallbackable"
+id: "err-018"
+description: "Verify authentication (E1002) is non-retryable but fallbackable"
+tags: ["error", "retryable", "fallbackable", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 401
+  response_body:
+    error:
+      message: "Invalid API key"
+      type: "invalid_request_error"
+      code: "invalid_api_key"
+expected:
+  error_code: "E1002"
+  error_name: "authentication"
+  retryable: false
+  fallbackable: true
+
+---
+suite: "error-classification"
+name: "quota_exhausted is non-retryable but fallbackable"
+id: "err-019"
+description: "Verify quota_exhausted (E2002) is non-retryable but fallbackable"
+tags: ["error", "retryable", "fallbackable", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 429
+  response_body:
+    error:
+      message: "You exceeded your current quota"
+      type: "insufficient_quota"
+      code: "insufficient_quota"
+expected:
+  error_code: "E2002"
+  error_name: "quota_exhausted"
+  retryable: false
+  fallbackable: true
+
+---
+suite: "error-classification"
+name: "permission_denied is non-retryable and non-fallbackable"
+id: "err-020"
+description: "Verify permission_denied (E1003) is non-retryable and non-fallbackable"
+tags: ["error", "retryable", "fallbackable", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 403
+  response_body:
+    error:
+      message: "Insufficient permissions"
+      type: "permission_error"
+      code: "permission_denied"
+expected:
+  error_code: "E1003"
+  error_name: "permission_denied"
+  retryable: false
+  fallbackable: false

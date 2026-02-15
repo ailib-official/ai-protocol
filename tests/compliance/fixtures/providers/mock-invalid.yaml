@@ -1,0 +1,6 @@
+# Invalid provider manifest - missing required fields (id, protocol_version, endpoint)
+# Used for compliance test load-003
+
+name: "Invalid Provider"
+status: "stable"
+# Missing: id, protocol_version, endpoint, error_classification

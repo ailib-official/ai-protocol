@@ -1,0 +1,108 @@
+# Message Building - Basic Message Construction
+# Tests user, system, and assistant message construction
+
+---
+suite: "message-building"
+name: "Construct user message"
+id: "msg-001"
+description: "Verify construction of a standard user message"
+tags: ["message", "user", "basic", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "message_building"
+  messages:
+    - role: "user"
+      content: "Hello, how are you?"
+  parameters: {}
+expected:
+  normalized_body:
+    messages:
+      - role: "user"
+        content: "Hello, how are you?"
+  message_count: 1
+
+---
+suite: "message-building"
+name: "Construct system message"
+id: "msg-002"
+description: "Verify construction of a system message with instructions"
+tags: ["message", "system", "basic", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "message_building"
+  messages:
+    - role: "system"
+      content: "You are a helpful assistant."
+    - role: "user"
+      content: "What is 2+2?"
+  parameters: {}
+expected:
+  normalized_body:
+    messages:
+      - role: "system"
+        content: "You are a helpful assistant."
+      - role: "user"
+        content: "What is 2+2?"
+  message_count: 2
+
+---
+suite: "message-building"
+name: "Construct assistant message in conversation"
+id: "msg-003"
+description: "Verify construction of a multi-turn conversation with assistant message"
+tags: ["message", "assistant", "basic", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "message_building"
+  messages:
+    - role: "user"
+      content: "Tell me a joke"
+    - role: "assistant"
+      content: "Why did the scarecrow win an award? He was outstanding in his field!"
+    - role: "user"
+      content: "Another one please"
+  parameters: {}
+expected:
+  normalized_body:
+    messages:
+      - role: "user"
+        content: "Tell me a joke"
+      - role: "assistant"
+        content: "Why did the scarecrow win an award? He was outstanding in his field!"
+      - role: "user"
+        content: "Another one please"
+  message_count: 3
+
+---
+suite: "message-building"
+name: "Construct messages with metadata"
+id: "msg-004"
+description: "Verify message construction preserves optional metadata"
+tags: ["message", "metadata", "basic", "P1"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "message_building"
+  messages:
+    - role: "user"
+      content: "Hello"
+      metadata:
+        message_id: "msg-abc123"
+        timestamp: "2026-02-14T12:00:00Z"
+  parameters: {}
+expected:
+  normalized_body:
+    messages:
+      - role: "user"
+        content: "Hello"
+        metadata:
+          message_id: "msg-abc123"
+          timestamp: "2026-02-14T12:00:00Z"
+  message_count: 1

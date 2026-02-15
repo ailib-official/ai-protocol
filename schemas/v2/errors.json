@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/v2/errors.json",
+  "title": "AI-Protocol Standard Error Codes",
+  "description": "Unified error code system for cross-provider error normalization. All runtimes MUST map provider-specific errors to these standard codes.",
+  "type": "object",
+  "properties": {
+    "error_codes": {
+      "type": "object",
+      "description": "Standard error code definitions, grouped by category",
+      "properties": {
+        "client_errors": {
+          "type": "object",
+          "description": "Client-side errors (1xxx range) - caused by invalid requests",
+          "properties": {
+            "E1001": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "invalid_request",
+              "description": "Malformed request, invalid parameters, or missing required fields"
+            },
+            "E1002": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "authentication",
+              "description": "Invalid, expired, or missing API key"
+            },
+            "E1003": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "permission_denied",
+              "description": "Valid credentials but insufficient permissions"
+            },
+            "E1004": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "not_found",
+              "description": "Requested model or resource does not exist"
+            },
+            "E1005": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "request_too_large",
+              "description": "Input exceeds context window or payload size limit"
+            }
+          }
+        },
+        "rate_errors": {
+          "type": "object",
+          "description": "Rate and quota errors (2xxx range) - transient capacity limits",
+          "properties": {
+            "E2001": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "rate_limited",
+              "description": "Request rate limit exceeded; retry after backoff"
+            },
+            "E2002": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "quota_exhausted",
+              "description": "Usage quota or billing limit reached"
+            }
+          }
+        },
+        "server_errors": {
+          "type": "object",
+          "description": "Server-side errors (3xxx range) - provider infrastructure issues",
+          "properties": {
+            "E3001": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "server_error",
+              "description": "Internal provider server error"
+            },
+            "E3002": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "overloaded",
+              "description": "Provider service temporarily overloaded or unavailable"
+            },
+            "E3003": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "timeout",
+              "description": "Request timed out waiting for response"
+            }
+          }
+        },
+        "operational_errors": {
+          "type": "object",
+          "description": "Operational errors (4xxx range) - state and lifecycle issues",
+          "properties": {
+            "E4001": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "conflict",
+              "description": "State conflict (e.g., concurrent modification)"
+            },
+            "E4002": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "cancelled",
+              "description": "Request cancelled by client"
+            }
+          }
+        },
+        "unknown": {
+          "type": "object",
+          "description": "Catch-all for unclassified errors",
+          "properties": {
+            "E9999": {
+              "$ref": "#/$defs/error_definition",
+              "const_name": "unknown",
+              "description": "Unclassified or unexpected error"
+            }
+          }
+        }
+      }
+    },
+    "provider_mappings": {
+      "type": "object",
+      "description": "Provider-specific error-to-standard-code mappings",
+      "additionalProperties": {
+        "$ref": "#/$defs/provider_error_mapping"
+      }
+    }
+  },
+  "$defs": {
+    "error_definition": {
+      "type": "object",
+      "required": ["code", "name", "http_status", "retryable", "fallbackable"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^E[0-9]{4}$",
+          "description": "Standard error code (E + 4 digits)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Machine-readable error name (snake_case)"
+        },
+        "http_status": {
+          "oneOf": [
+            { "type": "integer", "minimum": 100, "maximum": 599 },
+            { "type": "array", "items": { "type": "integer" } },
+            { "type": "string", "enum": ["varies", "N/A"] }
+          ],
+          "description": "Associated HTTP status code(s)"
+        },
+        "retryable": {
+          "type": "boolean",
+          "description": "Whether the same request can be retried"
+        },
+        "fallbackable": {
+          "type": "boolean",
+          "description": "Whether the request can be sent to a different provider/model"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["client", "rate", "server", "operational", "unknown"],
+          "description": "Error category for grouping"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the error"
+        },
+        "recovery_hint": {
+          "type": "string",
+          "description": "Suggested recovery action for developers"
+        }
+      }
+    },
+    "provider_error_mapping": {
+      "type": "object",
+      "description": "Maps provider-specific errors to standard error codes",
+      "properties": {
+        "by_http_status": {
+          "type": "object",
+          "description": "HTTP status code to standard error code mapping",
+          "additionalProperties": {
+            "type": "string",
+            "description": "Standard error name (e.g., 'invalid_request', 'rate_limited')"
+          }
+        },
+        "by_error_code": {
+          "type": "object",
+          "description": "Provider-specific error code to standard error code mapping",
+          "additionalProperties": {
+            "type": "string",
+            "description": "Standard error name"
+          }
+        },
+        "by_error_message": {
+          "type": "array",
+          "description": "Pattern-based error message classification",
+          "items": {
+            "type": "object",
+            "required": ["pattern", "maps_to"],
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "Regex pattern to match against error message"
+              },
+              "maps_to": {
+                "type": "string",
+                "description": "Standard error name to map to"
+              }
+            }
+          }
+        }
+      }
+    },
+    "error_response_envelope": {
+      "type": "object",
+      "description": "Standard error response format returned by runtimes",
+      "required": ["error"],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": ["code", "name", "message"],
+          "properties": {
+            "code": {
+              "type": "string",
+              "pattern": "^E[0-9]{4}$",
+              "description": "Standard error code"
+            },
+            "name": {
+              "type": "string",
+              "description": "Standard error name"
+            },
+            "message": {
+              "type": "string",
+              "description": "Human-readable error description"
+            },
+            "provider_error": {
+              "type": "object",
+              "description": "Original provider error details (for debugging)",
+              "properties": {
+                "status_code": { "type": "integer" },
+                "error_code": { "type": "string" },
+                "error_message": { "type": "string" },
+                "raw": { "description": "Raw provider error body" }
+              }
+            },
+            "retryable": { "type": "boolean" },
+            "fallbackable": { "type": "boolean" },
+            "retry_after_ms": {
+              "type": "integer",
+              "description": "Suggested retry delay in milliseconds"
+            },
+            "request_id": {
+              "type": "string",
+              "description": "Request ID for correlation"
+            }
+          }
+        }
+      }
+    }
+  }
+}

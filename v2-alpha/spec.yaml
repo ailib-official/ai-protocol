@@ -1,122 +1,466 @@
+# ==============================================================================
+# AI-Protocol V2 Manifest Specification
+# Concentric Circle Model
+# ==============================================================================
+#
+# This document formally specifies the V2 provider manifest structure using the
+# "Concentric Circle" model. Each ring builds upon the inner one: Ring 1 is
+# mandatory for all manifests, Ring 2 adds capability-specific configuration,
+# and Ring 3 provides optional advanced extensions.
+#
+# Experimental multimodal and RTC extensions are documented in the forward-looking
+# section at the end.
+#
+# ==============================================================================
+
 version: "2.0-alpha"
 metadata:
-  description: "AI-Protocol v2.0-alpha - Experimental Specification for Multimodal and Real-time AI"
-  last_updated: "2025-12-XX"
+  description: "AI-Protocol V2 Manifest Specification - Concentric Circle Model"
+  last_updated: "2026-02-14"
   authors: ["AI-Protocol Team"]
   license: "MIT OR Apache-2.0"
+  schema_ref: "schemas/v2/provider.json"
 
-# =========================================================
-# V2 Alpha Extensions: Beyond Language Models
-# =========================================================
+# ==============================================================================
+# Ring 1: Core Skeleton (Required)
+# ==============================================================================
+# Every V2 manifest MUST contain Ring 1. This is the minimal valid manifest.
+# Runtimes MUST reject manifests that fail Ring 1 validation.
+# ==============================================================================
 
-# 1. Multimodal Interleave Operators
-multimodal_interleave:
-  # FrameInterleave: Simultaneous decoding of multiple content streams
-  frame_interleave:
-    operators:
-      - "audio_frame"
-      - "video_frame"
-      - "text_delta"
-      - "image_generation_progress"
-    synchronization:
-      timestamp_alignment: "utc_microseconds"
-      frame_rate_matching: "adaptive"
-      buffer_strategy: "sliding_window"
+ring_1_core:
+  description: |
+    Required fields for all V2 manifests. Defines the provider identity,
+    endpoint configuration, and error classification. No capability-specific
+    or advanced configuration is required at this level.
+  required_fields:
+    - id
+    - protocol_version
+    - endpoint
+    - error_classification
+  schema_ref: "schemas/v2/provider.json"
+  validation_rules:
+    - "id MUST be unique across providers; pattern ^[a-z0-9][a-z0-9-_]{1,63}$"
+    - "protocol_version MUST be '2.0'"
+    - "endpoint.base_url MUST be a valid HTTPS URL (or HTTP for local dev)"
+    - "endpoint.chat MUST specify the chat completions path"
+    - "endpoint.auth MUST specify type and header (or param_name for query_param)"
+    - "error_classification.by_http_status MUST map at least 400, 401, 429, 500"
+    - "All mapped error names MUST reference standard error codes (see schemas/v2/errors.json)"
+  example:
+    id: "openai"
+    protocol_version: "2.0"
+    endpoint:
+      base_url: "https://api.openai.com/v1"
+      chat: "/chat/completions"
+      auth:
+        type: "bearer"
+        header: "Authorization"
+        prefix: "Bearer"
+    error_classification:
+      by_http_status:
+        "400": "invalid_request"
+        "401": "authentication"
+        "403": "permission_denied"
+        "404": "not_found"
+        "429": "rate_limited"
+        "500": "server_error"
+        "503": "overloaded"
+  optional_ring_1_fields:
+    name: "Human-readable provider name"
+    status: "stable | beta | deprecated (default: stable)"
+    category: "ai_provider | model_provider | third_party_aggregator"
+    official_url: "Documentation URL"
+    support_contact: "Support URL"
 
-  # Content Fusion: Merging heterogeneous streams
-  content_fusion:
-    fusion_rules:
-      - match: ["audio_frame", "text_delta"]
-        operator: "speech_to_text_alignment"
-      - match: ["video_frame", "text_delta"]
-        operator: "visual_captioning"
-      - match: ["image_generation_progress", "text_delta"]
-        operator: "progress_annotation"
+# ==============================================================================
+# Standard Error Codes (Reference)
+# ==============================================================================
+# Runtimes map provider errors to these standard codes. See schemas/v2/errors.json
+# and schemas/v2/error-codes.yaml for full definitions.
+# ==============================================================================
 
-# 2. Real-time Actions (RTC Events)
-rtc_events:
-  # StateSync: Agent state synchronization across UI boundaries
-  state_sync:
-    operators:
-      - "agent_state_delta"
-      - "ui_state_mirror"
-      - "action_confirmation"
-    state_model:
-      internal_monologue: "observable_stream"
-      working_memory: "shared_buffer"
-      action_queue: "priority_fifo"
+standard_error_codes:
+  reference: "schemas/v2/error-codes.yaml"
+  reference_schema: "schemas/v2/errors.json"
+  summary:
+    client:
+      - "invalid_request (E1001) — 400"
+      - "authentication (E1002) — 401"
+      - "permission_denied (E1003) — 403"
+      - "not_found (E1004) — 404"
+      - "request_too_large (E1005) — 413"
+    rate:
+      - "rate_limited (E2001) — 429"
+      - "quota_exhausted (E2002) — 429"
+    server:
+      - "server_error (E3001) — 500"
+      - "overloaded (E3002) — 503"
+      - "timeout (E3003) — 504, 408"
+    operational:
+      - "conflict (E4001) — 409"
+      - "cancelled (E4002) — N/A"
+    unknown:
+      - "unknown (E9999) — varies"
+  minimum_required_mappings:
+    - "400 -> invalid_request"
+    - "401 -> authentication"
+    - "429 -> rate_limited"
+    - "500 -> server_error"
+  extended_classification:
+    description: "Providers MAY add by_error_code and by_error_message for finer mapping"
+    by_error_code:
+      example:
+        context_length_exceeded: "request_too_large"
+        model_not_found: "not_found"
+        rate_limit_exceeded: "rate_limited"
+    by_error_message:
+      description: "Pattern-based mapping when provider error body lacks structured code"
 
-  # Tool Streaming Extensions
-  tool_streaming:
-    # Partial tool execution feedback
-    execution_feedback:
-      - "tool_started"
-      - "tool_progress"
-      - "tool_partial_result"
-      - "tool_completed"
-      - "tool_error"
+# ==============================================================================
+# Ring 2: Capability Mapping (Conditional)
+# ==============================================================================
+# Ring 2 sections are present when the provider supports the corresponding
+# capability. Each capability block is validated only when that capability
+# is declared in capabilities.required or capabilities.optional.
+# ==============================================================================
 
-    # Real-time tool coordination
-    coordination:
-      parallel_execution: true
-      dependency_resolution: "dynamic"
-      rollback_support: true
+ring_2_capabilities:
+  description: |
+    Capability-specific configuration. Sections under Ring 2 are conditional:
+    - capabilities: Declares what the provider supports; required when Ring 2 is used
+    - streaming: Required when streaming is in capabilities
+    - parameters: Optional parameter definitions (temperature, max_tokens, etc.)
+    - tools: Optional when tools capability is declared
+    - multimodal: Optional when vision/audio/video is declared
+  schema_ref: "schemas/v2/capabilities.json"
+  validation_rules:
+    - "capabilities.required MUST include 'text' for chat providers"
+    - "When streaming in capabilities, streaming.decoder MUST be present"
+    - "Capability names MUST be from standard_capabilities list"
+    - "Unknown capabilities MUST be ignored (not rejected)"
 
-# 3. Schema-less Mapping Extensions
-schema_less_mapping:
-  # Dynamic field mapping
-  dynamic_fields:
-    strategy: "auto_discover"
-    validation: "permissive"
-    metadata_extraction: "intelligent"
+  # --- Standard Capabilities ---
+  standard_capabilities:
+    text: "Basic text chat (always required for chat providers)"
+    streaming: "Server-sent event streaming"
+    vision: "Image input support"
+    audio: "Audio input/output"
+    video: "Video input/output"
+    tools: "Function/tool calling"
+    parallel_tools: "Parallel tool invocations in single response"
+    agentic: "Multi-turn agent reasoning"
+    reasoning: "Extended thinking / chain-of-thought"
+    embeddings: "Embedding generation"
+    structured_output: "JSON mode / schema-constrained output"
+    batch: "Batch request API"
+    image_generation: "Image generation from prompts"
 
-  # Type inference
-  type_inference:
-    primitives: ["string", "number", "boolean", "null"]
-    complex_types: ["array", "object", "binary"]
-    custom_types: ["datetime", "uuid", "uri"]
+  # --- Capability Module Mapping ---
+  capability_module_mapping:
+    description: "Maps capability names to runtime protocol modules"
+    table:
+      text: { module: "Core (always loaded)", feature_rust: "default", extra_python: "default" }
+      streaming: { module: "streaming.*", feature_rust: "default", extra_python: "default" }
+      vision: { module: "multimodal.vision", feature_rust: "vision", extra_python: "vision" }
+      audio: { module: "multimodal.audio", feature_rust: "audio", extra_python: "audio" }
+      video: { module: "multimodal.video", feature_rust: "video", extra_python: "video" }
+      tools: { module: "tools.*", feature_rust: "default", extra_python: "default" }
+      parallel_tools: { module: "tools.parallel", feature_rust: "default", extra_python: "default" }
+      agentic: { module: "agentic.*", feature_rust: "agentic", extra_python: "agentic" }
+      reasoning: { module: "reasoning.*", feature_rust: "reasoning", extra_python: "reasoning" }
+      embeddings: { module: "embeddings.*", feature_rust: "embeddings", extra_python: "embeddings" }
+      structured_output: { module: "structured.*", feature_rust: "structured", extra_python: "structured" }
+      batch: { module: "batch.*", feature_rust: "batch", extra_python: "batch" }
+      image_generation: { module: "generation.image", feature_rust: "image_gen", extra_python: "image_gen" }
 
-  # Extension points for provider-specific fields
-  extra_metadata:
-    storage: "key_value_store"
-    indexing: "full_text"
-    querying: "json_path"
+  # --- Feature Flags ---
+  feature_flags:
+    description: "Fine-grained toggles within capabilities; see capabilities.feature_flags"
+    standard_flags:
+      structured_output: "Enable JSON mode / schema-constrained output"
+      parallel_tool_calls: "Enable parallel tool invocations"
+      extended_thinking: "Enable thinking/reasoning blocks"
+      streaming_usage: "Report token usage during streaming"
+      system_messages: "Support system role (default true)"
+      image_generation: "Support image generation from prompts"
 
-# 4. Advanced Streaming Events (v2 additions)
-streaming_events_v2:
-  supported_events: [
-    "PartialContentDelta",
-    "ThinkingDelta",
-    "PartialToolCall",
-    "ToolCallStarted",
-    "ToolCallEnded",
-    "MultimodalFrame",
-    "AgentStateSync",
-    "ToolExecutionFeedback",
-    "SchemaLessField"
-  ]
+  # --- Ring 2 Example ---
+  example:
+    capabilities:
+      required: [text, streaming]
+      optional: [vision, tools, parallel_tools]
+    streaming:
+      decoder:
+        format: "sse"
+        strategy: "openai_chat"
+      event_map:
+        - match: "$.choices[0].delta.content"
+          emit: "PartialContentDelta"
+          extract:
+            content: "$.choices[0].delta.content"
+        - match: "$.choices[0].finish_reason"
+          emit: "StreamEnd"
+          extract:
+            finish_reason: "$.choices[0].finish_reason"
+    parameters:
+      temperature: { type: float, range: [0.0, 2.0] }
+      max_tokens: { type: integer, min: 1 }
 
-  # Event correlation and sequencing
-  event_correlation:
-    session_id: "uuid_v4"
-    sequence_number: "incremental"
-    causal_dependencies: "vector_clock"
+# ==============================================================================
+# Ring 3: Advanced Extensions (Optional)
+# ==============================================================================
+# Ring 3 sections are always optional. Runtimes load them when present and
+# gracefully ignore when absent. Unknown Ring 3 extensions MUST be ignored.
+# ==============================================================================
 
-# 5. Performance and Reliability Extensions
-performance:
-  # Adaptive batching
-  adaptive_batching:
-    strategy: "latency_optimized"
-    max_batch_size: 32
-    timeout_ms: 100
+ring_3_extensions:
+  description: |
+    Advanced, cross-cutting extensions. None are required. Providers include
+    these when they offer the corresponding functionality.
+  validation_rules:
+    - "All Ring 3 sections are optional"
+    - "Unknown extension keys MUST be ignored"
+    - "Invalid values in known extensions SHOULD produce warnings, not rejection"
 
-  # Circuit breaker patterns
-  circuit_breaker:
-    failure_threshold: 0.5
-    recovery_timeout_ms: 30000
-    monitoring_window_ms: 60000
+  # --- Standard Extensions ---
+  standard_extensions:
+    guardrails:
+      description: "Input/output content filters"
+      schema_hint:
+        input_filters: "List of filter configs (content_safety, pii_detection, etc.)"
+        output_filters: "List of filter configs"
+      example:
+        input_filters:
+          - type: "content_safety"
+            action: "block"  # block | warn | log
+          - type: "pii_detection"
+            action: "mask"   # mask | block
+        output_filters:
+          - type: "content_safety"
+            action: "block" | "warn"
 
-  # Quality of Service
-  qos:
-    priority_levels: ["realtime", "interactive", "batch"]
-    sla_guarantees: ["latency", "throughput", "reliability"]
+    rate_limit_headers:
+      description: "HTTP header names for rate limit information"
+      fields:
+        requests_limit: "e.g., x-ratelimit-limit-requests"
+        requests_remaining: "e.g., x-ratelimit-remaining-requests"
+        tokens_limit: "e.g., x-ratelimit-limit-tokens"
+        tokens_remaining: "e.g., x-ratelimit-remaining-tokens"
+        retry_after: "retry-after"
+      example:
+        requests_limit: "x-ratelimit-limit-requests"
+        requests_remaining: "x-ratelimit-remaining-requests"
+
+    retry_policy:
+      description: "Retry strategy for transient failures"
+      fields:
+        strategy: "exponential_backoff | linear_backoff | fixed_delay"
+        max_retries: "integer (default 3)"
+        min_delay_ms: "integer"
+        max_delay_ms: "integer"
+        jitter: "full | equal | none"
+        retry_on_http_status: "[429, 500, 502, 503]"
+        retry_on_error_code: "['rate_limited', 'server_error', 'overloaded']"
+      example:
+        strategy: "exponential_backoff"
+        max_retries: 3
+        min_delay_ms: 1000
+        max_delay_ms: 30000
+        jitter: "full"
+
+    termination:
+      description: "Finish reason / termination normalization"
+      fields:
+        source_field: "JSONPath to provider finish_reason"
+        mapping: "Provider value -> standard reason"
+
+    context_policy:
+      description: "Context window and usage policies (future)"
+
+    routing:
+      description: "Request routing hints (future)"
+
+    telemetry:
+      description: "Observability and tracing configuration (future)"
+
+  # --- Ring 3 Example ---
+  example:
+    guardrails:
+      input_filters: []
+      output_filters: []
+    rate_limit_headers:
+      requests_limit: "x-ratelimit-limit-requests"
+    retry_policy:
+      strategy: "exponential_backoff"
+      max_retries: 3
+
+# ==============================================================================
+# Validation Rules (Summary)
+# ==============================================================================
+
+validation:
+  ring_1_complete: "Ring 1 MUST pass before Ring 2 is evaluated; invalid Ring 1 = reject manifest"
+  ring_2_conditional: "Ring 2 sections only validated when corresponding capability is declared"
+  ring_3_optional: "Ring 3 sections are always optional; invalid values SHOULD warn, not fail"
+  unknown_fields: "Unknown top-level and nested fields MUST be ignored (not rejected)"
+  backward_compatibility:
+    - "V2 runtimes MUST accept valid V1 manifests (promote with defaults)"
+    - "New optional fields MAY be added in 2.x; MUST NOT break existing manifests"
+    - "Breaking changes require protocol_version bump to 3.0"
+
+# ==============================================================================
+# Migration from V1
+# ==============================================================================
+
+migration:
+  from_v1:
+    description: "V1 manifests are auto-promoted to V2; runtimes detect protocol_version"
+    mapping:
+      - v1_field: "protocol_version"
+        v2_field: "protocol_version"
+        notes: "Update value from '1.5' to '2.0'"
+      - v1_field: "base_url"
+        v2_field: "endpoint.base_url"
+        notes: "Nested under endpoint"
+      - v1_field: "chat_path"
+        v2_field: "endpoint.chat"
+        notes: "Rename to chat"
+      - v1_field: "capabilities (flat list)"
+        v2_field: "capabilities.required / capabilities.optional"
+        notes: "Split into required and optional"
+      - v1_field: "error_classification"
+        v2_field: "error_classification"
+        notes: "Unchanged; extend with standard error codes"
+      - v1_field: "streaming"
+        v2_field: "streaming"
+        notes: "Unchanged structure; new event types added"
+      - v1_field: "parameters (in spec)"
+        v2_field: "parameters (per-provider)"
+        notes: "More flexibility for per-provider overrides"
+    compatibility_notes:
+      - "V2 runtimes MUST continue to support V1 manifests"
+      - "V1 manifests are promoted with defaults for new required fields"
+      - "Runtimes detect version via protocol_version field"
+
+# ==============================================================================
+# Backward Compatibility Notes
+# ==============================================================================
+
+backward_compatibility:
+  v1_support: "V2 runtimes MUST accept and correctly handle V1 manifests"
+  v1_promotion:
+    - "Missing endpoint.auth: infer bearer + Authorization from provider conventions"
+    - "Flat capabilities list: treat as capabilities.required"
+    - "Missing error_classification.by_http_status: use provider-agnostic defaults"
+  extensibility:
+    - "New capability names MAY be added; runtimes MUST ignore unknown capabilities"
+    - "New Ring 3 extensions MAY be added; runtimes MUST ignore unknown extensions"
+    - "New optional fields in existing schemas MUST have sensible defaults"
+
+# ==============================================================================
+# Experimental Extensions (Forward-Looking)
+# ==============================================================================
+# The following sections describe experimental features beyond the current
+# three-ring model. These are not part of the core specification and may
+# change or be incorporated into future rings.
+# ==============================================================================
+
+experimental:
+  description: |
+    Experimental multimodal, real-time, and schema-less extensions.
+    Subject to change. Implementations MAY support these but MUST NOT require them.
+  status: "alpha / incubating"
+
+  # --- 1. Multimodal Interleave Operators ---
+  multimodal_interleave:
+    description: "Simultaneous decoding of multiple content streams"
+    frame_interleave:
+      operators:
+        - "audio_frame"
+        - "video_frame"
+        - "text_delta"
+        - "image_generation_progress"
+      synchronization:
+        timestamp_alignment: "utc_microseconds"
+        frame_rate_matching: "adaptive"
+        buffer_strategy: "sliding_window"
+    content_fusion:
+      fusion_rules:
+        - match: ["audio_frame", "text_delta"]
+          operator: "speech_to_text_alignment"
+        - match: ["video_frame", "text_delta"]
+          operator: "visual_captioning"
+        - match: ["image_generation_progress", "text_delta"]
+          operator: "progress_annotation"
+
+  # --- 2. Real-time Actions (RTC Events) ---
+  rtc_events:
+    description: "Agent state sync and tool streaming across UI boundaries"
+    state_sync:
+      operators:
+        - "agent_state_delta"
+        - "ui_state_mirror"
+        - "action_confirmation"
+      state_model:
+        internal_monologue: "observable_stream"
+        working_memory: "shared_buffer"
+        action_queue: "priority_fifo"
+    tool_streaming:
+      execution_feedback:
+        - "tool_started"
+        - "tool_progress"
+        - "tool_partial_result"
+        - "tool_completed"
+        - "tool_error"
+      coordination:
+        parallel_execution: true
+        dependency_resolution: "dynamic"
+        rollback_support: true
+
+  # --- 3. Schema-less Mapping Extensions ---
+  schema_less_mapping:
+    description: "Dynamic field mapping and type inference"
+    dynamic_fields:
+      strategy: "auto_discover"
+      validation: "permissive"
+      metadata_extraction: "intelligent"
+    type_inference:
+      primitives: ["string", "number", "boolean", "null"]
+      complex_types: ["array", "object", "binary"]
+      custom_types: ["datetime", "uuid", "uri"]
+    extra_metadata:
+      storage: "key_value_store"
+      indexing: "full_text"
+      querying: "json_path"
+
+  # --- 4. Advanced Streaming Events (V2 Additions) ---
+  streaming_events_v2:
+    supported_events:
+      - "PartialContentDelta"
+      - "ThinkingDelta"
+      - "PartialToolCall"
+      - "ToolCallStarted"
+      - "ToolCallEnded"
+      - "MultimodalFrame"
+      - "AgentStateSync"
+      - "ToolExecutionFeedback"
+      - "SchemaLessField"
+    event_correlation:
+      session_id: "uuid_v4"
+      sequence_number: "incremental"
+      causal_dependencies: "vector_clock"
+
+  # --- 5. Performance and Reliability Extensions ---
+  performance:
+    adaptive_batching:
+      strategy: "latency_optimized"
+      max_batch_size: 32
+      timeout_ms: 100
+    circuit_breaker:
+      failure_threshold: 0.5
+      recovery_timeout_ms: 30000
+      monitoring_window_ms: 60000
+    qos:
+      priority_levels: ["realtime", "interactive", "batch"]
+      sla_guarantees: ["latency", "throughput", "reliability"]

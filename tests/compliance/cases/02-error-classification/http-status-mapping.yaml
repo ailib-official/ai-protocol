@@ -1,0 +1,163 @@
+# Error Classification - HTTP Status to Error Code Mapping
+# Tests HTTP status code mapping for OpenAI provider
+
+---
+suite: "error-classification"
+name: "HTTP 400 maps to invalid_request"
+id: "err-001"
+description: "Verify that HTTP 400 is classified as invalid_request (E1001)"
+tags: ["error", "classification", "http-status", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 400
+  response_body:
+    error:
+      message: "Invalid request"
+      type: "invalid_request_error"
+      code: "invalid_request_error"
+expected:
+  error_code: "E1001"
+  error_name: "invalid_request"
+  retryable: false
+  fallbackable: false
+
+---
+suite: "error-classification"
+name: "HTTP 401 maps to authentication"
+id: "err-002"
+description: "Verify that HTTP 401 is classified as authentication (E1002)"
+tags: ["error", "classification", "http-status", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 401
+  response_body:
+    error:
+      message: "Incorrect API key provided"
+      type: "invalid_request_error"
+      code: "invalid_api_key"
+expected:
+  error_code: "E1002"
+  error_name: "authentication"
+  retryable: false
+  fallbackable: true
+
+---
+suite: "error-classification"
+name: "HTTP 403 maps to permission_denied"
+id: "err-003"
+description: "Verify that HTTP 403 is classified as permission_denied (E1003)"
+tags: ["error", "classification", "http-status", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 403
+  response_body:
+    error:
+      message: "You do not have access to this model"
+      type: "permission_error"
+      code: "permission_denied"
+expected:
+  error_code: "E1003"
+  error_name: "permission_denied"
+  retryable: false
+  fallbackable: false
+
+---
+suite: "error-classification"
+name: "HTTP 404 maps to not_found"
+id: "err-004"
+description: "Verify that HTTP 404 is classified as not_found (E1004)"
+tags: ["error", "classification", "http-status", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 404
+  response_body:
+    error:
+      message: "The model 'gpt-nonexistent' does not exist"
+      type: "invalid_request_error"
+      code: "model_not_found"
+expected:
+  error_code: "E1004"
+  error_name: "not_found"
+  retryable: false
+  fallbackable: false
+
+---
+suite: "error-classification"
+name: "HTTP 429 maps to rate_limited"
+id: "err-005"
+description: "Verify that HTTP 429 is classified as rate_limited (E2001)"
+tags: ["error", "classification", "http-status", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 429
+  response_body:
+    error:
+      message: "Rate limit exceeded for requests"
+      type: "rate_limit_exceeded"
+      code: "rate_limit_exceeded"
+expected:
+  error_code: "E2001"
+  error_name: "rate_limited"
+  retryable: true
+  fallbackable: true
+
+---
+suite: "error-classification"
+name: "HTTP 500 maps to server_error"
+id: "err-006"
+description: "Verify that HTTP 500 is classified as server_error (E3001)"
+tags: ["error", "classification", "http-status", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 500
+  response_body:
+    error:
+      message: "An error occurred on the server"
+      type: "server_error"
+      code: "server_error"
+expected:
+  error_code: "E3001"
+  error_name: "server_error"
+  retryable: true
+  fallbackable: true
+
+---
+suite: "error-classification"
+name: "HTTP 503 maps to overloaded"
+id: "err-007"
+description: "Verify that HTTP 503 is classified as overloaded (E3002)"
+tags: ["error", "classification", "http-status", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "error_classification"
+  http_status: 503
+  response_body:
+    error:
+      message: "The server is overloaded. Please try again later."
+      type: "server_error"
+      code: "overloaded"
+expected:
+  error_code: "E3002"
+  error_name: "overloaded"
+  retryable: true
+  fallbackable: true

@@ -1,0 +1,8 @@
+{
+  "error": {
+    "message": "Rate limit exceeded for requests per min. Limit: 3 / min. Please try again in 20s.",
+    "type": "rate_limit_exceeded",
+    "code": "rate_limit_exceeded",
+    "param": null
+  }
+}

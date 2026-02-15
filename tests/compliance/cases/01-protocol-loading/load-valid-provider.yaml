@@ -1,0 +1,56 @@
+# Protocol Loading - Load Valid Provider Manifest
+# Three test cases: OpenAI valid, Anthropic valid, invalid manifest
+
+---
+suite: "protocol-loading"
+name: "Load valid OpenAI provider manifest"
+id: "load-001"
+description: "Verify that a valid OpenAI provider manifest loads and validates successfully"
+tags: ["protocol-loading", "openai", "P0"]
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "openai"
+  protocol_version: "1.5"
+
+---
+suite: "protocol-loading"
+name: "Load valid Anthropic provider manifest"
+id: "load-002"
+description: "Verify that a valid Anthropic provider manifest loads and validates successfully"
+tags: ["protocol-loading", "anthropic", "P0"]
+setup:
+  provider: "mock-anthropic"
+  manifest_path: "fixtures/providers/mock-anthropic.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-anthropic.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "anthropic"
+  protocol_version: "1.5"
+
+---
+suite: "protocol-loading"
+name: "Load invalid provider manifest fails validation"
+id: "load-003"
+description: "Verify that an invalid provider manifest (missing required fields) fails validation"
+tags: ["protocol-loading", "validation", "P0"]
+setup:
+  provider: "mock-invalid"
+  manifest_path: "fixtures/providers/mock-invalid.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-invalid.yaml"
+expected:
+  valid: false
+  errors:
+    assert: "length"
+    min: 1

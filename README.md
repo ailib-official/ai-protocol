@@ -18,38 +18,36 @@
 ai-protocol/
 ├── schemas/                    # JSON Schema validation specifications
 │   ├── v1.json                # v1.x provider/model configuration Schema
-│   └── spec.json              # Specification file (spec.yaml) Schema
+│   ├── spec.json              # Specification file (spec.yaml) Schema
+│   └── v2/                    # V2 protocol schemas
+│       ├── provider.json      # V2 provider manifest schema
+│       ├── capabilities.json  # Capability declaration schema
+│       ├── errors.json        # Standard error code definitions
+│       ├── endpoint.json      # Endpoint configuration schema
+│       ├── availability.json  # Availability schema
+│       └── regions.json       # Region configuration schema
 ├── v1/                        # v1.x stable version specification
 │   ├── spec.yaml              # Basic specifications: standard parameters, event enumeration
 │   ├── providers/             # Provider configurations (split by vendor for easy PR)
 │   │   ├── openai.yaml        # OpenAI compatible interface
 │   │   ├── anthropic.yaml     # Anthropic Claude interface
 │   │   ├── gemini.yaml        # Google Gemini interface
-│   │   ├── groq.yaml          # Groq compatible interface
-│   │   ├── deepseek.yaml      # DeepSeek compatible interface
-│   │   ├── qwen.yaml          # Qwen (Alibaba) compatible interface
-│   │   ├── doubao.yaml        # Doubao (ByteDance) compatible interface
-│   │   ├── hunyuan.yaml       # Hunyuan (Tencent) compatible interface
 │   │   └── ...                # 30+ providers (see full list below)
 │   └── models/                # Model instance registry
 │       ├── gpt.yaml           # GPT series models
 │       ├── claude.yaml        # Claude series models
 │       └── ...                # More models
-├── v2-alpha/                  # v2-alpha experimental version: multimodal and real-time features
-│   ├── spec.yaml              # Experimental operator definitions
-│   └── providers/             # Experimental provider configurations
+├── v2-alpha/                  # v2-alpha experimental version
+│   └── spec.yaml              # Experimental operator definitions
+├── tests/                     # Cross-runtime compliance test suite
+│   └── compliance/            # YAML-defined test cases for Rust/Python consistency
 ├── examples/                  # Configuration examples
-│   └── tool_accumulation.yaml # Tool accumulation pattern example
 ├── docs/                      # Documentation
+│   ├── V2_ARCHITECTURE.md     # V2 three-layer pyramid architecture design
 │   ├── SPEC.md                # Provider manifest specification
-│   ├── CI_VALIDATION_EXPLAINED.md  # How CI validation works
-│   └── FACT_CHECKING_MODELS.md     # Model registry verification (optional, no API keys required)
+│   └── ...                    # More documentation
 ├── research/                  # Research documents (official API excerpts and verification)
 │   └── providers/             # Provider-specific official documentation research
-│       ├── openai.md          # OpenAI official API rules (VERIFIED)
-│       ├── anthropic.md       # Anthropic official API rules (VERIFIED)
-│       ├── gemini.md          # Gemini official API rules (VERIFIED)
-│       └── ...                # More provider research
 └── scripts/                   # Maintenance scripts
 ```
 
@@ -238,23 +236,30 @@ See [docs/CI_VALIDATION_EXPLAINED.md](docs/CI_VALIDATION_EXPLAINED.md) for detai
 - Fireworks AI, Replicate, AI21 Labs, Cerebras, Lepton AI
 
 **China Region Providers:**
-- 通义千问 (Qwen/Alibaba), 深度求索 (DeepSeek), 智谱 (Zhipu GLM)
-- 豆包 (Doubao/ByteDance), 文心一言 (Baidu ERNIE), 星火 (iFlytek Spark)
-- 混元 (Tencent Hunyuan), 日日新 (SenseNova), 天工 (Tiangong)
-- 月之暗面 (Moonshot/Kimi), MiniMax, 百川 (Baichuan), 零一万物 (Yi)
-- 硅基流动 (SiliconFlow)
+- Qwen (Alibaba), DeepSeek, Zhipu GLM
+- Doubao (ByteDance), Baidu ERNIE, iFlytek Spark
+- Tencent Hunyuan, SenseNova, Tiangong
+- Moonshot/Kimi, MiniMax, Baichuan, Yi
+- SiliconFlow
 
-### v2-alpha (Experimental In Progress)
+### v2 (In Progress)
+- 🔄 **V2 Three-Layer Pyramid Architecture** (L1 Core / L2 Extensions / L3 Environment)
+- 🔄 **Unified Error Code System** — standardized error codes across all providers
+- 🔄 **Capability Declaration Mechanism** — structured `required`/`optional` capabilities
+- 🔄 **Feature Flag Mechanism** — load only what you need
+- 🔄 **Compliance Test Suite** — machine-verified cross-runtime consistency
+
+### v2-alpha (Experimental)
 - 🔄 Multimodal stream interleaving (`FrameInterleave` operator)
 - 🔄 Real-time instructions (`StateSync` operator)
-- 🔄 Schema-less mapping (Schema-less Mapping)
+- 🔄 Schema-less mapping
 - 🔄 Advanced tool accumulation patterns
 
 ### v2.x (Future Plans)
-- 📅 Audio/video streaming processing
-- 📅 Real-time collaborative sessions
-- 📅 Model switching and migration
-- 📅 Performance monitoring and QoS
+- 📅 ProviderContract abstraction
+- 📅 CLI toolchain (`init`, `validate`, `convert`, `check-compat`)
+- 📅 WASM support for browser/Edge execution
+- 📅 Framework integrations (LangChain, LlamaIndex)
 
 ## 🤝 Contribution Guide
 
@@ -292,7 +297,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 AI-Protocol has official runtime implementations in multiple languages:
 
-### Python Runtime (v0.4.0+)
+### Python Runtime (v0.5.0+)
 
 ```bash
 # Install from PyPI
@@ -315,7 +320,7 @@ response = client.chat.completions.create(
 
 📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **Docs**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
 
-### Rust Runtime (v0.6.5+)
+### Rust Runtime (v0.6.6+)
 
 ```toml
 # Add to Cargo.toml

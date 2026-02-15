@@ -1,0 +1,225 @@
+# AI-Protocol Standard Error Codes — Reference Data
+# This file provides the canonical error code definitions used by all runtimes.
+# See schemas/v2/errors.json for the JSON Schema definition.
+
+version: "2.0"
+last_updated: "2026-02-14"
+
+# ==============================================================================
+# Standard Error Codes
+# ==============================================================================
+# Numbering convention:
+#   E1xxx — Client errors (request-side, usually non-retryable)
+#   E2xxx — Rate/quota errors (transient, retryable with backoff)
+#   E3xxx — Server errors (provider-side, often retryable)
+#   E4xxx — Operational errors (lifecycle/state issues)
+#   E9xxx — Catch-all / unknown
+# ==============================================================================
+
+error_codes:
+  # --- Client Errors (1xxx) ---
+  E1001:
+    name: "invalid_request"
+    category: "client"
+    http_status: 400
+    retryable: false
+    fallbackable: false
+    description: "Malformed request, invalid parameters, or missing required fields"
+    recovery_hint: "Check request parameters against the provider's API documentation"
+
+  E1002:
+    name: "authentication"
+    category: "client"
+    http_status: 401
+    retryable: false
+    fallbackable: true
+    description: "Invalid, expired, or missing API key"
+    recovery_hint: "Verify API key is set correctly via environment variable or keyring"
+
+  E1003:
+    name: "permission_denied"
+    category: "client"
+    http_status: 403
+    retryable: false
+    fallbackable: false
+    description: "Valid credentials but insufficient permissions for the requested resource"
+    recovery_hint: "Check account permissions and model access policies"
+
+  E1004:
+    name: "not_found"
+    category: "client"
+    http_status: 404
+    retryable: false
+    fallbackable: false
+    description: "Requested model, endpoint, or resource does not exist"
+    recovery_hint: "Verify model ID and endpoint URL in the provider manifest"
+
+  E1005:
+    name: "request_too_large"
+    category: "client"
+    http_status: 413
+    retryable: false
+    fallbackable: false
+    description: "Input exceeds the model's context window or the API payload size limit"
+    recovery_hint: "Reduce input size or use a model with a larger context window"
+
+  # --- Rate/Quota Errors (2xxx) ---
+  E2001:
+    name: "rate_limited"
+    category: "rate"
+    http_status: 429
+    retryable: true
+    fallbackable: true
+    description: "Request rate limit exceeded (requests per second/minute)"
+    recovery_hint: "Retry with exponential backoff; check rate_limit_headers for timing"
+
+  E2002:
+    name: "quota_exhausted"
+    category: "rate"
+    http_status: 429
+    retryable: false
+    fallbackable: true
+    description: "Account usage quota or billing limit has been reached"
+    recovery_hint: "Upgrade plan or wait for quota reset; fallback to another provider"
+
+  # --- Server Errors (3xxx) ---
+  E3001:
+    name: "server_error"
+    category: "server"
+    http_status: 500
+    retryable: true
+    fallbackable: true
+    description: "Internal server error on the provider side"
+    recovery_hint: "Retry with backoff; if persistent, check provider status page"
+
+  E3002:
+    name: "overloaded"
+    category: "server"
+    http_status: 503
+    retryable: true
+    fallbackable: true
+    description: "Provider service is temporarily overloaded or under maintenance"
+    recovery_hint: "Retry with longer backoff; consider fallback to another provider"
+
+  E3003:
+    name: "timeout"
+    category: "server"
+    http_status: [504, 408]
+    retryable: true
+    fallbackable: true
+    description: "Request timed out before a response was received"
+    recovery_hint: "Increase timeout or reduce request complexity; retry may succeed"
+
+  # --- Operational Errors (4xxx) ---
+  E4001:
+    name: "conflict"
+    category: "operational"
+    http_status: 409
+    retryable: true
+    fallbackable: false
+    description: "State conflict, such as concurrent modification of the same resource"
+    recovery_hint: "Retry after a short delay"
+
+  E4002:
+    name: "cancelled"
+    category: "operational"
+    http_status: "N/A"
+    retryable: false
+    fallbackable: false
+    description: "Request was cancelled by the client"
+    recovery_hint: "No action needed — cancellation was intentional"
+
+  # --- Unknown (9xxx) ---
+  E9999:
+    name: "unknown"
+    category: "unknown"
+    http_status: "varies"
+    retryable: false
+    fallbackable: false
+    description: "Error could not be classified into a standard category"
+    recovery_hint: "Inspect the original provider error for details"
+
+# ==============================================================================
+# Provider-Specific Mappings
+# ==============================================================================
+# Each provider section maps their specific errors to standard error codes.
+# Runtimes use these mappings during error classification.
+# ==============================================================================
+
+provider_mappings:
+  openai:
+    by_http_status:
+      "400": "invalid_request"
+      "401": "authentication"
+      "403": "permission_denied"
+      "404": "not_found"
+      "429": "rate_limited"      # may also be quota_exhausted
+      "500": "server_error"
+      "503": "overloaded"
+    by_error_code:
+      "invalid_api_key": "authentication"
+      "model_not_found": "not_found"
+      "context_length_exceeded": "request_too_large"
+      "rate_limit_exceeded": "rate_limited"
+      "insufficient_quota": "quota_exhausted"
+      "server_error": "server_error"
+    by_error_message:
+      - pattern: "quota"
+        maps_to: "quota_exhausted"
+      - pattern: "billing"
+        maps_to: "quota_exhausted"
+
+  anthropic:
+    by_http_status:
+      "400": "invalid_request"
+      "401": "authentication"
+      "403": "permission_denied"
+      "404": "not_found"
+      "413": "request_too_large"
+      "429": "rate_limited"
+      "500": "server_error"
+      "529": "overloaded"
+    by_error_code:
+      "invalid_request_error": "invalid_request"
+      "authentication_error": "authentication"
+      "permission_error": "permission_denied"
+      "not_found_error": "not_found"
+      "request_too_large": "request_too_large"
+      "rate_limit_error": "rate_limited"
+      "api_error": "server_error"
+      "overloaded_error": "overloaded"
+
+  gemini:
+    by_http_status:
+      "400": "invalid_request"
+      "401": "authentication"
+      "403": "permission_denied"
+      "404": "not_found"
+      "429": "rate_limited"
+      "500": "server_error"
+      "503": "overloaded"
+    by_error_code:
+      "INVALID_ARGUMENT": "invalid_request"
+      "UNAUTHENTICATED": "authentication"
+      "PERMISSION_DENIED": "permission_denied"
+      "NOT_FOUND": "not_found"
+      "RESOURCE_EXHAUSTED": "rate_limited"
+      "INTERNAL": "server_error"
+      "UNAVAILABLE": "overloaded"
+      "DEADLINE_EXCEEDED": "timeout"
+
+  deepseek:
+    by_http_status:
+      "400": "invalid_request"
+      "401": "authentication"
+      "403": "permission_denied"
+      "404": "not_found"
+      "429": "rate_limited"
+      "500": "server_error"
+      "503": "overloaded"
+    by_error_code:
+      "invalid_request_error": "invalid_request"
+      "authentication_error": "authentication"
+      "rate_limit_reached": "rate_limited"
+      "insufficient_quota": "quota_exhausted"
+      "server_error": "server_error"

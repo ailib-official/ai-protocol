@@ -1,38 +1,144 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-protocol.dev/schema/v2/capabilities.json",
-  "title": "Capabilities Declaration",
-  "description": "Provider capability definitions",
+  "title": "AI-Protocol Capability Declaration",
+  "description": "Structured capability declaration for V2 provider manifests. Defines required and optional capabilities that a provider supports, enabling capability-based loading in runtimes.",
   "type": "object",
-  "required": ["streaming", "tools", "vision"],
-  "properties": {
-    "streaming": {
-      "type": "boolean",
-      "description": "Supports streaming responses"
+  "oneOf": [
+    {
+      "description": "V2 structured format with required/optional separation",
+      "type": "object",
+      "required": ["required"],
+      "properties": {
+        "required": {
+          "type": "array",
+          "description": "Capabilities that MUST be available for this provider to function",
+          "items": { "$ref": "#/$defs/capability_name" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "optional": {
+          "type": "array",
+          "description": "Capabilities that MAY be available and can be loaded on demand",
+          "items": { "$ref": "#/$defs/capability_name" },
+          "uniqueItems": true,
+          "default": []
+        },
+        "feature_flags": {
+          "type": "object",
+          "description": "Fine-grained feature toggles within capabilities",
+          "properties": {
+            "structured_output": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports JSON mode / schema-constrained output"
+            },
+            "parallel_tool_calls": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports parallel tool invocations in a single response"
+            },
+            "extended_thinking": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports extended reasoning / thinking blocks"
+            },
+            "streaming_usage": {
+              "type": "boolean",
+              "default": false,
+              "description": "Reports token usage during streaming"
+            },
+            "system_messages": {
+              "type": "boolean",
+              "default": true,
+              "description": "Supports system role messages"
+            },
+            "image_generation": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports image generation"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        }
+      },
+      "additionalProperties": false
     },
-    "tools": {
-      "type": "boolean",
-      "description": "Supports tool / function calling"
-    },
-    "vision": {
-      "type": "boolean",
-      "description": "Supports image or multimodal inputs"
-    },
-    "agentic": {
-      "type": "boolean",
-      "default": false,
-      "description": "Supports agentic reasoning and multi-turn tool sequences"
-    },
-    "reasoning": {
-      "type": "boolean",
-      "default": false,
-      "description": "Supports extended reasoning / thinking blocks"
-    },
-    "parallel_tools": {
-      "type": "boolean",
-      "default": false,
-      "description": "Supports parallel tool invocations"
+    {
+      "description": "V1 legacy format - simple boolean flags (backward compatible)",
+      "type": "object",
+      "properties": {
+        "streaming": {
+          "type": "boolean",
+          "description": "Supports streaming responses"
+        },
+        "tools": {
+          "type": "boolean",
+          "description": "Supports tool / function calling"
+        },
+        "vision": {
+          "type": "boolean",
+          "description": "Supports image or multimodal inputs"
+        },
+        "agentic": {
+          "type": "boolean",
+          "default": false,
+          "description": "Supports agentic reasoning and multi-turn tool sequences"
+        },
+        "reasoning": {
+          "type": "boolean",
+          "default": false,
+          "description": "Supports extended reasoning / thinking blocks"
+        },
+        "parallel_tools": {
+          "type": "boolean",
+          "default": false,
+          "description": "Supports parallel tool invocations"
+        }
+      },
+      "additionalProperties": false
     }
-  },
-  "additionalProperties": false
+  ],
+  "$defs": {
+    "capability_name": {
+      "type": "string",
+      "description": "Standard capability identifier",
+      "enum": [
+        "text",
+        "streaming",
+        "vision",
+        "audio",
+        "video",
+        "tools",
+        "parallel_tools",
+        "agentic",
+        "reasoning",
+        "embeddings",
+        "structured_output",
+        "batch",
+        "image_generation"
+      ]
+    },
+    "capability_module_mapping": {
+      "type": "object",
+      "description": "Reference: Maps capability names to runtime modules",
+      "properties": {
+        "text": { "const": "Core (always loaded)" },
+        "streaming": { "const": "streaming.*" },
+        "vision": { "const": "multimodal.vision" },
+        "audio": { "const": "multimodal.audio" },
+        "video": { "const": "multimodal.video" },
+        "tools": { "const": "tools.*" },
+        "parallel_tools": { "const": "tools.parallel" },
+        "agentic": { "const": "agentic.*" },
+        "reasoning": { "const": "reasoning.*" },
+        "embeddings": { "const": "embeddings.*" },
+        "structured_output": { "const": "structured.*" },
+        "batch": { "const": "batch.*" },
+        "image_generation": { "const": "generation.image" }
+      }
+    }
+  }
 }
