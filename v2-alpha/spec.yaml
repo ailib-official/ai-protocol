@@ -238,7 +238,7 @@ ring_3_extensions:
             action: "mask"   # mask | block
         output_filters:
           - type: "content_safety"
-            action: "block" | "warn"
+            action: "block"  # block | warn
 
     rate_limit_headers:
       description: "HTTP header names for rate limit information"

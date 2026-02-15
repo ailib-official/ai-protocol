@@ -294,7 +294,7 @@ function main() {
   const args = process.argv.slice(2);
   const validateProviders = args.includes('--providers') || args.length === 0;
   const validateModels = args.includes('--models') || args.length === 0;
-  const validateExamples = args.includes('--examples') || args.length === 0;
+  const validateExamples = args.includes('--examples');
   const validateSchemas = args.includes('--schemas') || args.length === 0;
   const validateSpecs = args.includes('--specs') || args.length === 0;
 

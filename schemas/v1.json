@@ -162,6 +162,11 @@
             "expected_status"
           ],
           "additionalProperties": false
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Human-readable notes about availability configuration"
         }
       },
       "required": [
@@ -264,10 +269,28 @@
           "parallel_tool_calls",
           "safe_prompt",
           "prompt_mode",
-          "prediction"
-          ,
+          "prediction",
           "tool_accumulation_strategy",
-          "max_tool_calls_per_turn"
+          "max_tool_calls_per_turn",
+          "repetition_penalty",
+          "encoding_format",
+          "dimensions",
+          "top_n",
+          "query",
+          "documents",
+          "return_documents",
+          "url",
+          "question",
+          "negative_prompt",
+          "aspect_ratio",
+          "steps",
+          "cfg_scale",
+          "mode",
+          "output_format",
+          "strength",
+          "image",
+          "init_image_mode",
+          "contents"
         ]
       },
       "additionalProperties": {
@@ -299,6 +322,7 @@
               "type": "string",
               "enum": [
                 "sse",
+                "openai_sse",
                 "anthropic_sse",
                 "gemini_json",
                 "cohere_native"
@@ -524,6 +548,26 @@
           "type": "boolean",
           "default": false,
           "description": "Supports parallel tool invocations"
+        },
+        "chat": {
+          "type": "boolean",
+          "description": "Supports chat completions"
+        },
+        "multimodal": {
+          "type": "boolean",
+          "description": "Supports multimodal inputs (images, audio, etc.)"
+        },
+        "embeddings": {
+          "type": "boolean",
+          "description": "Supports text embeddings"
+        },
+        "reranking": {
+          "type": "boolean",
+          "description": "Supports document reranking"
+        },
+        "image_generation": {
+          "type": "boolean",
+          "description": "Supports image generation"
         }
       },
       "additionalProperties": false
@@ -683,6 +727,10 @@
                 "json_object",
                 "unknown"
               ]
+            },
+            "arguments_path": {
+              "type": "string",
+              "description": "Path to tool call arguments field"
             }
           },
           "additionalProperties": false
@@ -867,6 +915,28 @@
             ]
           }
         },
+        "by_message_contains": {
+          "type": "object",
+          "description": "Map error message substrings to standard error_class ids.",
+          "additionalProperties": {
+            "type": "string",
+            "enum": [
+              "invalid_request",
+              "authentication",
+              "permission_denied",
+              "not_found",
+              "quota_exhausted",
+              "rate_limited",
+              "request_too_large",
+              "timeout",
+              "conflict",
+              "cancelled",
+              "server_error",
+              "overloaded",
+              "other"
+            ]
+          }
+        },
         "notes": {
           "type": "array",
           "items": {
@@ -875,6 +945,51 @@
         }
       },
       "additionalProperties": false
+    },
+    "non_streaming": {
+      "type": "object",
+      "description": "Non-streaming request/response configuration",
+      "additionalProperties": true
+    },
+    "multimodal": {
+      "type": "object",
+      "description": "Multimodal input configuration",
+      "additionalProperties": true
+    },
+    "content_block_schema": {
+      "type": "object",
+      "description": "Content block schema definition",
+      "additionalProperties": true
+    },
+    "response_mapping": {
+      "type": "object",
+      "description": "Response field mapping configuration",
+      "additionalProperties": true
+    },
+    "usage_patterns": {
+      "type": "object",
+      "description": "Common usage patterns and examples",
+      "additionalProperties": true
+    },
+    "best_practices": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Best practices and recommendations"
+    },
+    "tips": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tips for using this configuration"
+    },
+    "examples": {
+      "type": "array",
+      "description": "Example requests/responses",
+      "items": { "type": "object" }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Human-readable notes about this configuration"
     },
     "models": {
       "type": "object",
@@ -945,13 +1060,21 @@
           "description": "Pricing information (per-token costs).",
           "properties": {
             "input_per_token": {
-              "type": "number"
+              "type": ["number", "null"]
             },
             "output_per_token": {
-              "type": "number"
+              "type": ["number", "null"]
             }
           },
           "additionalProperties": true
+        },
+        "modality": {
+          "type": "string",
+          "description": "Model modality (e.g., text, code, image, embedding)"
+        },
+        "dimensions": {
+          "type": "integer",
+          "description": "Output embedding dimensions (for embedding models)"
         },
         "agentic_capabilities": {
           "type": "object",
