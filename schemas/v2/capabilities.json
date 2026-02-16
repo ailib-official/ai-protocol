@@ -118,7 +118,10 @@
         "embeddings",
         "structured_output",
         "batch",
-        "image_generation"
+        "image_generation",
+        "computer_use",
+        "mcp_client",
+        "mcp_server"
       ]
     },
     "capability_module_mapping": {
@@ -137,7 +140,10 @@
         "embeddings": { "const": "embeddings.*" },
         "structured_output": { "const": "structured.*" },
         "batch": { "const": "batch.*" },
-        "image_generation": { "const": "generation.image" }
+        "image_generation": { "const": "generation.image" },
+        "computer_use": { "const": "computer_use.*" },
+        "mcp_client": { "const": "mcp.client" },
+        "mcp_server": { "const": "mcp.server" }
       }
     }
   }

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/v2/context-policy.json",
+  "title": "AI-Protocol V2 Context Management Policy",
+  "description": "Context window management strategies for V2 provider manifests. Defines sliding window, summarization triggers, token budgets, and overflow handling. Provider-agnostic abstractions for managing limited context windows across varying provider capabilities.",
+  "type": "object",
+  "properties": {
+    "strategy": {
+      "type": "string",
+      "enum": ["sliding_window", "summarize", "truncate_oldest", "token_budget", "adaptive"],
+      "default": "sliding_window",
+      "description": "Primary context management strategy: sliding_window (drop oldest messages), summarize (compress old context), truncate_oldest (hard cut), token_budget (allocate per role), adaptive (auto-select based on context)"
+    },
+    "token_budget": {
+      "type": "object",
+      "description": "Token allocation budget configuration",
+      "properties": {
+        "max_context_tokens": {
+          "type": "integer",
+          "minimum": 1024,
+          "description": "Maximum tokens to use from the provider's context window (may be less than model max)"
+        },
+        "reserve_for_output": {
+          "type": "integer",
+          "minimum": 256,
+          "default": 4096,
+          "description": "Tokens reserved for model output generation"
+        },
+        "system_message_budget": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum tokens for system messages (0 = unlimited within context)"
+        },
+        "tool_budget": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum tokens for tool definitions and results"
+        }
+      },
+      "additionalProperties": false
+    },
+    "sliding_window": {
+      "type": "object",
+      "description": "Sliding window configuration",
+      "properties": {
+        "window_size": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of recent message pairs to keep"
+        },
+        "preserve_system": {
+          "type": "boolean",
+          "default": true,
+          "description": "Always keep system messages regardless of window position"
+        },
+        "preserve_tool_context": {
+          "type": "boolean",
+          "default": true,
+          "description": "Keep tool call/result pairs together (never split mid-tool-use)"
+        },
+        "anchor_messages": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of initial messages to always preserve (after system)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "summarization": {
+      "type": "object",
+      "description": "Context summarization configuration",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable automatic summarization of old context"
+        },
+        "trigger_threshold": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 1.0,
+          "default": 0.8,
+          "description": "Context fill ratio that triggers summarization (0.8 = 80% full)"
+        },
+        "summary_max_tokens": {
+          "type": "integer",
+          "minimum": 100,
+          "default": 1024,
+          "description": "Maximum tokens for the summary message"
+        },
+        "summary_model": {
+          "type": "string",
+          "description": "Model to use for summarization (if different from main model, e.g. a faster model)"
+        },
+        "preserve_recent": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 5,
+          "description": "Number of recent message pairs to preserve unsummarized"
+        }
+      },
+      "additionalProperties": false
+    },
+    "overflow_handling": {
+      "type": "object",
+      "description": "What to do when context still exceeds limits after policy application",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["error", "force_truncate", "retry_with_summary"],
+          "default": "error",
+          "description": "Action when context exceeds budget after policy application"
+        },
+        "error_code": {
+          "type": "string",
+          "const": "E1006",
+          "description": "Standard error code for context overflow (request_too_large)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "provider_specific": {
+      "type": "object",
+      "description": "Provider-specific context management features",
+      "properties": {
+        "supports_context_caching": {
+          "type": "boolean",
+          "default": false,
+          "description": "Provider supports context caching for repeated prefixes (Gemini, Anthropic)"
+        },
+        "supports_compaction_api": {
+          "type": "boolean",
+          "default": false,
+          "description": "Provider has a native context compaction API (Anthropic)"
+        },
+        "cache_ttl_seconds": {
+          "type": "integer",
+          "minimum": 60,
+          "description": "Cache time-to-live for context caching"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

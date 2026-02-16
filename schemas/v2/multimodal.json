@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/v2/multimodal.json",
+  "title": "AI-Protocol V2 Multimodal Capabilities",
+  "description": "Extended multimodal capability configuration for V2 provider manifests. Covers input and output modalities including vision, audio, video, image generation, and speech synthesis. Supports omni-modal models with simultaneous multi-modal I/O. Validated against Google Gemini (audio+video), OpenAI (audio+TTS), Anthropic (vision), Qwen (omni_mode).",
+  "type": "object",
+  "properties": {
+    "input": {
+      "type": "object",
+      "description": "Input modality configurations",
+      "properties": {
+        "vision": {
+          "type": "object",
+          "description": "Image/vision input capabilities",
+          "properties": {
+            "supported": { "type": "boolean", "default": false },
+            "formats": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["jpeg", "png", "gif", "webp", "bmp", "tiff", "svg", "ico"] },
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Supported image formats"
+            },
+            "max_images_per_request": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Maximum number of images in a single request"
+            },
+            "max_resolution": {
+              "type": "string",
+              "pattern": "^\\d+x\\d+$",
+              "description": "Maximum image resolution (e.g. '4096x4096')"
+            },
+            "max_file_size": {
+              "type": "string",
+              "pattern": "^\\d+(\\.\\d+)?\\s*(KB|MB|GB)$",
+              "description": "Maximum file size per image (e.g. '20MB')"
+            },
+            "encoding_methods": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["base64_inline", "url", "file_uri"]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Supported image encoding methods"
+            },
+            "document_understanding": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports PDF, table, chart, diagram understanding"
+            }
+          },
+          "if": { "properties": { "supported": { "const": true } } },
+          "then": { "required": ["formats", "encoding_methods"] },
+          "additionalProperties": false
+        },
+        "audio": {
+          "type": "object",
+          "description": "Audio input capabilities",
+          "properties": {
+            "supported": { "type": "boolean", "default": false },
+            "formats": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["mp3", "wav", "flac", "ogg", "aac", "m4a", "opus", "wma"] },
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Supported audio formats"
+            },
+            "max_duration": {
+              "type": "string",
+              "description": "Maximum audio duration (e.g. '8h', '30m')"
+            },
+            "max_file_size": {
+              "type": "string",
+              "description": "Maximum file size (e.g. '2GB')"
+            },
+            "real_time_streaming": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports real-time audio streaming input"
+            },
+            "speech_recognition": {
+              "type": "boolean",
+              "default": false,
+              "description": "Can transcribe spoken audio to text"
+            },
+            "encoding_methods": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["base64_inline", "url", "file_uri"] },
+              "uniqueItems": true,
+              "description": "Supported audio encoding methods"
+            }
+          },
+          "if": { "properties": { "supported": { "const": true } } },
+          "then": { "required": ["formats"] },
+          "additionalProperties": false
+        },
+        "video": {
+          "type": "object",
+          "description": "Video input capabilities",
+          "properties": {
+            "supported": { "type": "boolean", "default": false },
+            "formats": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["mp4", "mov", "avi", "flv", "wmv", "webm", "mkv"] },
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Supported video formats"
+            },
+            "max_duration": {
+              "type": "string",
+              "description": "Maximum video duration (e.g. '1h')"
+            },
+            "max_file_size": {
+              "type": "string",
+              "description": "Maximum file size"
+            },
+            "frame_extraction": {
+              "type": "string",
+              "enum": ["automatic", "manual", "keyframe"],
+              "description": "How frames are extracted from video for analysis"
+            },
+            "audio_track": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether audio track in video is also processed"
+            },
+            "temporal_reasoning": {
+              "type": "boolean",
+              "default": false,
+              "description": "Can reason about temporal events and sequences in video"
+            }
+          },
+          "if": { "properties": { "supported": { "const": true } } },
+          "then": { "required": ["formats"] },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "output": {
+      "type": "object",
+      "description": "Output modality configurations",
+      "properties": {
+        "text": {
+          "type": "boolean",
+          "default": true,
+          "description": "Standard text output (always true for LLMs)"
+        },
+        "audio": {
+          "type": "object",
+          "description": "Audio/speech output capabilities",
+          "properties": {
+            "supported": { "type": "boolean", "default": false },
+            "formats": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["wav", "mp3", "opus", "pcm", "flac", "aac"] },
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Output audio formats"
+            },
+            "real_time_tts": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports real-time text-to-speech streaming"
+            },
+            "natural_voice": {
+              "type": "boolean",
+              "default": false,
+              "description": "Generates natural-sounding speech (vs robotic TTS)"
+            },
+            "voice_selection": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports selecting different voice profiles"
+            },
+            "sample_rates": {
+              "type": "array",
+              "items": { "type": "integer" },
+              "description": "Supported audio sample rates in Hz (e.g. [16000, 24000, 44100])"
+            }
+          },
+          "if": { "properties": { "supported": { "const": true } } },
+          "then": { "required": ["formats"] },
+          "additionalProperties": false
+        },
+        "image": {
+          "type": "object",
+          "description": "Image generation capabilities",
+          "properties": {
+            "supported": { "type": "boolean", "default": false },
+            "formats": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["png", "jpeg", "webp", "svg"] },
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Output image formats"
+            },
+            "max_resolution": {
+              "type": "string",
+              "pattern": "^\\d+x\\d+$",
+              "description": "Maximum output image resolution"
+            },
+            "styles": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Supported generation styles"
+            }
+          },
+          "if": { "properties": { "supported": { "const": true } } },
+          "then": { "required": ["formats"] },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "omni_mode": {
+      "type": "object",
+      "description": "Omni-modal configuration for simultaneous multi-modal I/O (e.g. Qwen2.5-Omni)",
+      "properties": {
+        "supported": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the model supports simultaneous multi-modal input and output"
+        },
+        "real_time_voice_chat": {
+          "type": "boolean",
+          "default": false,
+          "description": "Supports real-time voice conversation (audio in → speech out)"
+        },
+        "streaming_multimodal": {
+          "type": "boolean",
+          "default": false,
+          "description": "Supports streaming of multiple output modalities simultaneously"
+        },
+        "input_modalities": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["text", "image", "audio", "video"] },
+          "uniqueItems": true,
+          "description": "Simultaneous input modalities supported in omni mode"
+        },
+        "output_modalities": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["text", "audio", "image"] },
+          "uniqueItems": true,
+          "description": "Simultaneous output modalities supported in omni mode"
+        },
+        "chunk_processing": {
+          "type": "object",
+          "description": "Block-wise processing configuration for real-time streaming",
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "chunk_duration_ms": {
+              "type": "integer",
+              "minimum": 10,
+              "description": "Processing chunk duration in milliseconds"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "if": { "properties": { "supported": { "const": true } } },
+      "then": { "required": ["input_modalities", "output_modalities"] },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

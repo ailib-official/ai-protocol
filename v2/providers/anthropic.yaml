@@ -1,0 +1,235 @@
+# Anthropic V2 正式提供商清单 — MCP 创建者，合并 v2-alpha 结构与审计修正后数据
+# AI-Protocol V2 Provider Manifest
+# Provider: Anthropic | Models: Claude Opus 4.6 / Sonnet 4.5
+# Last Updated: 2026-02-16
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+
+# === Ring 1: Core Skeleton ===
+id: anthropic
+protocol_version: "2.0"
+name: "Anthropic"
+version: "4.6.0"
+status: stable
+category: ai_provider
+official_url: "https://docs.anthropic.com"
+support_contact: "https://support.anthropic.com"
+
+endpoint:
+  base_url: "https://api.anthropic.com/v1"
+  chat: "/messages"
+  auth:
+    type: "custom_header"
+    header: "x-api-key"
+    token_env: "ANTHROPIC_API_KEY"
+    extra_headers:
+      - name: "anthropic-version"
+        value: "2023-06-01"
+
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "403": "permission_denied"
+    "404": "not_found"
+    "413": "request_too_large"
+    "429": "rate_limited"
+    "500": "server_error"
+    "529": "overloaded"
+  by_error_code:
+    "invalid_request_error": "invalid_request"
+    "authentication_error": "authentication"
+    "permission_error": "permission_denied"
+    "not_found_error": "not_found"
+    "request_too_large": "request_too_large"
+    "rate_limit_error": "rate_limited"
+    "api_error": "server_error"
+    "overloaded_error": "overloaded"
+
+# === Ring 2: Capability Mapping ===
+capabilities:
+  required:
+    - text
+    - streaming
+    - tools
+  optional:
+    - vision
+    - parallel_tools
+    - agentic
+    - reasoning
+    - structured_output
+    - batch
+    - computer_use
+    - mcp_client
+  feature_flags:
+    structured_output: true
+    parallel_tool_calls: true
+    extended_thinking: true
+    streaming_usage: true
+    system_messages: true
+
+parameters:
+  temperature: { type: float, range: [0.0, 1.0], default: 1.0 }
+  max_tokens: { type: integer, min: 1, max: 8192, required: true }
+  top_p: { type: float, range: [0.0, 1.0] }
+  top_k: { type: integer, min: 0 }
+  stream: { type: boolean }
+
+streaming:
+  decoder:
+    format: "anthropic_sse"
+    strategy: "anthropic_event_stream"
+  event_map:
+    - match: "$.type == 'content_block_delta' && $.delta.type == 'text_delta'"
+      emit: "PartialContentDelta"
+      extract:
+        content: "$.delta.text"
+    - match: "$.type == 'content_block_delta' && $.delta.type == 'input_json_delta'"
+      emit: "PartialToolCall"
+      extract:
+        partial_json: "$.delta.partial_json"
+    - match: "$.type == 'content_block_delta' && $.delta.type == 'thinking_delta'"
+      emit: "ThinkingDelta"
+      extract:
+        thinking: "$.delta.thinking"
+    - match: "$.type == 'message_delta'"
+      emit: "StreamEnd"
+      extract:
+        finish_reason: "$.delta.stop_reason"
+        usage: "$.usage"
+  accumulator:
+    stateful_tool_parsing: true
+    key_path: "$.delta.partial_json"
+    flush_on: "$.type == 'content_block_stop'"
+
+# CORRECTED: Claude Opus 4.6 supports vision (document understanding, images)
+multimodal:
+  input:
+    vision:
+      supported: true
+      formats: [jpeg, png, gif, webp]
+      max_file_size: "20MB"
+      encoding_methods: [base64_inline, url]
+      document_understanding: true
+    audio:
+      supported: false
+    video:
+      supported: false
+  output:
+    text: true
+    audio:
+      supported: false
+    image:
+      supported: false
+
+computer_use:
+  supported: true
+  status: beta
+  implementation: screen_based
+  actions:
+    screenshot:
+      supported: true
+      formats: [png, jpeg]
+    mouse:
+      supported: true
+      operations: [click, double_click, right_click, drag, move, scroll]
+    keyboard:
+      supported: true
+      operations: [type, key_press, shortcut]
+    browser:
+      supported: false
+    zoom:
+      supported: true
+      description: "Screen region zoom for detailed inspection (computer_20251124)"
+  safety:
+    confirmation_required: true
+    sandbox_mode: recommended
+    action_logging: true
+    domain_allowlist: true
+    sensitive_data_protection: true
+  environment:
+    browser: true
+    desktop: true
+  provider_mapping:
+    tool_type: "computer_20251124"
+    beta_header: "computer-use-2025-11-24"
+
+# Anthropic is the CREATOR of MCP
+mcp:
+  client:
+    supported: true
+    protocol_version: "2025-11-25"
+    transports: [sse]
+    auth_methods: [bearer, oauth2]
+    capabilities:
+      tools: true
+      resources: false
+      prompts: false
+      sampling: false
+    tool_filtering:
+      allowed_tools: true
+      denied_tools: true
+    approval_modes: [never, always, auto]
+    provider_mapping:
+      beta_header: "mcp-client-2025-11-20"
+      api_endpoint: "/v1/messages"
+      config_method: tool_parameter
+
+# === Ring 3: Advanced Extensions ===
+api_families: ["messages"]
+default_api_family: "messages"
+
+endpoints:
+  chat:
+    path: "/messages"
+    method: "POST"
+    adapter: "anthropic"
+
+rate_limit_headers:
+  retry_after: "retry-after"
+  requests_limit: "anthropic-ratelimit-requests-limit"
+  requests_remaining: "anthropic-ratelimit-requests-remaining"
+  tokens_limit: "anthropic-ratelimit-tokens-limit"
+  tokens_remaining: "anthropic-ratelimit-tokens-remaining"
+
+retry_policy:
+  strategy: "exponential_backoff"
+  max_retries: 3
+  min_delay_ms: 1000
+  max_delay_ms: 60000
+  jitter: "full"
+  retry_on_http_status: [408, 409, 429, 500, 529]
+
+termination:
+  source_field: "stop_reason"
+  mapping:
+    end_turn: "end_turn"
+    max_tokens: "max_tokens"
+    stop_sequence: "stop_sequence"
+    tool_use: "tool_use"
+
+metadata:
+  models:
+    claude-opus-4-6:
+      context_window: 1000000
+      max_output_tokens: 8192
+      release_date: "2026-02-05"
+      pricing: { input_per_1m: 5.00, output_per_1m: 25.00 }
+    claude-sonnet-4-5:
+      context_window: 200000
+      max_output_tokens: 8192
+      release_date: "2025-11-24"
+      pricing: { input_per_1m: 3.00, output_per_1m: 15.00 }
+  context_management:
+    long_context_beta: "context-1m-2025-08-07"
+    compaction_api: true
+  fast_mode:
+    supported: true
+    beta_header: "fast-mode-2026-02-01"
+    speedup: "2.5x"
+  data_residency:
+    parameter: inference_geo
+    options: [us, eu]
+  sdk:
+    python: anthropic
+    typescript: "@anthropic-ai/sdk"
+    go: "github.com/anthropics/anthropic-sdk-go"

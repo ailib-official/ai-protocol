@@ -155,6 +155,9 @@ ring_2_capabilities:
     structured_output: "JSON mode / schema-constrained output"
     batch: "Batch request API"
     image_generation: "Image generation from prompts"
+    computer_use: "Computer use / GUI automation (screen control, mouse, keyboard)"
+    mcp_client: "MCP client — connect to external MCP servers for tools/resources"
+    mcp_server: "MCP server — expose provider capabilities via MCP protocol"
 
   # --- Capability Module Mapping ---
   capability_module_mapping:
@@ -173,6 +176,9 @@ ring_2_capabilities:
       structured_output: { module: "structured.*", feature_rust: "structured", extra_python: "structured" }
       batch: { module: "batch.*", feature_rust: "batch", extra_python: "batch" }
       image_generation: { module: "generation.image", feature_rust: "image_gen", extra_python: "image_gen" }
+      computer_use: { module: "computer_use.*", feature_rust: "computer_use", extra_python: "computer_use" }
+      mcp_client: { module: "mcp.client", feature_rust: "mcp", extra_python: "mcp" }
+      mcp_server: { module: "mcp.server", feature_rust: "mcp", extra_python: "mcp" }
 
   # --- Feature Flags ---
   feature_flags:

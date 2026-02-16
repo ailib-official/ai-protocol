@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/v2/mcp.json",
+  "title": "AI-Protocol V2 MCP Integration",
+  "description": "Model Context Protocol (MCP) integration configuration for V2 provider manifests. Defines how providers connect to external MCP servers (client mode) or expose capabilities as MCP servers (server mode). Based on MCP specification 2025-11-25. Validated against OpenAI, Anthropic, and Google implementations.",
+  "type": "object",
+  "properties": {
+    "client": {
+      "type": "object",
+      "description": "MCP client configuration — connecting to external MCP servers",
+      "properties": {
+        "supported": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the provider API natively supports connecting to MCP servers"
+        },
+        "protocol_version": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "MCP specification version supported (date format, e.g. '2025-11-25')"
+        },
+        "transports": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["stdio", "sse", "streamable_http"]
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Supported MCP transport mechanisms"
+        },
+        "auth_methods": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["none", "bearer", "oauth2", "api_key"]
+          },
+          "uniqueItems": true,
+          "description": "Supported authentication methods for MCP server connections"
+        },
+        "capabilities": {
+          "type": "object",
+          "description": "Which MCP server capabilities can be consumed",
+          "properties": {
+            "tools": {
+              "type": "boolean",
+              "default": true,
+              "description": "Can invoke tools exposed by MCP servers"
+            },
+            "resources": {
+              "type": "boolean",
+              "default": false,
+              "description": "Can read resources provided by MCP servers"
+            },
+            "prompts": {
+              "type": "boolean",
+              "default": false,
+              "description": "Can use prompt templates from MCP servers"
+            },
+            "sampling": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports server-initiated LLM sampling requests"
+            },
+            "elicitation": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports server-initiated user information requests"
+            }
+          },
+          "additionalProperties": false
+        },
+        "tool_filtering": {
+          "type": "object",
+          "description": "Configuration for filtering available MCP tools",
+          "properties": {
+            "allowed_tools": {
+              "type": "boolean",
+              "default": true,
+              "description": "Supports allowlist filtering of MCP server tools"
+            },
+            "denied_tools": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports denylist filtering of MCP server tools"
+            }
+          },
+          "additionalProperties": false
+        },
+        "approval_modes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["never", "always", "auto"]
+          },
+          "uniqueItems": true,
+          "description": "Tool execution approval modes (never=auto-approve, always=require confirmation, auto=provider decides)"
+        },
+        "max_servers": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum number of concurrent MCP server connections"
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 1000,
+          "default": 30000,
+          "description": "Default timeout for MCP server operations in milliseconds"
+        },
+        "error_handling": {
+          "type": "object",
+          "description": "Error handling behavior for MCP operations",
+          "properties": {
+            "on_server_unavailable": {
+              "type": "string",
+              "enum": ["error", "skip", "fallback"],
+              "default": "error",
+              "description": "Behavior when an MCP server is unreachable"
+            },
+            "on_tool_error": {
+              "type": "string",
+              "enum": ["propagate", "wrap", "retry"],
+              "default": "propagate",
+              "description": "How MCP tool execution errors are handled"
+            },
+            "retry_policy": {
+              "type": "object",
+              "properties": {
+                "max_retries": { "type": "integer", "minimum": 0, "default": 2 },
+                "backoff_ms": { "type": "integer", "minimum": 100, "default": 1000 }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "provider_mapping": {
+          "type": "object",
+          "description": "Provider-specific MCP integration details",
+          "properties": {
+            "tool_type": {
+              "type": "string",
+              "description": "Provider's tool type identifier for MCP (e.g. 'mcp' for OpenAI)"
+            },
+            "beta_header": {
+              "type": "string",
+              "description": "Required beta header (e.g. 'mcp-client-2025-11-20' for Anthropic)"
+            },
+            "api_endpoint": {
+              "type": "string",
+              "description": "Specific API endpoint supporting MCP (e.g. '/v1/responses' for OpenAI)"
+            },
+            "config_method": {
+              "type": "string",
+              "enum": ["tool_parameter", "settings_json", "cli_flag", "sdk_config"],
+              "description": "How MCP servers are configured in the provider API"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "if": { "properties": { "supported": { "const": true } } },
+      "then": { "required": ["transports"] },
+      "additionalProperties": false
+    },
+    "server": {
+      "type": "object",
+      "description": "MCP server configuration — exposing provider capabilities as MCP server",
+      "properties": {
+        "supported": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the provider can act as an MCP server"
+        },
+        "transports": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["stdio", "sse", "streamable_http"]
+          },
+          "uniqueItems": true
+        },
+        "exposed_capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["tools", "resources", "prompts"]
+          },
+          "uniqueItems": true,
+          "description": "Which MCP server capabilities are exposed"
+        }
+      },
+      "if": { "properties": { "supported": { "const": true } } },
+      "then": { "required": ["transports", "exposed_capabilities"] },
+      "additionalProperties": false
+    },
+    "official_servers": {
+      "type": "array",
+      "description": "List of official MCP servers maintained by the provider",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Server name"
+          },
+          "uri": {
+            "type": "string",
+            "description": "Server URI or package identifier"
+          },
+          "transport": {
+            "type": "string",
+            "enum": ["stdio", "sse", "streamable_http"]
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

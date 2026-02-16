@@ -1,0 +1,252 @@
+# OpenAI V2 正式提供商清单 — 合并 v2-alpha 结构与最新模型数据
+# AI-Protocol V2 Provider Manifest
+# Provider: OpenAI | Models: GPT-5.x series
+# Last Updated: 2026-02-16
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+
+# === Ring 1: Core Skeleton ===
+id: openai
+protocol_version: "2.0"
+name: "OpenAI"
+version: "5.3.0"
+status: stable
+category: ai_provider
+official_url: "https://platform.openai.com/docs"
+support_contact: "https://help.openai.com"
+
+endpoint:
+  base_url: "https://api.openai.com/v1"
+  chat: "/chat/completions"
+  embeddings: "/embeddings"
+  auth:
+    type: "bearer"
+    header: "Authorization"
+    prefix: "Bearer"
+    token_env: "OPENAI_API_KEY"
+
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "403": "permission_denied"
+    "404": "not_found"
+    "413": "request_too_large"
+    "429": "rate_limited"
+    "500": "server_error"
+    "503": "overloaded"
+  by_error_code:
+    "invalid_api_key": "authentication"
+    "model_not_found": "not_found"
+    "context_length_exceeded": "request_too_large"
+    "rate_limit_exceeded": "rate_limited"
+    "insufficient_quota": "quota_exhausted"
+    "server_error": "server_error"
+
+# === Ring 2: Capability Mapping ===
+capabilities:
+  required:
+    - text
+    - streaming
+    - tools
+  optional:
+    - vision
+    - audio
+    - parallel_tools
+    - agentic
+    - reasoning
+    - embeddings
+    - structured_output
+    - batch
+    - image_generation
+    - computer_use
+    - mcp_client
+  feature_flags:
+    structured_output: true
+    parallel_tool_calls: true
+    extended_thinking: true
+    streaming_usage: true
+    system_messages: true
+    image_generation: true
+
+parameters:
+  temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
+  max_tokens: { type: integer, min: 1, max: 128000 }
+  top_p: { type: float, range: [0.0, 1.0] }
+  frequency_penalty: { type: float, range: [-2.0, 2.0] }
+  presence_penalty: { type: float, range: [-2.0, 2.0] }
+  stream: { type: boolean }
+  n: { type: integer, min: 1 }
+  response_format: { type: object }
+
+streaming:
+  decoder:
+    format: "sse"
+    strategy: "openai_chat"
+    done_signal: "[DONE]"
+    prefix: "data: "
+  event_map:
+    - match: "$.choices[0].delta.content"
+      emit: "PartialContentDelta"
+      extract:
+        content: "$.choices[0].delta.content"
+    - match: "$.choices[0].delta.tool_calls"
+      emit: "PartialToolCall"
+      extract:
+        tool_calls: "$.choices[0].delta.tool_calls"
+    - match: "$.choices[0].finish_reason"
+      emit: "StreamEnd"
+      extract:
+        finish_reason: "$.choices[0].finish_reason"
+    - match: "$.usage"
+      emit: "UsageReport"
+      extract:
+        usage: "$.usage"
+  candidate:
+    candidate_id_path: "$.choices[*].index"
+    fan_out: true
+  accumulator:
+    stateful_tool_parsing: true
+    key_path: "$.choices[0].delta.tool_calls[0].function.arguments"
+    flush_on: "$.choices[0].finish_reason == 'tool_calls'"
+
+multimodal:
+  input:
+    vision:
+      supported: true
+      formats: [jpeg, png, gif, webp]
+      encoding_methods: [base64_inline, url]
+      document_understanding: true
+    audio:
+      supported: true
+      formats: [mp3, wav, flac]
+      real_time_streaming: true
+      speech_recognition: true
+    video:
+      supported: false
+  output:
+    text: true
+    audio:
+      supported: true
+      real_time_tts: true
+      natural_voice: true
+      voice_selection: true
+    image:
+      supported: true
+      formats: [png]
+
+computer_use:
+  supported: true
+  status: preview
+  implementation: screen_based
+  actions:
+    screenshot:
+      supported: true
+      formats: [png]
+    mouse:
+      supported: true
+      operations: [click, double_click, drag, scroll]
+    keyboard:
+      supported: true
+      operations: [type, key_press, shortcut]
+    browser:
+      supported: true
+      operations: [navigate, fill_form, click_element]
+  safety:
+    confirmation_required: true
+    sandbox_mode: recommended
+    action_logging: true
+    domain_allowlist: false
+    sensitive_data_protection: true
+  environment:
+    browser: true
+    desktop: true
+  provider_mapping:
+    tool_type: "computer_use_preview"
+    model_requirement: "computer-use-preview"
+    api_endpoint: "/v1/responses"
+
+mcp:
+  client:
+    supported: true
+    protocol_version: "2025-11-25"
+    transports: [streamable_http, sse]
+    auth_methods: [bearer, oauth2]
+    capabilities:
+      tools: true
+      resources: false
+      prompts: false
+      sampling: false
+    tool_filtering:
+      allowed_tools: true
+      denied_tools: false
+    approval_modes: [never, always]
+    provider_mapping:
+      tool_type: "mcp"
+      api_endpoint: "/v1/responses"
+      config_method: tool_parameter
+
+# === Ring 3: Advanced Extensions ===
+api_families: ["chat_completions", "completions", "embeddings", "assistants", "realtime"]
+default_api_family: "chat_completions"
+
+endpoints:
+  chat:
+    path: "/chat/completions"
+    method: "POST"
+    adapter: "openai"
+  embeddings:
+    path: "/embeddings"
+    method: "POST"
+    adapter: "openai"
+
+services:
+  list_models:
+    path: "/models"
+    method: "GET"
+    response_binding: "data"
+
+rate_limit_headers:
+  requests_limit: "x-ratelimit-limit-requests"
+  requests_remaining: "x-ratelimit-remaining-requests"
+  tokens_limit: "x-ratelimit-limit-tokens"
+  tokens_remaining: "x-ratelimit-remaining-tokens"
+  retry_after: "retry-after"
+
+retry_policy:
+  strategy: "exponential_backoff"
+  max_retries: 3
+  min_delay_ms: 1000
+  max_delay_ms: 60000
+  jitter: "full"
+  retry_on_http_status: [429, 500, 502, 503]
+
+termination:
+  source_field: "finish_reason"
+  mapping:
+    stop: "end_turn"
+    length: "max_tokens"
+    content_filter: "refusal"
+    tool_calls: "tool_use"
+    function_call: "tool_use"
+
+metadata:
+  models:
+    gpt-5.2:
+      context_window: 400000
+      max_output_tokens: 16384
+      release_date: "2025-12-10"
+      pricing: { input_per_1m: 1.75, output_per_1m: 14.00 }
+    gpt-5.3-codex:
+      context_window: 400000
+      max_output_tokens: 16384
+      release_date: "2026-02-05"
+      pricing: { input_per_1m: 1.25, output_per_1m: 10.00 }
+    gpt-5.3-codex-spark:
+      context_window: 128000
+      max_output_tokens: 16384
+      release_date: "2026-02-12"
+      status: research_preview
+  sdk:
+    python: openai
+    typescript: openai
+    go: "github.com/openai/openai-go"

@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/v2/computer-use.json",
+  "title": "AI-Protocol V2 Computer Use",
+  "description": "Computer Use capability configuration for V2 provider manifests. Standardizes how providers expose GUI automation and desktop interaction capabilities. Validated against Anthropic (screen_based, Beta), Google (tool_based, GA), and OpenAI (screen_based, Preview) implementations.",
+  "type": "object",
+  "properties": {
+    "supported": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the provider supports computer use / GUI automation"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ga", "beta", "preview", "experimental"],
+      "description": "Maturity status of computer use support"
+    },
+    "implementation": {
+      "type": "string",
+      "enum": ["screen_based", "tool_based", "hybrid"],
+      "description": "Implementation approach: screen_based (screenshot loop with coordinates), tool_based (structured semantic actions), hybrid (both approaches available)"
+    },
+    "actions": {
+      "type": "object",
+      "description": "Supported computer use actions — normalized across all implementations",
+      "properties": {
+        "screenshot": {
+          "type": "object",
+          "properties": {
+            "supported": { "type": "boolean", "default": true },
+            "formats": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["png", "jpeg", "webp"] },
+              "minItems": 1,
+              "description": "Supported screenshot output formats"
+            },
+            "max_resolution": {
+              "type": "string",
+              "pattern": "^\\d+x\\d+$",
+              "description": "Maximum screenshot resolution (e.g. '4096x4096')"
+            }
+          },
+          "additionalProperties": false
+        },
+        "mouse": {
+          "type": "object",
+          "properties": {
+            "supported": { "type": "boolean", "default": true },
+            "operations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["click", "double_click", "right_click", "drag", "move", "scroll"]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "keyboard": {
+          "type": "object",
+          "properties": {
+            "supported": { "type": "boolean", "default": true },
+            "operations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["type", "key_press", "key_release", "shortcut"]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "browser": {
+          "type": "object",
+          "properties": {
+            "supported": { "type": "boolean", "default": false },
+            "operations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["navigate", "fill_form", "click_element", "scroll", "back", "forward", "refresh"]
+              },
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "zoom": {
+          "type": "object",
+          "properties": {
+            "supported": { "type": "boolean", "default": false },
+            "description": { "type": "string" }
+          },
+          "description": "Screen region zoom for detailed inspection (Anthropic computer_20251124)",
+          "additionalProperties": false
+        },
+        "file": {
+          "type": "object",
+          "properties": {
+            "supported": { "type": "boolean", "default": false },
+            "operations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["read", "write", "list", "delete", "move"]
+              },
+              "uniqueItems": true
+            }
+          },
+          "description": "File system operations (primarily Google tool_based implementation)",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "safety": {
+      "type": "object",
+      "description": "Safety configuration for computer use — mandatory safeguards",
+      "properties": {
+        "confirmation_required": {
+          "type": "boolean",
+          "default": true,
+          "description": "Require human confirmation for consequential actions"
+        },
+        "sandbox_mode": {
+          "type": "string",
+          "enum": ["required", "recommended", "optional"],
+          "default": "recommended",
+          "description": "Whether sandbox/VM environment is required"
+        },
+        "action_logging": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether all actions are logged for audit trail"
+        },
+        "domain_allowlist": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether domain allowlisting is supported for web browsing"
+        },
+        "sensitive_data_protection": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether the system avoids accessing sensitive data (passwords, PII)"
+        },
+        "max_actions_per_turn": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum number of actions allowed per model turn"
+        },
+        "action_timeout_ms": {
+          "type": "integer",
+          "minimum": 1000,
+          "default": 30000,
+          "description": "Timeout for individual action execution"
+        }
+      },
+      "additionalProperties": false
+    },
+    "environment": {
+      "type": "object",
+      "description": "Supported execution environments",
+      "properties": {
+        "browser": {
+          "type": "boolean",
+          "default": true,
+          "description": "Browser-based environment (Playwright, Selenium, Puppeteer)"
+        },
+        "desktop": {
+          "type": "boolean",
+          "default": false,
+          "description": "Full desktop environment (VM, Docker, native OS)"
+        },
+        "display_config": {
+          "type": "object",
+          "properties": {
+            "width": { "type": "integer", "minimum": 320, "description": "Display width in pixels" },
+            "height": { "type": "integer", "minimum": 240, "description": "Display height in pixels" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "provider_mapping": {
+      "type": "object",
+      "description": "Provider-specific API configuration for computer use",
+      "properties": {
+        "tool_type": {
+          "type": "string",
+          "description": "Provider's tool type identifier (e.g. 'computer_20251124', 'computer_use_preview', 'computer_use')"
+        },
+        "beta_header": {
+          "type": "string",
+          "description": "Required beta header for the feature"
+        },
+        "api_endpoint": {
+          "type": "string",
+          "description": "Specific API endpoint for computer use (if different from main chat)"
+        },
+        "model_requirement": {
+          "type": "string",
+          "description": "Specific model required for computer use (e.g. 'computer-use-preview')"
+        },
+        "config_method": {
+          "type": "string",
+          "enum": ["tool_parameter", "sdk_config", "api_header"],
+          "description": "How computer use is activated in the provider API"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "if": { "properties": { "supported": { "const": true } } },
+  "then": { "required": ["implementation", "actions", "safety"] },
+  "additionalProperties": false
+}

@@ -2,6 +2,73 @@
 
 All notable changes to AI-Protocol specifications and schemas will be documented here.
 
+## 0.7.0 (2026-02-16) - V2 Phase 3 Complete: Full Runtime Implementation
+
+This release marks the completion of **Phase 3** — full V2 runtime implementation across both Rust and Python runtimes. Includes MCP tool bridge, Computer Use abstraction with safety policy, extended multimodal validation, CLI tooling, and comprehensive integration tests.
+
+### Added
+
+#### Runtime Modules (Rust: ai-lib-rust)
+- **`mcp/mod.rs`**: MCP tool bridge — McpToolBridge with namespace, allow/deny filters, provider config extraction
+- **`computer_use/mod.rs`**: Computer Use abstraction — normalized ComputerAction, SafetyPolicy (domain allowlist, max actions, sensitive path protection)
+- **`multimodal/mod.rs`**: Multimodal capabilities — format validation, modality detection, content validation
+- **`bin/ai_protocol_cli.rs`**: CLI tool — validate, info, list, check-compat commands
+
+#### Runtime Modules (Python: ai-lib-python)
+- **`mcp/__init__.py`**: MCP tool bridge — McpToolBridge, McpProviderConfig
+- **`computer_use/__init__.py`**: Computer Use abstraction — ComputerAction, SafetyPolicy, CuProviderConfig
+- **`multimodal/__init__.py`**: Multimodal capabilities — MultimodalCapabilities, format validation
+
+#### Integration Tests
+- **`tests/v2_compliance.rs`**: 6 Rust integration tests — full chain OpenAI/Anthropic/Gemini + MCP roundtrip + CU safety + multimodal validation
+- **`tests/integration/test_v2_compliance.py`**: 6 Python integration tests — matching Rust coverage
+
+#### Documentation
+- **`docs/V2_MIGRATION_GUIDE.md`**: V1→V2 migration guide with examples and CLI instructions
+
+### Test Coverage
+- **Rust**: 157 unit tests + 6 integration tests = 163 total (all pass)
+- **Python**: 59 unit tests + 6 integration tests = 65 new V2 tests (all pass)
+- **CLI**: 53/53 protocol files validated, 37 providers listed
+
+---
+
+## 0.6.0 (2026-02-16) - V2-Beta: MCP / Computer Use / Extended Multimodal
+
+This release marks the **V2-Beta** milestone — the first public beta of the V2 protocol. It delivers three major new capability schemas (MCP, Computer Use, Extended Multimodal), the ProviderContract specification, 6 formal V2 provider manifests, and architectural finalization.
+
+### Added
+
+#### New V2 Schemas
+- **`schemas/v2/provider-contract.json`**: Runtime provider contract — defines API style, request/response mapping, capability contracts, degradation strategies
+- **`schemas/v2/context-policy.json`**: Context management policy — sliding window, summarization, token budgets, overflow handling
+
+#### V2 Provider Manifests (Formal)
+- **`v2/providers/openai.yaml`**: OpenAI V2 manifest — GPT-5.x, MCP client, Computer Use (preview), full multimodal
+- **`v2/providers/anthropic.yaml`**: Anthropic V2 manifest — Claude Opus 4.6, MCP creator, Computer Use (beta), vision
+- **`v2/providers/google.yaml`**: Google V2 manifest — Gemini 3, Computer Use (GA), audio+video input, MCP client
+- **`v2/providers/deepseek.yaml`**: DeepSeek V2 manifest — V3.2, OpenAI-compatible, MoE architecture
+- **`v2/providers/moonshot.yaml`**: Moonshot V2 manifest — Kimi K2.5, Agent Swarm, video support
+- **`v2/providers/zhipu.yaml`**: Zhipu V2 manifest — GLM-5, agentic engineering, SOTA open-source coding
+
+### Changed
+
+#### Schema Enhancements
+- **`schemas/v2/mcp.json`**: Finalized — added conditional validation, error_handling, max_servers, timeout_ms
+- **`schemas/v2/computer-use.json`**: Finalized — added file operations, config_method, max_actions_per_turn, conditional validation
+- **`schemas/v2/multimodal.json`**: Finalized — added encoding_methods, sample_rates, input/output modality lists for omni_mode, conditional validation
+- **`schemas/v2/provider.json`**: Added `$ref` to provider-contract.json and context-policy.json
+
+#### Documentation
+- **`docs/V2_ARCHITECTURE.md`**: Upgraded from v0.2 Draft to **v1.0 Finalized** — new sections: ProviderContract (§10), ProviderDriver Architecture (§11), Context Management Policy (§12), expanded Decision Log
+
+### Ecosystem Status
+- **ai-protocol**: v0.6.0 (v2-beta) — 12 V2 schemas, 6 formal providers, 3 alpha providers
+- **ai-lib-rust**: v0.7.1 (V2 runtime adaptation in progress)
+- **ai-lib-python**: v0.6.0 (V2 runtime adaptation in progress)
+
+---
+
 ## 0.5.0 (2026-02-15) - V2 Architecture & Cross-Runtime Compliance
 
 This release introduces the V2 protocol architecture, standardized error codes, capability declarations, and a cross-runtime compliance test suite.

@@ -156,6 +156,26 @@
       "description": "Protocol-level feature flags",
       "additionalProperties": { "type": "boolean" }
     },
+    "multimodal": {
+      "$ref": "./multimodal.json",
+      "description": "Extended multimodal capability configuration (Ring 2)"
+    },
+    "computer_use": {
+      "$ref": "./computer-use.json",
+      "description": "Computer Use / GUI automation configuration (Ring 2)"
+    },
+    "mcp": {
+      "$ref": "./mcp.json",
+      "description": "Model Context Protocol integration configuration (Ring 2)"
+    },
+    "context_policy": {
+      "$ref": "./context-policy.json",
+      "description": "Context window management policy configuration (Ring 3)"
+    },
+    "provider_contract": {
+      "$ref": "./provider-contract.json",
+      "description": "Runtime provider driver contract specification (Ring 3)"
+    },
     "metadata": {
       "type": "object",
       "additionalProperties": true,

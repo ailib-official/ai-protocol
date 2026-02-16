@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/v2/provider-contract.json",
+  "title": "AI-Protocol V2 Provider Contract",
+  "description": "Defines the runtime contract between AI-Protocol and provider implementations. Specifies capability matrices, request/response mapping, degradation strategies, and API behavioral guarantees. This schema drives the ProviderDriver abstraction in both Rust and Python runtimes.",
+  "type": "object",
+  "required": ["contract_version", "provider_id", "api_style", "request_mapping", "response_mapping"],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Contract schema version"
+    },
+    "provider_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-_]{1,63}$",
+      "description": "Must match the provider manifest id"
+    },
+    "api_style": {
+      "type": "string",
+      "enum": ["openai_compatible", "anthropic_messages", "gemini_generate", "custom"],
+      "description": "Primary API style determines the base request/response transformation"
+    },
+    "api_version": {
+      "type": "string",
+      "description": "Provider API version string (e.g. '2023-06-01' for Anthropic)"
+    },
+    "request_mapping": {
+      "type": "object",
+      "description": "How to transform a UnifiedRequest into provider-specific format",
+      "required": ["message_format", "role_mapping"],
+      "properties": {
+        "message_format": {
+          "type": "string",
+          "enum": ["openai_messages", "anthropic_messages", "gemini_contents", "custom"],
+          "description": "Message array format style"
+        },
+        "role_mapping": {
+          "type": "object",
+          "description": "Maps AI-Protocol roles to provider-specific roles",
+          "properties": {
+            "system": { "type": "string", "default": "system" },
+            "user": { "type": "string", "default": "user" },
+            "assistant": { "type": "string", "default": "assistant" },
+            "tool": { "type": "string", "default": "tool" }
+          },
+          "additionalProperties": { "type": "string" }
+        },
+        "system_message_handling": {
+          "type": "string",
+          "enum": ["inline", "top_level_field", "prepend_to_user", "not_supported"],
+          "default": "inline",
+          "description": "How system messages are placed: inline in messages array, as a top-level 'system' field, prepended to first user message, or not supported"
+        },
+        "content_block_mapping": {
+          "type": "object",
+          "description": "Maps ContentBlock types to provider format",
+          "properties": {
+            "text": {
+              "type": "object",
+              "properties": {
+                "field": { "type": "string", "default": "content" },
+                "wrapper": { "type": "string", "enum": ["string", "array_of_parts", "content_blocks"] }
+              }
+            },
+            "image": {
+              "type": "object",
+              "properties": {
+                "format": { "type": "string", "enum": ["openai_url", "anthropic_source", "gemini_inline_data"] },
+                "base64_field": { "type": "string" },
+                "url_field": { "type": "string" }
+              }
+            },
+            "audio": {
+              "type": "object",
+              "properties": {
+                "format": { "type": "string" },
+                "supported": { "type": "boolean", "default": false }
+              }
+            },
+            "video": {
+              "type": "object",
+              "properties": {
+                "format": { "type": "string" },
+                "supported": { "type": "boolean", "default": false }
+              }
+            },
+            "tool_use": {
+              "type": "object",
+              "properties": {
+                "format": { "type": "string", "enum": ["openai_tool_calls", "anthropic_tool_use", "gemini_function_call"] },
+                "id_field": { "type": "string" },
+                "name_field": { "type": "string" },
+                "arguments_field": { "type": "string" }
+              }
+            },
+            "tool_result": {
+              "type": "object",
+              "properties": {
+                "format": { "type": "string", "enum": ["openai_tool_message", "anthropic_tool_result", "gemini_function_response"] },
+                "id_field": { "type": "string" },
+                "content_field": { "type": "string" }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "parameter_aliases": {
+          "type": "object",
+          "description": "Maps unified parameter names to provider-specific names",
+          "additionalProperties": { "type": "string" }
+        },
+        "required_headers": {
+          "type": "array",
+          "description": "Headers that must be included in every request",
+          "items": {
+            "type": "object",
+            "required": ["name", "value"],
+            "properties": {
+              "name": { "type": "string" },
+              "value": { "type": "string" },
+              "condition": { "type": "string", "description": "Capability condition (e.g. 'computer_use', 'mcp')" }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "response_mapping": {
+      "type": "object",
+      "description": "How to extract unified response from provider-specific format",
+      "required": ["content_path", "finish_reason_path"],
+      "properties": {
+        "content_path": {
+          "type": "string",
+          "description": "JSONPath to extract text content from non-streaming response"
+        },
+        "finish_reason_path": {
+          "type": "string",
+          "description": "JSONPath to extract finish reason"
+        },
+        "usage_path": {
+          "type": "string",
+          "description": "JSONPath to extract token usage"
+        },
+        "tool_calls_path": {
+          "type": "string",
+          "description": "JSONPath to extract tool calls"
+        },
+        "finish_reason_mapping": {
+          "type": "object",
+          "description": "Maps provider finish reasons to unified reasons",
+          "additionalProperties": { "type": "string" }
+        },
+        "error_extraction": {
+          "type": "object",
+          "properties": {
+            "type_path": { "type": "string" },
+            "message_path": { "type": "string" },
+            "code_path": { "type": "string" }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "capability_contracts": {
+      "type": "object",
+      "description": "Per-capability behavioral contracts and feature negotiation",
+      "properties": {
+        "streaming": {
+          "type": "object",
+          "properties": {
+            "protocol": { "type": "string", "enum": ["sse", "ndjson", "websocket"] },
+            "supports_usage_in_stream": { "type": "boolean", "default": false },
+            "supports_tool_streaming": { "type": "boolean", "default": false },
+            "done_signal": { "type": "string" }
+          }
+        },
+        "tools": {
+          "type": "object",
+          "properties": {
+            "definition_format": { "type": "string", "enum": ["openai_functions", "anthropic_tools", "gemini_declarations"] },
+            "supports_parallel": { "type": "boolean", "default": false },
+            "supports_forced_tool": { "type": "boolean", "default": false },
+            "max_tools": { "type": "integer" }
+          }
+        },
+        "structured_output": {
+          "type": "object",
+          "properties": {
+            "json_mode": { "type": "boolean", "default": false },
+            "json_schema_mode": { "type": "boolean", "default": false },
+            "response_format_field": { "type": "string" }
+          }
+        },
+        "mcp": {
+          "type": "object",
+          "properties": {
+            "integration_method": { "type": "string", "enum": ["native_api", "tool_bridge", "not_supported"] },
+            "tool_injection_format": { "type": "string" },
+            "requires_beta_header": { "type": "string" }
+          }
+        },
+        "computer_use": {
+          "type": "object",
+          "properties": {
+            "integration_method": { "type": "string", "enum": ["native_tool", "sdk_config", "not_supported"] },
+            "action_format": { "type": "string" },
+            "requires_beta_header": { "type": "string" }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "degradation": {
+      "type": "object",
+      "description": "Defines graceful degradation when capabilities are unavailable",
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["error", "fallback", "silent_skip"],
+          "default": "error",
+          "description": "Default degradation strategy"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["capability", "action"],
+            "properties": {
+              "capability": { "type": "string" },
+              "action": {
+                "type": "string",
+                "enum": ["error", "fallback_text", "strip_content", "convert_to_text"]
+              },
+              "message": { "type": "string", "description": "Human-readable degradation message" }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "rate_limit_contract": {
+      "type": "object",
+      "description": "Rate limit behavioral contract",
+      "properties": {
+        "supports_header_parsing": { "type": "boolean", "default": false },
+        "retry_after_source": { "type": "string", "enum": ["header", "body", "none"] },
+        "quota_tracking": { "type": "boolean", "default": false }
+      }
+    },
+    "authentication_contract": {
+      "type": "object",
+      "description": "Authentication behavioral contract",
+      "properties": {
+        "method": { "type": "string", "enum": ["bearer", "api_key_header", "query_param", "oauth2"] },
+        "token_refresh": { "type": "boolean", "default": false },
+        "multi_key_support": { "type": "boolean", "default": false }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -367,6 +367,43 @@ function main() {
     console.log('');
   }
 
+  // Pre-load v2 sub-schemas so AJV can resolve $ref references
+  const v2SchemaDir = join(ROOT_DIR, 'schemas', 'v2');
+  const v2SubSchemas = [
+    'endpoint.json', 'availability.json', 'capabilities.json', 'regions.json', 'errors.json',
+    'multimodal.json', 'computer-use.json', 'mcp.json', 'provider-contract.json', 'context-policy.json',
+  ];
+  const v2Validator = createValidator();
+  for (const subSchemaFile of v2SubSchemas) {
+    const subSchemaPath = join(v2SchemaDir, subSchemaFile);
+    try {
+      const subSchema = loadSchema(subSchemaPath, true);
+      v2Validator.addSchema(subSchema);
+    } catch (e) {
+      // Sub-schema may not exist yet; skip silently
+    }
+  }
+  const v2SchemaCache = new Map();
+
+  // Validate v2 formal providers
+  if (validateProviders) {
+    console.log(`${colors.blue}📋 Validating v2 provider configurations...${colors.reset}`);
+    console.log('--------------------------------------------');
+
+    const providerDirV2Formal = join(ROOT_DIR, 'v2', 'providers');
+    const providerFilesV2Formal = getYamlFiles(providerDirV2Formal);
+    const schemaPathV2 = join(ROOT_DIR, 'schemas', 'v2', 'provider.json');
+
+    if (providerFilesV2Formal.length === 0) {
+      console.log(`${colors.yellow}⚠️  No provider files found in ${providerDirV2Formal}${colors.reset}`);
+    } else {
+      providerFilesV2Formal.forEach(file => {
+        validateFile(file, schemaPathV2, v2Validator, v2SchemaCache, SCHEMA_V2_PATTERN);
+      });
+    }
+    console.log('');
+  }
+
   // Validate v2-alpha providers (if any)
   if (validateProviders) {
     console.log(`${colors.blue}📋 Validating v2-alpha provider configurations...${colors.reset}`);
@@ -379,21 +416,6 @@ function main() {
     if (providerFilesV2.length === 0) {
       console.log(`${colors.yellow}⚠️  No provider files found in ${providerDirV2}${colors.reset}`);
     } else {
-      // Pre-load v2 sub-schemas so AJV can resolve $ref references
-      const v2SchemaDir = join(ROOT_DIR, 'schemas', 'v2');
-      const v2SubSchemas = ['endpoint.json', 'availability.json', 'capabilities.json', 'regions.json', 'errors.json'];
-      const v2Validator = createValidator();
-      for (const subSchemaFile of v2SubSchemas) {
-        const subSchemaPath = join(v2SchemaDir, subSchemaFile);
-        try {
-          const subSchema = loadSchema(subSchemaPath, true);
-          v2Validator.addSchema(subSchema);
-        } catch (e) {
-          // Sub-schema may not exist yet; skip silently
-        }
-      }
-      const v2SchemaCache = new Map();
-
       providerFilesV2.forEach(file => {
         validateFile(file, schemaPathV2, v2Validator, v2SchemaCache, SCHEMA_V2_PATTERN);
       });
@@ -440,6 +462,11 @@ function main() {
       join(schemaDir, 'v2', 'capabilities.json'),
       join(schemaDir, 'v2', 'regions.json'),
       join(schemaDir, 'v2', 'errors.json'),
+      join(schemaDir, 'v2', 'mcp.json'),
+      join(schemaDir, 'v2', 'computer-use.json'),
+      join(schemaDir, 'v2', 'multimodal.json'),
+      join(schemaDir, 'v2', 'provider-contract.json'),
+      join(schemaDir, 'v2', 'context-policy.json'),
     ];
 
     schemaFiles.forEach(schemaPath => {

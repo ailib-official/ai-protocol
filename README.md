@@ -20,12 +20,17 @@ ai-protocol/
 │   ├── v1.json                # v1.x provider/model configuration Schema
 │   ├── spec.json              # Specification file (spec.yaml) Schema
 │   └── v2/                    # V2 protocol schemas
-│       ├── provider.json      # V2 provider manifest schema
+│       ├── provider.json      # V2 provider manifest schema (three-ring model)
 │       ├── capabilities.json  # Capability declaration schema
-│       ├── errors.json        # Standard error code definitions
+│       ├── errors.json        # Standard error code definitions (13 codes)
 │       ├── endpoint.json      # Endpoint configuration schema
 │       ├── availability.json  # Availability schema
-│       └── regions.json       # Region configuration schema
+│       ├── regions.json       # Region configuration schema
+│       ├── mcp.json           # MCP integration schema
+│       ├── computer-use.json  # Computer Use abstraction schema
+│       ├── multimodal.json    # Extended multimodal capabilities schema
+│       ├── provider-contract.json # Provider contract schema
+│       └── context-policy.json # Context management policy schema
 ├── v1/                        # v1.x stable version specification
 │   ├── spec.yaml              # Basic specifications: standard parameters, event enumeration
 │   ├── providers/             # Provider configurations (split by vendor for easy PR)
@@ -37,6 +42,8 @@ ai-protocol/
 │       ├── gpt.yaml           # GPT series models
 │       ├── claude.yaml        # Claude series models
 │       └── ...                # More models
+├── v2/                        # v2 formal provider manifests
+│   └── providers/             # 6 V2 provider manifests (OpenAI, Anthropic, Google, etc.)
 ├── v2-alpha/                  # v2-alpha experimental version
 │   └── spec.yaml              # Experimental operator definitions
 ├── tests/                     # Cross-runtime compliance test suite
@@ -201,7 +208,7 @@ npm run build
 
 Build: run `npm run validate` first. This command then:
 1.  Cleans the `dist/` directory to remove stale files from previous builds.
-2.  Converts all YAML under `v1/` and `v2-alpha/` into JSON in `dist/`.
+2.  Converts all YAML under `v1/`, `v2/`, and `v2-alpha/` into JSON in `dist/`.
 3.  Generates a `dist/index.json` manifest index with version information.
 
 Runtimes (like `ai-lib-rust`) should consume the `dist/` directory directly.
@@ -297,7 +304,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 AI-Protocol has official runtime implementations in multiple languages:
 
-### Python Runtime (v0.5.0+)
+### Python Runtime (v0.7.0)
 
 ```bash
 # Install from PyPI
@@ -320,12 +327,12 @@ response = client.chat.completions.create(
 
 📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **Docs**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
 
-### Rust Runtime (v0.6.6+)
+### Rust Runtime (v0.8.0)
 
 ```toml
 # Add to Cargo.toml
 [dependencies]
-ai-lib-rust = "0.6"
+ai-lib-rust = "0.8"
 ```
 
 ```rust

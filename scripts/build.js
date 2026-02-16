@@ -71,6 +71,10 @@ function createIndex(distDir) {
         latest: 'v1'
     };
 
+    if (existsSync(join(distDir, 'v2'))) {
+        index.versions.push('v2');
+        index.latest = 'v2';
+    }
     if (existsSync(join(distDir, 'v2-alpha'))) {
         index.versions.push('v2-alpha');
     }
@@ -97,7 +101,7 @@ function main() {
     cleanDist();
     ensureDir(DIST_DIR);
 
-    const targets = ['v1', 'v2-alpha'];
+    const targets = ['v1', 'v2', 'v2-alpha'];
     let totalFiles = 0;
 
     targets.forEach(target => {

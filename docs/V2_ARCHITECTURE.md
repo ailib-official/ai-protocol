@@ -1,9 +1,9 @@
 # V2 Protocol Architecture Design
 
-> **Status**: Draft  
-> **Version**: 0.1  
-> **Date**: 2026-02-14  
-> **Task ID**: S2.1
+> **Status**: Finalized  
+> **Version**: 1.0  
+> **Date**: 2026-02-16  
+> **Task ID**: S3.8 (v1.0 定稿：包含 ProviderContract、ProviderDriver 架构、Context Policy、完整能力体系)
 
 ## 1. Overview
 
@@ -159,6 +159,9 @@ Each capability maps to a self-contained module in the protocol:
 | `structured_output` | `structured.*` | `structured` | `[structured]` |
 | `batch` | `batch.*` | `batch` | `[batch]` |
 | `agentic` | `agentic.*` | `agentic` | `[agentic]` |
+| `computer_use` | `computer_use.*` | `computer_use` | `[computer_use]` |
+| `mcp_client` | `mcp.client` | `mcp` | `[mcp]` |
+| `mcp_server` | `mcp.server` | `mcp` | `[mcp]` |
 
 #### 2.2.3 Extension Modules
 
@@ -501,26 +504,291 @@ See [Compliance Test Suite Design](../tests/compliance/README.md) for details.
 
 ---
 
-## 7. Schema File Organization
+## 7. MCP Integration (V2 Addition)
+
+AI-Protocol V2 standardizes integration with the **Model Context Protocol (MCP)**, the open
+protocol (spec version 2025-11-25) for connecting LLMs to external tools and data sources.
+
+### 7.1 MCP in the Capability Model
+
+MCP support is declared as optional capabilities in Ring 2:
+
+```yaml
+capabilities:
+  optional:
+    - mcp_client      # Connect to external MCP servers
+    - mcp_server      # Expose capabilities via MCP
+
+mcp:
+  client:
+    supported: true
+    protocol_version: "2025-11-25"
+    transports: [stdio, sse, streamable_http]
+    capabilities:
+      tools: true
+      resources: true
+      prompts: false
+      sampling: false
+  server:
+    supported: false
+```
+
+### 7.2 Provider MCP Support Matrix (Feb 2026)
+
+| Provider | MCP Client | MCP Server | Transport | Notes |
+|----------|-----------|------------|-----------|-------|
+| **Anthropic** | ✅ API connector | — | SSE | MCP creator; beta header `mcp-client-2025-11-20` |
+| **OpenAI** | ✅ Responses API | ✅ Docs MCP | Streamable HTTP | Built-in `mcp` tool type |
+| **Google** | ✅ Gemini CLI | ✅ Official servers | Stdio/SSE/HTTP | Google Maps, BigQuery, Firebase servers |
+| **Moonshot** | ❌ | ❌ | — | Not yet supported |
+| **Zhipu** | ❌ | ❌ | — | Not yet supported |
+| **DeepSeek** | ❌ | ❌ | — | Not yet supported |
+
+### 7.3 MCP Schema
+
+See `schemas/v2/mcp.json` for the full JSON Schema definition.
+
+---
+
+## 8. Computer Use Abstraction (V2 Addition)
+
+V2 standardizes computer use / GUI automation across providers with different implementations.
+
+### 8.1 Implementation Approaches
+
+| Provider | Approach | Tool Type | Status |
+|----------|---------|-----------|--------|
+| **Anthropic** | Screen-based (screenshot loop) | `computer_20251124` | Beta |
+| **OpenAI** | CUA model (screenshot loop) | `computer_use_preview` | Preview |
+| **Google** | Tool-based (structured actions) | `computer_use` config | GA |
+
+### 8.2 Standardized Actions
+
+All implementations are normalized to a common action set:
+
+```yaml
+computer_use:
+  supported: true
+  status: beta
+  implementation: screen_based
+  actions:
+    screenshot: { supported: true }
+    mouse: { supported: true, operations: [click, double_click, drag, scroll] }
+    keyboard: { supported: true, operations: [type, key_press, shortcut] }
+    browser: { supported: true, operations: [navigate, fill_form] }
+  safety:
+    confirmation_required: true
+    sandbox_mode: recommended
+```
+
+### 8.3 Computer Use Schema
+
+See `schemas/v2/computer-use.json` for the full JSON Schema definition.
+
+---
+
+## 9. Extended Multimodal Model (V2 Addition)
+
+V2 extends the multimodal capability declaration to cover input/output modalities,
+document understanding, omni-modal models, and real-time streaming.
+
+### 9.1 Multimodal Capability Structure
+
+```yaml
+multimodal:
+  input:
+    vision: { supported: true, formats: [jpeg, png], document_understanding: true }
+    audio: { supported: true, formats: [mp3, wav], real_time_streaming: false }
+    video: { supported: true, formats: [mp4, mov], temporal_reasoning: true }
+  output:
+    text: true
+    audio: { supported: false }   # Qwen2.5-Omni: true
+    image: { supported: false }   # Gemini Nano Banana / DALL-E: true
+  omni_mode:
+    supported: false              # True for Qwen2.5-Omni
+    real_time_voice_chat: false
+    streaming_multimodal: false
+```
+
+### 9.2 Multimodal Schema
+
+See `schemas/v2/multimodal.json` for the full JSON Schema definition.
+
+---
+
+## 10. ProviderContract Specification (V2 Addition)
+
+The ProviderContract defines the **runtime behavioral contract** between AI-Protocol and
+provider implementations. It bridges the declarative manifest with the imperative ProviderDriver.
+
+### 10.1 Contract Scope
+
+| Aspect | Description | Schema |
+|--------|-------------|--------|
+| **API Style** | How to construct requests (OpenAI-compatible, Anthropic Messages, Gemini) | `api_style` |
+| **Request Mapping** | Transform UnifiedRequest → provider format | `request_mapping` |
+| **Response Mapping** | Extract unified response from provider format | `response_mapping` |
+| **Capability Contracts** | Per-capability behavioral guarantees | `capability_contracts` |
+| **Degradation Strategy** | What to do when capability is unavailable | `degradation` |
+
+### 10.2 API Style Classification
+
+Most providers fall into one of these API styles:
+
+```
+┌──────────────────┬──────────────────┬──────────────────┐
+│ openai_compatible │ anthropic_messages│ gemini_generate  │
+├──────────────────┼──────────────────┼──────────────────┤
+│ OpenAI           │ Anthropic        │ Google Gemini    │
+│ DeepSeek         │                  │                  │
+│ Moonshot (Kimi)  │                  │                  │
+│ Zhipu (GLM)      │                  │                  │
+│ Together AI      │                  │                  │
+└──────────────────┴──────────────────┴──────────────────┘
+```
+
+### 10.3 Contract Schema
+
+See `schemas/v2/provider-contract.json` for the full JSON Schema definition.
+
+---
+
+## 11. ProviderDriver Architecture (V2 Addition)
+
+The ProviderDriver is the **runtime abstraction** that implements the ProviderContract.
+Both Rust and Python runtimes implement this pattern.
+
+### 11.1 Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ Application Layer                                        │
+│  AiClient.chat(messages, options)                       │
+└────────────────────┬────────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────────┐
+│ ProviderDriver (trait / ABC)                             │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌───────────┐  │
+│  │ OpenAI   │ │Anthropic │ │ Gemini   │ │ Custom    │  │
+│  │ Driver   │ │ Driver   │ │ Driver   │ │ Driver    │  │
+│  └────┬─────┘ └────┬─────┘ └────┬─────┘ └─────┬─────┘  │
+│       │             │            │              │        │
+│  ┌────▼─────────────▼────────────▼──────────────▼────┐  │
+│  │           Capability Registry                      │  │
+│  │  Loads modules based on manifest capabilities      │  │
+│  └────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────────┐
+│ Transport Layer                                          │
+│  HTTP client → Provider API                              │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 11.2 ProviderDriver Interface
+
+**Rust:**
+```rust
+#[async_trait]
+pub trait ProviderDriver: Send + Sync {
+    fn provider_id(&self) -> &str;
+    fn api_style(&self) -> ApiStyle;
+    fn build_request(&self, req: &UnifiedRequest) -> Result<HttpRequest>;
+    fn parse_response(&self, resp: &HttpResponse) -> Result<ChatResponse>;
+    fn build_stream_request(&self, req: &UnifiedRequest) -> Result<HttpRequest>;
+    fn parse_stream_event(&self, event: &RawEvent) -> Result<StreamingEvent>;
+    fn supported_capabilities(&self) -> &[Capability];
+}
+```
+
+**Python:**
+```python
+class ProviderDriver(ABC):
+    @abstractmethod
+    def provider_id(self) -> str: ...
+    @abstractmethod
+    def api_style(self) -> ApiStyle: ...
+    @abstractmethod
+    async def build_request(self, req: UnifiedRequest) -> HttpRequest: ...
+    @abstractmethod
+    async def parse_response(self, resp: HttpResponse) -> ChatResponse: ...
+    @abstractmethod
+    async def build_stream_request(self, req: UnifiedRequest) -> HttpRequest: ...
+    @abstractmethod
+    async def parse_stream_event(self, event: RawEvent) -> StreamingEvent: ...
+    @abstractmethod
+    def supported_capabilities(self) -> list[Capability]: ...
+```
+
+### 11.3 Driver Selection
+
+The runtime selects a driver based on the manifest's `api_style` or `provider_contract`:
+
+1. Load manifest → extract `api_style` (or infer from known provider ID)
+2. Look up registered ProviderDriver for that style
+3. Validate capability compatibility
+4. Return configured driver instance
+
+---
+
+## 12. Context Management Policy (V2 Addition)
+
+V2 introduces a declarative context management policy that runtimes can use to
+automatically manage context windows across providers with different limits.
+
+### 12.1 Strategies
+
+| Strategy | Description | Best For |
+|----------|-------------|----------|
+| `sliding_window` | Drop oldest messages, keep recent | Short conversations |
+| `summarize` | Compress old context into summary | Long conversations |
+| `truncate_oldest` | Hard cut oldest messages | Simple applications |
+| `token_budget` | Allocate tokens per role | Complex multi-tool apps |
+| `adaptive` | Auto-select based on context fill ratio | Production systems |
+
+### 12.2 Token Budget Model
+
+```
+┌──────────────────────────────────────────┐
+│ Provider Context Window (e.g. 128K)       │
+├──────────────────────────────────────────┤
+│ [System Messages]    ← system_budget      │
+│ [Tool Definitions]   ← tool_budget        │
+│ [Conversation History]← remaining         │
+│ [Reserved for Output] ← reserve_output    │
+└──────────────────────────────────────────┘
+```
+
+### 12.3 Context Policy Schema
+
+See `schemas/v2/context-policy.json` for the full JSON Schema definition.
+
+---
+
+## 13. Schema File Organization (v1.0)
 
 ```
 schemas/
-├── v1.json                    # V1 provider/model schema (stable)
-├── spec.json                  # Spec file schema (stable)
-└── v2/                        # V2 schema collection
-    ├── provider.json          # V2 provider manifest schema (Ring 1-3)
-    ├── capabilities.json      # Capability declaration schema
-    ├── errors.json            # Standard error code definitions
-    ├── endpoint.json          # Endpoint configuration schema
-    ├── availability.json      # Availability configuration schema
-    ├── regions.json           # Region configuration schema
-    ├── message.json           # Standard message format (future)
-    └── feature-flags.json     # Feature flag schema (future)
+├── v1.json                        # V1 provider/model schema (stable)
+├── spec.json                      # Spec file schema (stable)
+└── v2/                            # V2 schema collection
+    ├── provider.json              # V2 provider manifest (Ring 1-3) — root schema
+    ├── capabilities.json          # Capability declaration (required/optional + flags)
+    ├── errors.json                # 13 standard error codes
+    ├── error-codes.yaml           # Error code reference data
+    ├── endpoint.json              # Endpoint configuration
+    ├── availability.json          # Availability + health check
+    ├── regions.json               # Region definitions
+    ├── multimodal.json            # Extended multimodal (vision/audio/video/omni)
+    ├── computer-use.json          # Computer Use / GUI automation
+    ├── mcp.json                   # MCP integration (client/server)
+    ├── provider-contract.json     # Runtime provider contract ★ NEW
+    └── context-policy.json        # Context management policy ★ NEW
 ```
 
 ---
 
-## 8. Decision Log
+## 14. Decision Log
 
 | Decision | Rationale | Alternatives Considered |
 |----------|-----------|------------------------|
