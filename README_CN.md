@@ -51,19 +51,6 @@ ai-protocol/
 └── scripts/                   # 维护脚本
 ```
 
-## 📦 发布打包策略 (发布内容)
-
-为避免默认发布工作/讨论/内部文档，发布包应排除：
-- `research/`
-- `scripts/`
-- `v2-alpha/`
-
-规范性、可发布的制品包括：
-- `schemas/`
-- `v1/` (spec + providers + models)
-- `examples/`
-- `README.md`, `LICENSE-*`, `CHANGELOG.md`
-
 ## 🔧 核心概念
 
 ### 1. 算子化 (Operator-based)
@@ -297,7 +284,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 AI-Protocol 提供多语言官方运行时实现：
 
-### Python 运行时 (v0.5.0+)
+### Python 运行时 (v0.7.1)
 
 ```bash
 # 从 PyPI 安装
@@ -320,12 +307,12 @@ response = client.chat.completions.create(
 
 📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **文档**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
 
-### Rust 运行时 (v0.6.6+)
+### Rust 运行时 (v0.8.1)
 
 ```toml
 # 添加到 Cargo.toml
 [dependencies]
-ai-lib-rust = "0.6"
+ai-lib-rust = "0.8.1"
 ```
 
 ```rust
@@ -342,6 +329,21 @@ let response = client.chat()
 
 📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **文档**: [github.com/hiddenpath/ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)
 
+### ai-protocol-mock (v0.1.0)
+
+统一的 mock 服务，用于在无需真实 API 调用的情况下测试运行时。提供 manifest 驱动的 HTTP mock（OpenAI/Anthropic 格式）和 MCP JSON-RPC mock。
+
+```bash
+# 启动 mock 服务
+cd ai-protocol-mock && docker-compose up -d
+
+# 与运行时配合使用
+MOCK_HTTP_URL=http://localhost:4010 pytest tests/  # ai-lib-python
+MOCK_HTTP_URL=http://localhost:4010 cargo test -- --ignored  # ai-lib-rust
+```
+
+📖 **仓库**: [github.com/hiddenpath/ai-protocol-mock](https://github.com/hiddenpath/ai-protocol-mock)
+
 ### 生态系统概览
 
 ```
@@ -353,12 +355,12 @@ let response = client.chat()
 │  JSON Schema  │  30+ 供应商     │  模型注册表               │
 └───────────────┴────────────────┴───────────────────────────┘
                           │
-            ┌─────────────┼─────────────┐
-            ▼             ▼             ▼
-    ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-    │ ai-lib-rust  │ │ai-lib-python │ │  你的应用     │
-    │   (Rust)     │ │  (Python)    │ │   (任意)      │
-    └──────────────┘ └──────────────┘ └──────────────┘
+            ┌─────────────┼─────────────┬─────────────┐
+            ▼             ▼             ▼             ▼
+    ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+    │ ai-lib-rust  │ │ai-lib-python │ │ai-protocol-  │ │  你的应用     │
+    │   (Rust)     │ │  (Python)    │ │mock (测试)   │ │   (任意)      │
+    └──────────────┘ └──────────────┘ └──────────────┘ └──────────────┘
 ```
 
 > **说明**: AI-Protocol 本身已经包含配置注册功能。社区可以通过 PR 直接贡献新的供应商配置和模型注册到本仓库的 `v1/providers/` 和 `v1/models/` 目录，无需单独的配置仓库。

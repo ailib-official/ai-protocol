@@ -58,19 +58,6 @@ ai-protocol/
 └── scripts/                   # Maintenance scripts
 ```
 
-## 📦 Release Packaging Policy (What gets published)
-
-To avoid publishing work/discussion/internal documents by default, release archives SHOULD exclude:
-- `research/`
-- `scripts/`
-- `v2-alpha/`
-
-The normative, publish-ready artifacts are:
-- `schemas/`
-- `v1/` (spec + providers + models)
-- `examples/`
-- `README.md`, `LICENSE-*`, `CHANGELOG.md`
-
 ## 🔧 Core Concepts
 
 ### 1. Operator-based Design
@@ -304,7 +291,7 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 AI-Protocol has official runtime implementations in multiple languages:
 
-### Python Runtime (v0.7.0)
+### Python Runtime (v0.7.1)
 
 ```bash
 # Install from PyPI
@@ -327,12 +314,12 @@ response = client.chat.completions.create(
 
 📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **Docs**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
 
-### Rust Runtime (v0.8.0)
+### Rust Runtime (v0.8.1)
 
 ```toml
 # Add to Cargo.toml
 [dependencies]
-ai-lib-rust = "0.8"
+ai-lib-rust = "0.8.1"
 ```
 
 ```rust
@@ -349,6 +336,21 @@ let response = client.chat()
 
 📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **Docs**: [github.com/hiddenpath/ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)
 
+### ai-protocol-mock (v0.1.0)
+
+Unified mock server for testing runtimes without real API calls. Provides manifest-driven HTTP mock (OpenAI/Anthropic formats) and MCP JSON-RPC mock.
+
+```bash
+# Start mock server
+cd ai-protocol-mock && docker-compose up -d
+
+# Use with runtimes
+MOCK_HTTP_URL=http://localhost:4010 pytest tests/  # ai-lib-python
+MOCK_HTTP_URL=http://localhost:4010 cargo test -- --ignored  # ai-lib-rust
+```
+
+📖 **Repo**: [github.com/hiddenpath/ai-protocol-mock](https://github.com/hiddenpath/ai-protocol-mock)
+
 ### Ecosystem Overview
 
 ```
@@ -360,12 +362,12 @@ let response = client.chat()
 │  JSON Schema  │  30+ Providers  │  Model Registry          │
 └───────────────┴────────────────┴───────────────────────────┘
                           │
-            ┌─────────────┼─────────────┐
-            ▼             ▼             ▼
-    ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-    │ ai-lib-rust  │ │ai-lib-python │ │  Your App    │
-    │   (Rust)     │ │  (Python)    │ │   (Any)      │
-    └──────────────┘ └──────────────┘ └──────────────┘
+            ┌─────────────┼─────────────┬─────────────┐
+            ▼             ▼             ▼             ▼
+    ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+    │ ai-lib-rust  │ │ai-lib-python │ │ai-protocol-  │ │  Your App    │
+    │   (Rust)     │ │  (Python)    │ │mock (tests)  │ │   (Any)      │
+    └──────────────┘ └──────────────┘ └──────────────┘ └──────────────┘
 ```
 
 > **Note**: AI-Protocol itself already includes configuration registry functionality. Community contributions for new provider configurations and model registrations can be submitted directly via PRs to this repository's `v1/providers/` and `v1/models/` directories, without needing a separate configuration repository.
