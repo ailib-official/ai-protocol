@@ -188,7 +188,7 @@ npm run build
 
 请先运行 `npm run validate`。此命令将：
 1.  清理 `dist/` 目录以移除之前构建的陈旧文件。
-2.  将 `v1/` 与 `v2-alpha/` 下的 YAML 转为 JSON 输出到 `dist/`。
+2.  将 `v1/`、`v2/` 与 `v2-alpha/` 下的 YAML 转为 JSON 输出到 `dist/`。
 3.  生成 `dist/index.json` 版本索引文件。
 
 运行时（如 `ai-lib-rust`）应当直接消费 `dist/` 目录。
@@ -234,6 +234,7 @@ GitHub Actions 工作流 (`validate.yml`) 自动执行：
 - 🔄 **统一错误码体系** — 跨供应商的标准化错误码
 - 🔄 **Capability 声明机制** — 结构化的 `required`/`optional` 能力声明
 - 🔄 **Feature Flag 机制** — 按需加载所需模块
+- 🔄 **STT / TTS / Rerank** — 语音转写、语音合成、文档重排序能力（OpenAI、Cohere、Jina）
 - 🔄 **兼容性测试套件** — 机器验证的跨运行时一致性
 
 ### v2-alpha (实验版)
@@ -329,9 +330,9 @@ let response = client.chat()
 
 📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **文档**: [github.com/hiddenpath/ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)
 
-### ai-protocol-mock (v0.1.0)
+### ai-protocol-mock (v0.1.3)
 
-统一的 mock 服务，用于在无需真实 API 调用的情况下测试运行时。提供 manifest 驱动的 HTTP mock（OpenAI/Anthropic 格式）和 MCP JSON-RPC mock。
+统一的 mock 服务，用于在无需真实 API 调用的情况下测试运行时。提供 manifest 驱动的 HTTP mock（OpenAI/Anthropic 格式）、STT/TTS/Rerank 端点及 MCP JSON-RPC mock。
 
 ```bash
 # 启动 mock 服务

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 /**
+ * AI-Protocol 配置校验脚本：对所有 YAML 配置进行 JSON Schema 2020-12 校验。
  * AI-Protocol Configuration Validation Script
  * 
  * Validates all YAML configuration files against JSON Schema 2020-12

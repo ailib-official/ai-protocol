@@ -1,7 +1,7 @@
 # OpenAI V2 正式提供商清单 — 合并 v2-alpha 结构与最新模型数据
 # AI-Protocol V2 Provider Manifest
 # Provider: OpenAI | Models: GPT-5.x series
-# Last Updated: 2026-02-16
+# Last Updated: 2026-02-19
 $schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
 
 # === Ring 1: Core Skeleton ===
@@ -18,6 +18,8 @@ endpoint:
   base_url: "https://api.openai.com/v1"
   chat: "/chat/completions"
   embeddings: "/embeddings"
+  stt: "/audio/transcriptions"
+  tts: "/audio/speech"
   auth:
     type: "bearer"
     header: "Authorization"
@@ -60,6 +62,8 @@ capabilities:
     - image_generation
     - computer_use
     - mcp_client
+    - stt
+    - tts
   feature_flags:
     structured_output: true
     parallel_tool_calls: true
@@ -118,7 +122,7 @@ multimodal:
       document_understanding: true
     audio:
       supported: true
-      formats: [mp3, wav, flac]
+      formats: [mp3, wav, flac, m4a, ogg, aac]
       real_time_streaming: true
       speech_recognition: true
     video:
@@ -127,6 +131,7 @@ multimodal:
     text: true
     audio:
       supported: true
+      formats: [mp3]
       real_time_tts: true
       natural_voice: true
       voice_selection: true

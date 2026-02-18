@@ -1,0 +1,232 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json",
+  "id": "deepseek",
+  "protocol_version": "2.0",
+  "name": "DeepSeek",
+  "version": "3.2.0",
+  "status": "stable",
+  "category": "ai_provider",
+  "official_url": "https://api-docs.deepseek.com/",
+  "support_contact": "https://api-docs.deepseek.com/",
+  "endpoint": {
+    "base_url": "https://api.deepseek.com/v1",
+    "chat": "/chat/completions",
+    "auth": {
+      "type": "bearer",
+      "header": "Authorization",
+      "prefix": "Bearer",
+      "token_env": "DEEPSEEK_API_KEY"
+    }
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "403": "permission_denied",
+      "404": "not_found",
+      "413": "request_too_large",
+      "429": "rate_limited",
+      "500": "server_error",
+      "503": "overloaded"
+    },
+    "by_error_code": {
+      "context_length_exceeded": "request_too_large",
+      "model_not_found": "not_found",
+      "rate_limit_exceeded": "rate_limited",
+      "insufficient_quota": "quota_exhausted"
+    }
+  },
+  "capabilities": {
+    "required": [
+      "text",
+      "streaming",
+      "tools"
+    ],
+    "optional": [
+      "vision",
+      "parallel_tools",
+      "agentic",
+      "reasoning",
+      "structured_output",
+      "batch"
+    ],
+    "feature_flags": {
+      "structured_output": true,
+      "parallel_tool_calls": true,
+      "extended_thinking": true,
+      "streaming_usage": true,
+      "system_messages": true
+    }
+  },
+  "parameters": {
+    "temperature": {
+      "type": "float",
+      "range": [
+        0,
+        2
+      ],
+      "default": 1
+    },
+    "max_tokens": {
+      "type": "integer",
+      "min": 1,
+      "max": 8192
+    },
+    "top_p": {
+      "type": "float",
+      "range": [
+        0,
+        1
+      ]
+    },
+    "frequency_penalty": {
+      "type": "float",
+      "range": [
+        -2,
+        2
+      ]
+    },
+    "presence_penalty": {
+      "type": "float",
+      "range": [
+        -2,
+        2
+      ]
+    },
+    "stream": {
+      "type": "boolean"
+    }
+  },
+  "streaming": {
+    "decoder": {
+      "format": "sse",
+      "strategy": "openai_chat",
+      "done_signal": "[DONE]",
+      "prefix": "data: "
+    },
+    "event_map": [
+      {
+        "match": "$.choices[0].delta.content",
+        "emit": "PartialContentDelta",
+        "extract": {
+          "content": "$.choices[0].delta.content"
+        }
+      },
+      {
+        "match": "$.choices[0].delta.tool_calls",
+        "emit": "PartialToolCall",
+        "extract": {
+          "tool_calls": "$.choices[0].delta.tool_calls"
+        }
+      },
+      {
+        "match": "$.choices[0].finish_reason",
+        "emit": "StreamEnd",
+        "extract": {
+          "finish_reason": "$.choices[0].finish_reason"
+        }
+      }
+    ]
+  },
+  "multimodal": {
+    "input": {
+      "vision": {
+        "supported": true,
+        "formats": [
+          "jpeg",
+          "png",
+          "gif",
+          "webp"
+        ],
+        "encoding_methods": [
+          "base64_inline",
+          "url"
+        ],
+        "document_understanding": true
+      },
+      "audio": {
+        "supported": false
+      },
+      "video": {
+        "supported": false
+      }
+    },
+    "output": {
+      "text": true,
+      "audio": {
+        "supported": false
+      },
+      "image": {
+        "supported": false
+      }
+    }
+  },
+  "api_families": [
+    "chat_completions"
+  ],
+  "default_api_family": "chat_completions",
+  "endpoints": {
+    "chat": {
+      "path": "/chat/completions",
+      "method": "POST",
+      "adapter": "openai"
+    }
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "max_retries": 3,
+    "min_delay_ms": 1000,
+    "max_delay_ms": 30000,
+    "jitter": "full",
+    "retry_on_http_status": [
+      429,
+      500,
+      502,
+      503
+    ]
+  },
+  "termination": {
+    "source_field": "finish_reason",
+    "mapping": {
+      "stop": "end_turn",
+      "length": "max_tokens",
+      "tool_calls": "tool_use"
+    }
+  },
+  "metadata": {
+    "api_compatibility": "openai",
+    "open_source": {
+      "license": "MIT",
+      "hugging_face": "https://huggingface.co/deepseek-ai/DeepSeek-V3.2"
+    },
+    "models": {
+      "deepseek-chat": {
+        "context_window": 128000,
+        "max_output_tokens": 8192,
+        "architecture": {
+          "type": "moe",
+          "total": "671B",
+          "active": "37B",
+          "experts": 256
+        },
+        "pricing": {
+          "input_per_1m": 0.28,
+          "output_per_1m": 0.42
+        }
+      },
+      "deepseek-reasoner": {
+        "context_window": 128000,
+        "max_output_tokens": 8192,
+        "pricing": {
+          "input_per_1m": 0.55,
+          "output_per_1m": 2.19
+        }
+      }
+    },
+    "sdk": {
+      "note": "OpenAI-compatible — use openai SDK with base_url override",
+      "python": "openai",
+      "typescript": "openai"
+    }
+  }
+}

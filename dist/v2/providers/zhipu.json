@@ -1,0 +1,216 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json",
+  "id": "zhipu",
+  "protocol_version": "2.0",
+  "name": "Zhipu AI",
+  "version": "5.0.0",
+  "status": "stable",
+  "category": "ai_provider",
+  "official_url": "https://open.bigmodel.cn/dev/api",
+  "support_contact": "https://open.bigmodel.cn/",
+  "endpoint": {
+    "base_url": "https://open.bigmodel.cn/api/paas/v4",
+    "chat": "/chat/completions",
+    "auth": {
+      "type": "bearer",
+      "header": "Authorization",
+      "prefix": "Bearer",
+      "token_env": "ZHIPU_API_KEY"
+    }
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "403": "permission_denied",
+      "404": "not_found",
+      "429": "rate_limited",
+      "500": "server_error",
+      "503": "overloaded"
+    },
+    "by_error_code": {
+      "context_length_exceeded": "request_too_large",
+      "model_not_found": "not_found",
+      "rate_limit_exceeded": "rate_limited",
+      "insufficient_quota": "quota_exhausted"
+    }
+  },
+  "capabilities": {
+    "required": [
+      "text",
+      "streaming",
+      "tools"
+    ],
+    "optional": [
+      "parallel_tools",
+      "agentic",
+      "reasoning",
+      "structured_output"
+    ],
+    "feature_flags": {
+      "structured_output": true,
+      "parallel_tool_calls": true,
+      "streaming_usage": true,
+      "system_messages": true
+    }
+  },
+  "parameters": {
+    "temperature": {
+      "type": "float",
+      "range": [
+        0,
+        2
+      ],
+      "default": 1
+    },
+    "max_tokens": {
+      "type": "integer",
+      "min": 1,
+      "max": 128000
+    },
+    "top_p": {
+      "type": "float",
+      "range": [
+        0,
+        1
+      ]
+    },
+    "stream": {
+      "type": "boolean"
+    }
+  },
+  "streaming": {
+    "decoder": {
+      "format": "sse",
+      "strategy": "openai_chat",
+      "done_signal": "[DONE]",
+      "prefix": "data: "
+    },
+    "event_map": [
+      {
+        "match": "$.choices[0].delta.content",
+        "emit": "PartialContentDelta",
+        "extract": {
+          "content": "$.choices[0].delta.content"
+        }
+      },
+      {
+        "match": "$.choices[0].delta.tool_calls",
+        "emit": "PartialToolCall",
+        "extract": {
+          "tool_calls": "$.choices[0].delta.tool_calls"
+        }
+      },
+      {
+        "match": "$.choices[0].finish_reason",
+        "emit": "StreamEnd",
+        "extract": {
+          "finish_reason": "$.choices[0].finish_reason"
+        }
+      }
+    ]
+  },
+  "multimodal": {
+    "input": {
+      "vision": {
+        "supported": false
+      },
+      "audio": {
+        "supported": false
+      },
+      "video": {
+        "supported": false
+      }
+    },
+    "output": {
+      "text": true,
+      "audio": {
+        "supported": false
+      },
+      "image": {
+        "supported": false
+      }
+    }
+  },
+  "api_families": [
+    "chat_completions"
+  ],
+  "default_api_family": "chat_completions",
+  "endpoints": {
+    "chat": {
+      "path": "/chat/completions",
+      "method": "POST",
+      "adapter": "openai"
+    }
+  },
+  "services": {
+    "list_models": {
+      "path": "/models",
+      "method": "GET"
+    }
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "max_retries": 3,
+    "min_delay_ms": 1000,
+    "max_delay_ms": 30000,
+    "jitter": "full",
+    "retry_on_http_status": [
+      429,
+      500,
+      502,
+      503
+    ]
+  },
+  "termination": {
+    "source_field": "finish_reason",
+    "mapping": {
+      "stop": "end_turn",
+      "length": "max_tokens",
+      "tool_calls": "tool_use"
+    }
+  },
+  "metadata": {
+    "api_compatibility": "openai",
+    "open_source": {
+      "license": "MIT",
+      "hugging_face": "https://huggingface.co/zhipuai/glm-5"
+    },
+    "agentic_engineering": {
+      "supported": true,
+      "capabilities": [
+        "long_horizon_planning",
+        "multi_step_workflows",
+        "autonomous_debugging"
+      ]
+    },
+    "models": {
+      "glm-5": {
+        "context_window": 200000,
+        "max_output_tokens": 128000,
+        "release_date": "2026-02-11",
+        "architecture": {
+          "type": "moe",
+          "total": "744B",
+          "active": "40B"
+        },
+        "pricing": {
+          "input_per_1m": 1,
+          "output_per_1m": 3.2
+        }
+      }
+    },
+    "regional": {
+      "primary": "china",
+      "alternative_base": "https://api.z.ai/v1",
+      "international_partners": [
+        "aimlapi"
+      ]
+    },
+    "sdk": {
+      "note": "OpenAI-compatible — use openai SDK with base_url override",
+      "python": "openai",
+      "typescript": "openai"
+    }
+  }
+}

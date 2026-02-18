@@ -121,7 +121,10 @@
         "image_generation",
         "computer_use",
         "mcp_client",
-        "mcp_server"
+        "mcp_server",
+        "stt",
+        "tts",
+        "rerank"
       ]
     },
     "capability_module_mapping": {
@@ -143,7 +146,10 @@
         "image_generation": { "const": "generation.image" },
         "computer_use": { "const": "computer_use.*" },
         "mcp_client": { "const": "mcp.client" },
-        "mcp_server": { "const": "mcp.server" }
+        "mcp_server": { "const": "mcp.server" },
+        "stt": { "const": "stt.*" },
+        "tts": { "const": "tts.*" },
+        "rerank": { "const": "rerank.*" }
       }
     }
   }

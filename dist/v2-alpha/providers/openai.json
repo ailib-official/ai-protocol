@@ -1,0 +1,214 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json",
+  "id": "openai",
+  "protocol_version": "2.0",
+  "name": "OpenAI",
+  "version": "v1",
+  "status": "stable",
+  "category": "ai_provider",
+  "official_url": "https://platform.openai.com/docs",
+  "support_contact": "https://help.openai.com",
+  "endpoint": {
+    "base_url": "https://api.openai.com/v1",
+    "chat": "/chat/completions",
+    "embeddings": "/embeddings",
+    "auth": {
+      "type": "bearer",
+      "header": "Authorization",
+      "prefix": "Bearer",
+      "token_env": "OPENAI_API_KEY"
+    }
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "403": "permission_denied",
+      "404": "not_found",
+      "429": "rate_limited",
+      "500": "server_error",
+      "503": "overloaded"
+    },
+    "by_error_code": {
+      "invalid_api_key": "authentication",
+      "model_not_found": "not_found",
+      "context_length_exceeded": "request_too_large",
+      "rate_limit_exceeded": "rate_limited",
+      "insufficient_quota": "quota_exhausted",
+      "server_error": "server_error"
+    }
+  },
+  "capabilities": {
+    "required": [
+      "text",
+      "streaming"
+    ],
+    "optional": [
+      "vision",
+      "tools",
+      "parallel_tools",
+      "embeddings",
+      "structured_output",
+      "batch",
+      "audio",
+      "image_generation"
+    ],
+    "feature_flags": {
+      "structured_output": true,
+      "parallel_tool_calls": true,
+      "streaming_usage": true,
+      "system_messages": true,
+      "image_generation": true
+    }
+  },
+  "parameters": {
+    "temperature": {
+      "type": "float",
+      "range": [
+        0,
+        2
+      ],
+      "default": 1
+    },
+    "max_tokens": {
+      "type": "integer",
+      "min": 1,
+      "max": 128000
+    },
+    "top_p": {
+      "type": "float",
+      "range": [
+        0,
+        1
+      ]
+    },
+    "frequency_penalty": {
+      "type": "float",
+      "range": [
+        -2,
+        2
+      ]
+    },
+    "presence_penalty": {
+      "type": "float",
+      "range": [
+        -2,
+        2
+      ]
+    },
+    "stream": {
+      "type": "boolean"
+    },
+    "n": {
+      "type": "integer",
+      "min": 1
+    },
+    "response_format": {
+      "type": "object"
+    }
+  },
+  "streaming": {
+    "decoder": {
+      "format": "sse",
+      "strategy": "openai_chat",
+      "done_signal": "[DONE]",
+      "prefix": "data: "
+    },
+    "event_map": [
+      {
+        "match": "$.choices[0].delta.content",
+        "emit": "PartialContentDelta",
+        "extract": {
+          "content": "$.choices[0].delta.content"
+        }
+      },
+      {
+        "match": "$.choices[0].delta.tool_calls",
+        "emit": "PartialToolCall",
+        "extract": {
+          "tool_calls": "$.choices[0].delta.tool_calls"
+        }
+      },
+      {
+        "match": "$.choices[0].finish_reason",
+        "emit": "StreamEnd",
+        "extract": {
+          "finish_reason": "$.choices[0].finish_reason"
+        }
+      },
+      {
+        "match": "$.usage",
+        "emit": "UsageReport",
+        "extract": {
+          "usage": "$.usage"
+        }
+      }
+    ],
+    "candidate": {
+      "candidate_id_path": "$.choices[*].index",
+      "fan_out": true
+    },
+    "accumulator": {
+      "stateful_tool_parsing": true,
+      "key_path": "$.choices[0].delta.tool_calls[0].function.arguments",
+      "flush_on": "$.choices[0].finish_reason == 'tool_calls'"
+    }
+  },
+  "api_families": [
+    "chat_completions",
+    "completions",
+    "embeddings",
+    "assistants",
+    "realtime"
+  ],
+  "default_api_family": "chat_completions",
+  "endpoints": {
+    "chat": {
+      "path": "/chat/completions",
+      "method": "POST",
+      "adapter": "openai"
+    },
+    "embeddings": {
+      "path": "/embeddings",
+      "method": "POST",
+      "adapter": "openai"
+    }
+  },
+  "services": {
+    "list_models": {
+      "path": "/models",
+      "method": "GET",
+      "response_binding": "data"
+    }
+  },
+  "rate_limit_headers": {
+    "requests_limit": "x-ratelimit-limit-requests",
+    "requests_remaining": "x-ratelimit-remaining-requests",
+    "tokens_limit": "x-ratelimit-limit-tokens",
+    "tokens_remaining": "x-ratelimit-remaining-tokens",
+    "retry_after": null
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "max_retries": 3,
+    "min_delay_ms": 1000,
+    "max_delay_ms": 30000,
+    "jitter": "full",
+    "retry_on_http_status": [
+      429,
+      500,
+      502,
+      503
+    ]
+  },
+  "termination": {
+    "source_field": "finish_reason",
+    "mapping": {
+      "stop": "end_turn",
+      "length": "max_tokens",
+      "content_filter": "refusal",
+      "tool_calls": "tool_use",
+      "function_call": "tool_use"
+    }
+  }
+}

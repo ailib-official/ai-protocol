@@ -241,6 +241,7 @@ See [docs/CI_VALIDATION_EXPLAINED.md](docs/CI_VALIDATION_EXPLAINED.md) for detai
 - 🔄 **Unified Error Code System** — standardized error codes across all providers
 - 🔄 **Capability Declaration Mechanism** — structured `required`/`optional` capabilities
 - 🔄 **Feature Flag Mechanism** — load only what you need
+- 🔄 **STT / TTS / Rerank** — speech-to-text, text-to-speech, document reranking (OpenAI, Cohere, Jina)
 - 🔄 **Compliance Test Suite** — machine-verified cross-runtime consistency
 
 ### v2-alpha (Experimental)
@@ -336,9 +337,9 @@ let response = client.chat()
 
 📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **Docs**: [github.com/hiddenpath/ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)
 
-### ai-protocol-mock (v0.1.0)
+### ai-protocol-mock (v0.1.3)
 
-Unified mock server for testing runtimes without real API calls. Provides manifest-driven HTTP mock (OpenAI/Anthropic formats) and MCP JSON-RPC mock.
+Unified mock server for testing runtimes without real API calls. Provides manifest-driven HTTP mock (OpenAI/Anthropic formats), STT/TTS/Rerank endpoints, and MCP JSON-RPC mock.
 
 ```bash
 # Start mock server

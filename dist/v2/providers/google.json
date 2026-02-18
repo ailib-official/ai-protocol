@@ -1,0 +1,364 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json",
+  "id": "google",
+  "protocol_version": "2.0",
+  "name": "Google Gemini",
+  "version": "3.0.0",
+  "status": "stable",
+  "category": "ai_provider",
+  "official_url": "https://ai.google.dev/docs",
+  "support_contact": "https://support.google.com/gemini",
+  "endpoint": {
+    "base_url": "https://generativelanguage.googleapis.com/v1beta",
+    "chat": "/models/{model}:generateContent",
+    "embeddings": "/models/{model}:embedContent",
+    "auth": {
+      "type": "query_param",
+      "param_name": "key",
+      "token_env": "GEMINI_API_KEY"
+    }
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "403": "permission_denied",
+      "404": "not_found",
+      "429": "rate_limited",
+      "500": "server_error",
+      "503": "overloaded"
+    },
+    "by_error_code": {
+      "INVALID_ARGUMENT": "invalid_request",
+      "UNAUTHENTICATED": "authentication",
+      "PERMISSION_DENIED": "permission_denied",
+      "NOT_FOUND": "not_found",
+      "RESOURCE_EXHAUSTED": "rate_limited",
+      "INTERNAL": "server_error",
+      "UNAVAILABLE": "overloaded",
+      "DEADLINE_EXCEEDED": "timeout"
+    }
+  },
+  "capabilities": {
+    "required": [
+      "text",
+      "streaming",
+      "tools"
+    ],
+    "optional": [
+      "vision",
+      "audio",
+      "video",
+      "parallel_tools",
+      "reasoning",
+      "embeddings",
+      "structured_output",
+      "computer_use",
+      "mcp_client"
+    ],
+    "feature_flags": {
+      "structured_output": true,
+      "parallel_tool_calls": true,
+      "extended_thinking": true,
+      "streaming_usage": false,
+      "system_messages": true
+    }
+  },
+  "parameters": {
+    "temperature": {
+      "type": "float",
+      "range": [
+        0,
+        2
+      ],
+      "default": 1
+    },
+    "maxOutputTokens": {
+      "type": "integer",
+      "min": 1,
+      "max": 65536,
+      "alias": "max_tokens"
+    },
+    "topP": {
+      "type": "float",
+      "range": [
+        0,
+        1
+      ],
+      "alias": "top_p"
+    },
+    "topK": {
+      "type": "integer",
+      "min": 0,
+      "alias": "top_k"
+    }
+  },
+  "streaming": {
+    "decoder": {
+      "format": "gemini_sse",
+      "strategy": "gemini_generate"
+    },
+    "event_map": [
+      {
+        "match": "$.candidates[0].content.parts[0].text",
+        "emit": "PartialContentDelta",
+        "extract": {
+          "content": "$.candidates[0].content.parts[0].text"
+        }
+      },
+      {
+        "match": "$.candidates[0].content.parts[0].functionCall",
+        "emit": "PartialToolCall",
+        "extract": {
+          "tool_call": "$.candidates[0].content.parts[0].functionCall"
+        }
+      },
+      {
+        "match": "$.candidates[0].finishReason",
+        "emit": "StreamEnd",
+        "extract": {
+          "finish_reason": "$.candidates[0].finishReason"
+        }
+      }
+    ],
+    "candidate": {
+      "candidate_id_path": "$.candidates[*].index",
+      "fan_out": true
+    }
+  },
+  "multimodal": {
+    "input": {
+      "vision": {
+        "supported": true,
+        "formats": [
+          "jpeg",
+          "png",
+          "gif",
+          "bmp",
+          "tiff",
+          "webp"
+        ],
+        "max_file_size": "20MB",
+        "max_resolution": "4096x4096",
+        "encoding_methods": [
+          "base64_inline",
+          "url",
+          "file_uri"
+        ],
+        "document_understanding": true
+      },
+      "audio": {
+        "supported": true,
+        "formats": [
+          "mp3",
+          "wav",
+          "flac",
+          "ogg",
+          "aac",
+          "m4a"
+        ],
+        "max_duration": "8h",
+        "speech_recognition": true
+      },
+      "video": {
+        "supported": true,
+        "formats": [
+          "mp4",
+          "mov",
+          "avi",
+          "flv",
+          "wmv"
+        ],
+        "max_duration": "1h",
+        "frame_extraction": "automatic",
+        "audio_track": true,
+        "temporal_reasoning": true
+      }
+    },
+    "output": {
+      "text": true,
+      "audio": {
+        "supported": false
+      },
+      "image": {
+        "supported": true,
+        "formats": [
+          "png",
+          "jpeg"
+        ]
+      }
+    },
+    "omni_mode": {
+      "supported": false
+    }
+  },
+  "computer_use": {
+    "supported": true,
+    "status": "ga",
+    "implementation": "tool_based",
+    "actions": {
+      "screenshot": {
+        "supported": true,
+        "formats": [
+          "png",
+          "jpeg"
+        ]
+      },
+      "mouse": {
+        "supported": true,
+        "operations": [
+          "click",
+          "double_click",
+          "drag",
+          "scroll"
+        ]
+      },
+      "keyboard": {
+        "supported": true,
+        "operations": [
+          "type",
+          "key_press",
+          "shortcut"
+        ]
+      },
+      "browser": {
+        "supported": true,
+        "operations": [
+          "navigate",
+          "fill_form",
+          "click_element",
+          "scroll"
+        ]
+      }
+    },
+    "safety": {
+      "confirmation_required": true,
+      "sandbox_mode": "recommended",
+      "action_logging": true,
+      "domain_allowlist": false,
+      "sensitive_data_protection": true
+    },
+    "environment": {
+      "browser": true,
+      "desktop": true
+    },
+    "provider_mapping": {
+      "tool_type": "computer_use",
+      "config_method": "sdk_config"
+    }
+  },
+  "mcp": {
+    "client": {
+      "supported": true,
+      "protocol_version": "2025-11-25",
+      "transports": [
+        "streamable_http",
+        "sse"
+      ],
+      "auth_methods": [
+        "bearer",
+        "oauth2",
+        "api_key"
+      ],
+      "capabilities": {
+        "tools": true,
+        "resources": false,
+        "prompts": false,
+        "sampling": false
+      },
+      "provider_mapping": {
+        "config_method": "sdk_config"
+      }
+    },
+    "server": {
+      "supported": false
+    }
+  },
+  "api_families": [
+    "generate_content"
+  ],
+  "default_api_family": "generate_content",
+  "endpoints": {
+    "chat": {
+      "path": "/models/{model}:generateContent",
+      "method": "POST",
+      "adapter": "gemini"
+    },
+    "stream_chat": {
+      "path": "/models/{model}:streamGenerateContent",
+      "method": "POST",
+      "adapter": "gemini"
+    },
+    "embeddings": {
+      "path": "/models/{model}:embedContent",
+      "method": "POST",
+      "adapter": "gemini"
+    }
+  },
+  "services": {
+    "list_models": {
+      "path": "/models",
+      "method": "GET",
+      "response_binding": "models"
+    },
+    "get_model": {
+      "path": "/models/{model}",
+      "method": "GET"
+    }
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "max_retries": 3,
+    "min_delay_ms": 1000,
+    "max_delay_ms": 30000,
+    "jitter": "full",
+    "retry_on_http_status": [
+      429,
+      500,
+      503
+    ]
+  },
+  "termination": {
+    "source_field": "finishReason",
+    "mapping": {
+      "STOP": "end_turn",
+      "MAX_TOKENS": "max_tokens",
+      "SAFETY": "refusal",
+      "RECITATION": "refusal",
+      "OTHER": "other",
+      "BLOCKLIST": "refusal",
+      "PROHIBITED_CONTENT": "refusal"
+    }
+  },
+  "metadata": {
+    "models": {
+      "gemini-3-pro": {
+        "context_window": 1000000,
+        "max_output_tokens": 64000,
+        "status": "public_preview",
+        "pricing": {
+          "input_per_1m": 2,
+          "output_per_1m": 12
+        }
+      },
+      "gemini-3-flash": {
+        "context_window": 1000000,
+        "max_output_tokens": 64000,
+        "status": "public_preview",
+        "pricing": {
+          "input_per_1m": 0.15,
+          "output_per_1m": 0.6
+        }
+      }
+    },
+    "context_caching": {
+      "supported": true,
+      "pricing": "$0.20-0.40 per 1M tokens/hour"
+    },
+    "sdk": {
+      "python": "google-genai",
+      "javascript": "@google/genai",
+      "go": "cloud.google.com/go/vertexai"
+    }
+  }
+}

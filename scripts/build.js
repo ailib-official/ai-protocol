@@ -1,3 +1,6 @@
+/**
+ * AI-Protocol 构建脚本：将 v1/v2/v2-alpha 下的 YAML 转为 dist/ 中的 JSON。
+ */
 import { readFileSync, writeFileSync, mkdirSync, statSync, readdirSync, existsSync, rmSync } from 'fs';
 import { join, dirname, resolve, extname, relative } from 'path';
 import { fileURLToPath } from 'url';

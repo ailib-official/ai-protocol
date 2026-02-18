@@ -1,0 +1,182 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json",
+  "id": "anthropic",
+  "protocol_version": "2.0",
+  "name": "Anthropic",
+  "version": "v1",
+  "status": "stable",
+  "category": "ai_provider",
+  "official_url": "https://docs.anthropic.com",
+  "support_contact": "https://support.anthropic.com",
+  "endpoint": {
+    "base_url": "https://api.anthropic.com/v1",
+    "chat": "/messages",
+    "auth": {
+      "type": "custom_header",
+      "header": "x-api-key",
+      "token_env": "ANTHROPIC_API_KEY",
+      "extra_headers": [
+        {
+          "name": "anthropic-version",
+          "value": "2023-06-01"
+        }
+      ]
+    }
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "403": "permission_denied",
+      "404": "not_found",
+      "413": "request_too_large",
+      "429": "rate_limited",
+      "500": "server_error",
+      "529": "overloaded"
+    },
+    "by_error_code": {
+      "invalid_request_error": "invalid_request",
+      "authentication_error": "authentication",
+      "permission_error": "permission_denied",
+      "not_found_error": "not_found",
+      "request_too_large": "request_too_large",
+      "rate_limit_error": "rate_limited",
+      "api_error": "server_error",
+      "overloaded_error": "overloaded"
+    }
+  },
+  "capabilities": {
+    "required": [
+      "text",
+      "streaming"
+    ],
+    "optional": [
+      "vision",
+      "tools",
+      "parallel_tools",
+      "agentic",
+      "reasoning",
+      "batch"
+    ],
+    "feature_flags": {
+      "structured_output": false,
+      "parallel_tool_calls": true,
+      "extended_thinking": true,
+      "streaming_usage": true,
+      "system_messages": true
+    }
+  },
+  "parameters": {
+    "temperature": {
+      "type": "float",
+      "range": [
+        0,
+        1
+      ],
+      "default": 1
+    },
+    "max_tokens": {
+      "type": "integer",
+      "min": 1,
+      "max": 8192,
+      "required": true
+    },
+    "top_p": {
+      "type": "float",
+      "range": [
+        0,
+        1
+      ]
+    },
+    "top_k": {
+      "type": "integer",
+      "min": 0
+    },
+    "stream": {
+      "type": "boolean"
+    }
+  },
+  "streaming": {
+    "decoder": {
+      "format": "anthropic_sse",
+      "strategy": "anthropic_event_stream"
+    },
+    "event_map": [
+      {
+        "match": "$.type == 'content_block_delta' && $.delta.type == 'text_delta'",
+        "emit": "PartialContentDelta",
+        "extract": {
+          "content": "$.delta.text"
+        }
+      },
+      {
+        "match": "$.type == 'content_block_delta' && $.delta.type == 'input_json_delta'",
+        "emit": "PartialToolCall",
+        "extract": {
+          "partial_json": "$.delta.partial_json"
+        }
+      },
+      {
+        "match": "$.type == 'content_block_delta' && $.delta.type == 'thinking_delta'",
+        "emit": "ThinkingDelta",
+        "extract": {
+          "thinking": "$.delta.thinking"
+        }
+      },
+      {
+        "match": "$.type == 'message_delta'",
+        "emit": "StreamEnd",
+        "extract": {
+          "finish_reason": "$.delta.stop_reason",
+          "usage": "$.usage"
+        }
+      }
+    ],
+    "accumulator": {
+      "stateful_tool_parsing": true,
+      "key_path": "$.delta.partial_json",
+      "flush_on": "$.type == 'content_block_stop'"
+    }
+  },
+  "api_families": [
+    "messages"
+  ],
+  "default_api_family": "messages",
+  "endpoints": {
+    "chat": {
+      "path": "/messages",
+      "method": "POST",
+      "adapter": "anthropic"
+    }
+  },
+  "rate_limit_headers": {
+    "retry_after": "retry-after",
+    "requests_limit": "anthropic-ratelimit-requests-limit",
+    "requests_remaining": "anthropic-ratelimit-requests-remaining",
+    "tokens_limit": "anthropic-ratelimit-tokens-limit",
+    "tokens_remaining": "anthropic-ratelimit-tokens-remaining"
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "max_retries": 2,
+    "min_delay_ms": 1000,
+    "max_delay_ms": 60000,
+    "jitter": "full",
+    "retry_on_http_status": [
+      408,
+      409,
+      429,
+      500,
+      529
+    ]
+  },
+  "termination": {
+    "source_field": "stop_reason",
+    "mapping": {
+      "end_turn": "end_turn",
+      "max_tokens": "max_tokens",
+      "stop_sequence": "stop_sequence",
+      "tool_use": "tool_use"
+    }
+  }
+}

@@ -158,6 +158,9 @@ ring_2_capabilities:
     computer_use: "Computer use / GUI automation (screen control, mouse, keyboard)"
     mcp_client: "MCP client — connect to external MCP servers for tools/resources"
     mcp_server: "MCP server — expose provider capabilities via MCP protocol"
+    stt: "Speech-to-text transcription"
+    tts: "Text-to-speech synthesis"
+    rerank: "Document reranking by relevance"
 
   # --- Capability Module Mapping ---
   capability_module_mapping:
@@ -179,6 +182,9 @@ ring_2_capabilities:
       computer_use: { module: "computer_use.*", feature_rust: "computer_use", extra_python: "computer_use" }
       mcp_client: { module: "mcp.client", feature_rust: "mcp", extra_python: "mcp" }
       mcp_server: { module: "mcp.server", feature_rust: "mcp", extra_python: "mcp" }
+      stt: { module: "stt.*", feature_rust: "stt", extra_python: "stt" }
+      tts: { module: "tts.*", feature_rust: "tts", extra_python: "tts" }
+      rerank: { module: "rerank.*", feature_rust: "reranking", extra_python: "reranking" }
 
   # --- Feature Flags ---
   feature_flags:

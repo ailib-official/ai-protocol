@@ -5,12 +5,12 @@
     "command-r-plus": {
       "provider": "cohere",
       "model_id": "command-r-plus",
-      "display_name": "Command R+",
+      "display_name": "Command R+ (deprecated)",
       "verification": {
         "status": "unverified",
-        "verified_at": "2026-01-31",
-        "source": "documentation",
-        "notes": "Flagship model with 128K context, optimized for RAG."
+        "verified_at": "2026-02-04",
+        "source": "https://docs.cohere.com/docs/models",
+        "notes": "Deprecated Sept 15, 2025. Use command-r-plus-08-2024."
       },
       "context_window": 131072,
       "capabilities": [
@@ -18,7 +18,7 @@
         "tools",
         "streaming"
       ],
-      "status": "active",
+      "status": "deprecated",
       "tags": [
         "cohere",
         "command",
@@ -59,11 +59,12 @@
     "command-r": {
       "provider": "cohere",
       "model_id": "command-r",
-      "display_name": "Command R",
+      "display_name": "Command R (deprecated)",
       "verification": {
         "status": "unverified",
-        "verified_at": "2026-01-31",
-        "source": "documentation"
+        "verified_at": "2026-02-04",
+        "source": "https://docs.cohere.com/docs/models",
+        "notes": "Deprecated Sept 15, 2025. Use command-r-08-2024."
       },
       "context_window": 131072,
       "capabilities": [
@@ -71,7 +72,7 @@
         "tools",
         "streaming"
       ],
-      "status": "active",
+      "status": "deprecated",
       "tags": [
         "cohere",
         "command",

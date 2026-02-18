@@ -1,0 +1,66 @@
+# Cohere V2 Provider Manifest — Chat + Rerank
+# AI-Protocol V2 Provider Manifest
+# Provider: Cohere | Rerank v3.5/v4, Command R+
+# Last Updated: 2026-02-19
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+
+# === Ring 1: Core Skeleton ===
+id: cohere
+protocol_version: "2.0"
+name: "Cohere"
+version: "v2"
+status: stable
+category: ai_provider
+official_url: "https://docs.cohere.com"
+support_contact: "https://cohere.com/contact"
+
+endpoint:
+  base_url: "https://api.cohere.com/v2"
+  chat: "/chat"
+  rerank: "/rerank"
+  auth:
+    type: "bearer"
+    header: "Authorization"
+    prefix: "Bearer"
+    token_env: "COHERE_API_KEY"
+
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "403": "permission_denied"
+    "404": "not_found"
+    "422": "invalid_request"
+    "429": "rate_limited"
+    "500": "server_error"
+    "503": "overloaded"
+
+# === Ring 2: Capability Mapping ===
+capabilities:
+  required:
+    - text
+    - streaming
+    - tools
+  optional:
+    - agentic
+    - rerank
+  feature_flags:
+    structured_output: true
+    system_messages: true
+
+parameters:
+  temperature: { type: float, range: [0.0, 1.0], default: 0.3 }
+  max_tokens: { type: integer, min: 1 }
+  stream: { type: boolean }
+  # Rerank-specific (provider mapping)
+  top_n: { type: integer, min: 1 }
+  max_tokens_per_doc: { type: integer, default: 4096 }
+
+streaming:
+  decoder:
+    format: "sse"
+    strategy: "cohere_v2"
+  event_map: []
+
+metadata:
+  rerank_models: [rerank-v3.5, rerank-english-v3.0, rerank-multilingual-v3.0]

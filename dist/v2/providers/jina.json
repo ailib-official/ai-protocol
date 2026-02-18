@@ -1,0 +1,53 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json",
+  "id": "jina",
+  "protocol_version": "2.0",
+  "name": "Jina AI",
+  "version": "v3",
+  "status": "stable",
+  "category": "ai_provider",
+  "official_url": "https://jina.ai",
+  "support_contact": "https://jina.ai/contact",
+  "endpoint": {
+    "base_url": "https://api.jina.ai",
+    "rerank": "/v1/rerank",
+    "auth": {
+      "type": "bearer",
+      "header": "Authorization",
+      "prefix": "Bearer",
+      "token_env": "JINA_API_KEY"
+    }
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "403": "permission_denied",
+      "404": "not_found",
+      "429": "rate_limited",
+      "500": "server_error"
+    }
+  },
+  "capabilities": {
+    "required": [
+      "rerank"
+    ],
+    "optional": []
+  },
+  "parameters": {
+    "top_n": {
+      "type": "integer",
+      "min": 1
+    },
+    "model": {
+      "type": "string",
+      "default": "jina-reranker-v2-base-multilingual"
+    }
+  },
+  "metadata": {
+    "rerank_models": [
+      "jina-reranker-v2-base-multilingual",
+      "jina-reranker-v3"
+    ]
+  }
+}

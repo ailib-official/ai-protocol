@@ -1,0 +1,180 @@
+{
+  "$schema": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json",
+  "id": "huggingface",
+  "protocol_version": "1.5",
+  "name": "Hugging Face Inference",
+  "version": "v1",
+  "status": "stable",
+  "category": "model_provider",
+  "official_url": "https://huggingface.co/docs/api-inference",
+  "support_contact": "https://huggingface.co/support",
+  "endpoint": {
+    "base_url": "https://api-inference.huggingface.co/models",
+    "protocol": "https",
+    "timeout_ms": 60000
+  },
+  "auth": {
+    "type": "bearer",
+    "token_env": "HUGGINGFACE_API_KEY",
+    "payload_format": "inference_api"
+  },
+  "api_families": [
+    "text_generation",
+    "image_generation",
+    "embeddings",
+    "audio"
+  ],
+  "default_api_family": "text_generation",
+  "endpoints": {
+    "chat": {
+      "path": "/{model_id}",
+      "method": "POST",
+      "adapter": "huggingface"
+    },
+    "embeddings": {
+      "path": "/{model_id}",
+      "method": "POST",
+      "adapter": "huggingface"
+    },
+    "image": {
+      "path": "/{model_id}",
+      "method": "POST",
+      "adapter": "huggingface"
+    }
+  },
+  "services": {
+    "list_models": {
+      "path": "https://huggingface.co/api/models",
+      "method": "GET",
+      "response_binding": "null"
+    }
+  },
+  "termination": {
+    "source_field": "finish_reason",
+    "mapping": {
+      "stop": "end_turn",
+      "length": "max_tokens"
+    },
+    "notes": [
+      "finish_reason varies by model",
+      "not all models support explicit finish_reason"
+    ]
+  },
+  "tooling": {
+    "source_model": "unknown",
+    "notes": [
+      "Hugging Face serverless inference does not natively support tool calling",
+      "Deployed custom models may implement tool calling via custom logic"
+    ]
+  },
+  "retry_policy": {
+    "strategy": "exponential_backoff",
+    "max_retries": 3,
+    "min_delay_ms": 1000,
+    "max_delay_ms": 10000,
+    "jitter": "full",
+    "retry_on_http_status": [
+      429,
+      500,
+      503
+    ],
+    "notes": [
+      "Hugging Face free tier has cold starts; retry recommended",
+      "503 is common during model loading"
+    ]
+  },
+  "error_classification": {
+    "by_http_status": {
+      "400": "invalid_request",
+      "401": "authentication",
+      "403": "permission_denied",
+      "404": "not_found",
+      "429": "rate_limited",
+      "500": "server_error",
+      "503": "overloaded"
+    },
+    "notes": [
+      "503 often indicates model is loading (cold start)",
+      "404 may indicate model not found or removed"
+    ]
+  },
+  "parameter_mappings": {
+    "temperature": "temperature",
+    "max_tokens": "max_new_tokens",
+    "stream": "stream",
+    "top_p": "top_p",
+    "stop_sequences": "stop",
+    "top_k": "top_k",
+    "repetition_penalty": "repetition_penalty"
+  },
+  "response_format": "huggingface_style",
+  "response_paths": {
+    "content": "output_text",
+    "generated_text": "generated_text",
+    "usage": "details"
+  },
+  "streaming": {
+    "event_format": "inference_api",
+    "decoder": {
+      "format": "sse",
+      "delimiter": "\n",
+      "prefix": "",
+      "done_signal": ""
+    },
+    "frame_selector": "exists($.token) || exists($.generated_text)",
+    "event_map": [
+      {
+        "match": "exists($.token)",
+        "emit": "PartialContentDelta",
+        "fields": {
+          "content": "$.token.text",
+          "token_id": "$.token.id"
+        }
+      },
+      {
+        "match": "exists($.generated_text)",
+        "emit": "FinalCandidate",
+        "fields": {
+          "content": "$.generated_text"
+        }
+      }
+    ],
+    "stop_condition": "exists($.finish_reason) || length > 0 && !exists($.token)",
+    "extra_metadata_path": "$.details",
+    "content_path": "$.output_text"
+  },
+  "capabilities": {
+    "streaming": true,
+    "tools": false,
+    "vision": true,
+    "agentic": false,
+    "parallel_tools": false,
+    "reasoning": false
+  },
+  "experimental_features": [
+    "model_selection",
+    "serverless_inference",
+    "custom_deployment"
+  ],
+  "connection_vars": {
+    "model_id": "model"
+  },
+  "availability": {
+    "required": false,
+    "regions": [
+      "global"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/meta-llama/Llama-2-7b-chat-hf",
+      "expected_status": [
+        200
+      ],
+      "timeout_ms": 5000
+    },
+    "notes": [
+      "Check against a popular model (Llama-2) to verify service availability",
+      "Model-specific endpoint: /models/{model_id}"
+    ]
+  }
+}
