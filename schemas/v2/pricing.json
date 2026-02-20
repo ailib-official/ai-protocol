@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/v2/pricing.json",
+  "title": "Provider Pricing",
+  "description": "Optional pricing metadata for cost estimation (per 1k tokens)",
+  "type": "object",
+  "properties": {
+    "input_per_1k_tokens": { "type": "number", "minimum": 0 },
+    "output_per_1k_tokens": { "type": "number", "minimum": 0 },
+    "currency": { "type": "string", "default": "USD" },
+    "last_updated": { "type": "string", "format": "date" }
+  }
+}

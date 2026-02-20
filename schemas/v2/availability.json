@@ -13,6 +13,20 @@
     "regions": {
       "$ref": "./regions.json"
     },
+    "interval_ms": {
+      "type": "integer",
+      "minimum": 1000,
+      "description": "Suggested health check interval in milliseconds (runtime may override)"
+    },
+    "fallback": {
+      "type": "object",
+      "description": "Optional fallback check when primary check fails (e.g., POST ping)",
+      "properties": {
+        "method": { "type": "string", "enum": ["GET", "POST"] },
+        "path": { "type": "string", "pattern": "^/" },
+        "expected_status": { "type": "array", "items": { "type": "integer" } }
+      }
+    },
     "check": {
       "type": "object",
       "required": ["method", "path", "expected_status"],

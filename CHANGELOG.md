@@ -2,6 +2,16 @@
 
 All notable changes to AI-Protocol specifications and schemas will be documented here.
 
+## 0.7.6 (2026-02-20) - ZeroClaw Upstream Schema Extensions
+
+### Added
+
+- **`schemas/v2/availability.json`**: Optional `interval_ms` (suggested health check interval) and `fallback` (fallback check config)
+- **`schemas/v2/error_classification`**: Optional `retry_after_extraction` (pattern + unit for extracting Retry-After from response body)
+- **`schemas/v2/pricing.json`**: New schema for optional provider pricing (input/output per 1k tokens, currency)
+- **`schemas/v2/provider.json`**: Optional `pricing` field referencing pricing.json
+- **`docs/ECOSYSTEM_MATRIX.md`**: Feature flag matrix for ai-lib-rust and ai-lib-python
+
 ## 0.7.0 (2026-02-16) - V2 Phase 3 Complete: Full Runtime Implementation
 
 This release marks the completion of **Phase 3** — full V2 runtime implementation across both Rust and Python runtimes. Includes MCP tool bridge, Computer Use abstraction with safety policy, extended multimodal validation, CLI tooling, and comprehensive integration tests.
