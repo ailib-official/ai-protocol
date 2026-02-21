@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-protocol.dev/schema/v2/message-roles.json",
+  "title": "AI-Protocol Standard Message Roles",
+  "description": "Canonical message roles for chat. Runtimes use these when building messages and mapping to provider-specific formats. Supports all major LLMs (OpenAI, Anthropic, Gemini, etc.).",
+  "type": "string",
+  "enum": ["system", "user", "assistant", "tool"],
+  "examples": ["system", "user", "assistant", "tool"]
+}
