@@ -67,7 +67,7 @@ retry_policy:
   min_delay_ms: 1000
   max_delay_ms: 8000
   jitter: "full"
-  retry_on_http_status: [429, 500, 503]
+  retry_on_http_status: [429, 500, 502, 503]
 
 # Rate limit headers (OpenAI-compatible)
 rate_limit_headers:

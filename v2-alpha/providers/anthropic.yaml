@@ -63,7 +63,9 @@ capabilities:
     system_messages: true
 
 parameters:
-  temperature: { type: float, range: [0.0, 1.0], default: 1.0 }
+  temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
+  # provider_specific_constraints:
+  #   max_value_override: 1.0  # Anthropic实际限制为[0.0, 1.0]
   max_tokens: { type: integer, min: 1, max: 8192, required: true }
   top_p: { type: float, range: [0.0, 1.0] }
   top_k: { type: integer, min: 0 }
@@ -107,6 +109,18 @@ endpoints:
     adapter: "anthropic"
 
 rate_limit_headers:
+  # Provider-specific headers (保留用于原始响应解析)
+  retry_after: "retry-after"
+  requests_limit: "anthropic-ratelimit-requests-limit"
+  requests_remaining: "anthropic-ratelimit-requests-remaining"
+  # tokens_limit: "anthropic-ratelimit-tokens-limit"
+  tokens_remaining: "anthropic-ratelimit-tokens-remaining"
+  # Normalized fields (运行时标准访问)
+  # rate_limit_requests_limit: (自动解析并填充)
+  # rate_limit_requests_remaining: (自动解析并填充)
+  # rate_limit_tokens_limit: (自动解析并填充)
+  # rate_limit_tokens_remaining: (自动解析并填充)
+  # rate_limit_retry_after: (自动解析并填充)
   retry_after: "retry-after"
   requests_limit: "anthropic-ratelimit-requests-limit"
   requests_remaining: "anthropic-ratelimit-requests-remaining"

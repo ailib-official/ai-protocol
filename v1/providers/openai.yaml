@@ -87,10 +87,12 @@ rate_limit_headers:
 
 # Retry policy (VERIFIED guidance: exponential backoff for 429; 500 retry after brief wait)
 retry_policy:
+  max_retries: 3
+  max_delay_ms: 30000
   strategy: "exponential_backoff"
   min_delay_ms: 1000
   jitter: "full"
-  retry_on_http_status: [429, 500]
+  retry_on_http_status: [429, 500, 502, 503]
   notes:
     - "429 may be rate limit reached OR quota exhausted; runtimes SHOULD avoid retrying quota-exhausted cases when detectable (e.g., via error message)."
     - "For rate limit errors, exponential backoff is recommended."

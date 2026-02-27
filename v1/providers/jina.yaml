@@ -66,6 +66,7 @@ tooling:
 retry_policy:
   strategy: "exponential_backoff"
   max_retries: 3
+  max_delay_ms: 30000
   min_delay_ms: 1000
   jitter: "full"
   retry_on_http_status: [429, 500, 502, 503]

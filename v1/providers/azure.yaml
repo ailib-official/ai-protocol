@@ -133,6 +133,8 @@ response_paths:
   finish_reason: "choices[0].finish_reason"
 
 retry_policy:
+  max_retries: 3
+  max_delay_ms: 30000
   strategy: "exponential_backoff"
   min_delay_ms: 1000
   jitter: "full"

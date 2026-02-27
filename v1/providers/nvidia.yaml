@@ -62,10 +62,12 @@ tooling:
     - "OpenAI-compatible tool_calls.function.arguments is typically a JSON string."
 
 retry_policy:
+  max_retries: 3
+  max_delay_ms: 30000
   strategy: "exponential_backoff"
   min_delay_ms: 1000
   jitter: "full"
-  retry_on_http_status: [429, 500]
+  retry_on_http_status: [429, 500, 502, 503]
   notes:
     - "Exponential backoff recommended for 429; retry 5xx after brief wait."
 

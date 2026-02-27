@@ -69,7 +69,7 @@ retry_policy:
   min_delay_ms: 1000
   max_delay_ms: 10000
   jitter: "full"
-  retry_on_http_status: [429, 500, 503]
+  retry_on_http_status: [429, 500, 502, 503]
   notes:
     - "Hugging Face free tier has cold starts; retry recommended"
     - "503 is common during model loading"

@@ -78,10 +78,11 @@ rate_limit_headers:
 # Retry policy
 retry_policy:
   strategy: "exponential_backoff"
-  min_delay_ms: 1000
   max_retries: 3
+  max_delay_ms: 30000
+  min_delay_ms: 1000
   jitter: "full"
-  retry_on_http_status: [429, 500]
+  retry_on_http_status: [429, 500, 502, 503]
   notes:
     - "Follows OpenAI retry guidance"
     - "Exponential backoff for rate limits and server errors"

@@ -62,9 +62,9 @@ capabilities:
 
 parameters:
   temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
-  maxOutputTokens: { type: integer, min: 1, max: 65536, alias: "max_tokens" }
-  topP: { type: float, range: [0.0, 1.0], alias: "top_p" }
-  topK: { type: integer, min: 0, alias: "top_k" }
+  maxOutputTokens: { type: integer, min: 1, max: 65536, alias: "max_tokens", deprecated: true, required: true }
+  topP: { type: float, range: [0.0, 1.0], alias: "top_p", deprecated: true }
+  topK: { type: integer, min: 0, alias: "top_k", deprecated: true }
 
 streaming:
   decoder:
@@ -114,6 +114,16 @@ services:
     path: "/models/{model}"
     method: "GET"
 
+rate_limit_headers:
+  # Provider-specific headers (Gemini 没有rate limit头部)
+  # Normalized fields (运行时标准访问)
+  # rate_limit_requests_limit: (配置为null，Gemini不支持)
+  # rate_limit_requests_remaining: (配置为null，Gemini不支持)
+  # rate_limit_tokens_limit: (配置为null，Gemini不支持)
+  # rate_limit_tokens_remaining: (配置为null，Gemini不支持)
+  # rate_limit_retry_after: (配置为null，Gemini不支持)
+  # Empty object (Gemini does not support rate limit headers)
+  {}
 retry_policy:
   strategy: "exponential_backoff"
   max_retries: 3
