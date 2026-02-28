@@ -71,7 +71,7 @@
       "type": "float",
       "range": [
         0,
-        1
+        2
       ],
       "default": 1
     },

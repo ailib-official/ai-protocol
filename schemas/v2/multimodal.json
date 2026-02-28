@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ai-protocol.dev/schema/v2/multimodal.json",
+  "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/multimodal.json",
   "title": "AI-Protocol V2 Multimodal Capabilities",
   "description": "Extended multimodal capability configuration for V2 provider manifests. Covers input and output modalities including vision, audio, video, image generation, and speech synthesis. Supports omni-modal models with simultaneous multi-modal I/O. Validated against Google Gemini (audio+video), OpenAI (audio+TTS), Anthropic (vision), Qwen (omni_mode).",
   "type": "object",
@@ -228,7 +228,7 @@
         "real_time_voice_chat": {
           "type": "boolean",
           "default": false,
-          "description": "Supports real-time voice conversation (audio in → speech out)"
+          "description": "Supports real-time voice conversation (audio in 鈫?speech out)"
         },
         "streaming_multimodal": {
           "type": "boolean",
@@ -268,3 +268,4 @@
   },
   "additionalProperties": false
 }
+

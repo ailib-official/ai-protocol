@@ -107,6 +107,33 @@
       }
     }
   },
+  "standard_message_roles": {
+    "schema_ref": "schemas/v2/message-roles.json",
+    "description": "Canonical message roles for chat. Runtimes MUST support these roles when\nbuilding messages and mapping to provider-specific formats.\n",
+    "roles": {
+      "system": {
+        "description": "System instructions; availability controlled by feature_flags.system_messages",
+        "capability": "text (default true)"
+      },
+      "user": {
+        "description": "User input messages",
+        "capability": "text (always)"
+      },
+      "assistant": {
+        "description": "Model responses, including tool_call content when tools capability is enabled",
+        "capability": "text (always)"
+      },
+      "tool": {
+        "description": "Tool result messages for multi-turn tool calling; pairs with assistant tool_calls",
+        "capability": "tools"
+      }
+    },
+    "validation_rules": [
+      "role_mapping in provider contract MUST map each used role to provider-specific role string",
+      "tool role is only valid when tools capability is declared",
+      "system role MAY be disabled via feature_flags.system_messages"
+    ]
+  },
   "ring_2_capabilities": {
     "description": "Capability-specific configuration. Sections under Ring 2 are conditional:\n- capabilities: Declares what the provider supports; required when Ring 2 is used\n- streaming: Required when streaming is in capabilities\n- parameters: Optional parameter definitions (temperature, max_tokens, etc.)\n- tools: Optional when tools capability is declared\n- multimodal: Optional when vision/audio/video is declared\n",
     "schema_ref": "schemas/v2/capabilities.json",

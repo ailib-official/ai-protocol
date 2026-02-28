@@ -368,12 +368,16 @@ function main() {
     console.log('');
   }
 
-  // Pre-load v2 sub-schemas so AJV can resolve $ref references
+  // Pre-load all v2 sub-schemas so AJV can resolve $ref references.
+  // Keep this dynamic to avoid CI failures when new v2 schema files are added.
   const v2SchemaDir = join(ROOT_DIR, 'schemas', 'v2');
-  const v2SubSchemas = [
-    'endpoint.json', 'availability.json', 'capabilities.json', 'regions.json', 'errors.json',
-    'multimodal.json', 'computer-use.json', 'mcp.json', 'provider-contract.json', 'context-policy.json',
-  ];
+  let v2SubSchemas = [];
+  try {
+    v2SubSchemas = readdirSync(v2SchemaDir)
+      .filter((f) => f.endsWith('.json') && f !== 'provider.json');
+  } catch (e) {
+    v2SubSchemas = [];
+  }
   const v2Validator = createValidator();
   for (const subSchemaFile of v2SubSchemas) {
     const subSchemaPath = join(v2SchemaDir, subSchemaFile);
@@ -454,20 +458,19 @@ function main() {
     console.log('---------------------------------------');
 
     const schemaDir = join(ROOT_DIR, 'schemas');
+    let v2SchemaFiles = [];
+    try {
+      v2SchemaFiles = readdirSync(join(schemaDir, 'v2'))
+        .filter((f) => f.endsWith('.json'))
+        .map((f) => join(schemaDir, 'v2', f));
+    } catch (e) {
+      v2SchemaFiles = [];
+    }
+
     const schemaFiles = [
       join(schemaDir, 'v1.json'),
       join(schemaDir, 'spec.json'),
-      join(schemaDir, 'v2', 'provider.json'),
-      join(schemaDir, 'v2', 'endpoint.json'),
-      join(schemaDir, 'v2', 'availability.json'),
-      join(schemaDir, 'v2', 'capabilities.json'),
-      join(schemaDir, 'v2', 'regions.json'),
-      join(schemaDir, 'v2', 'errors.json'),
-      join(schemaDir, 'v2', 'mcp.json'),
-      join(schemaDir, 'v2', 'computer-use.json'),
-      join(schemaDir, 'v2', 'multimodal.json'),
-      join(schemaDir, 'v2', 'provider-contract.json'),
-      join(schemaDir, 'v2', 'context-policy.json'),
+      ...v2SchemaFiles,
     ];
 
     schemaFiles.forEach(schemaPath => {

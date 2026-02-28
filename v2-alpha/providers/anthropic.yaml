@@ -110,17 +110,7 @@ endpoints:
 
 rate_limit_headers:
   # Provider-specific headers (保留用于原始响应解析)
-  retry_after: "retry-after"
-  requests_limit: "anthropic-ratelimit-requests-limit"
-  requests_remaining: "anthropic-ratelimit-requests-remaining"
-  # tokens_limit: "anthropic-ratelimit-tokens-limit"
-  tokens_remaining: "anthropic-ratelimit-tokens-remaining"
-  # Normalized fields (运行时标准访问)
-  # rate_limit_requests_limit: (自动解析并填充)
-  # rate_limit_requests_remaining: (自动解析并填充)
-  # rate_limit_tokens_limit: (自动解析并填充)
-  # rate_limit_tokens_remaining: (自动解析并填充)
-  # rate_limit_retry_after: (自动解析并填充)
+  # Normalized fields (rate_limit_*) are auto-filled by runtime parser.
   retry_after: "retry-after"
   requests_limit: "anthropic-ratelimit-requests-limit"
   requests_remaining: "anthropic-ratelimit-requests-remaining"

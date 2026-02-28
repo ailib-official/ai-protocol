@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ai-protocol.dev/schema/v2/errors.json",
+  "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/errors.json",
   "title": "AI-Protocol Standard Error Codes",
   "description": "Unified error code system for cross-provider error normalization. All runtimes MUST map provider-specific errors to these standard codes.",
   "type": "object",
@@ -247,3 +247,4 @@
     }
   }
 }
+

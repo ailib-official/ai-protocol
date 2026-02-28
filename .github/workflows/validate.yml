@@ -5,6 +5,7 @@ on:
     branches: [ main, develop ]
     paths:
       - 'v1/**'
+      - 'v2/**'
       - 'v2-alpha/**'
       - 'examples/**'
       - 'schemas/**'
@@ -16,6 +17,7 @@ on:
     branches: [ main, develop ]
     paths:
       - 'v1/**'
+      - 'v2/**'
       - 'v2-alpha/**'
       - 'examples/**'
       - 'schemas/**'
@@ -62,7 +64,7 @@ jobs:
 
     - name: Lint YAML syntax (yamllint)
       run: |
-        for d in v1/providers v1/models examples; do
+        for d in v1/providers v1/models v2/providers v2-alpha/providers examples; do
           if [ -d "$d" ]; then
             for f in "$d"/*.yaml "$d"/*.yml; do
               [ -f "$f" ] && yamllint "$f" || true

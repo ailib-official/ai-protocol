@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ai-protocol.dev/schema/v2/mcp.json",
+  "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/mcp.json",
   "title": "AI-Protocol V2 MCP Integration",
   "description": "Model Context Protocol (MCP) integration configuration for V2 provider manifests. Defines how providers connect to external MCP servers (client mode) or expose capabilities as MCP servers (server mode). Based on MCP specification 2025-11-25. Validated against OpenAI, Anthropic, and Google implementations.",
   "type": "object",
   "properties": {
     "client": {
       "type": "object",
-      "description": "MCP client configuration — connecting to external MCP servers",
+      "description": "MCP client configuration —connecting to external MCP servers",
       "properties": {
         "supported": {
           "type": "boolean",
@@ -164,7 +164,7 @@
     },
     "server": {
       "type": "object",
-      "description": "MCP server configuration — exposing provider capabilities as MCP server",
+      "description": "MCP server configuration —exposing provider capabilities as MCP server",
       "properties": {
         "supported": {
           "type": "boolean",
@@ -222,3 +222,4 @@
   },
   "additionalProperties": false
 }
+

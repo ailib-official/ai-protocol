@@ -70,12 +70,16 @@
     "retry_after": "retry-after"
   },
   "retry_policy": {
+    "max_retries": 3,
+    "max_delay_ms": 30000,
     "strategy": "exponential_backoff",
     "min_delay_ms": 1000,
     "jitter": "full",
     "retry_on_http_status": [
       429,
-      500
+      500,
+      502,
+      503
     ],
     "notes": [
       "OpenAI-compatible: exponential backoff is recommended for rate limit errors (429).",

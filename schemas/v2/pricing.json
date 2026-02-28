@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ai-protocol.dev/schema/v2/pricing.json",
+  "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/pricing.json",
   "title": "Provider Pricing",
   "description": "Optional pricing metadata for cost estimation (per 1k tokens)",
   "type": "object",
@@ -11,3 +11,4 @@
     "last_updated": { "type": "string", "format": "date" }
   }
 }
+

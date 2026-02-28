@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ai-protocol.dev/schema/v2/context-policy.json",
+  "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/context-policy.json",
   "title": "AI-Protocol V2 Context Management Policy",
   "description": "Context window management strategies for V2 provider manifests. Defines sliding window, summarization triggers, token budgets, and overflow handling. Provider-agnostic abstractions for managing limited context windows across varying provider capabilities.",
   "type": "object",
@@ -145,3 +145,4 @@
   },
   "additionalProperties": false
 }
+

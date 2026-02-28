@@ -76,6 +76,7 @@
     "retry_on_http_status": [
       429,
       500,
+      502,
       503
     ],
     "notes": [

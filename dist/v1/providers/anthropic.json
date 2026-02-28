@@ -36,6 +36,7 @@
   "retry_policy": {
     "strategy": "exponential_backoff",
     "max_retries": 2,
+    "max_delay_ms": 60000,
     "min_delay_ms": 1000,
     "jitter": "full",
     "retry_on_http_status": [

@@ -74,7 +74,9 @@
       "type": "integer",
       "min": 1,
       "max": 65536,
-      "alias": "max_tokens"
+      "alias": "max_tokens",
+      "deprecated": true,
+      "required": true
     },
     "topP": {
       "type": "float",
@@ -82,12 +84,14 @@
         0,
         1
       ],
-      "alias": "top_p"
+      "alias": "top_p",
+      "deprecated": true
     },
     "topK": {
       "type": "integer",
       "min": 0,
-      "alias": "top_k"
+      "alias": "top_k",
+      "deprecated": true
     }
   },
   "streaming": {
@@ -155,6 +159,7 @@
       "method": "GET"
     }
   },
+  "rate_limit_headers": {},
   "retry_policy": {
     "strategy": "exponential_backoff",
     "max_retries": 3,

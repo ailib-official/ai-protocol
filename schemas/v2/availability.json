@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://ai-protocol.dev/schema/v2/availability.json",
+  "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/availability.json",
   "title": "Availability and Health Check",
   "description": "Provider availability configuration and health check definition",
   "type": "object",
@@ -63,3 +63,4 @@
   },
   "additionalProperties": false
 }
+
