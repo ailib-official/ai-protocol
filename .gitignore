@@ -63,6 +63,8 @@ node_modules/
 validation*.log
 
 # ===== IDE & Editor =====
+.cursor/
+.agents/
 .vscode/
 .idea/
 *.swp
