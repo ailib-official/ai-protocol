@@ -1,0 +1,33 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+id: deepseek
+protocol_version: "2.0"
+endpoint:
+  base_url: "https://api.deepseek.com/v1"
+  chat: "/chat/completions"
+  auth:
+    type: bearer
+    token_env: "DEEPSEEK_API_KEY"
+error_classification:
+  by_http_status:
+    "429": "rate_limited"
+capabilities:
+  required: ["text", "streaming", "tools"]
+  optional: ["vision", "audio", "image_generation", "stt", "tts"]
+multimodal:
+  input:
+    vision:
+      supported: true
+      formats: [jpeg, png]
+      encoding_methods: [url]
+    audio:
+      supported: false
+    video:
+      supported: false
+  output:
+    text: true
+    audio:
+      supported: false
+    image:
+      supported: false
+    video:
+      supported: false

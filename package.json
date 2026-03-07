@@ -19,6 +19,8 @@
     "validate:examples": "node scripts/validate.js --examples",
     "validate:schemas": "node scripts/validate.js --schemas",
     "validate:specs": "node scripts/validate.js --specs",
+    "drift:check": "node scripts/drift-detect.js",
+    "release:gate": "node scripts/release-gate.js",
     "fact-check:models": "node scripts/fact-check-models.js",
     "fact-check:models:strict": "node scripts/fact-check-models.js --strict",
     "fact-check:models:strict-all": "node scripts/fact-check-models.js --strict --require-keys"

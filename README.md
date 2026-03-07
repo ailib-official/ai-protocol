@@ -178,9 +178,16 @@ npm run validate:models      # Validate model configs only
 npm run validate:examples    # Validate examples only
 npm run validate:specs       # Validate spec files only
 npm run validate:schemas     # Validate JSON schema syntax only
+
+# Execution governance automation
+npm run drift:check          # Detect P0 provider/fixture/case drift
+npm run release:gate         # Evaluate release gate status
 ```
 
 The canonical validation script is `scripts/validate.js`, which uses AJV v8 with JSON Schema 2020-12 and ajv-formats.  
+Execution governance scripts:
+- `scripts/drift-detect.js`: verifies P0 provider readiness coverage across v2 manifests, compliance fixtures, and loading cases
+- `scripts/release-gate.js`: computes pass/blocked decision from rollout metrics input (default: `scripts/release-gate-input.example.json`)
 Optional runtime model verification (document-first; no API keys required for the registry): see [docs/FACT_CHECKING_MODELS.md](docs/FACT_CHECKING_MODELS.md).
 
 ## 📦 Build & Distribution

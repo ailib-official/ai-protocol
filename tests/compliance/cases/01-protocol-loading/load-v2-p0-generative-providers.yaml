@@ -35,3 +35,39 @@ expected:
   errors: []
   provider_id: "doubao"
   protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load valid V2 Google provider manifest"
+id: "load-006"
+description: "Verify a V2 Google manifest with multimodal fields validates successfully"
+tags: ["protocol-loading", "google", "v2", "P0"]
+setup:
+  provider: "google"
+  manifest_path: "fixtures/providers/mock-google-v2.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-google-v2.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "google"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load valid V2 DeepSeek provider manifest"
+id: "load-007"
+description: "Verify a V2 DeepSeek manifest with multimodal fields validates successfully"
+tags: ["protocol-loading", "deepseek", "v2", "P0"]
+setup:
+  provider: "deepseek"
+  manifest_path: "fixtures/providers/mock-deepseek-v2.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-deepseek-v2.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "deepseek"
+  protocol_version: "2.0"
