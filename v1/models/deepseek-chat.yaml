@@ -17,3 +17,16 @@ models:
       output_per_token: 0.00000028 # example
     status: active
     tags: ["deepseek", "chat", "tools"]
+
+  deepseek-reasoner:
+    provider: deepseek
+    model_id: "deepseek-reasoner"
+    display_name: "DeepSeek Reasoner"
+    verification:
+      status: verified
+      verified_at: "2026-03-06"
+      source: "deepseek-console"
+    context_window: 64000
+    capabilities: [chat, streaming, tools, reasoning]
+    status: active
+    tags: ["deepseek", "reasoning", "tools"]

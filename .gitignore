@@ -6,6 +6,7 @@ background-discuss/
 # Wildcard patterns for internal documents (Chinese & English)
 *审查*.md
 *讨论*.txt
+*ai-protocol项目研发计划*.md
 *演进*.txt
 *草案*.txt
 *研发计划*.md

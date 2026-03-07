@@ -1,0 +1,36 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+id: doubao
+protocol_version: "2.0"
+endpoint:
+  base_url: "https://ark.cn-beijing.volces.com/api/v3"
+  chat: "/chat/completions"
+  auth:
+    type: bearer
+    token_env: "VOLCENGINE_API_KEY"
+error_classification:
+  by_http_status:
+    "429": "rate_limited"
+capabilities:
+  required: ["text", "streaming", "tools"]
+  optional: ["vision", "audio", "image_generation", "stt", "tts"]
+multimodal:
+  input:
+    vision:
+      supported: true
+      formats: [jpeg, png]
+      encoding_methods: [url]
+    audio:
+      supported: true
+      formats: [mp3, wav]
+    video:
+      supported: false
+  output:
+    text: true
+    audio:
+      supported: true
+      formats: [wav]
+    image:
+      supported: true
+      formats: [png]
+    video:
+      supported: false

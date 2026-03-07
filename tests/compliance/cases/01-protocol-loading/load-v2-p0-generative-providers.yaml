@@ -1,0 +1,37 @@
+# Protocol Loading - V2 P0 generative providers
+
+---
+suite: "protocol-loading"
+name: "Load valid V2 Qwen provider manifest"
+id: "load-004"
+description: "Verify a V2 Qwen manifest with multimodal input/output fields validates successfully"
+tags: ["protocol-loading", "qwen", "v2", "P0"]
+setup:
+  provider: "qwen"
+  manifest_path: "fixtures/providers/mock-qwen-v2.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-qwen-v2.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "qwen"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load valid V2 Doubao provider manifest"
+id: "load-005"
+description: "Verify a V2 Doubao manifest with multimodal fields validates successfully"
+tags: ["protocol-loading", "doubao", "v2", "P0"]
+setup:
+  provider: "doubao"
+  manifest_path: "fixtures/providers/mock-doubao-v2.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-doubao-v2.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "doubao"
+  protocol_version: "2.0"

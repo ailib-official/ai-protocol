@@ -212,6 +212,32 @@
           "if": { "properties": { "supported": { "const": true } } },
           "then": { "required": ["formats"] },
           "additionalProperties": false
+        },
+        "video": {
+          "type": "object",
+          "description": "Video generation capabilities",
+          "properties": {
+            "supported": { "type": "boolean", "default": false },
+            "formats": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["mp4", "webm", "mov", "gif"] },
+              "minItems": 1,
+              "uniqueItems": true,
+              "description": "Output video formats"
+            },
+            "max_duration": {
+              "type": "string",
+              "description": "Maximum output video duration (e.g. '10s', '60s')"
+            },
+            "max_resolution": {
+              "type": "string",
+              "pattern": "^\\d+x\\d+$",
+              "description": "Maximum output video resolution"
+            }
+          },
+          "if": { "properties": { "supported": { "const": true } } },
+          "then": { "required": ["formats"] },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

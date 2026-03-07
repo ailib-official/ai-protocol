@@ -1,0 +1,37 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+id: qwen
+protocol_version: "2.0"
+endpoint:
+  base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  chat: "/chat/completions"
+  auth:
+    type: bearer
+    token_env: "QWEN_API_KEY"
+error_classification:
+  by_http_status:
+    "429": "rate_limited"
+capabilities:
+  required: ["text", "streaming", "tools"]
+  optional: ["vision", "audio", "video", "image_generation", "stt", "tts"]
+multimodal:
+  input:
+    vision:
+      supported: true
+      formats: [jpeg, png]
+      encoding_methods: [url]
+    audio:
+      supported: true
+      formats: [mp3, wav]
+    video:
+      supported: true
+      formats: [mp4]
+  output:
+    text: true
+    audio:
+      supported: true
+      formats: [mp3]
+    image:
+      supported: true
+      formats: [png]
+    video:
+      supported: false
