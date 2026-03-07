@@ -2,6 +2,24 @@
 
 All notable changes to AI-Protocol specifications and schemas will be documented here.
 
+## 0.8.0 (2026-03-07) - Generative Fullchain Upgrade
+
+### Added
+
+- **P0 generative provider compliance expansion**: Added V2 compliance fixtures for Google and DeepSeek and wired load cases for P0 provider onboarding gates.
+- **Governance automation scripts**:
+  - `scripts/drift-detect.js` for provider/fixture/case drift detection
+  - `scripts/release-gate.js` for release readiness decisioning
+  - `scripts/release-gate-input.example.json` as gate input template
+- **NPM governance commands**:
+  - `npm run drift:check`
+  - `npm run release:gate`
+
+### Changed
+
+- **Multimodal V2 schema**: Extended `schemas/v2/multimodal.json` with `multimodal.output.video` contract for generation/declaration alignment.
+- **Public docs**: README now includes governance gate workflow for drift checks and release gating.
+
 ## 0.7.6 (2026-02-20) - ZeroClaw Upstream Schema Extensions
 
 ### Added
