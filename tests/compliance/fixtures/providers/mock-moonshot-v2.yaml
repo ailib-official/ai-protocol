@@ -1,0 +1,29 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+id: moonshot
+protocol_version: "2.0"
+endpoint:
+  base_url: "https://api.moonshot.cn/v1"
+  chat: "/chat/completions"
+  auth:
+    type: bearer
+    token_env: "MOONSHOT_API_KEY"
+error_classification:
+  by_http_status:
+    "429": "rate_limited"
+capabilities:
+  required: ["text", "streaming", "tools"]
+  optional: ["vision", "video", "reasoning"]
+multimodal:
+  input:
+    vision:
+      supported: true
+      formats: [jpeg, png, webp, gif]
+      encoding_methods: [base64_inline, url]
+    video:
+      supported: true
+      formats: [mp4, avi, mov]
+  output:
+    text: true
+    video:
+      supported: false
+

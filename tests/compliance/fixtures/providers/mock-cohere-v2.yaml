@@ -1,0 +1,22 @@
+$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+id: cohere
+protocol_version: "2.0"
+endpoint:
+  base_url: "https://api.cohere.com/v2"
+  chat: "/chat"
+  rerank: "/rerank"
+  auth:
+    type: bearer
+    token_env: "COHERE_API_KEY"
+error_classification:
+  by_http_status:
+    "429": "rate_limited"
+capabilities:
+  required: ["text", "streaming", "tools"]
+  optional: ["reranking"]
+streaming:
+  decoder:
+    format: "sse"
+    strategy: "cohere_v2"
+  event_map: []
+

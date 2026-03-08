@@ -1,0 +1,74 @@
+# Protocol Loading - V2 Wave-1 provider expansion
+
+---
+suite: "protocol-loading"
+name: "Load valid V2 Cohere provider manifest"
+id: "load-008"
+description: "Verify a V2 Cohere manifest validates successfully for Wave-1 onboarding"
+tags: ["protocol-loading", "cohere", "v2", "wave1", "p1"]
+setup:
+  provider: "cohere"
+  manifest_path: "fixtures/providers/mock-cohere-v2.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-cohere-v2.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "cohere"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load valid V2 Moonshot provider manifest"
+id: "load-009"
+description: "Verify a V2 Moonshot manifest validates successfully for Wave-1 onboarding"
+tags: ["protocol-loading", "moonshot", "v2", "wave1", "p1"]
+setup:
+  provider: "moonshot"
+  manifest_path: "fixtures/providers/mock-moonshot-v2.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-moonshot-v2.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "moonshot"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load valid V2 Zhipu provider manifest"
+id: "load-010"
+description: "Verify a V2 Zhipu manifest validates successfully for Wave-1 onboarding"
+tags: ["protocol-loading", "zhipu", "v2", "wave1", "p1"]
+setup:
+  provider: "zhipu"
+  manifest_path: "fixtures/providers/mock-zhipu-v2.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-zhipu-v2.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "zhipu"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load valid V2 Jina provider manifest"
+id: "load-011"
+description: "Verify a V2 Jina manifest validates successfully for Wave-1 onboarding"
+tags: ["protocol-loading", "jina", "v2", "wave1", "p1"]
+setup:
+  provider: "jina"
+  manifest_path: "fixtures/providers/mock-jina-v2.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-jina-v2.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "jina"
+  protocol_version: "2.0"
+

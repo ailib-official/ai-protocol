@@ -199,6 +199,20 @@ Execution governance scripts:
 - `report-only` mode (`--report-only`) is available for drift/release gates to support advisory CI rollout without immediate hard blocking
 Optional runtime model verification (document-first; no API keys required for the registry): see [docs/FACT_CHECKING_MODELS.md](docs/FACT_CHECKING_MODELS.md).
 
+### Wave-3 Gate Promotion Policy (PT-035)
+
+Required/report-only governance boundaries:
+
+- **PR / manual review path**: run report-only gates for trend visibility and low-friction iteration.
+- **`main` push path**: run required fullchain gate (`node scripts/gate-fullchain.js`) as blocking baseline.
+- **Release readiness baseline**: keep both required and report-only evidence artifacts for every promotion cycle.
+
+Rollback policy:
+
+- If a production-critical gate starts failing due to transient infra or dependency outages, temporarily downgrade to report-only while preserving evidence artifacts.
+- Downgrade decisions must include explicit closure target and recovery command path (`npm run gate:fullchain`).
+- Return to required mode immediately after recovery evidence is recorded.
+
 ## 📦 Build & Distribution
 
 AI-Protocol is distributed as pre-compiled JSON files to ensure runtime efficiency and zero-parsing overhead.

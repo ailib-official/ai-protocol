@@ -1,6 +1,6 @@
 {
   "name": "ai-protocol",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Provider-agnostic AI provider + model registry specification",
   "type": "module",
   "main": "dist/index.json",

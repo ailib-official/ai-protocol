@@ -23,6 +23,7 @@ on:
 
 jobs:
   governance-report:
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -56,6 +57,37 @@ jobs:
           path: |
             reports/drift/*.json
             reports/release-gates/*.json
+            reports/compliance-gates/*.json
+            reports/fullchain-gates/*.json
+          if-no-files-found: warn
+
+  governance-required:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run fullchain gate (required)
+        run: node scripts/gate-fullchain.js
+
+      - name: Upload required gate reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: governance-required-reports
+          path: |
+            reports/drift/*.json
+            reports/release-gates/*.json
+            reports/manifest-gates/*.json
             reports/compliance-gates/*.json
             reports/fullchain-gates/*.json
           if-no-files-found: warn
