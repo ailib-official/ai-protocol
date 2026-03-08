@@ -181,13 +181,22 @@ npm run validate:schemas     # Validate JSON schema syntax only
 
 # Execution governance automation
 npm run drift:check          # Detect P0 provider/fixture/case drift
+npm run gate:manifest-consumption   # Cross-repo latest-manifest consumption gate
+npm run gate:compliance-matrix      # Cross-repo full compliance matrix gate
+npm run gate:fullchain             # One-shot governance fullchain gate
 npm run release:gate         # Evaluate release gate status
+node scripts/drift-detect.js --report-only   # Advisory drift report (non-blocking)
+node scripts/release-gate.js --report-only   # Advisory release gate report (non-blocking)
 ```
 
 The canonical validation script is `scripts/validate.js`, which uses AJV v8 with JSON Schema 2020-12 and ajv-formats.  
 Execution governance scripts:
 - `scripts/drift-detect.js`: verifies P0 provider readiness coverage across v2 manifests, compliance fixtures, and loading cases
+- `scripts/gate-manifest-consumption.js`: runs protocol + Rust/Python/TS latest-manifest consumption checks and writes gate report (`reports/manifest-gates/`)
+- `scripts/gate-compliance-matrix.js`: runs protocol + Rust/Python/TS compliance matrix checks and writes gate report (`reports/compliance-gates/`)
+- `scripts/gate-fullchain.js`: orchestrates drift + manifest + compliance + release gates in one run (`reports/fullchain-gates/`)
 - `scripts/release-gate.js`: computes pass/blocked decision from rollout metrics input (default: `scripts/release-gate-input.example.json`)
+- `report-only` mode (`--report-only`) is available for drift/release gates to support advisory CI rollout without immediate hard blocking
 Optional runtime model verification (document-first; no API keys required for the registry): see [docs/FACT_CHECKING_MODELS.md](docs/FACT_CHECKING_MODELS.md).
 
 ## 📦 Build & Distribution
@@ -214,6 +223,7 @@ The GitHub Actions workflow (`validate.yml`) automatically:
 - Builds JSON artifacts using `npm run build`
 - Uploads the `dist/` folder as a build artifact
 - Runs additional yamllint checks for YAML style (non-blocking)
+- `governance-report.yml` runs drift/release gates in report-only mode and archives JSON evidence artifacts
 
 See [docs/CI_VALIDATION_EXPLAINED.md](docs/CI_VALIDATION_EXPLAINED.md) for detailed CI documentation.
 

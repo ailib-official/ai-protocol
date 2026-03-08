@@ -19,6 +19,7 @@ function parseArgs() {
   const inputFlag = process.argv.find((arg) => arg.startsWith('--input='));
   return {
     inputPath: inputFlag ? resolve(process.cwd(), inputFlag.slice('--input='.length)) : DEFAULT_INPUT,
+    reportOnly: process.argv.includes('--report-only'),
   };
 }
 
@@ -90,6 +91,7 @@ function main() {
   const args = parseArgs();
   const input = loadInput(args.inputPath);
   const report = evaluateGate(input);
+  report.mode = args.reportOnly ? 'report-only' : 'required';
   const reportPath = writeReport(report);
 
   console.log('== AI-Protocol Release Gate ==');
@@ -100,7 +102,10 @@ function main() {
     console.log(`- [${check.pass ? 'PASS' : 'FAIL'}] ${check.key} :: ${check.detail}`);
   }
 
-  process.exit(report.status === 'pass' ? 0 : 1);
+  if (report.status !== 'pass' && !args.reportOnly) {
+    process.exit(1);
+  }
+  process.exit(0);
 }
 
 main();

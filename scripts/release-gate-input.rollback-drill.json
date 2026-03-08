@@ -1,0 +1,20 @@
+{
+  "coverage": {
+    "actual": 5,
+    "target": 6
+  },
+  "compliance": {
+    "pass_rate": 0.98,
+    "target_pass_rate": 1.0
+  },
+  "stability": {
+    "error_rate": 0.03,
+    "max_error_rate": 0.02
+  },
+  "rollback": {
+    "drill_passed": false
+  },
+  "docs": {
+    "updated": false
+  }
+}

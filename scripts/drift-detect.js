@@ -124,7 +124,9 @@ function writeReport(report) {
 }
 
 function main() {
+  const reportOnly = process.argv.includes('--report-only');
   const report = detectDrift();
+  report.mode = reportOnly ? 'report-only' : 'required';
   const reportPath = writeReport(report);
 
   console.log('== AI-Protocol Drift Report ==');
@@ -139,7 +141,10 @@ function main() {
   }
 
   const hasBlocking = report.drifts.some((d) => d.severity === 'critical' || d.severity === 'high');
-  process.exit(hasBlocking ? 1 : 0);
+  if (hasBlocking && !reportOnly) {
+    process.exit(1);
+  }
+  process.exit(0);
 }
 
 main();

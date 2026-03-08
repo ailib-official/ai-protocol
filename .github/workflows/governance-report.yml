@@ -1,0 +1,61 @@
+name: Governance Reports
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'v2/**'
+      - 'tests/compliance/**'
+      - 'scripts/drift-detect.js'
+      - 'scripts/release-gate.js'
+      - 'scripts/release-gate-input.example.json'
+      - '.github/workflows/governance-report.yml'
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'v2/**'
+      - 'tests/compliance/**'
+      - 'scripts/drift-detect.js'
+      - 'scripts/release-gate.js'
+      - 'scripts/release-gate-input.example.json'
+      - '.github/workflows/governance-report.yml'
+
+jobs:
+  governance-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run drift check (report-only)
+        run: node scripts/drift-detect.js --report-only
+
+      - name: Run release gate (report-only)
+        run: node scripts/release-gate.js --report-only
+
+      - name: Run compliance matrix gate (report-only)
+        run: node scripts/gate-compliance-matrix.js --report-only
+
+      - name: Run fullchain gate (report-only)
+        run: node scripts/gate-fullchain.js --report-only
+
+      - name: Upload governance reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: governance-reports
+          path: |
+            reports/drift/*.json
+            reports/release-gates/*.json
+            reports/compliance-gates/*.json
+            reports/fullchain-gates/*.json
+          if-no-files-found: warn

@@ -2,6 +2,20 @@
 
 All notable changes to AI-Protocol specifications and schemas will be documented here.
 
+## 0.8.1 (2026-03-08) - Compliance Matrix Activation and Fullchain Gates
+
+### Added
+
+- **Cross-repo compliance matrix gate**: `scripts/gate-compliance-matrix.js` with required/report-only modes and JSON reports.
+- **Fullchain governance gate orchestration**: `scripts/gate-fullchain.js` chaining drift, manifest consumption, compliance matrix, and release gates.
+- **Governance workflow integration**: `.github/workflows/governance-report.yml` now runs compliance/fullchain gates in report-only mode and archives artifacts.
+- **Rollback drill input fixture**: `scripts/release-gate-input.rollback-drill.json` for repeatable blocked->report-only drill validation.
+
+### Changed
+
+- `drift-detect.js` and `release-gate.js` now support `--report-only` advisory mode for staged gate enforcement.
+- README governance section now documents compliance/fullchain gate commands and report-first execution strategy.
+
 ## 0.8.0 (2026-03-07) - Generative Fullchain Upgrade
 
 ### Added
