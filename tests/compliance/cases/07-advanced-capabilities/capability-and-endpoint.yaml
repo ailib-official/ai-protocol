@@ -1,0 +1,306 @@
+suite: "advanced-capabilities"
+name: "Undeclared capability is blocked by guard"
+id: "adv-001"
+description: "Runtime must reject advanced capability calls when manifest capability is absent"
+tags: ["advanced", "capability_guard", "P1"]
+input:
+  type: "capability_guard"
+  method: "MCPListTools"
+  manifest: |
+    id: "guard-provider"
+    protocol_version: "2.0"
+    core:
+      endpoint:
+        base_url: "http://127.0.0.1:65535"
+expected:
+  error_code: "E1005"
+---
+suite: "advanced-capabilities"
+name: "Undeclared computer_use capability is blocked by guard"
+id: "adv-002"
+description: "Runtime must reject computer use calls when capability is absent"
+tags: ["advanced", "capability_guard", "P1"]
+input:
+  type: "capability_guard"
+  method: "ComputerUse"
+  manifest: |
+    id: "guard-provider-cu"
+    protocol_version: "2.0"
+    core:
+      endpoint:
+        base_url: "http://127.0.0.1:65535"
+expected:
+  error_code: "E1005"
+---
+suite: "advanced-capabilities"
+name: "Undeclared reasoning capability is blocked by guard"
+id: "adv-003"
+description: "Runtime must reject reasoning calls when capability is absent"
+tags: ["advanced", "capability_guard", "P1"]
+input:
+  type: "capability_guard"
+  method: "Reason"
+  manifest: |
+    id: "guard-provider-reason"
+    protocol_version: "2.0"
+    core:
+      endpoint:
+        base_url: "http://127.0.0.1:65535"
+expected:
+  error_code: "E1005"
+---
+suite: "advanced-capabilities"
+name: "Undeclared video capability is blocked by guard"
+id: "adv-004"
+description: "Runtime must reject video calls when capability is absent"
+tags: ["advanced", "capability_guard", "P1"]
+input:
+  type: "capability_guard"
+  method: "VideoGenerate"
+  manifest: |
+    id: "guard-provider-video"
+    protocol_version: "2.0"
+    core:
+      endpoint:
+        base_url: "http://127.0.0.1:65535"
+expected:
+  error_code: "E1005"
+---
+suite: "advanced-capabilities"
+name: "MCP endpoint mapping resolves configured operation"
+id: "adv-005"
+description: "EndpointFor should honor mcp operation mapping from manifest"
+tags: ["advanced", "endpoint_mapping", "P1"]
+input:
+  type: "advanced_endpoint_mapping"
+  operation: "mcp_call_tool"
+  fallback: "/mcp/tools/call"
+  manifest: |
+    id: "endpoint-provider-mcp"
+    protocol_version: "2.0"
+    core:
+      endpoint:
+        base_url: "https://example.com"
+        endpoints:
+          mcp_call_tool:
+            path: "/custom/mcp/call"
+            method: "POST"
+expected:
+  path: "/custom/mcp/call"
+  method: "POST"
+---
+suite: "advanced-capabilities"
+name: "Computer use endpoint mapping resolves configured operation"
+id: "adv-006"
+description: "EndpointFor should honor computer_use mapping from manifest"
+tags: ["advanced", "endpoint_mapping", "P1"]
+input:
+  type: "advanced_endpoint_mapping"
+  operation: "computer_use"
+  fallback: "/computer-use/actions"
+  manifest: |
+    id: "endpoint-provider-cu"
+    protocol_version: "2.0"
+    core:
+      endpoint:
+        base_url: "https://example.com"
+        endpoints:
+          computer_use:
+            path: "/custom/computer-use/actions"
+            method: "POST"
+expected:
+  path: "/custom/computer-use/actions"
+  method: "POST"
+---
+suite: "advanced-capabilities"
+name: "Reasoning endpoint mapping resolves configured operation"
+id: "adv-007"
+description: "EndpointFor should honor reasoning mapping from manifest"
+tags: ["advanced", "endpoint_mapping", "P1"]
+input:
+  type: "advanced_endpoint_mapping"
+  operation: "reasoning"
+  fallback: "/reasoning"
+  manifest: |
+    id: "endpoint-provider-reason"
+    protocol_version: "2.0"
+    core:
+      endpoint:
+        base_url: "https://example.com"
+        endpoints:
+          reasoning:
+            path: "/custom/reasoning"
+            method: "POST"
+expected:
+  path: "/custom/reasoning"
+  method: "POST"
+---
+suite: "advanced-capabilities"
+name: "Video endpoint mapping resolves configured operation"
+id: "adv-008"
+description: "EndpointFor should honor video mapping from manifest"
+tags: ["advanced", "endpoint_mapping", "P1"]
+input:
+  type: "advanced_endpoint_mapping"
+  operation: "video_get"
+  fallback: "/video/generations/{id}"
+  manifest: |
+    id: "endpoint-provider-video"
+    protocol_version: "2.0"
+    core:
+      endpoint:
+        base_url: "https://example.com"
+        endpoints:
+          video_get:
+            path: "/custom/video/{id}"
+            method: "GET"
+expected:
+  path: "/custom/video/{id}"
+  method: "GET"
+---
+suite: "advanced-capabilities"
+name: "MCP fallback is allowed for overloaded errors"
+id: "adv-009"
+description: "Fallback strategy should continue on fallbackable E3002 errors"
+tags: ["advanced", "fallback", "P1"]
+input:
+  type: "fallback_decision"
+  operation: "mcp"
+  error_code: "E3002"
+expected:
+  should_fallback: true
+---
+suite: "advanced-capabilities"
+name: "Computer use fallback is blocked for invalid request"
+id: "adv-010"
+description: "Fallback strategy should stop on non-fallbackable E1001 errors"
+tags: ["advanced", "fallback", "P1"]
+input:
+  type: "fallback_decision"
+  operation: "computer_use"
+  error_code: "E1001"
+expected:
+  should_fallback: false
+---
+suite: "advanced-capabilities"
+name: "Reasoning fallback is allowed for rate limited errors"
+id: "adv-011"
+description: "Fallback strategy should continue on fallbackable E2001 errors"
+tags: ["advanced", "fallback", "P1"]
+input:
+  type: "fallback_decision"
+  operation: "reasoning"
+  error_code: "E2001"
+expected:
+  should_fallback: true
+---
+suite: "advanced-capabilities"
+name: "Video fallback is blocked for request too large"
+id: "adv-012"
+description: "Fallback strategy should stop on non-fallbackable E1005 errors"
+tags: ["advanced", "fallback", "P1"]
+input:
+  type: "fallback_decision"
+  operation: "video"
+  error_code: "E1005"
+expected:
+  should_fallback: false
+---
+suite: "advanced-capabilities"
+name: "MCP provider-mock behavior body assertions"
+id: "adv-013"
+description: "Assert mcp request/response body contract fields"
+tags: ["advanced", "provider_mock_behavior", "P1"]
+input:
+  type: "provider_mock_behavior"
+  operation: "mcp"
+  request_body:
+    name: "search"
+    arguments:
+      query: "ai-lib"
+  response_body:
+    content:
+      - type: "text"
+        text: "ok"
+    is_error: false
+expected:
+  request_assert:
+    name: "search"
+    arguments.query: "ai-lib"
+  response_assert:
+    content.0.type: "text"
+    is_error: false
+---
+suite: "advanced-capabilities"
+name: "Computer use provider-mock behavior body assertions"
+id: "adv-014"
+description: "Assert computer_use request/response body contract fields"
+tags: ["advanced", "provider_mock_behavior", "P1"]
+input:
+  type: "provider_mock_behavior"
+  operation: "computer_use"
+  request_body:
+    session_id: "s1"
+    actions:
+      - action_type: "click"
+        parameters:
+          x: 10
+          y: 20
+  response_body:
+    session_id: "s1"
+    results:
+      - ok: true
+expected:
+  request_assert:
+    session_id: "s1"
+    actions.0.action_type: "click"
+  response_assert:
+    session_id: "s1"
+    results.0.ok: true
+---
+suite: "advanced-capabilities"
+name: "Reasoning provider-mock behavior body assertions"
+id: "adv-015"
+description: "Assert reasoning request/response body contract fields"
+tags: ["advanced", "provider_mock_behavior", "P1"]
+input:
+  type: "provider_mock_behavior"
+  operation: "reasoning"
+  request_body:
+    model: "reasoner"
+    prompt: "why"
+    max_tokens: 256
+  response_body:
+    model: "reasoner"
+    reasoning: "step-by-step"
+    final_answer: "because"
+expected:
+  request_assert:
+    model: "reasoner"
+    prompt: "why"
+  response_assert:
+    model: "reasoner"
+    final_answer: "because"
+---
+suite: "advanced-capabilities"
+name: "Video provider-mock behavior body assertions"
+id: "adv-016"
+description: "Assert video request/response body contract fields"
+tags: ["advanced", "provider_mock_behavior", "P1"]
+input:
+  type: "provider_mock_behavior"
+  operation: "video"
+  request_body:
+    model: "video-1"
+    prompt: "sunset"
+    duration_s: 8
+  response_body:
+    id: "vid-1"
+    status: "queued"
+expected:
+  request_assert:
+    model: "video-1"
+    duration_s: 8
+  response_assert:
+    id: "vid-1"
+    status: "queued"

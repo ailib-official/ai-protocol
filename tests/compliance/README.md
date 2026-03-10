@@ -52,6 +52,8 @@ tests/compliance/
 │   └── 06-resilience/           # Retry and fallback
 │       ├── retry-policy.yaml
 │       └── error-retryable.yaml
+│   └── 07-advanced-capabilities/ # Advanced capability guard + endpoint mapping
+│       └── capability-and-endpoint.yaml
 └── fixtures/                    # Shared test data
     ├── providers/               # Mock provider manifests
     │   ├── mock-openai.yaml
@@ -117,6 +119,10 @@ expected:
 | `tool_accumulation` | Assemble partial tool calls | `partial_chunks` | `assembled_tool_calls` |
 | `parameter_mapping` | Map standard to provider params | `standard_params`, `provider` | `provider_params` |
 | `retry_decision` | Decide whether to retry an error | `error`, `retry_policy` | `should_retry`, `delay_ms` |
+| `capability_guard` | Validate undeclared advanced capability blocking | `method`, `manifest` | `error_code` |
+| `advanced_endpoint_mapping` | Resolve advanced operation endpoint | `operation`, `manifest` | `path`, `method` |
+| `fallback_decision` | Decide advanced capability failover continuation | `operation`, `error_code` | `should_fallback` |
+| `provider_mock_behavior` | Validate advanced request/response body contracts | `request_body`, `response_body` | `request_assert`, `response_assert` |
 
 ## Assertions
 
