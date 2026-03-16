@@ -1,0 +1,36 @@
+# Protocol Loading - V2 capability profile IOS phase
+
+---
+suite: "protocol-loading"
+name: "Load valid V2 provider manifest with IOS capability_profile"
+id: "load-012"
+description: "Verify V2 manifest validates with staged capability_profile (inputs/outcomes/systems only)"
+tags: ["protocol-loading", "v2", "capability-profile", "ios", "report-evidence-gate"]
+setup:
+  provider: "google_ios"
+  manifest_path: "fixtures/providers/mock-google-v2-ios.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-google-v2-ios.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "google_ios"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Reject V2 provider manifest with process in IOS capability_profile"
+id: "load-013"
+description: "Verify IOS phase rejects capability_profile.process to enforce staged rollout boundary"
+tags: ["protocol-loading", "v2", "capability-profile", "ios", "boundary"]
+setup:
+  provider: "google_ios_invalid"
+  manifest_path: "fixtures/providers/mock-google-v2-ios-invalid-process.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-google-v2-ios-invalid-process.yaml"
+expected:
+  valid: false
+  errors:
+    - "must NOT have additional properties"

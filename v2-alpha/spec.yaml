@@ -164,12 +164,15 @@ ring_2_capabilities:
     - parameters: Optional parameter definitions (temperature, max_tokens, etc.)
     - tools: Optional when tools capability is declared
     - multimodal: Optional when vision/audio/video is declared
+    - capability_profile: Experimental staged metadata profile (IOS phase only in current rollout)
   schema_ref: "schemas/v2/capabilities.json"
   validation_rules:
     - "capabilities.required MUST include 'text' for chat providers"
     - "When streaming in capabilities, streaming.decoder MUST be present"
     - "Capability names MUST be from standard_capabilities list"
     - "Unknown capabilities MUST be ignored (not rejected)"
+    - "capability_profile is optional and currently limited to Inputs/Outcomes/Systems (IOS phase)"
+    - "process/contract fields are reserved for later phases and MUST NOT be used in IOS phase manifests"
 
   # --- Standard Capabilities ---
   standard_capabilities:
