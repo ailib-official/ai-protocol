@@ -1,0 +1,104 @@
+{
+  "timestamp": "2026-03-16T15:35:36.087Z",
+  "gate_id": "capability-profile-boundary",
+  "mode": "report-only",
+  "schema": "schemas/v2/capability-profile.json",
+  "summary": {
+    "total": 6,
+    "passed": 6,
+    "failed": 0
+  },
+  "checks": [
+    {
+      "id": "cp-001-minimal-empty-object",
+      "expected_valid": true,
+      "actual_valid": true,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "id": "cp-002-valid-profile",
+      "expected_valid": true,
+      "actual_valid": true,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "id": "cp-003-inputs-max-references-overflow",
+      "expected_valid": false,
+      "actual_valid": false,
+      "pass": true,
+      "errors": [
+        {
+          "instancePath": "/inputs/max_references",
+          "schemaPath": "#/properties/inputs/properties/max_references/maximum",
+          "keyword": "maximum",
+          "params": {
+            "comparison": "<=",
+            "limit": 64
+          },
+          "message": "must be <= 64"
+        }
+      ]
+    },
+    {
+      "id": "cp-004-process-duration-overflow",
+      "expected_valid": false,
+      "actual_valid": false,
+      "pass": true,
+      "errors": [
+        {
+          "instancePath": "/process/typical_duration_seconds",
+          "schemaPath": "#/properties/process/properties/typical_duration_seconds/maximum",
+          "keyword": "maximum",
+          "params": {
+            "comparison": "<=",
+            "limit": 3600
+          },
+          "message": "must be <= 3600"
+        }
+      ]
+    },
+    {
+      "id": "cp-005-unknown-top-level-field",
+      "expected_valid": false,
+      "actual_valid": false,
+      "pass": true,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "id": "cp-006-unknown-modality",
+      "expected_valid": false,
+      "actual_valid": false,
+      "pass": true,
+      "errors": [
+        {
+          "instancePath": "/inputs/modalities/0",
+          "schemaPath": "#/properties/inputs/properties/modalities/items/enum",
+          "keyword": "enum",
+          "params": {
+            "allowedValues": [
+              "text",
+              "image",
+              "audio",
+              "video",
+              "tool_result",
+              "other"
+            ]
+          },
+          "message": "must be equal to one of the allowed values"
+        }
+      ]
+    }
+  ]
+}

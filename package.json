@@ -19,6 +19,7 @@
     "validate:examples": "node scripts/validate.js --examples",
     "validate:schemas": "node scripts/validate.js --schemas",
     "validate:specs": "node scripts/validate.js --specs",
+    "validate:capability-profile": "node scripts/validate-capability-profile-boundary.js",
     "drift:check": "node scripts/drift-detect.js",
     "gate:manifest-consumption": "node scripts/gate-manifest-consumption.js",
     "gate:compliance-matrix": "node scripts/gate-compliance-matrix.js",

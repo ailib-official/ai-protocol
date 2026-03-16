@@ -30,6 +30,7 @@ ai-protocol/
 │       ├── computer-use.json  # Computer Use abstraction schema
 │       ├── multimodal.json    # Extended multimodal capabilities schema
 │       ├── provider-contract.json # Provider contract schema
+│       ├── capability-profile.json # Experimental I/O/P/S/C metadata schema
 │       └── context-policy.json # Context management policy schema
 ├── v1/                        # v1.x stable version specification
 │   ├── spec.yaml              # Basic specifications: standard parameters, event enumeration

@@ -184,6 +184,10 @@
       "$ref": "./provider-contract.json",
       "description": "Runtime provider driver contract specification (Ring 3)"
     },
+    "capability_profile": {
+      "$ref": "./capability-profile.json",
+      "description": "Experimental I/O/P/S/C capability profile metadata (design-stage, optional)"
+    },
     "metadata": {
       "type": "object",
       "additionalProperties": true,

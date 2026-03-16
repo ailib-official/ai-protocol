@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/capability-profile.json",
+  "title": "AI-Protocol Capability Profile (Experimental)",
+  "description": "Optional I/O/P/S/C capability profile for design-stage governance. This schema is metadata-only and MUST NOT imply runtime behavioral changes by itself.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "inputs": {
+      "type": "object",
+      "description": "Input constraints and limits (I)",
+      "additionalProperties": false,
+      "properties": {
+        "modalities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["text", "image", "audio", "video", "tool_result", "other"]
+          },
+          "uniqueItems": true
+        },
+        "max_references": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 64
+        },
+        "max_payload_mb": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2048
+        }
+      }
+    },
+    "outcomes": {
+      "type": "object",
+      "description": "Semantic output declaration (O)",
+      "additionalProperties": false,
+      "properties": {
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "text_completion",
+              "structured_json",
+              "image_generation",
+              "video_generation",
+              "reasoning_trace",
+              "tool_call_sequence",
+              "other"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "quality_tier": {
+          "type": "string",
+          "enum": ["best_effort", "standard", "high"]
+        }
+      }
+    },
+    "process": {
+      "type": "object",
+      "description": "Execution pattern declaration (P)",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["sync", "async", "hybrid"]
+        },
+        "polling_required": {
+          "type": "boolean",
+          "default": false
+        },
+        "typical_duration_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3600
+        }
+      }
+    },
+    "systems": {
+      "type": "object",
+      "description": "External system dependencies (S)",
+      "additionalProperties": false,
+      "properties": {
+        "requires": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["mcp", "search", "filesystem", "browser", "gis", "other"]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "description": "Execution contract metadata (C)",
+      "additionalProperties": false,
+      "properties": {
+        "safety_rules_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cost_plan_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "error_model_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
