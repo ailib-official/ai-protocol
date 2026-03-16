@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Capability profile boundary validation (I/O/P/S/C).
- * Generates a factual evidence report to support governance rollout.
+ * Capability profile boundary validation (I/O/S only phase).
+ * Generates a factual evidence report to support staged governance rollout.
  */
 
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
@@ -19,7 +19,7 @@ const reportDir = join(ROOT_DIR, "reports", "report-evidence-gates");
 const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
 const reportPath = join(
   reportDir,
-  `capability-profile-boundary-${timestamp}.json`
+  `capability-profile-ios-boundary-${timestamp}.json`
 );
 
 const schema = JSON.parse(readFileSync(schemaPath, "utf-8"));
@@ -29,18 +29,24 @@ const validate = ajv.compile(schema);
 const cases = [
   {
     id: "cp-001-minimal-empty-object",
-    expectedValid: true,
+    expectedValid: false,
     payload: {},
+  },
+  {
+    id: "cp-001b-minimal-inputs-only",
+    expectedValid: true,
+    payload: {
+      inputs: { modalities: ["text"] }
+    }
   },
   {
     id: "cp-002-valid-profile",
     expectedValid: true,
     payload: {
+      phase: "ios_v1",
       inputs: { modalities: ["text", "image"], max_references: 12, max_payload_mb: 128 },
       outcomes: { types: ["structured_json", "tool_call_sequence"], quality_tier: "standard" },
-      process: { mode: "async", polling_required: true, typical_duration_seconds: 120 },
-      systems: { requires: ["mcp", "search"] },
-      contract: { safety_rules_ref: "safety.v1", cost_plan_ref: "cost.p1", error_model_ref: "errors.v2" },
+      systems: { requires: ["mcp", "search"] }
     },
   },
   {
@@ -51,24 +57,31 @@ const cases = [
     },
   },
   {
-    id: "cp-004-process-duration-overflow",
-    expectedValid: false,
-    payload: {
-      process: { mode: "async", typical_duration_seconds: 3601 },
-    },
-  },
-  {
-    id: "cp-005-unknown-top-level-field",
+    id: "cp-004-unknown-top-level-field",
     expectedValid: false,
     payload: {
       unknown_field: true,
     },
   },
   {
-    id: "cp-006-unknown-modality",
+    id: "cp-005-unknown-modality",
     expectedValid: false,
     payload: {
       inputs: { modalities: ["binary_blob"] },
+    },
+  },
+  {
+    id: "cp-006-process-not-enabled-in-ios-phase",
+    expectedValid: false,
+    payload: {
+      process: { mode: "async" },
+    },
+  },
+  {
+    id: "cp-007-contract-not-enabled-in-ios-phase",
+    expectedValid: false,
+    payload: {
+      contract: { safety_rules_ref: "safety.v1" },
     },
   },
 ];
@@ -94,7 +107,7 @@ const summary = {
 
 const report = {
   timestamp: new Date().toISOString(),
-  gate_id: "capability-profile-boundary",
+  gate_id: "capability-profile-ios-boundary",
   mode: "report-only",
   schema: "schemas/v2/capability-profile.json",
   summary,
@@ -104,7 +117,7 @@ const report = {
 mkdirSync(reportDir, { recursive: true });
 writeFileSync(reportPath, JSON.stringify(report, null, 2), "utf-8");
 
-console.log(`Capability profile boundary report written: ${reportPath}`);
+console.log(`Capability profile IOS boundary report written: ${reportPath}`);
 console.log(
   `Summary: total=${summary.total}, passed=${summary.passed}, failed=${summary.failed}`
 );

@@ -1,11 +1,22 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/capability-profile.json",
-  "title": "AI-Protocol Capability Profile (Experimental)",
-  "description": "Optional I/O/P/S/C capability profile for design-stage governance. This schema is metadata-only and MUST NOT imply runtime behavioral changes by itself.",
+  "title": "AI-Protocol Capability Profile (Experimental IOS Phase)",
+  "description": "Optional I/O/S capability profile for design-stage governance. This phase intentionally limits scope to Inputs/Outcomes/Systems to avoid one-step full I/O/P/S/C rollout. Metadata-only and MUST NOT imply runtime behavioral changes by itself.",
   "type": "object",
   "additionalProperties": false,
+  "anyOf": [
+    { "required": ["inputs"] },
+    { "required": ["outcomes"] },
+    { "required": ["systems"] }
+  ],
   "properties": {
+    "phase": {
+      "type": "string",
+      "enum": ["ios_v1"],
+      "default": "ios_v1",
+      "description": "Staged rollout marker. ios_v1 enables Inputs/Outcomes/Systems only."
+    },
     "inputs": {
       "type": "object",
       "description": "Input constraints and limits (I)",
@@ -58,26 +69,6 @@
         }
       }
     },
-    "process": {
-      "type": "object",
-      "description": "Execution pattern declaration (P)",
-      "additionalProperties": false,
-      "properties": {
-        "mode": {
-          "type": "string",
-          "enum": ["sync", "async", "hybrid"]
-        },
-        "polling_required": {
-          "type": "boolean",
-          "default": false
-        },
-        "typical_duration_seconds": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 3600
-        }
-      }
-    },
     "systems": {
       "type": "object",
       "description": "External system dependencies (S)",
@@ -93,24 +84,15 @@
         }
       }
     },
-    "contract": {
-      "type": "object",
-      "description": "Execution contract metadata (C)",
-      "additionalProperties": false,
-      "properties": {
-        "safety_rules_ref": {
-          "type": "string",
-          "minLength": 1
-        },
-        "cost_plan_ref": {
-          "type": "string",
-          "minLength": 1
-        },
-        "error_model_ref": {
-          "type": "string",
-          "minLength": 1
-        }
-      }
+    "future_reserved": {
+      "type": "array",
+      "description": "Reserved names for future staged expansion.",
+      "items": {
+        "type": "string",
+        "enum": ["process", "contract"]
+      },
+      "default": ["process", "contract"],
+      "uniqueItems": true
     }
   }
 }

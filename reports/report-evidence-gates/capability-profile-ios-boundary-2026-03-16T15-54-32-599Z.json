@@ -1,0 +1,264 @@
+{
+  "timestamp": "2026-03-16T15:54:32.764Z",
+  "gate_id": "capability-profile-ios-boundary",
+  "mode": "report-only",
+  "schema": "schemas/v2/capability-profile.json",
+  "summary": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0
+  },
+  "checks": [
+    {
+      "id": "cp-001-minimal-empty-object",
+      "expected_valid": false,
+      "actual_valid": false,
+      "pass": true,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/0/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "inputs"
+          },
+          "message": "must have required property 'inputs'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/1/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "outcomes"
+          },
+          "message": "must have required property 'outcomes'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/2/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "systems"
+          },
+          "message": "must have required property 'systems'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf",
+          "keyword": "anyOf",
+          "params": {},
+          "message": "must match a schema in anyOf"
+        }
+      ]
+    },
+    {
+      "id": "cp-001b-minimal-inputs-only",
+      "expected_valid": true,
+      "actual_valid": true,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "id": "cp-002-valid-profile",
+      "expected_valid": true,
+      "actual_valid": true,
+      "pass": true,
+      "errors": []
+    },
+    {
+      "id": "cp-003-inputs-max-references-overflow",
+      "expected_valid": false,
+      "actual_valid": false,
+      "pass": true,
+      "errors": [
+        {
+          "instancePath": "/inputs/max_references",
+          "schemaPath": "#/properties/inputs/properties/max_references/maximum",
+          "keyword": "maximum",
+          "params": {
+            "comparison": "<=",
+            "limit": 64
+          },
+          "message": "must be <= 64"
+        }
+      ]
+    },
+    {
+      "id": "cp-004-unknown-top-level-field",
+      "expected_valid": false,
+      "actual_valid": false,
+      "pass": true,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/0/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "inputs"
+          },
+          "message": "must have required property 'inputs'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/1/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "outcomes"
+          },
+          "message": "must have required property 'outcomes'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/2/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "systems"
+          },
+          "message": "must have required property 'systems'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf",
+          "keyword": "anyOf",
+          "params": {},
+          "message": "must match a schema in anyOf"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "unknown_field"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "id": "cp-005-unknown-modality",
+      "expected_valid": false,
+      "actual_valid": false,
+      "pass": true,
+      "errors": [
+        {
+          "instancePath": "/inputs/modalities/0",
+          "schemaPath": "#/properties/inputs/properties/modalities/items/enum",
+          "keyword": "enum",
+          "params": {
+            "allowedValues": [
+              "text",
+              "image",
+              "audio",
+              "video",
+              "tool_result",
+              "other"
+            ]
+          },
+          "message": "must be equal to one of the allowed values"
+        }
+      ]
+    },
+    {
+      "id": "cp-006-process-not-enabled-in-ios-phase",
+      "expected_valid": false,
+      "actual_valid": false,
+      "pass": true,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/0/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "inputs"
+          },
+          "message": "must have required property 'inputs'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/1/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "outcomes"
+          },
+          "message": "must have required property 'outcomes'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/2/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "systems"
+          },
+          "message": "must have required property 'systems'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf",
+          "keyword": "anyOf",
+          "params": {},
+          "message": "must match a schema in anyOf"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "process"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    },
+    {
+      "id": "cp-007-contract-not-enabled-in-ios-phase",
+      "expected_valid": false,
+      "actual_valid": false,
+      "pass": true,
+      "errors": [
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/0/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "inputs"
+          },
+          "message": "must have required property 'inputs'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/1/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "outcomes"
+          },
+          "message": "must have required property 'outcomes'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf/2/required",
+          "keyword": "required",
+          "params": {
+            "missingProperty": "systems"
+          },
+          "message": "must have required property 'systems'"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/anyOf",
+          "keyword": "anyOf",
+          "params": {},
+          "message": "must match a schema in anyOf"
+        },
+        {
+          "instancePath": "",
+          "schemaPath": "#/additionalProperties",
+          "keyword": "additionalProperties",
+          "params": {
+            "additionalProperty": "contract"
+          },
+          "message": "must NOT have additional properties"
+        }
+      ]
+    }
+  ]
+}
