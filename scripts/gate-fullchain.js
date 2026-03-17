@@ -49,6 +49,9 @@ function main() {
   const reportOnly = args.includes('--report-only');
   const withRollbackDrill =
     args.includes('--with-rollback-drill') || process.env.FULLCHAIN_WITH_ROLLBACK_DRILL === '1';
+  const rollbackRequired = args.includes('--rollback-drill-required');
+  const rollbackBoth = args.includes('--rollback-drill-both');
+  const rollbackMode = rollbackBoth ? 'both' : rollbackRequired ? 'required' : 'report-only';
   const checks = [
     { label: 'drift-check', command: `node scripts/drift-detect.js${reportOnly ? ' --report-only' : ''}` },
     {
@@ -64,7 +67,7 @@ function main() {
   if (withRollbackDrill) {
     checks.push({
       label: 'compliance-rollback-drill',
-      command: 'node scripts/rehearse-compliance-rollback.js',
+      command: `node scripts/rehearse-compliance-rollback.js --mode=${rollbackMode}`,
     });
   }
 
@@ -76,6 +79,7 @@ function main() {
     gate_id: 'fullchain-governance-gate',
     options: {
       with_rollback_drill: withRollbackDrill,
+      rollback_drill_mode: withRollbackDrill ? rollbackMode : 'disabled',
     },
     summary: {
       total: results.length,
