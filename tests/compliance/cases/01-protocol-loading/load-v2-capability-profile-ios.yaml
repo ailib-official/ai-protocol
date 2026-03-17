@@ -34,3 +34,54 @@ expected:
   valid: false
   errors:
     - "must NOT have additional properties"
+
+---
+suite: "protocol-loading"
+name: "Reject V2 provider manifest with contract in IOS capability_profile"
+id: "load-014"
+description: "Verify IOS phase rejects capability_profile.contract to enforce deferred Contract dimension"
+tags: ["protocol-loading", "v2", "capability-profile", "ios", "boundary"]
+setup:
+  provider: "google_ios_invalid_contract"
+  manifest_path: "fixtures/providers/mock-google-v2-ios-invalid-contract.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-google-v2-ios-invalid-contract.yaml"
+expected:
+  valid: false
+  errors:
+    - "must NOT have additional properties"
+
+---
+suite: "protocol-loading"
+name: "Reject V2 provider manifest with empty IOS payload"
+id: "load-015"
+description: "Verify IOS phase requires at least one of inputs/outcomes/systems"
+tags: ["protocol-loading", "v2", "capability-profile", "ios", "boundary"]
+setup:
+  provider: "google_ios_invalid_empty"
+  manifest_path: "fixtures/providers/mock-google-v2-ios-invalid-empty-ios.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-google-v2-ios-invalid-empty-ios.yaml"
+expected:
+  valid: false
+  errors:
+    - "must match at least one schema in anyOf"
+
+---
+suite: "protocol-loading"
+name: "Reject V2 provider manifest with non-object capability_profile"
+id: "load-016"
+description: "Verify capability_profile must be object when present"
+tags: ["protocol-loading", "v2", "capability-profile", "ios", "boundary"]
+setup:
+  provider: "google_ios_invalid_nonobject"
+  manifest_path: "fixtures/providers/mock-google-v2-ios-invalid-nonobject.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-google-v2-ios-invalid-nonobject.yaml"
+expected:
+  valid: false
+  errors:
+    - "capability_profile must be object"
