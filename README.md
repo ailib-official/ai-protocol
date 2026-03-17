@@ -185,6 +185,7 @@ npm run drift:check          # Detect P0 provider/fixture/case drift
 npm run gate:manifest-consumption   # Cross-repo latest-manifest consumption gate
 npm run gate:compliance-matrix      # Cross-repo full compliance matrix gate
 npm run gate:fullchain             # One-shot governance fullchain gate
+npm run gate:fullchain:with-rollback # Fullchain + fail-fast rollback drill
 npm run release:gate         # Evaluate release gate status
 node scripts/drift-detect.js --report-only   # Advisory drift report (non-blocking)
 node scripts/release-gate.js --report-only   # Advisory release gate report (non-blocking)
@@ -196,6 +197,7 @@ Execution governance scripts:
 - `scripts/gate-manifest-consumption.js`: runs protocol + Rust/Python/TS latest-manifest consumption checks and writes gate report (`reports/manifest-gates/`)
 - `scripts/gate-compliance-matrix.js`: runs protocol + Rust/Python/TS compliance matrix checks and writes gate report (`reports/compliance-gates/`)
 - `scripts/gate-fullchain.js`: orchestrates drift + manifest + compliance + release gates in one run (`reports/fullchain-gates/`)
+- `scripts/rehearse-compliance-rollback.js`: deterministic negative rehearsal proving required block vs report-only pass (`reports/rollback-rehearsals/`)
 - `scripts/release-gate.js`: computes pass/blocked decision from rollout metrics input (default: `scripts/release-gate-input.example.json`)
 - `report-only` mode (`--report-only`) is available for drift/release gates to support advisory CI rollout without immediate hard blocking
 Optional runtime model verification (document-first; no API keys required for the registry): see [docs/FACT_CHECKING_MODELS.md](docs/FACT_CHECKING_MODELS.md).

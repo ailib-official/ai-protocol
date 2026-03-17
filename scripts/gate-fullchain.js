@@ -45,7 +45,10 @@ function writeReport(report) {
 }
 
 function main() {
-  const reportOnly = process.argv.includes('--report-only');
+  const args = process.argv.slice(2);
+  const reportOnly = args.includes('--report-only');
+  const withRollbackDrill =
+    args.includes('--with-rollback-drill') || process.env.FULLCHAIN_WITH_ROLLBACK_DRILL === '1';
   const checks = [
     { label: 'drift-check', command: `node scripts/drift-detect.js${reportOnly ? ' --report-only' : ''}` },
     {
@@ -58,6 +61,12 @@ function main() {
     },
     { label: 'release-gate', command: `node scripts/release-gate.js${reportOnly ? ' --report-only' : ''}` },
   ];
+  if (withRollbackDrill) {
+    checks.push({
+      label: 'compliance-rollback-drill',
+      command: 'node scripts/rehearse-compliance-rollback.js',
+    });
+  }
 
   const results = checks.map((item) => run(item.label, item.command));
   const failed = results.filter((r) => !r.pass);
@@ -65,6 +74,9 @@ function main() {
     timestamp: new Date().toISOString(),
     mode: reportOnly ? 'report-only' : 'required',
     gate_id: 'fullchain-governance-gate',
+    options: {
+      with_rollback_drill: withRollbackDrill,
+    },
     summary: {
       total: results.length,
       passed: results.filter((r) => r.pass).length,
