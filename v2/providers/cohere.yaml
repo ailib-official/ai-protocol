@@ -48,6 +48,15 @@ capabilities:
     structured_output: true
     system_messages: true
 
+capability_profile:
+  phase: "ios_v1"
+  inputs:
+    modalities: ["text"]
+  outcomes:
+    types: ["text_completion", "structured_json", "tool_call_sequence"]
+  systems:
+    requires: ["mcp", "search"]
+
 parameters:
   temperature: { type: float, range: [0.0, 1.0], default: 0.3 }
   max_tokens: { type: integer, min: 1 }

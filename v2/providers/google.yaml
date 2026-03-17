@@ -65,6 +65,15 @@ capabilities:
     streaming_usage: false
     system_messages: true
 
+capability_profile:
+  phase: "ios_v1"
+  inputs:
+    modalities: ["text", "image", "audio", "video"]
+  outcomes:
+    types: ["text_completion", "structured_json", "tool_call_sequence"]
+  systems:
+    requires: ["mcp", "search"]
+
 parameters:
   temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
   maxOutputTokens: { type: integer, min: 1, max: 65536, alias: "max_tokens" }

@@ -50,6 +50,15 @@ capabilities:
     system_messages: true
     image_generation: true
 
+capability_profile:
+  phase: "ios_v1"
+  inputs:
+    modalities: ["text", "image", "audio"]
+  outcomes:
+    types: ["text_completion", "structured_json", "tool_call_sequence"]
+  systems:
+    requires: ["mcp", "search"]
+
 parameters:
   temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
   max_tokens: { type: integer, min: 1, max: 16384 }

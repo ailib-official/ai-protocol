@@ -38,6 +38,15 @@ capabilities:
     - rerank
   optional: []
 
+capability_profile:
+  phase: "ios_v1"
+  inputs:
+    modalities: ["text"]
+  outcomes:
+    types: ["other"]
+  systems:
+    requires: ["search"]
+
 parameters:
   top_n: { type: integer, min: 1 }
   model: { type: string, default: "jina-reranker-v2-base-multilingual" }
