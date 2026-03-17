@@ -1,21 +1,55 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/capability-profile.json",
-  "title": "AI-Protocol Capability Profile (Experimental IOS Phase)",
-  "description": "Optional I/O/S capability profile for design-stage governance. This phase intentionally limits scope to Inputs/Outcomes/Systems to avoid one-step full I/O/P/S/C rollout. Metadata-only and MUST NOT imply runtime behavioral changes by itself.",
+  "title": "AI-Protocol Capability Profile (Staged IOS/IOSPC Phase)",
+  "description": "Optional staged capability profile for governance. ios_v1 limits scope to Inputs/Outcomes/Systems. iospc_v1 introduces Process/Contract in report-first mode. Metadata-only and MUST NOT imply runtime behavioral changes by itself.",
   "type": "object",
   "additionalProperties": false,
-  "anyOf": [
-    { "required": ["inputs"] },
-    { "required": ["outcomes"] },
-    { "required": ["systems"] }
+  "required": ["phase"],
+  "allOf": [
+    {
+      "if": { "properties": { "phase": { "const": "ios_v1" } }, "required": ["phase"] },
+      "then": {
+        "anyOf": [
+          { "required": ["inputs"] },
+          { "required": ["outcomes"] },
+          { "required": ["systems"] }
+        ],
+        "not": {
+          "anyOf": [
+            { "required": ["process"] },
+            { "required": ["contract"] }
+          ]
+        }
+      }
+    },
+    {
+      "if": { "properties": { "phase": { "const": "iospc_v1" } }, "required": ["phase"] },
+      "then": {
+        "allOf": [
+          {
+            "anyOf": [
+              { "required": ["inputs"] },
+              { "required": ["outcomes"] },
+              { "required": ["systems"] }
+            ]
+          },
+          {
+            "anyOf": [
+              { "required": ["process"] },
+              { "required": ["contract"] }
+            ]
+          }
+        ]
+      }
+    }
   ],
   "properties": {
     "phase": {
       "type": "string",
-      "enum": ["ios_v1"],
+      "enum": ["ios_v1", "iospc_v1"],
       "default": "ios_v1",
-      "description": "Staged rollout marker. ios_v1 enables Inputs/Outcomes/Systems only."
+      "description": "Staged rollout marker. ios_v1 enables Inputs/Outcomes/Systems only. iospc_v1 allows Process/Contract in report-first mode."
     },
     "inputs": {
       "type": "object",
@@ -81,6 +115,48 @@
             "enum": ["mcp", "search", "filesystem", "browser", "gis", "other"]
           },
           "uniqueItems": true
+        }
+      }
+    },
+    "process": {
+      "type": "object",
+      "description": "Execution process declaration (P) for iospc_v1 only.",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["sync", "async", "hybrid"]
+        },
+        "supports_callbacks": {
+          "type": "boolean"
+        },
+        "max_async_jobs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "description": "Execution contract declaration (C) for iospc_v1 only.",
+      "additionalProperties": false,
+      "properties": {
+        "safety_profile": {
+          "type": "string",
+          "enum": ["baseline", "standard", "strict"]
+        },
+        "cost_class": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "premium"]
+        },
+        "error_model_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sla_tier": {
+          "type": "string",
+          "enum": ["best_effort", "standard", "enterprise"]
         }
       }
     },

@@ -85,3 +85,38 @@ expected:
   valid: false
   errors:
     - "capability_profile must be object"
+
+---
+suite: "protocol-loading"
+name: "Load valid V2 provider manifest with IOSPC capability_profile"
+id: "load-017"
+description: "Verify iospc_v1 accepts Process/Contract while preserving IOS dimensions"
+tags: ["protocol-loading", "v2", "capability-profile", "iospc", "boundary"]
+setup:
+  provider: "google_iospc_valid"
+  manifest_path: "fixtures/providers/mock-google-v2-iospc-valid.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-google-v2-iospc-valid.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "google_iospc_valid"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Reject V2 provider manifest with IOSPC missing process/contract"
+id: "load-018"
+description: "Verify iospc_v1 requires at least one Process or Contract declaration"
+tags: ["protocol-loading", "v2", "capability-profile", "iospc", "boundary"]
+setup:
+  provider: "google_iospc_invalid_missing_pc"
+  manifest_path: "fixtures/providers/mock-google-v2-iospc-invalid-missing-process-contract.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-google-v2-iospc-invalid-missing-process-contract.yaml"
+expected:
+  valid: false
+  errors:
+    - "iospc_v1 requires process or contract"
