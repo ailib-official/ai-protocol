@@ -23,6 +23,8 @@
     "drift:check": "node scripts/drift-detect.js",
     "gate:manifest-consumption": "node scripts/gate-manifest-consumption.js",
     "gate:compliance-matrix": "node scripts/gate-compliance-matrix.js",
+    "gate:compliance-matrix:required": "node scripts/gate-compliance-matrix.js",
+    "gate:compliance-matrix:report-only": "node scripts/gate-compliance-matrix.js --report-only",
     "gate:fullchain": "node scripts/gate-fullchain.js",
     "release:gate": "node scripts/release-gate.js",
     "fact-check:models": "node scripts/fact-check-models.js",
