@@ -25,6 +25,7 @@
     "gate:compliance-matrix": "node scripts/gate-compliance-matrix.js",
     "gate:compliance-matrix:required": "node scripts/gate-compliance-matrix.js",
     "gate:compliance-matrix:report-only": "node scripts/gate-compliance-matrix.js --report-only",
+    "rehearse:compliance:rollback": "node scripts/rehearse-compliance-rollback.js",
     "gate:fullchain": "node scripts/gate-fullchain.js",
     "release:gate": "node scripts/release-gate.js",
     "fact-check:models": "node scripts/fact-check-models.js",
