@@ -1,7 +1,7 @@
 # AI-Protocol v1.1 Example: Function Calling Pattern
 # Demonstrates simplified tool/function calling configuration
 
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 # Example: OpenAI with function calling
 id: openai_function_calling

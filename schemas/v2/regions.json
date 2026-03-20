@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/regions.json",
+  "$id": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/regions.json",
   "title": "Region Definitions",
   "description": "Standard region identifiers for provider availability",
   "type": "array",

@@ -495,7 +495,7 @@ Runtime should search in this order:
 1. **Custom path** (if set)
 2. **Environment variable** (`AI_PROTOCOL_DIR`, `AI_PROTOCOL_PATH`)
 3. **Relative paths** (`ai-protocol/`, `../ai-protocol/`, `../../ai-protocol/`)
-4. **Fallback to GitHub** (`https://raw.githubusercontent.com/hiddenpath/ai-protocol/main`)
+4. **Fallback to GitHub** (`https://raw.githubusercontent.com/ailib-official/ai-protocol/main`)
 
 ### Path Resolution Algorithm
 
@@ -521,7 +521,7 @@ function resolveManifestPath(providerId: string): string | null {
   }
 
   // 4. GitHub fallback
-  return `https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/v1/providers/${providerId}.yaml`;
+  return `https://raw.githubusercontent.com/ailib-official/ai-protocol/main/v1/providers/${providerId}.yaml`;
 }
 ```
 

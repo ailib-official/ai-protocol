@@ -80,7 +80,7 @@ AI-Protocol 通过**算子**的概念来标准化 AI 模型的行为：
 
 ```yaml
 # v1/providers/anthropic.yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 id: anthropic
 protocol_version: "1.5"
@@ -98,8 +98,8 @@ streaming:
 ```
 
 > **Schema URL 最佳实践**: 你可以将 `$schema` URL 锁定到特定的发布版本以保证稳定性：
-> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/v0.2.1/schemas/v1.json` (锁定到特定版本)
-> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json` (跟随 main 分支最新版本)
+> - `https://raw.githubusercontent.com/ailib-official/ai-protocol/v0.2.1/schemas/v1.json` (锁定到特定版本)
+> - `https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json` (跟随 main 分支最新版本)
 
 ### 2. 错误处理和限流配置示例
 
@@ -130,7 +130,7 @@ retry_policy:
 
 ```yaml
 # v1/models/claude.yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 models:
   claude-3-5-sonnet:
@@ -306,7 +306,7 @@ response = client.chat.completions.create(
 )
 ```
 
-📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **文档**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
+📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **文档**: [github.com/ailib-official/ai-lib-python](https://github.com/ailib-official/ai-lib-python)
 
 ### Rust 运行时 (v0.8.1)
 
@@ -328,7 +328,7 @@ let response = client.chat()
     .await?;
 ```
 
-📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **文档**: [github.com/hiddenpath/ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)
+📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **文档**: [github.com/ailib-official/ai-lib-rust](https://github.com/ailib-official/ai-lib-rust)
 
 ### ai-protocol-mock (v0.1.3)
 
@@ -343,7 +343,7 @@ MOCK_HTTP_URL=http://localhost:4010 pytest tests/  # ai-lib-python
 MOCK_HTTP_URL=http://localhost:4010 cargo test -- --ignored  # ai-lib-rust
 ```
 
-📖 **仓库**: [github.com/hiddenpath/ai-protocol-mock](https://github.com/hiddenpath/ai-protocol-mock)
+📖 **仓库**: [github.com/ailib-official/ai-protocol-mock](https://github.com/ailib-official/ai-protocol-mock)
 
 ### 生态系统概览
 

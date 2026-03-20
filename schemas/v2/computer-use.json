@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/computer-use.json",
+  "$id": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/computer-use.json",
   "title": "AI-Protocol V2 Computer Use",
   "description": "Computer Use capability configuration for V2 provider manifests. Standardizes how providers expose GUI automation and desktop interaction capabilities. Validated against Anthropic (screen_based, Beta), Google (tool_based, GA), and OpenAI (screen_based, Preview) implementations.",
   "type": "object",

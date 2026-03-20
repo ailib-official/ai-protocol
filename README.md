@@ -88,7 +88,7 @@ AI-Protocol standardizes AI model behavior through the concept of **operators**:
 
 ```yaml
 # v1/providers/anthropic.yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 id: anthropic
 protocol_version: "1.5"
@@ -106,8 +106,8 @@ streaming:
 ```
 
 > **Schema URL Best Practice**: You can pin the `$schema` URL to a specific release tag for version stability:
-> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/v0.2.1/schemas/v1.json` (pinned to release)
-> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json` (latest on main)
+> - `https://raw.githubusercontent.com/ailib-official/ai-protocol/v0.2.1/schemas/v1.json` (pinned to release)
+> - `https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json` (latest on main)
 
 ### 2. Error Handling and Rate Limiting Example
 
@@ -138,7 +138,7 @@ retry_policy:
 
 ```yaml
 # v1/models/claude.yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 models:
   claude-3-5-sonnet:
@@ -350,7 +350,7 @@ response = client.chat.completions.create(
 )
 ```
 
-📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **Docs**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
+📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **Docs**: [github.com/ailib-official/ai-lib-python](https://github.com/ailib-official/ai-lib-python)
 
 ### Rust Runtime (v0.8.1)
 
@@ -372,7 +372,7 @@ let response = client.chat()
     .await?;
 ```
 
-📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **Docs**: [github.com/hiddenpath/ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)
+📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **Docs**: [github.com/ailib-official/ai-lib-rust](https://github.com/ailib-official/ai-lib-rust)
 
 ### ai-protocol-mock (v0.1.3)
 
@@ -387,7 +387,7 @@ MOCK_HTTP_URL=http://localhost:4010 pytest tests/  # ai-lib-python
 MOCK_HTTP_URL=http://localhost:4010 cargo test -- --ignored  # ai-lib-rust
 ```
 
-📖 **Repo**: [github.com/hiddenpath/ai-protocol-mock](https://github.com/hiddenpath/ai-protocol-mock)
+📖 **Repo**: [github.com/ailib-official/ai-protocol-mock](https://github.com/ailib-official/ai-protocol-mock)
 
 ### Ecosystem Overview
 

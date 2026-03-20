@@ -78,7 +78,7 @@
 #### 必备字段
 | 字段 | 类型 | 说明 | 示例 | 使用率 |
 |------|------|------|------|--------|
-| `$schema` | string | Schema URL | `https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json` | 100% |
+| `$schema` | string | Schema URL | `https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json` | 100% |
 | `id` | string | Provider唯一标识符 | `openai`, `anthropic` | 100% |
 | `protocol_version` | string | 协议版本 | `"1.5"`, `"1.1"` | 100% |
 

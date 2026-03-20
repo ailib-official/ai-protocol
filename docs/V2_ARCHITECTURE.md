@@ -804,7 +804,7 @@ schemas/
 
 ```yaml
 # V2 Provider Manifest Template
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 
 # === Ring 1: Core Skeleton (Required) ===
 id: "example-provider"
