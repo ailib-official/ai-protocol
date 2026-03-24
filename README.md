@@ -88,7 +88,7 @@ AI-Protocol standardizes AI model behavior through the concept of **operators**:
 
 ```yaml
 # v1/providers/anthropic.yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 id: anthropic
 protocol_version: "1.5"
@@ -106,8 +106,8 @@ streaming:
 ```
 
 > **Schema URL Best Practice**: You can pin the `$schema` URL to a specific release tag for version stability:
-> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/v0.2.1/schemas/v1.json` (pinned to release)
-> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json` (latest on main)
+> - `https://raw.githubusercontent.com/ailib-official/ai-protocol/v0.2.1/schemas/v1.json` (pinned to release)
+> - `https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json` (latest on main)
 
 ### 2. Error Handling and Rate Limiting Example
 
@@ -138,7 +138,7 @@ retry_policy:
 
 ```yaml
 # v1/models/claude.yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 models:
   claude-3-5-sonnet:

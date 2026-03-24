@@ -2,7 +2,7 @@
 # AI-Protocol V2 Provider Manifest
 # Provider: Cohere | Rerank v3.5/v4, Command R+
 # Last Updated: 2026-02-19
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 
 # === Ring 1: Core Skeleton ===
 id: cohere

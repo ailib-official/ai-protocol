@@ -80,7 +80,7 @@ AI-Protocol 通过**算子**的概念来标准化 AI 模型的行为：
 
 ```yaml
 # v1/providers/anthropic.yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 id: anthropic
 protocol_version: "1.5"
@@ -98,8 +98,8 @@ streaming:
 ```
 
 > **Schema URL 最佳实践**: 你可以将 `$schema` URL 锁定到特定的发布版本以保证稳定性：
-> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/v0.2.1/schemas/v1.json` (锁定到特定版本)
-> - `https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json` (跟随 main 分支最新版本)
+> - `https://raw.githubusercontent.com/ailib-official/ai-protocol/v0.2.1/schemas/v1.json` (锁定到特定版本)
+> - `https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json` (跟随 main 分支最新版本)
 
 ### 2. 错误处理和限流配置示例
 
@@ -130,7 +130,7 @@ retry_policy:
 
 ```yaml
 # v1/models/claude.yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 models:
   claude-3-5-sonnet:

@@ -76,7 +76,7 @@ A provider manifest contains:
 ### Minimal Provider Manifest
 
 ```yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/v0.4.0/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/v0.4.0/schemas/v1.json"
 
 id: my-provider
 protocol_version: "1.5"
@@ -135,7 +135,7 @@ touch v1/providers/my-provider.yaml
 Start with the template:
 
 ```yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 id: my-provider
 protocol_version: "1.5"
@@ -342,7 +342,7 @@ Fix any validation errors before proceeding.
 Create `v1/models/my-provider-models.yaml`:
 
 ```yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 models:
   my-model-v1:
@@ -371,7 +371,7 @@ models:
 ### Complete Example
 
 ```yaml
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
 # Metadata
 id: my-provider

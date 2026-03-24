@@ -322,7 +322,7 @@ A compliant runtime MUST implement the following version handling:
 
 ```yaml
 # Pin to specific release for stability
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/v0.2.1/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/v0.2.1/schemas/v1.json"
 protocol_version: "1.5"
 ```
 

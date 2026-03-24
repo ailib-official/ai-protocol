@@ -2,7 +2,7 @@
 # AI-Protocol V2 Provider Manifest
 # Provider: Moonshot AI | Models: Kimi K2.5 / K2-Thinking
 # Last Updated: 2026-02-16
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 
 # === Ring 1: Core Skeleton ===
 id: moonshot

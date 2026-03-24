@@ -1,4 +1,4 @@
-$schema: "https://raw.githubusercontent.com/hiddenpath/ai-protocol/main/schemas/v2/provider.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 id: google_ios_invalid_nonobject
 protocol_version: "2.0"
 endpoint:

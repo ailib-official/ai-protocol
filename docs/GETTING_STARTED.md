@@ -153,7 +153,7 @@ Some runtimes can load protocols directly from GitHub without cloning:
 
 ```python
 from ai_lib_python import AiClient
-loader = ProtocolLoader(base_path="https://raw.githubusercontent.com/hiddenpath/ai-protocol/main")
+loader = ProtocolLoader(base_path="https://raw.githubusercontent.com/ailib-official/ai-protocol/main")
 ```
 
 ---
@@ -332,7 +332,7 @@ Runtimes automatically search for protocol files in this order:
 1. **Custom path** (if set via `ProtocolLoader::with_base_path()`)
 2. **Environment variable**: `AI_PROTOCOL_DIR` or `AI_PROTOCOL_PATH`
 3. **Relative paths**: `ai-protocol/`, `../ai-protocol/`, `../../ai-protocol/`
-4. **Fallback**: GitHub (`https://raw.githubusercontent.com/hiddenpath/ai-protocol/main`)
+4. **Fallback**: GitHub (`https://raw.githubusercontent.com/ailib-official/ai-protocol/main`)
 
 ### Environment Variables
 
