@@ -306,7 +306,7 @@ response = client.chat.completions.create(
 )
 ```
 
-📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **文档**: [github.com/hiddenpath/ai-lib-python](https://github.com/hiddenpath/ai-lib-python)
+📦 **PyPI**: [ai-lib-python](https://pypi.org/project/ai-lib-python/) | 📖 **文档**: [github.com/ailib-official/ai-lib-python](https://github.com/ailib-official/ai-lib-python)
 
 ### Rust 运行时 (v0.8.1)
 
@@ -328,7 +328,7 @@ let response = client.chat()
     .await?;
 ```
 
-📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **文档**: [github.com/hiddenpath/ai-lib-rust](https://github.com/hiddenpath/ai-lib-rust)
+📦 **Crates.io**: [ai-lib-rust](https://crates.io/crates/ai-lib-rust) | 📖 **文档**: [github.com/ailib-official/ai-lib-rust](https://github.com/ailib-official/ai-lib-rust)
 
 ### ai-protocol-mock (v0.1.3)
 
@@ -343,7 +343,7 @@ MOCK_HTTP_URL=http://localhost:4010 pytest tests/  # ai-lib-python
 MOCK_HTTP_URL=http://localhost:4010 cargo test -- --ignored  # ai-lib-rust
 ```
 
-📖 **仓库**: [github.com/hiddenpath/ai-protocol-mock](https://github.com/hiddenpath/ai-protocol-mock)
+📖 **仓库**: [github.com/ailib-official/ai-protocol-mock](https://github.com/ailib-official/ai-protocol-mock)
 
 ### 生态系统概览
 

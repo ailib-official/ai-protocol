@@ -124,7 +124,7 @@ This release is designed to:
 
 ```bash
 # Clone the repository
-git clone https://github.com/hiddenpath/ai-protocol.git
+git clone https://github.com/ailib-official/ai-protocol.git
 cd ai-protocol
 ```
 
@@ -270,8 +270,8 @@ Looking ahead to v0.5.0 and beyond:
 - [Specification](docs/SPEC.md)
 
 ### Issues
-- Report bugs: [GitHub Issues](https://github.com/hiddenpath/ai-protocol/issues)
-- Feature requests: [GitHub Discussions](https://github.com/hiddenpath/ai-protocol/discussions)
+- Report bugs: [GitHub Issues](https://github.com/ailib-official/ai-protocol/issues)
+- Feature requests: [GitHub Discussions](https://github.com/ailib-official/ai-protocol/discussions)
 
 ---
 
@@ -283,6 +283,6 @@ Looking ahead to v0.5.0 and beyond:
 
 ## Download
 
-- **Source**: [GitHub Release](https://github.com/hiddenpath/ai-protocol/releases/tag/v0.4.0)
-- **Documentation**: [Docs Directory](https://github.com/hiddenpath/ai-protocol/tree/main/docs)
-- **Examples**: [Examples Directory](https://github.com/hiddenpath/ai-protocol/tree/main/examples)
+- **Source**: [GitHub Release](https://github.com/ailib-official/ai-protocol/releases/tag/v0.4.0)
+- **Documentation**: [Docs Directory](https://github.com/ailib-official/ai-protocol/tree/main/docs)
+- **Examples**: [Examples Directory](https://github.com/ailib-official/ai-protocol/tree/main/examples)

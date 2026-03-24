@@ -179,7 +179,7 @@ Both runtimes include the compliance suite in their CI pipelines:
 - name: Run compliance tests
   run: |
     # Clone ai-protocol for test cases
-    git clone --depth 1 https://github.com/hiddenpath/ai-protocol.git
+    git clone --depth 1 https://github.com/ailib-official/ai-protocol.git
     # Run compliance tests
     cargo test --test compliance
 ```

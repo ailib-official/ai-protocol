@@ -814,15 +814,15 @@ Add support for [Provider Name] to AI-Protocol.
 ### Consult Existing Providers
 
 Review similar provider manifests as examples:
-- [`v1/providers/openai.yaml`](https://github.com/hiddenpath/ai-protocol/blob/main/v1/providers/openai.yaml)
-- [`v1/providers/anthropic.yaml`](https://github.com/hiddenpath/ai-protocol/blob/main/v1/providers/anthropic.yaml)
-- [`v1/providers/gemini.yaml`](https://github.com/hiddenpath/ai-protocol/blob/main/v1/providers/gemini.yaml)
+- [`v1/providers/openai.yaml`](https://github.com/ailib-official/ai-protocol/blob/main/v1/providers/openai.yaml)
+- [`v1/providers/anthropic.yaml`](https://github.com/ailib-official/ai-protocol/blob/main/v1/providers/anthropic.yaml)
+- [`v1/providers/gemini.yaml`](https://github.com/ailib-official/ai-protocol/blob/main/v1/providers/gemini.yaml)
 
 ### Ask in Issues
 
 If you encounter issues:
 
-1. Search existing [GitHub Issues](https://github.com/hiddenpath/ai-protocol/issues)
+1. Search existing [GitHub Issues](https://github.com/ailib-official/ai-protocol/issues)
 2. Create a new issue with:
    - Provider name
    - Problem description

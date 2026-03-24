@@ -136,7 +136,7 @@ If you want to contribute, test multiple runtimes, or use custom protocol config
 
 ```bash
 # Clone the repository
-git clone https://github.com/hiddenpath/ai-protocol.git
+git clone https://github.com/ailib-official/ai-protocol.git
 cd ai-protocol
 
 # Validate configuration files (requires Node.js 18+)
@@ -465,7 +465,7 @@ except AiLibError as e:
 
 ### For More Help
 
-- Check [GitHub Issues](https://github.com/hiddenpath/ai-protocol/issues)
+- Check [GitHub Issues](https://github.com/ailib-official/ai-protocol/issues)
 - Read [CONTRIBUTING.md](CONTRIBUTING_PROVIDER.md) for provider-specific issues
 - Review [docs/SPEC.md](SPEC.md) for protocol details
 
@@ -475,8 +475,8 @@ except AiLibError as e:
 
 ### For Users
 
-1. **Explore Providers**: Browse [v1/providers/](https://github.com/hiddenpath/ai-protocol/tree/main/v1/providers) to see all available providers
-2. **Try Examples**: Check [examples/](https://github.com/hiddenpath/ai-protocol/tree/main/examples) for configuration examples
+1. **Explore Providers**: Browse [v1/providers/](https://github.com/ailib-official/ai-protocol/tree/main/v1/providers) to see all available providers
+2. **Try Examples**: Check [examples/](https://github.com/ailib-official/ai-protocol/tree/main/examples) for configuration examples
 3. **Read Documentation**: See [docs/SPEC.md](SPEC.md) for complete specification
 
 ### For Developers
@@ -495,9 +495,9 @@ except AiLibError as e:
 
 ## Additional Resources
 
-- [Official Documentation](https://github.com/hiddenpath/ai-protocol)
-- [Python Runtime](https://github.com/hiddenpath/ai-lib-python)
-- [Rust Runtime](https://github.com/hiddenpath/ai-lib-rust)
+- [Official Documentation](https://github.com/ailib-official/ai-protocol)
+- [Python Runtime](https://github.com/ailib-official/ai-lib-python)
+- [Rust Runtime](https://github.com/ailib-official/ai-lib-rust)
 - [Specification](docs/SPEC.md)
 - [Provider Manifests](v1/providers/)
 - [Model Registry](v1/models/)

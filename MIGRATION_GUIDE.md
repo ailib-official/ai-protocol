@@ -271,7 +271,7 @@ node scripts/validate_parameters.js
 ## 获取帮助
 
 - **问题反馈**: GitHub Issues
-- **文档**: [AI-Protocol 官方文档](https://github.com/hiddenpath/ai-protocol)
+- **文档**: [AI-Protocol 官方文档](https://github.com/ailib-official/ai-protocol)
 - **示例**: 查看示例目录中的 v1 和 v2-alpha 对比
 
 ---
