@@ -7,7 +7,7 @@ This document mirrors the blocking items from task **PT-073**. Check boxes off w
 ## 1. Core-only compliance (blocking)
 
 - [ ] **Rust** `cargo test -p ai-lib-core` — full compliance matrix PASS (workspace root: `ai-lib-rust`).
-  - **Evidence (2026-04-03, local):** `COMPLIANCE_DIR=<ai-protocol>/tests/compliance cargo test -p ai-lib-core pt073_` — `protocol_loading` + `message_building` subset PASS (`crates/ai-lib-core/tests/pt073_compliance_subset.rs`). Remaining matrix types still run via `cargo test -p ai-lib-rust --test compliance`.
+  - **Evidence (2026-04-03, local):** `COMPLIANCE_DIR=<ai-protocol>/tests/compliance cargo test -p ai-lib-core --test compliance_from_core` — full YAML suite (shared `crates/ai-lib-core/tests/compliance_runner` with facade `cargo test -p ai-lib-rust --test compliance`). Default `cargo test -p ai-lib-core` also runs unit tests and other integration tests.
 - [ ] **Python** — default / documented E-only install: `pytest tests/compliance/` PASS (no P modules on import path for runner).
 - [ ] **TypeScript** — E-only surface: compliance suite against `@hiddenpath/ai-lib-ts/core` (or equivalent) PASS.
 - [ ] **Go** — `go test ./...` + compliance PASS (already near core-only; confirm `internal/resilience` not required for E-only harness).
@@ -18,7 +18,7 @@ This document mirrors the blocking items from task **PT-073**. Check boxes off w
 - [x] `cargo build -p ai-lib-wasm --target wasm32-wasip1 --release` PASS (2026-04-03); `ai-lib-core` builds as dependency of `ai-lib-wasm` for that target.
 - [x] Binary size under **2 MB** (release `ai_lib_wasm.wasm` ~**1.24 MB**, 2026-04-03).
 - [x] **Six** exported WASM functions per PT-061 Phase 1 spec (+ `ailib_out_*` / `ailib_err_*` accessors).
-- [ ] `wasmtime` harness: **protocol_loading** + **message_building** compliance subset PASS (CLI smoke: `scripts/wasmtime-pt073-smoke.ps1` in `ai-lib-rust`; full in-wasm compliance runner still open).
+- [x] `wasmtime` harness: load manifest + `ailib_build_chat_request` PASS (2026-04-03): `cargo build -p ai-lib-wasm --target wasm32-wasip1 --release` then `cargo test -p ai-lib-wasmtime-harness --test wasm_compliance` (`crates/ai-lib-wasmtime-harness`; uses inline `ProtocolManifest`-complete YAML — stricter than compliance `protocol_loading` Value checks). Optional CLI smoke: `ai-lib-rust/scripts/wasmtime-pt073-smoke.ps1`.
 
 ## 3. E/P separation integrity (blocking)
 
