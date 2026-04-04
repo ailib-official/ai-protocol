@@ -8,9 +8,13 @@ This document mirrors the blocking items from task **PT-073**. Check boxes off w
 
 - [ ] **Rust** `cargo test -p ai-lib-core` — full compliance matrix PASS (workspace root: `ai-lib-rust`).
   - **Evidence (2026-04-03, local):** `COMPLIANCE_DIR=<ai-protocol>/tests/compliance cargo test -p ai-lib-core --test compliance_from_core` — full YAML suite (shared `crates/ai-lib-core/tests/compliance_runner` with facade `cargo test -p ai-lib-rust --test compliance`). Default `cargo test -p ai-lib-core` also runs unit tests and other integration tests.
+  - **CI (PT-073):** `.github/workflows/pt073-rust-core-wasm.yml` in `ai-lib-rust` (checkout `hiddenpath/ai-protocol`; EP boundary; core tests; WASM build + wasmtime; `ai-lib-contact` compile smoke).
 - [ ] **Python** — default / documented E-only install: `pytest tests/compliance/` PASS (no P modules on import path for runner).
+  - **CI (PT-073):** `.github/workflows/pt073-python-e-only.yml` in `ai-lib-python` (`COMPLIANCE_SUBSET=e_only`, `check_ep_boundary.py --python-root`, architecture tests).
 - [ ] **TypeScript** — E-only surface: compliance suite against `@hiddenpath/ai-lib-ts/core` (or equivalent) PASS.
+  - **CI (PT-073):** `.github/workflows/pt073-ts-core.yml` in `ai-lib-ts` (`npm run test:core` via `vitest.core.config.ts`; `core.ts` exports protocol V2 loader).
 - [ ] **Go** — `go test ./...` + compliance PASS (already near core-only; confirm `internal/resilience` not required for E-only harness).
+  - **CI:** `.github/workflows/ci.yml` in `ai-lib-go` (existing).
 
 ## 2. WASM compliance (blocking, PT-072)
 
