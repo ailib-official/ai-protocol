@@ -172,3 +172,14 @@ Build runs after validation passes, and the generated `dist/` directory is uploa
 2. **If you want yamllint to also cause CI failure**:  
    - Remove `continue-on-error: true`, and configure `.yamllint` to tighten or relax rules as needed;  
    - Note: If yamllint rules are too strict, they may error on currently valid YAML, requiring adjustment.
+
+---
+
+## Report Archival Policy
+
+Governance gate reports (`reports/` directory) are **generated artifacts**, not source-controlled content.
+
+- `reports/compliance-gates/`, `reports/drift/`, `reports/fullchain-gates/`, `reports/manifest-gates/`, `reports/release-gates/`, `reports/rollback-rehearsals/`, `reports/report-evidence-gates/` are all gitignored.
+- **CI archival**: Governance workflows archive report JSON files as GitHub Actions artifacts with configurable retention (default: 90 days).
+- **Local use**: Developers may generate reports locally for debugging; these stay local and are never committed.
+- **Audit trail**: For release gate evidence, the CI workflow uploads artifacts linked to the specific run. Reference the workflow run URL in release notes or task closure records.

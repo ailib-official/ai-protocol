@@ -130,20 +130,29 @@ def main() -> int:
     return _main_python(args.python_root.resolve())
 
 
+def _rust_src_root(root: Path) -> Path:
+    """Workspace layout: crates/ai-lib-core/src; legacy: src/."""
+    core = root / "crates" / "ai-lib-core" / "src"
+    if core.is_dir():
+        return core
+    return root / "src"
+
+
 def _main_rust(root: Path) -> int:
+    src = _rust_src_root(root)
     globs = [
-        "src/types/**/*.rs",
-        "src/protocol/**/*.rs",
-        "src/drivers/**/*.rs",
-        "src/transport/**/*.rs",
-        "src/pipeline/**/*.rs",
-        "src/structured/**/*.rs",
+        "types/**/*.rs",
+        "protocol/**/*.rs",
+        "drivers/**/*.rs",
+        "transport/**/*.rs",
+        "pipeline/**/*.rs",
+        "structured/**/*.rs",
     ]
     files: list[Path] = []
     for g in globs:
-        files.extend(root.glob(g))
-    for name in ("src/error.rs", "src/error_code.rs"):
-        p = root / name
+        files.extend(src.glob(g))
+    for name in ("error.rs", "error_code.rs"):
+        p = src / name
         if p.is_file():
             files.append(p)
 
@@ -154,13 +163,13 @@ def _main_rust(root: Path) -> int:
             bad.append((f, h))
 
     if not bad:
-        print(f"ep-boundary (rust): OK ({len(files)} files under E roots in {root})")
+        print(f"ep-boundary (rust): OK ({len(files)} files under E roots in {src})")
         return 0
 
     print("ep-boundary (rust): FORBIDDEN P-layer import in E-only roots:", file=sys.stderr)
     for path, hits in bad:
         try:
-            rel = path.relative_to(root)
+            rel = path.relative_to(src)
         except ValueError:
             rel = path
         print(f"  {rel}:", file=sys.stderr)

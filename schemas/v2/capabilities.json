@@ -57,6 +57,31 @@
               "type": "boolean",
               "default": false,
               "description": "Supports image generation"
+            },
+            "json_mode": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports JSON mode for constrained output generation"
+            },
+            "json_schema_mode": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports JSON schema-constrained output generation"
+            },
+            "reasoning_tokens": {
+              "type": "boolean",
+              "default": false,
+              "description": "Reports reasoning/thinking tokens separately in usage metadata"
+            },
+            "streaming_tool_calls": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports tool call streaming with incremental argument chunks"
+            },
+            "recursive_tool_calls": {
+              "type": "boolean",
+              "default": false,
+              "description": "Supports multi-turn recursive tool calling without client re-prompting"
             }
           },
           "additionalProperties": {

@@ -57,6 +57,12 @@ scripts/CHANGELOG.md
 scripts/VALIDATION_NOTES.md
 scripts/README.md
 
+# ===== CI/Governance Reports (generated, archived by CI) =====
+# Gate reports are generated locally and by CI workflows.
+# CI archives them as workflow artifacts; they are not committed to the repo.
+# See CONTRIBUTING.md "Report Archival Policy" for details.
+reports/
+
 # ===== Development Files =====
 .publishignore
 node_modules/

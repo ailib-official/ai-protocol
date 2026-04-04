@@ -22,7 +22,7 @@ api_families:
     request_format: "openai"
     response_format: "openai"
 
-capabilities: [chat, streaming, tools, vision, parallel_tools]
+capabilities: [chat, streaming, tools, vision, parallel_tools, mcp_client]
 
 parameters:
   temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
@@ -44,6 +44,10 @@ streaming:
       emit: "PartialContentDelta"
       extract:
         content: "$.choices[0].delta.content"
+    - match: "$.choices[0].delta.reasoning_content"
+      emit: "ThinkingDelta"
+      extract:
+        thinking: "$.choices[0].delta.reasoning_content"
     - match: "$.choices[0].delta.tool_calls"
       emit: "PartialToolCall"
       extract:

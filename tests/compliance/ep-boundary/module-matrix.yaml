@@ -1,0 +1,119 @@
+# E/P module classification (Wave-5 PT-067).
+# E = execution layer (minimal, Paper1 §3.1). P = contact/policy (Paper1 §3.2).
+# Dependency rule: P must depend on E; E MUST NOT import P modules.
+#
+# This matrix is normative for PT-068+ crate/package splits; until then it drives
+# static import checks (see tools/check_ep_boundary.py).
+
+version: 1
+
+rust:
+  execution_layer:
+    - types
+    - error
+    - error_code
+    - drivers
+    - transport
+    - pipeline
+    - structured
+    - protocol
+    - registry
+    - utils
+    - mcp
+    - multimodal
+    - computer_use
+    - embeddings
+    - stt
+    - tts
+    - rerank
+    - feedback
+  contact:
+    - routing
+    - cache
+    - batch
+    - plugins
+    - interceptors
+    - tokens
+    - telemetry
+    - guardrails
+    - resilience
+  mixed:
+    client: "Mostly E (single-shot chat/stream). Policy hooks live in client::policy; PT-068 may split."
+  static_check_roots:
+    description: "Paths verified today: E modules must not reference P crate paths (see check_ep_boundary.py)."
+    include_globs:
+      - "src/types/**/*.rs"
+      - "src/protocol/**/*.rs"
+      - "src/drivers/**/*.rs"
+      - "src/transport/**/*.rs"
+      - "src/pipeline/**/*.rs"
+      - "src/structured/**/*.rs"
+      - "src/error.rs"
+      - "src/error_code.rs"
+
+python:
+  execution_layer:
+    - types
+    - errors
+    - drivers
+    - transport
+    - pipeline
+    - structured
+    - protocol
+    - registry
+    - utils
+    - mcp
+    - multimodal
+    - computer_use
+    - embeddings
+    - stt
+    - tts
+    - rerank
+    - feedback
+  contact:
+    - routing
+    - cache
+    - batch
+    - plugins
+    - tokens
+    - telemetry
+    - guardrails
+    - resilience
+
+typescript:
+  execution_layer:
+    - types
+    - errors
+    - transport
+    - pipeline
+    - structured
+    - protocol
+    - mcp
+    - embeddings
+    - stt
+    - tts
+    - rerank
+    - multimodal
+    - computer_use
+  contact:
+    - routing
+    - cache
+    - batch
+    - plugins
+    - tokens
+    - telemetry
+    - guardrails
+    - resilience
+    - interceptors
+    - negotiation
+
+go:
+  execution_layer:
+    - pkg/ailib
+    - internal/protocol
+    - internal/stream
+  contact:
+    - internal/resilience
+    - pkg/contact
+  notes:
+    - "Cross-provider FallbackClient lives in pkg/contact (policy layer)."

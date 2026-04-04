@@ -208,6 +208,59 @@
             "action_format": { "type": "string" },
             "requires_beta_header": { "type": "string" }
           }
+        },
+        "generative": {
+          "type": "object",
+          "description": "Generative LLM capability contract for token reporting, reasoning, and output modes",
+          "properties": {
+            "token_usage_format": {
+              "type": "string",
+              "enum": ["openai_usage", "anthropic_usage", "gemini_usage", "custom"],
+              "description": "Provider-specific token usage response format"
+            },
+            "token_usage_fields": {
+              "type": "object",
+              "description": "JSONPath mappings for token usage extraction",
+              "properties": {
+                "prompt_tokens": { "type": "string" },
+                "completion_tokens": { "type": "string" },
+                "total_tokens": { "type": "string" },
+                "reasoning_tokens": { "type": "string" },
+                "cache_read_tokens": { "type": "string" },
+                "cache_creation_tokens": { "type": "string" }
+              },
+              "additionalProperties": { "type": "string" }
+            },
+            "reasoning_mode": {
+              "type": "object",
+              "description": "Extended thinking / reasoning mode contract",
+              "properties": {
+                "supported": { "type": "boolean", "default": false },
+                "activation_method": {
+                  "type": "string",
+                  "enum": ["parameter", "header", "model_suffix", "not_supported"],
+                  "description": "How to activate reasoning/thinking mode"
+                },
+                "activation_field": { "type": "string", "description": "Field name or header to set" },
+                "thinking_block_format": {
+                  "type": "string",
+                  "enum": ["content_block", "separate_field", "interleaved"],
+                  "description": "How thinking content appears in response"
+                },
+                "supports_streaming_thinking": { "type": "boolean", "default": false }
+              }
+            },
+            "context_window_contract": {
+              "type": "object",
+              "description": "Context window limits and overflow behavior",
+              "properties": {
+                "max_context_tokens_field": { "type": "string", "description": "Where max context is declared per model" },
+                "overflow_error_code": { "type": "string", "description": "Provider error code for context overflow" },
+                "overflow_ai_protocol_code": { "type": "string", "default": "E1003", "description": "AI-Protocol error code mapping" }
+              }
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

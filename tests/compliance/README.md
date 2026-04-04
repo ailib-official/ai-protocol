@@ -19,6 +19,14 @@ executes the same cases.
 4. **Categorical**: Tests are grouped by protocol feature (error handling, streaming, etc.).
 5. **Extensible**: New categories and assertions can be added without framework changes.
 
+## E/P boundary (Wave-5, PT-067)
+
+Execution-layer-only (core) compliance runs exclude policy-heavy cases. See:
+
+- `ep-boundary/E_ONLY_CASES.md` — which case directories apply to core-only runners.
+- `ep-boundary/module-matrix.yaml` — E vs P module classification per runtime.
+- `ep-boundary/check_ep_boundary.py` — static check that selected Rust E roots do not reference P `crate::` modules.
+
 ## Directory Structure
 
 ```

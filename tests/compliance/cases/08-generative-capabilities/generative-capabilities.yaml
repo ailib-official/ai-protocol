@@ -1,0 +1,202 @@
+---
+suite: "generative-capabilities"
+name: "Verify generative capability declarations are loadable"
+id: "gen-001"
+description: "Provider manifest with generative capabilities (reasoning, structured_output, tools) loads and validates capability fields"
+tags: ["generative", "capabilities", "P0"]
+
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+
+input:
+  type: "capability_check"
+  capabilities:
+    - "text"
+    - "streaming"
+    - "tools"
+    - "reasoning"
+    - "structured_output"
+
+expected:
+  valid: true
+  capabilities_present:
+    required: ["text", "streaming", "tools"]
+    optional_contains: ["reasoning", "structured_output"]
+  feature_flags:
+    structured_output: true
+    extended_thinking: true
+
+---
+suite: "generative-capabilities"
+name: "Token usage reporting extraction from sync response"
+id: "gen-002"
+description: "Runtime extracts prompt_tokens, completion_tokens, total_tokens, and reasoning_tokens from a generative model sync response"
+tags: ["generative", "token-usage", "P0"]
+
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+
+input:
+  type: "response_parsing"
+  response_body:
+    id: "chatcmpl-test-001"
+    object: "chat.completion"
+    choices:
+      - index: 0
+        message:
+          role: "assistant"
+          content: "Hello, world!"
+        finish_reason: "stop"
+    usage:
+      prompt_tokens: 10
+      completion_tokens: 5
+      total_tokens: 15
+      completion_tokens_details:
+        reasoning_tokens: 3
+
+expected:
+  valid: true
+  usage:
+    prompt_tokens: 10
+    completion_tokens: 5
+    total_tokens: 15
+    reasoning_tokens: 3
+
+---
+suite: "generative-capabilities"
+name: "Structured output JSON mode activation"
+id: "gen-003"
+description: "When structured_output capability is declared and json_mode feature flag is true, request includes response_format parameter"
+tags: ["generative", "structured-output", "json-mode", "P0"]
+
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+
+input:
+  type: "request_building"
+  messages:
+    - role: "user"
+      content: "List three colors as JSON"
+  parameters:
+    response_format:
+      type: "json_object"
+
+expected:
+  valid: true
+  request_contains:
+    response_format:
+      type: "json_object"
+
+---
+suite: "generative-capabilities"
+name: "Streaming tool call accumulation with generative model"
+id: "gen-004"
+description: "Streaming response with incremental tool call arguments accumulates correctly into complete tool call"
+tags: ["generative", "streaming", "tool-calling", "P0"]
+
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+
+input:
+  type: "stream_decode"
+  events:
+    - "data: {\"choices\":[{\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_abc\",\"type\":\"function\",\"function\":{\"name\":\"get_weather\",\"arguments\":\"\"}}]}}]}"
+    - "data: {\"choices\":[{\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"{\\\"loc\"}}]}}]}"
+    - "data: {\"choices\":[{\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"ation\\\": \\\"SF\\\"}\"}}]}}]}"
+    - "data: {\"choices\":[{\"delta\":{},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":20,\"completion_tokens\":15,\"total_tokens\":35}}"
+    - "data: [DONE]"
+
+expected:
+  valid: true
+  accumulated_tool_calls:
+    - id: "call_abc"
+      type: "function"
+      function:
+        name: "get_weather"
+        arguments: "{\"location\": \"SF\"}"
+  usage:
+    prompt_tokens: 20
+    completion_tokens: 15
+    total_tokens: 35
+
+---
+suite: "generative-capabilities"
+name: "Context window overflow error classification"
+id: "gen-005"
+description: "When provider returns context length exceeded error, runtime classifies it as E1003 (invalid_request)"
+tags: ["generative", "error-classification", "context-window", "P0"]
+
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+
+input:
+  type: "error_classification"
+  http_status: 400
+  response_body:
+    error:
+      message: "This model's maximum context length is 128000 tokens. However, your messages resulted in 150000 tokens."
+      type: "invalid_request_error"
+      code: "context_length_exceeded"
+
+expected:
+  valid: true
+  error_code: "E1005"
+  error_type: "request_too_large"
+  retryable: false
+
+---
+suite: "generative-capabilities"
+name: "Reasoning mode streaming with thinking blocks"
+id: "gen-006"
+description: "Extended thinking / reasoning mode produces thinking content blocks followed by answer content in streaming"
+tags: ["generative", "reasoning", "streaming", "P0"]
+
+setup:
+  provider: "mock-anthropic"
+  manifest_path: "fixtures/providers/mock-anthropic.yaml"
+
+input:
+  type: "stream_decode"
+  events:
+    - "event: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\"}}"
+    - "event: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"Let me analyze...\"}}"
+    - "event: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0}"
+    - "event: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}"
+    - "event: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"The answer is 42.\"}}"
+    - "event: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1}"
+    - "event: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\"},\"usage\":{\"output_tokens\":25}}"
+    - "event: message_stop\ndata: {\"type\":\"message_stop\"}"
+
+expected:
+  valid: true
+  content_blocks:
+    - type: "thinking"
+      content_contains: "Let me analyze"
+    - type: "text"
+      content: "The answer is 42."
+  finish_reason: "end_turn"
+
+---
+suite: "generative-capabilities"
+name: "MCP tool bridge capability gating"
+id: "gen-007"
+description: "When provider declares mcp_client capability, MCP tool definitions are accepted; when not declared, they are rejected with E1005"
+tags: ["generative", "mcp", "capability-gating", "P0"]
+
+setup:
+  provider: "mock-openai"
+  manifest_path: "fixtures/providers/mock-openai.yaml"
+
+input:
+  type: "capability_check"
+  required_capability: "mcp_client"
+
+expected:
+  valid: true
+  capability_declared: true
+  mcp_integration_method: "tool_bridge"

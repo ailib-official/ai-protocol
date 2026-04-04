@@ -2,6 +2,13 @@
 
 All notable changes to AI-Protocol specifications and schemas will be documented here.
 
+## Unreleased
+
+### Added
+
+- **Wave-5 v1 RC gate template**: `docs/WAVE5_V1_GATE_CHECKLIST.md` (PT-073 blocking checklist; sign-off in CI/release process).
+- **E/P boundary (Wave-5 PT-067)**: `schemas/v2/execution-metadata.json`; `tests/compliance/ep-boundary/` (`E_ONLY_CASES.md`, `module-matrix.yaml`, `check_ep_boundary.py`); compliance README section.
+
 ## 0.8.1 (2026-03-08) - Compliance Matrix Activation and Fullchain Gates
 
 ### Added

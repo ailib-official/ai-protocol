@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/execution-metadata.json",
+  "title": "AI-Protocol V2 ExecutionMetadata",
+  "description": "Metadata returned by the execution layer (E) for consumption by the contact/policy layer (P). Cross-runtime JSON shape for ExecutionResult.metadata.",
+  "type": "object",
+  "required": [
+    "provider_id",
+    "model_id",
+    "execution_latency_ms",
+    "translation_latency_ms",
+    "micro_retry_count"
+  ],
+  "properties": {
+    "provider_id": {
+      "type": "string",
+      "description": "Provider manifest id"
+    },
+    "model_id": {
+      "type": "string",
+      "description": "Resolved model id for this call"
+    },
+    "execution_latency_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "End-to-end execution time for the provider call"
+    },
+    "translation_latency_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Time spent in protocol translation (manifest-driven mapping)"
+    },
+    "micro_retry_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255,
+      "description": "Bounded transport-level retries inside E (1–2 max); not policy retries"
+    },
+    "error_code": {
+      "type": "string",
+      "pattern": "^E[0-9]{4}$",
+      "description": "Optional AI-Protocol V2 standard code when the call failed in E"
+    },
+    "usage": {
+      "type": "object",
+      "description": "Optional token usage (all subfields optional for partial responses)",
+      "additionalProperties": false,
+      "properties": {
+        "prompt_tokens": { "type": "integer", "minimum": 0 },
+        "completion_tokens": { "type": "integer", "minimum": 0 },
+        "total_tokens": { "type": "integer", "minimum": 0 },
+        "reasoning_tokens": { "type": "integer", "minimum": 0 },
+        "cache_read_tokens": { "type": "integer", "minimum": 0 },
+        "cache_creation_tokens": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "additionalProperties": false
+}
