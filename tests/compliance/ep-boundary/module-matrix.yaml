@@ -52,6 +52,8 @@ rust:
       - "src/error_code.rs"
 
 python:
+  # client/ is the public E-facing entry; it must not contain static imports of
+  # contact packages (see check_ep_boundary.py scan_python_client_no_static_contact).
   execution_layer:
     - types
     - errors

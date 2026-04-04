@@ -9,6 +9,10 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 - **Wave-5 v1 RC gate template**: `docs/WAVE5_V1_GATE_CHECKLIST.md` (PT-073 blocking checklist; sign-off in CI/release process).
 - **E/P boundary (Wave-5 PT-067)**: `schemas/v2/execution-metadata.json`; `tests/compliance/ep-boundary/` (`E_ONLY_CASES.md`, `module-matrix.yaml`, `check_ep_boundary.py`); compliance README section.
 
+### Changed
+
+- **`check_ep_boundary.py` (Python)**: AST scan of `src/ai_lib_python/client/` forbids static imports of contact-layer subpackages (except under `if TYPE_CHECKING:`); aligns mixed `client` surface with Paper1 §3.2.
+
 ## 0.8.1 (2026-03-08) - Compliance Matrix Activation and Fullchain Gates
 
 ### Added

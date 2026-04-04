@@ -11,6 +11,7 @@ Exit 0 if no forbidden imports; exit 1 with a report otherwise.
 from __future__ import annotations
 
 import argparse
+import ast
 import re
 import sys
 from pathlib import Path
@@ -82,6 +83,79 @@ def scan_file(path: Path) -> list[tuple[int, str]]:
                 hits.append((i, line.strip()))
                 break
     return hits
+
+
+def _python_contact_set() -> frozenset[str]:
+    return frozenset(_PYTHON_CONTACT)
+
+
+def _is_type_checking_test(test: ast.expr) -> bool:
+    if isinstance(test, ast.Name):
+        return test.id == "TYPE_CHECKING"
+    if isinstance(test, ast.Attribute):
+        return test.attr == "TYPE_CHECKING"
+    return False
+
+
+def _type_checking_spans(module: ast.Module) -> list[tuple[int, int]]:
+    spans: list[tuple[int, int]] = []
+    for node in module.body:
+        if not isinstance(node, ast.If) or not _is_type_checking_test(node.test):
+            continue
+        if not node.body:
+            spans.append((node.lineno, node.lineno))
+            continue
+        start = node.body[0].lineno
+        end = max(getattr(s, "end_lineno", s.lineno) for s in node.body)
+        spans.append((start, end))
+    return spans
+
+
+def _lineno_in_spans(lineno: int, spans: list[tuple[int, int]]) -> bool:
+    return any(start <= lineno <= end for start, end in spans)
+
+
+def _contact_subpackage_from_ai_lib_python(module: str | None) -> str | None:
+    if not module:
+        return None
+    parts = module.split(".")
+    if len(parts) < 2 or parts[0] != "ai_lib_python":
+        return None
+    return parts[1]
+
+
+def scan_python_client_no_static_contact(root: Path) -> list[tuple[Path, int, str]]:
+    """`client/` must not statically import P-layer packages (except under `if TYPE_CHECKING:`)."""
+    pkg = root / "src" / "ai_lib_python" / "client"
+    contact = _python_contact_set()
+    violations: list[tuple[Path, int, str]] = []
+    if not pkg.is_dir():
+        return violations
+    for py_path in sorted(pkg.rglob("*.py")):
+        try:
+            src = py_path.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        try:
+            tree = ast.parse(src, filename=str(py_path))
+        except SyntaxError:
+            continue
+        spans = _type_checking_spans(tree)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ImportFrom):
+                if node.module and _lineno_in_spans(node.lineno, spans):
+                    continue
+                sub = _contact_subpackage_from_ai_lib_python(node.module)
+                if sub in contact:
+                    seg = ast.get_source_segment(src, node)
+                    violations.append((py_path, node.lineno, (seg or "").strip()))
+            elif isinstance(node, ast.Import):
+                for alias in node.names:
+                    sub = _contact_subpackage_from_ai_lib_python(alias.name)
+                    if sub in contact and not _lineno_in_spans(node.lineno, spans):
+                        seg = ast.get_source_segment(src, node)
+                        violations.append((py_path, node.lineno, (seg or "").strip()))
+    return violations
 
 
 def _scan_python_execution_trees(
@@ -181,19 +255,35 @@ def _main_rust(root: Path) -> int:
 def _main_python(root: Path) -> int:
     patterns = _python_contact_patterns()
     bad = _scan_python_execution_trees(root, patterns)
-    if not bad:
-        print(f"ep-boundary (python): OK (execution_layer trees under {root / 'src' / 'ai_lib_python'})")
-        return 0
-    print("ep-boundary (python): FORBIDDEN contact-layer import in execution packages:", file=sys.stderr)
-    for path, hits in bad:
-        try:
-            rel = path.relative_to(root)
-        except ValueError:
-            rel = path
-        print(f"  {rel}:", file=sys.stderr)
-        for line_no, line in hits:
-            print(f"    L{line_no}: {line}", file=sys.stderr)
-    return 1
+    if bad:
+        print("ep-boundary (python): FORBIDDEN contact-layer import in execution packages:", file=sys.stderr)
+        for path, hits in bad:
+            try:
+                rel = path.relative_to(root)
+            except ValueError:
+                rel = path
+            print(f"  {rel}:", file=sys.stderr)
+            for line_no, line in hits:
+                print(f"    L{line_no}: {line}", file=sys.stderr)
+        return 1
+
+    client_bad = scan_python_client_no_static_contact(root)
+    if client_bad:
+        print(
+            "ep-boundary (python): FORBIDDEN static contact-layer import in client/ "
+            "(use importlib or TYPE_CHECKING only):",
+            file=sys.stderr,
+        )
+        for path, line_no, snippet in client_bad:
+            try:
+                rel = path.relative_to(root)
+            except ValueError:
+                rel = path
+            print(f"  {rel}:L{line_no}: {snippet}", file=sys.stderr)
+        return 1
+
+    print(f"ep-boundary (python): OK (execution_layer + client/ under {root / 'src' / 'ai_lib_python'})")
+    return 0
 
 
 if __name__ == "__main__":
