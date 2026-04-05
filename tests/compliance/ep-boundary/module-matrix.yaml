@@ -86,7 +86,6 @@ typescript:
   execution_layer:
     - types
     - errors
-    - transport
     - pipeline
     - structured
     - protocol
@@ -97,6 +96,8 @@ typescript:
     - rerank
     - multimodal
     - computer_use
+  mixed:
+    transport: "E surface (HTTP + micro-retry via RetryPolicy). Currently imports resilience for RetryPolicy + optional circuit-breaker/rate-limiter; PT-073 follow-up: extract micro-retry to transport, leave CB/RL/BP in contact."
   contact:
     - routing
     - cache
