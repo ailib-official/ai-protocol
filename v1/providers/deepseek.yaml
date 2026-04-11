@@ -101,6 +101,8 @@ parameter_mappings:
 response_format: "openai_style"
 response_paths:
   content: "choices[0].message.content"
+  # Non-stream fallback when `content` is null (e.g. some reasoner / thinking payloads).
+  reasoning_content: "choices[0].message.reasoning_content"
   tool_calls: "choices[0].message.tool_calls"
   usage: "usage"
   finish_reason: "choices[0].finish_reason"
@@ -111,6 +113,7 @@ streaming:
     format: "sse"
     delimiter: "\n\n"
     prefix: "data: "
+    done_signal: "[DONE]"
     strategy: "sse_ignore_comments"
   content_path: "choices[0].delta.content"
   tool_call_path: "choices[0].delta.tool_calls"
@@ -140,12 +143,11 @@ streaming:
       emit: "Metadata"
       fields:
         usage: "$.usage"
-    # Finish with reason
-    - match: "exists($.choices[*].finish_reason)"
-      emit: "FinalCandidate"
+    # Stream end with finish reason
+    - match: "$.choices[*].finish_reason != null"
+      emit: "StreamEnd"
       fields:
         finish_reason: "$.choices[*].finish_reason"
-        candidate_index: "$.choices[*].index"
   stop_condition: "$.choices[0].finish_reason != null"
 
 features:

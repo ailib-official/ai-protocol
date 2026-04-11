@@ -79,6 +79,14 @@
       "type": "boolean"
     }
   },
+  "parameter_mappings": {
+    "temperature": "temperature",
+    "max_tokens": "max_tokens",
+    "stream": "stream",
+    "top_p": "top_p",
+    "tools": "tools",
+    "tool_choice": "tool_choice"
+  },
   "streaming": {
     "decoder": {
       "format": "sse",
@@ -86,29 +94,40 @@
       "done_signal": "[DONE]",
       "prefix": "data: "
     },
+    "content_path": "$.choices[0].delta.content",
+    "tool_call_path": "$.choices[0].delta.tool_calls",
+    "usage_path": "$.usage",
     "event_map": [
       {
-        "match": "$.choices[0].delta.content",
+        "match": "exists($.choices[*].delta.content)",
         "emit": "PartialContentDelta",
-        "extract": {
-          "content": "$.choices[0].delta.content"
+        "fields": {
+          "content": "$.choices[*].delta.content"
         }
       },
       {
-        "match": "$.choices[0].delta.tool_calls",
+        "match": "exists($.choices[*].delta.tool_calls)",
         "emit": "PartialToolCall",
-        "extract": {
-          "tool_calls": "$.choices[0].delta.tool_calls"
+        "fields": {
+          "tool_calls": "$.choices[*].delta.tool_calls"
         }
       },
       {
-        "match": "$.choices[0].finish_reason",
+        "match": "exists($.usage)",
+        "emit": "Metadata",
+        "fields": {
+          "usage": "$.usage"
+        }
+      },
+      {
+        "match": "$.choices[*].finish_reason != null",
         "emit": "StreamEnd",
-        "extract": {
-          "finish_reason": "$.choices[0].finish_reason"
+        "fields": {
+          "finish_reason": "$.choices[*].finish_reason"
         }
       }
-    ]
+    ],
+    "stop_condition": "$.choices[0].finish_reason != null"
   },
   "multimodal": {
     "input": {

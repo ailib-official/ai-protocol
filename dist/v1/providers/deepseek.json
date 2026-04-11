@@ -109,6 +109,7 @@
   "response_format": "openai_style",
   "response_paths": {
     "content": "choices[0].message.content",
+    "reasoning_content": "choices[0].message.reasoning_content",
     "tool_calls": "choices[0].message.tool_calls",
     "usage": "usage",
     "finish_reason": "choices[0].finish_reason"
@@ -119,6 +120,7 @@
       "format": "sse",
       "delimiter": "\n\n",
       "prefix": "data: ",
+      "done_signal": "[DONE]",
       "strategy": "sse_ignore_comments"
     },
     "content_path": "choices[0].delta.content",
@@ -158,11 +160,10 @@
         }
       },
       {
-        "match": "exists($.choices[*].finish_reason)",
-        "emit": "FinalCandidate",
+        "match": "$.choices[*].finish_reason != null",
+        "emit": "StreamEnd",
         "fields": {
-          "finish_reason": "$.choices[*].finish_reason",
-          "candidate_index": "$.choices[*].index"
+          "finish_reason": "$.choices[*].finish_reason"
         }
       }
     ],

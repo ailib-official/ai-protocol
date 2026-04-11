@@ -136,12 +136,11 @@ streaming:
       emit: "Metadata"
       fields:
         usage: "$.usage"
-    # Finish with reason
-    - match: "exists($.choices[*].finish_reason)"
-      emit: "FinalCandidate"
+    # Stream end with finish reason
+    - match: "$.choices[*].finish_reason != null"
+      emit: "StreamEnd"
       fields:
         finish_reason: "$.choices[*].finish_reason"
-        candidate_index: "$.choices[*].index"
   stop_condition: "$.choices[0].finish_reason != null"
 features:
   multi_candidate:

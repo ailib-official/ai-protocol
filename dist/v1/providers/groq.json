@@ -156,11 +156,10 @@
         }
       },
       {
-        "match": "exists($.choices[*].finish_reason)",
-        "emit": "FinalCandidate",
+        "match": "$.choices[*].finish_reason != null",
+        "emit": "StreamEnd",
         "fields": {
-          "finish_reason": "$.choices[*].finish_reason",
-          "candidate_index": "$.choices[*].index"
+          "finish_reason": "$.choices[*].finish_reason"
         }
       }
     ],
