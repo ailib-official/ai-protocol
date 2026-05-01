@@ -7,6 +7,7 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 ### Added
 
 - **Credential-chain compliance (PT-074)**: `tests/compliance/cases/09-credential-resolution/` covers BYOK credential precedence, manifest env handling, custom header/query-param auth attachment, redacted diagnostics, and WASM host-supplied credential boundaries.
+- **Credential-chain single-source semantics (PT-074-B-FIX)**: `cred-009` and `cred-010` lock down "endpoint.auth is the single source of truth when both endpoint.auth and a divergent top-level auth are declared." Runtimes MUST scan only the winning endpoint.auth for env names, MUST NOT silently resolve shadowed legacy envs, and SHOULD surface a diagnostic identifying the shadowed block. Shared fixture `tests/compliance/fixtures/providers/mock-credential-dual-auth.yaml`.
 - **Wave-5 v1 RC gate template**: `docs/WAVE5_V1_GATE_CHECKLIST.md` (PT-073 blocking checklist; sign-off in CI/release process).
 - **E/P boundary (Wave-5 PT-067)**: `schemas/v2/execution-metadata.json`; `tests/compliance/ep-boundary/` (`E_ONLY_CASES.md`, `module-matrix.yaml`, `check_ep_boundary.py`); compliance README section.
 
