@@ -14,6 +14,7 @@ document lists **compliance case files** that are valid for that subset.
 | `cases/05-request-building/` | Request normalization |
 | `cases/07-advanced-capabilities/` | Capability guard + endpoint mapping |
 | `cases/08-generative-capabilities/` | Generative capability matrix |
+| `cases/09-credential-resolution/` | BYOK credential lookup and auth attachment metadata (no network calls) |
 
 ## Excluded (require P or policy semantics)
 

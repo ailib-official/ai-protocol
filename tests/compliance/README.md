@@ -62,6 +62,8 @@ tests/compliance/
 │       └── error-retryable.yaml
 │   └── 07-advanced-capabilities/ # Advanced capability guard + endpoint mapping
 │       └── capability-and-endpoint.yaml
+│   └── 09-credential-resolution/ # BYOK credential chain and redacted auth diagnostics
+│       └── credential-chain.yaml
 └── fixtures/                    # Shared test data
     ├── providers/               # Mock provider manifests
     │   ├── mock-openai.yaml
@@ -126,6 +128,8 @@ expected:
 | `event_mapping` | Map decoded frames to events | `frames`, `event_map` | `events: []` |
 | `tool_accumulation` | Assemble partial tool calls | `partial_chunks` | `assembled_tool_calls` |
 | `parameter_mapping` | Map standard to provider params | `standard_params`, `provider` | `provider_params` |
+| `credential_resolution` | Resolve BYOK credentials without network I/O | `provider`, `manifest_path`, `env`, optional explicit credential | `status`, `source_kind`, `source_name`, `required` |
+| `auth_attachment` | Build auth headers/query metadata from resolved credentials | `provider`, `manifest_path`, credential source | `headers` or `query_params`, redacted diagnostics |
 | `retry_decision` | Decide whether to retry an error | `error`, `retry_policy` | `should_retry`, `delay_ms` |
 | `capability_guard` | Validate undeclared advanced capability blocking | `method`, `manifest` | `error_code` |
 | `advanced_endpoint_mapping` | Resolve advanced operation endpoint | `operation`, `manifest` | `path`, `method` |
@@ -210,6 +214,7 @@ Both runtimes include the compliance suite in their CI pipelines:
 | Streaming | 6+ | P0 |
 | Request Building | 3+ | P1 |
 | Resilience | 4+ | P1 |
+| Credential Resolution | 4+ | P0 |
 | **Total** | **30+** | — |
 
 ---
