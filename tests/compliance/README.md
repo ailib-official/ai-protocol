@@ -62,6 +62,8 @@ tests/compliance/
 │       └── error-retryable.yaml
 │   └── 07-advanced-capabilities/ # Advanced capability guard + endpoint mapping
 │       └── capability-and-endpoint.yaml
+│   └── 09-credential-resolution/ # BYOK credential chain and redacted auth diagnostics
+│       └── credential-chain.yaml
 └── fixtures/                    # Shared test data
     ├── providers/               # Mock provider manifests
     │   ├── mock-openai.yaml
@@ -126,6 +128,8 @@ expected:
 | `event_mapping` | Map decoded frames to events | `frames`, `event_map` | `events: []` |
 | `tool_accumulation` | Assemble partial tool calls | `partial_chunks` | `assembled_tool_calls` |
 | `parameter_mapping` | Map standard to provider params | `standard_params`, `provider` | `provider_params` |
+| `credential_resolution` | Resolve BYOK credentials without network I/O | `provider`, `manifest_path`, `env`, optional explicit credential | `status`, `source_kind`, `source_name`, `required`, optional `shadowed_envs_must_not_resolve`, optional `diagnostic_should_mention` |
+| `auth_attachment` | Build auth headers/query metadata from resolved credentials | `provider`, `manifest_path`, credential source | `headers` or `query_params`, redacted diagnostics |
 | `retry_decision` | Decide whether to retry an error | `error`, `retry_policy` | `should_retry`, `delay_ms` |
 | `capability_guard` | Validate undeclared advanced capability blocking | `method`, `manifest` | `error_code` |
 | `advanced_endpoint_mapping` | Resolve advanced operation endpoint | `operation`, `manifest` | `path`, `method` |
@@ -210,7 +214,23 @@ Both runtimes include the compliance suite in their CI pipelines:
 | Streaming | 6+ | P0 |
 | Request Building | 3+ | P1 |
 | Resilience | 4+ | P1 |
+| Credential Resolution | 10+ | P0 |
 | **Total** | **30+** | — |
+
+### Credential Resolution case map (PT-074)
+
+| ID | Focus |
+|----|-------|
+| `cred-001` | Explicit override wins over manifest/conventional env |
+| `cred-002` | Manifest `token_env` wins over conventional env |
+| `cred-003` | Conventional `${PROVIDER_ID}_API_KEY` fallback |
+| `cred-004` | Missing-credential diagnostics (redacted, no network) |
+| `cred-005` | V2 `endpoint.auth.token_env` participates in chain |
+| `cred-006` | Custom-header attachment uses manifest `header` |
+| `cred-007` | Query-param attachment uses manifest `param_name` |
+| `cred-008` | WASM uses host-supplied explicit credential only |
+| `cred-009` | Endpoint auth single source when top-level auth diverges (PT-074-B-FIX) |
+| `cred-010` | Companion to `cred-009`: shadowed legacy env does not silently resolve |
 
 ---
 

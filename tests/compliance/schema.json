@@ -15,7 +15,8 @@
         "message-building",
         "streaming",
         "request-building",
-        "resilience"
+        "resilience",
+        "credential-resolution"
       ]
     },
     "name": {
@@ -71,7 +72,9 @@
             "event_mapping",
             "tool_accumulation",
             "parameter_mapping",
-            "retry_decision"
+            "retry_decision",
+            "credential_resolution",
+            "auth_attachment"
           ]
         }
       },
