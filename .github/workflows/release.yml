@@ -1,0 +1,39 @@
+# Publish the `ai-protocol` npm package on annotated tags `v*`.
+# Prereq: Repo secret NPM_TOKEN (classic automation token) OR npm OIDC trusted publishing for this repo.
+# Order: registry publish first, then GitHub Release (aligns with release train policy).
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  npm-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
