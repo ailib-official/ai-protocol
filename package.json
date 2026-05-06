@@ -1,5 +1,5 @@
 {
-  "name": "ai-protocol",
+  "name": "@ailib-official/ai-protocol",
   "version": "0.8.4",
   "description": "Provider-agnostic AI provider + model registry specification",
   "type": "module",
@@ -54,5 +54,12 @@
     "provider",
     "model"
   ],
-  "license": "MIT OR Apache-2.0"
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ailib-official/ai-protocol.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
