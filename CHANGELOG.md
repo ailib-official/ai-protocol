@@ -14,6 +14,7 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Changed
 
+- **Validator `$schema` URL check**: `scripts/validate.js` accepts `https://raw.githubusercontent.com/ailib-official/ai-protocol/...` (replacing legacy `hiddenpath/ai-protocol`), matching published YAML. `schemas/v1.json` `$schema` pattern allows optional patch version tags (e.g. `v0.8.4`).
 - **npm package name:** registry publishes as `@ailib-official/ai-protocol` (scoped); `package.json` `name` field aligned to match.
 - **`check_ep_boundary.py` (Python)**: AST scan of `src/ai_lib_python/client/` forbids static imports of contact-layer subpackages (except under `if TYPE_CHECKING:`); aligns mixed `client` surface with Paper1 §3.2.
 - **`docs/WAVE5_V1_GATE_CHECKLIST.md`**: documents PT-073 CI workflows in `ai-lib-rust`, `ai-lib-ts`, and `ai-lib-python` (Rust / TS / Python order).
