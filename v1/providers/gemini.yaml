@@ -20,14 +20,18 @@ auth:
   token_env: "GEMINI_API_KEY"
 payload_format: "gemini_style"
 
-# Gemini native API families
-api_families: ["generate_content"]
+# Gemini native API plus OpenAI-compatible chat (same API key; Bearer on /openai/*).
+api_families: ["generate_content", "chat_completions"]
 default_api_family: "generate_content"
 endpoints:
   chat:
     path: "/models/{model}:generateContent"
     method: "POST"
     adapter: "gemini"
+  openai_chat:
+    path: "/openai/chat/completions"
+    method: "POST"
+    adapter: "openai"
 
 # V1.5 Service Endpoints
 services:
@@ -227,3 +231,7 @@ availability:
 experimental_features:
   - "multimodal_video"
   - "multimodal_audio"
+
+notes:
+  - "OpenAI-compatible Chat Completions: POST {base_url}/openai/chat/completions with Authorization: Bearer <GEMINI_API_KEY> and OpenAI-style JSON body. See https://ai.google.dev/gemini-api/docs/openai"
+  - "Native GenerateContent continues to use ?key= query authentication as configured under auth.type query_param."
