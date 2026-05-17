@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json",
-  "protocol_version": "1.1",
+  "protocol_version": "1.5",
   "models": {
     "gemini-2.5-pro": {
       "provider": "gemini",
@@ -52,6 +52,64 @@
         "multimodal",
         "fast",
         "cost-effective"
+      ]
+    },
+    "gemini-2.5-flash-lite": {
+      "provider": "gemini",
+      "model_id": "gemini-2.5-flash-lite",
+      "name": "Gemini 2.5 Flash-Lite",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-05-17",
+        "source": "https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-lite",
+        "notes": "Free-tier RPM/RPD vary by account and region; typical AI Studio free band is high concurrency vs Flash/Pro."
+      },
+      "context_window": 1048576,
+      "capabilities": [
+        "chat",
+        "vision",
+        "audio",
+        "video",
+        "tools",
+        "streaming",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "google",
+        "multimodal",
+        "flash-lite",
+        "cost-effective",
+        "free-tier"
+      ]
+    },
+    "gemini-3.1-flash-lite-preview": {
+      "provider": "gemini",
+      "model_id": "gemini-3.1-flash-lite-preview",
+      "name": "Gemini 3.1 Flash-Lite (Preview)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-05-17",
+        "source": "https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-preview",
+        "notes": "Preview model; availability and quotas may change by region."
+      },
+      "context_window": 1048576,
+      "capabilities": [
+        "chat",
+        "vision",
+        "audio",
+        "video",
+        "tools",
+        "streaming",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "google",
+        "multimodal",
+        "flash-lite",
+        "preview",
+        "free-tier"
       ]
     }
   }

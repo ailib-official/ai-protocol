@@ -20,7 +20,8 @@
   },
   "payload_format": "gemini_style",
   "api_families": [
-    "generate_content"
+    "generate_content",
+    "chat_completions"
   ],
   "default_api_family": "generate_content",
   "endpoints": {
@@ -28,6 +29,11 @@
       "path": "/models/{model}:generateContent",
       "method": "POST",
       "adapter": "gemini"
+    },
+    "openai_chat": {
+      "path": "/openai/chat/completions",
+      "method": "POST",
+      "adapter": "openai"
     }
   },
   "services": {
@@ -275,5 +281,9 @@
   "experimental_features": [
     "multimodal_video",
     "multimodal_audio"
+  ],
+  "notes": [
+    "OpenAI-compatible Chat Completions: POST {base_url}/openai/chat/completions with Authorization: Bearer <GEMINI_API_KEY> and OpenAI-style JSON body. See https://ai.google.dev/gemini-api/docs/openai",
+    "Native GenerateContent continues to use ?key= query authentication as configured under auth.type query_param."
   ]
 }
