@@ -42,6 +42,16 @@ error_classification:
     "UNAVAILABLE": "overloaded"
     "DEADLINE_EXCEEDED": "timeout"
 
+availability:
+  required: false
+  regions:
+    - global
+  check:
+    method: GET
+    path: "/models"
+    expected_status: [200, 401]
+    timeout_ms: 3000
+
 # === Ring 2: Capability Mapping ===
 capabilities:
   required:
@@ -236,6 +246,30 @@ metadata:
       max_output_tokens: 64000
       status: public_preview
       pricing: { input_per_1m: 0.15, output_per_1m: 0.60 }
+    gemini-2.5-flash-lite:
+      context_window: 1048576
+      max_output_tokens: 65536
+      verification:
+        status: operational
+        source: eos
+    gemini-2.5-flash:
+      context_window: 1048576
+      max_output_tokens: 65536
+      verification:
+        status: operational
+        source: eos
+    gemini-2.5-pro:
+      context_window: 2097152
+      max_output_tokens: 65536
+      verification:
+        status: operational
+        source: eos
+    gemini-3.1-flash-lite-preview:
+      context_window: 1048576
+      max_output_tokens: 65536
+      verification:
+        status: operational
+        source: eos
   context_caching:
     supported: true
     pricing: "$0.20-0.40 per 1M tokens/hour"

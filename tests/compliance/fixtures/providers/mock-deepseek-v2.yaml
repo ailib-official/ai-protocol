@@ -10,6 +10,16 @@ endpoint:
 error_classification:
   by_http_status:
     "429": "rate_limited"
+availability:
+  required: false
+  regions:
+    - cn
+    - global
+  check:
+    method: GET
+    path: "/models"
+    expected_status: [200, 401]
+    timeout_ms: 3000
 capabilities:
   required: ["text", "streaming", "tools"]
   optional: ["vision", "audio", "image_generation", "stt", "tts"]
