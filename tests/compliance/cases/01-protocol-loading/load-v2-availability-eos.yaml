@@ -1,0 +1,55 @@
+# Protocol Loading - V2 availability (EOS-ARCH-R2 reference)
+
+---
+suite: "protocol-loading"
+name: "Load V2 DeepSeek manifest with availability regions"
+id: "load-012"
+description: "Reference implementation for availability.regions on canonical v2/providers/deepseek.yaml"
+tags: ["protocol-loading", "deepseek", "v2", "availability", "eos-arch-r2"]
+setup:
+  provider: "deepseek"
+  manifest_path: "../../../../v2/providers/deepseek.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../v2/providers/deepseek.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "deepseek"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load V2 NVIDIA NIM manifest with availability"
+id: "load-013"
+description: "Eos-used NVIDIA provider onboarded to v2 with global region"
+tags: ["protocol-loading", "nvidia", "v2", "availability", "eos"]
+setup:
+  provider: "nvidia"
+  manifest_path: "../../../../v2/providers/nvidia.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../v2/providers/nvidia.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "nvidia"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load V2 Groq manifest with availability"
+id: "load-014"
+description: "Eos-used Groq provider onboarded to v2 with global region"
+tags: ["protocol-loading", "groq", "v2", "availability", "eos"]
+setup:
+  provider: "groq"
+  manifest_path: "../../../../v2/providers/groq.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../v2/providers/groq.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "groq"
+  protocol_version: "2.0"

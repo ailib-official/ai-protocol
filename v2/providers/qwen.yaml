@@ -66,14 +66,6 @@ parameters:
   top_p: { type: float, range: [0.0, 1.0] }
   stream: { type: boolean }
 
-parameter_mappings:
-  temperature: "temperature"
-  max_tokens: "max_tokens"
-  stream: "stream"
-  top_p: "top_p"
-  tools: "tools"
-  tool_choice: "tool_choice"
-
 streaming:
   decoder:
     format: "sse"
