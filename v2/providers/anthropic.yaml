@@ -45,6 +45,16 @@ error_classification:
     "api_error": "server_error"
     "overloaded_error": "overloaded"
 
+availability:
+  required: false
+  regions:
+    - global
+  check:
+    method: GET
+    path: "/models"
+    expected_status: [200, 401]
+    timeout_ms: 3000
+
 # === Ring 2: Capability Mapping ===
 capabilities:
   required:
