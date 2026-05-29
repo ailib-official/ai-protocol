@@ -1,0 +1,37 @@
+# Protocol Loading - V2 availability backfill (cn + global stack)
+
+---
+suite: "protocol-loading"
+name: "Load V2 Qwen manifest with cn+global availability"
+id: "load-015"
+description: "Verify qwen v2 provider validates with dual-region availability"
+tags: ["protocol-loading", "qwen", "v2", "availability", "cn"]
+setup:
+  provider: "qwen"
+  manifest_path: "../../../../v2/providers/qwen.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../v2/providers/qwen.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "qwen"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load V2 Anthropic manifest with global availability"
+id: "load-016"
+description: "Verify anthropic v2 provider validates with global availability"
+tags: ["protocol-loading", "anthropic", "v2", "availability", "global"]
+setup:
+  provider: "anthropic"
+  manifest_path: "../../../../v2/providers/anthropic.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../v2/providers/anthropic.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "anthropic"
+  protocol_version: "2.0"

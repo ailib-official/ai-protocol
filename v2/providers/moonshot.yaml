@@ -38,6 +38,16 @@ error_classification:
     "rate_limit_exceeded": "rate_limited"
     "insufficient_quota": "quota_exhausted"
 
+availability:
+  required: false
+  regions:
+    - cn
+  check:
+    method: GET
+    path: "/models"
+    expected_status: [200, 401]
+    timeout_ms: 3000
+
 # === Ring 2: Capability Mapping ===
 capabilities:
   required:

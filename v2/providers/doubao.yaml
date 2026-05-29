@@ -29,6 +29,16 @@ error_classification:
     "500": "server_error"
     "503": "overloaded"
 
+availability:
+  required: false
+  regions:
+    - cn
+  check:
+    method: GET
+    path: "/models"
+    expected_status: [200, 401]
+    timeout_ms: 3000
+
 capabilities:
   required:
     - text
