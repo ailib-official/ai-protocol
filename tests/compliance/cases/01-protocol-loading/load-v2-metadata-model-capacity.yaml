@@ -1,0 +1,37 @@
+# Protocol Loading - V2 metadata.models capacity (PT-075-R1)
+
+---
+suite: "protocol-loading"
+name: "Load V2 OpenAI manifest with typed metadata.models capacity"
+id: "load-017"
+description: "Verify openai v2 provider validates metadata.models context_window/max_output_tokens"
+tags: ["protocol-loading", "openai", "v2", "metadata", "pt-075"]
+setup:
+  provider: "openai"
+  manifest_path: "../../../../v2/providers/openai.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../v2/providers/openai.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "openai"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load V2 Google manifest with metadata.models capacity"
+id: "load-018"
+description: "Verify google v2 provider validates metadata.models including preview status values"
+tags: ["protocol-loading", "google", "v2", "metadata", "pt-075"]
+setup:
+  provider: "google"
+  manifest_path: "../../../../v2/providers/google.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../v2/providers/google.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "google"
+  protocol_version: "2.0"
