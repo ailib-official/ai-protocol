@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/metadata-model-entry.json",
+  "title": "V2 Provider Metadata Model Entry",
+  "description": "Model-level capacity metadata under provider manifest metadata.models. Integer fields use 0 for unknown. Distinct from capabilities string enums.",
+  "type": "object",
+  "properties": {
+    "context_window": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum input context tokens. 0 = unknown."
+    },
+    "max_output_tokens": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum output/completion tokens. 0 = unknown."
+    },
+    "release_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Model release or GA date (ISO 8601 date)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "deprecated", "research_preview", "public_preview", "preview", "beta"],
+      "description": "Operational status of this model entry"
+    },
+    "pricing": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Optional per-model pricing hints (not a substitute for pricing.json)"
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["operational", "verified", "unverified", "deprecated"]
+        },
+        "source": { "type": "string" },
+        "verified_at": { "type": "string", "format": "date" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

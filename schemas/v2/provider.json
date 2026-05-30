@@ -190,8 +190,17 @@
     },
     "metadata": {
       "type": "object",
-      "additionalProperties": true,
-      "description": "Additional provider-specific metadata"
+      "description": "Additional provider-specific metadata",
+      "properties": {
+        "models": {
+          "type": "object",
+          "description": "Model-level capacity and operational metadata keyed by model id",
+          "additionalProperties": {
+            "$ref": "./metadata-model-entry.json"
+          }
+        }
+      },
+      "additionalProperties": true
     },
     "pricing": {
       "$ref": "./pricing.json",

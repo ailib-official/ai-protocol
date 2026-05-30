@@ -8,6 +8,7 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 - **EOS-ARCH-R2 availability (Phase 0–1)**: Optional `approval_ids` on `schemas/v2/availability.json`; first v2 `availability.regions` usage on DeepSeek (cn+global reference), OpenAI, Google; new v2 providers **NVIDIA NIM** and **Groq** with Eos-aligned model capacity metadata; compliance cases `load-v2-availability-eos.yaml` (load-012–014).
 - **EOS-ARCH-R2 availability (Phase 3 backfill)**: Remaining v2 providers (anthropic, cohere, jina, qwen, zhipu, moonshot, doubao) now declare `availability.regions`; compliance cases load-015–016.
+- **PT-075-R1 metadata.models schema**: Typed `schemas/v2/metadata-model-entry.json` (`context_window`, `max_output_tokens`, `status`, `verification`); `provider.json` metadata.models ref; compliance cases load-017–018.
 
 ### Added (prior) `v1/models/gemini.yaml` now includes `gemini-2.5-flash-lite` and `gemini-3.1-flash-lite-preview` alongside 2.5 Flash/Pro; `v1/providers/gemini.yaml` documents `chat_completions` via `{base_url}/openai/chat/completions` (Authorization Bearer) for Google AI Studio keys.
 - **Credential-chain compliance (PT-074)**: `tests/compliance/cases/09-credential-resolution/` covers BYOK credential precedence, manifest env handling, custom header/query-param auth attachment, redacted diagnostics, and WASM host-supplied credential boundaries.
