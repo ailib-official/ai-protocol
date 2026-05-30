@@ -1,0 +1,55 @@
+# Protocol Loading - V2-alpha metadata.models capacity (PT-075-R2)
+
+---
+suite: "protocol-loading"
+name: "Load V2-alpha OpenAI with migrated metadata.models capacity"
+id: "load-019"
+description: "Verify openai v2-alpha dist includes metadata.models from v1 migration"
+tags: ["protocol-loading", "openai", "v2-alpha", "metadata", "pt-075"]
+setup:
+  provider: "openai"
+  manifest_path: "../../../../dist/v2-alpha/providers/openai.json"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../dist/v2-alpha/providers/openai.json"
+expected:
+  valid: true
+  errors: []
+  provider_id: "openai"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load V2-alpha Anthropic with migrated metadata.models capacity"
+id: "load-020"
+description: "Verify anthropic v2-alpha dist includes metadata.models from v1 migration"
+tags: ["protocol-loading", "anthropic", "v2-alpha", "metadata", "pt-075"]
+setup:
+  provider: "anthropic"
+  manifest_path: "../../../../dist/v2-alpha/providers/anthropic.json"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../dist/v2-alpha/providers/anthropic.json"
+expected:
+  valid: true
+  errors: []
+  provider_id: "anthropic"
+  protocol_version: "2.0"
+
+---
+suite: "protocol-loading"
+name: "Load V2-alpha Gemini with migrated metadata.models capacity"
+id: "load-021"
+description: "Verify gemini v2-alpha dist includes metadata.models from v1 migration"
+tags: ["protocol-loading", "gemini", "v2-alpha", "metadata", "pt-075"]
+setup:
+  provider: "gemini"
+  manifest_path: "../../../../dist/v2-alpha/providers/gemini.json"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../dist/v2-alpha/providers/gemini.json"
+expected:
+  valid: true
+  errors: []
+  provider_id: "gemini"
+  protocol_version: "2.0"
