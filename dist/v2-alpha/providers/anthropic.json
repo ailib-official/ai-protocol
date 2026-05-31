@@ -178,5 +178,36 @@
       "stop_sequence": "stop_sequence",
       "tool_use": "tool_use"
     }
+  },
+  "metadata": {
+    "models": {
+      "claude-3-5-sonnet": {
+        "context_window": 200000,
+        "max_output_tokens": 0,
+        "verification": {
+          "status": "unverified",
+          "source": "manual"
+        },
+        "status": "active"
+      },
+      "claude-3-5-haiku": {
+        "context_window": 200000,
+        "max_output_tokens": 0,
+        "verification": {
+          "status": "unverified",
+          "source": "manual"
+        },
+        "status": "active"
+      },
+      "claude-3-opus": {
+        "context_window": 200000,
+        "max_output_tokens": 0,
+        "verification": {
+          "status": "unverified",
+          "source": "manual"
+        },
+        "status": "active"
+      }
+    }
   }
 }

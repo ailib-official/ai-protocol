@@ -183,5 +183,51 @@
       "BLOCKLIST": "refusal",
       "PROHIBITED_CONTENT": "refusal"
     }
+  },
+  "metadata": {
+    "models": {
+      "gemini-2.5-pro": {
+        "context_window": 2000000,
+        "max_output_tokens": 0,
+        "verification": {
+          "status": "verified",
+          "verified_at": "2026-01-28",
+          "source": "list_models:/v1beta/models"
+        },
+        "status": "active"
+      },
+      "gemini-2.5-flash": {
+        "context_window": 1000000,
+        "max_output_tokens": 0,
+        "verification": {
+          "status": "verified",
+          "verified_at": "2026-01-28",
+          "source": "list_models:/v1beta/models"
+        },
+        "status": "active"
+      },
+      "gemini-2.5-flash-lite": {
+        "context_window": 1048576,
+        "max_output_tokens": 0,
+        "verification": {
+          "status": "verified",
+          "verified_at": "2026-05-17",
+          "source": "https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash-lite",
+          "notes": "Free-tier RPM/RPD vary by account and region; typical AI Studio free band is high concurrency vs Flash/Pro."
+        },
+        "status": "active"
+      },
+      "gemini-3.1-flash-lite-preview": {
+        "context_window": 1048576,
+        "max_output_tokens": 0,
+        "verification": {
+          "status": "verified",
+          "verified_at": "2026-05-17",
+          "source": "https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-preview",
+          "notes": "Preview model; availability and quotas may change by region."
+        },
+        "status": "active"
+      }
+    }
   }
 }
