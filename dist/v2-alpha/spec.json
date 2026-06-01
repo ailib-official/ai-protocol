@@ -2,7 +2,7 @@
   "version": "2.0-alpha",
   "metadata": {
     "description": "AI-Protocol V2 Manifest Specification - Concentric Circle Model",
-    "last_updated": "2026-02-14",
+    "last_updated": "2026-06-02",
     "authors": [
       "AI-Protocol Team"
     ],
@@ -320,6 +320,44 @@
         "max_tokens": {
           "type": "integer",
           "min": 1
+        }
+      }
+    }
+  },
+  "model_capacity_metadata": {
+    "description": "Model-level context and output limits live under provider manifest metadata.models.\nThis is distinct from Ring 2 standard_capabilities (boolean/feature names).\nRuntimes use these integers for ContextBudget / routing; 0 means unknown.\n",
+    "schema_ref": "schemas/v2/metadata-model-entry.json",
+    "location": "metadata.models.<model_id>",
+    "fields": {
+      "context_window": {
+        "type": "integer",
+        "minimum": 0,
+        "semantics": "Maximum input context tokens the model accepts. 0 = unknown; consumers MUST fall back to a safe default budget."
+      },
+      "max_output_tokens": {
+        "type": "integer",
+        "minimum": 0,
+        "semantics": "Maximum completion/output tokens. 0 = unknown; reserve headroom defaults apply in ALR ContextBudget."
+      }
+    },
+    "validation_rules": [
+      "metadata.models values MUST validate against schemas/v2/metadata-model-entry.json",
+      "context_window and max_output_tokens MUST NOT appear in capabilities.required or capabilities.optional",
+      "Parity: for models migrated from dist/v1/models, context_window MUST match v1 when v1 value > 0 (see scripts/verify-v1-v2-capacity-parity.js)"
+    ],
+    "consumer_notes": {
+      "ALR-P2-001": "ModelCapacity::new(context_window, max_output_tokens) → ContextBudget::from_capacity",
+      "EOS-P2": "/api/models exposes context_window and max_output to browser WASM assemble_context_messages",
+      "context_policy": "Future optional extension; not part of PT-075"
+    },
+    "example": {
+      "metadata": {
+        "models": {
+          "gpt-4o-mini": {
+            "context_window": 128000,
+            "max_output_tokens": 16384,
+            "status": "active"
+          }
         }
       }
     }

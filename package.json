@@ -36,7 +36,8 @@
     "fact-check:models": "node scripts/fact-check-models.js",
     "fact-check:models:strict": "node scripts/fact-check-models.js --strict",
     "fact-check:models:strict-all": "node scripts/fact-check-models.js --strict --require-keys",
-    "migrate:v2alpha-capacity": "node scripts/migrate-v1-capacity-to-v2alpha.js"
+    "migrate:v2alpha-capacity": "node scripts/migrate-v1-capacity-to-v2alpha.js",
+    "verify:v1-v2-capacity": "node scripts/verify-v1-v2-capacity-parity.js"
   },
   "engines": {
     "node": ">=18.0.0"
