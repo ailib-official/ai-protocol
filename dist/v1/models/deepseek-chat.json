@@ -4,8 +4,8 @@
   "models": {
     "deepseek-chat": {
       "provider": "deepseek",
-      "model_id": "deepseek-chat",
-      "display_name": "DeepSeek Chat",
+      "model_id": "deepseek-v4-pro",
+      "display_name": "DeepSeek Chat (V4 Pro)",
       "verification": {
         "status": "verified",
         "verified_at": "2026-01-28",
@@ -25,6 +25,29 @@
       "tags": [
         "deepseek",
         "chat",
+        "tools"
+      ]
+    },
+    "deepseek-reasoner": {
+      "provider": "deepseek",
+      "model_id": "deepseek-v4-flash",
+      "display_name": "DeepSeek Reasoner (V4 Flash)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-03-06",
+        "source": "deepseek-console"
+      },
+      "context_window": 64000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "deepseek",
+        "reasoning",
         "tools"
       ]
     }
