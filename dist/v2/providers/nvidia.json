@@ -1,21 +1,21 @@
 {
   "$schema": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json",
-  "id": "deepseek",
+  "id": "nvidia",
   "protocol_version": "2.0",
-  "name": "DeepSeek",
-  "version": "3.2.0",
+  "name": "NVIDIA NIM",
+  "version": "1.0.0",
   "status": "stable",
-  "category": "ai_provider",
-  "official_url": "https://api-docs.deepseek.com/",
-  "support_contact": "https://api-docs.deepseek.com/",
+  "category": "third_party_aggregator",
+  "official_url": "https://build.nvidia.com/explore/discover",
+  "support_contact": "https://docs.api.nvidia.com/nim/docs",
   "endpoint": {
-    "base_url": "https://api.deepseek.com/v1",
+    "base_url": "https://integrate.api.nvidia.com/v1",
     "chat": "/chat/completions",
     "auth": {
       "type": "bearer",
       "header": "Authorization",
       "prefix": "Bearer",
-      "token_env": "DEEPSEEK_API_KEY"
+      "token_env": "NVIDIA_API_KEY"
     }
   },
   "error_classification": {
@@ -24,7 +24,6 @@
       "401": "authentication",
       "403": "permission_denied",
       "404": "not_found",
-      "413": "request_too_large",
       "429": "rate_limited",
       "500": "server_error",
       "503": "overloaded"
@@ -32,14 +31,12 @@
     "by_error_code": {
       "context_length_exceeded": "request_too_large",
       "model_not_found": "not_found",
-      "rate_limit_exceeded": "rate_limited",
-      "insufficient_quota": "quota_exhausted"
+      "rate_limit_exceeded": "rate_limited"
     }
   },
   "availability": {
     "required": false,
     "regions": [
-      "cn",
       "global"
     ],
     "check": {
@@ -49,7 +46,7 @@
         200,
         401
       ],
-      "timeout_ms": 3000
+      "timeout_ms": 5000
     }
   },
   "capabilities": {
@@ -62,37 +59,12 @@
       "vision",
       "parallel_tools",
       "agentic",
-      "reasoning",
-      "structured_output",
-      "batch"
+      "reasoning"
     ],
     "feature_flags": {
-      "structured_output": true,
       "parallel_tool_calls": true,
-      "extended_thinking": true,
       "streaming_usage": true,
       "system_messages": true
-    }
-  },
-  "capability_profile": {
-    "phase": "ios_v1",
-    "inputs": {
-      "modalities": [
-        "text"
-      ]
-    },
-    "outcomes": {
-      "types": [
-        "text_completion",
-        "structured_json",
-        "tool_call_sequence"
-      ]
-    },
-    "systems": {
-      "requires": [
-        "mcp",
-        "search"
-      ]
     }
   },
   "parameters": {
@@ -114,20 +86,6 @@
       "range": [
         0,
         1
-      ]
-    },
-    "frequency_penalty": {
-      "type": "float",
-      "range": [
-        -2,
-        2
-      ]
-    },
-    "presence_penalty": {
-      "type": "float",
-      "range": [
-        -2,
-        2
       ]
     },
     "stream": {
@@ -189,8 +147,7 @@
         "encoding_methods": [
           "base64_inline",
           "url"
-        ],
-        "document_understanding": true
+        ]
       },
       "audio": {
         "supported": false
@@ -220,6 +177,13 @@
       "adapter": "openai"
     }
   },
+  "services": {
+    "list_models": {
+      "path": "/models",
+      "method": "GET",
+      "response_binding": "data"
+    }
+  },
   "retry_policy": {
     "strategy": "exponential_backoff",
     "max_retries": 3,
@@ -243,66 +207,31 @@
   },
   "metadata": {
     "api_compatibility": "openai",
-    "open_source": {
-      "license": "MIT",
-      "hugging_face": "https://huggingface.co/deepseek-ai/DeepSeek-V3.2"
-    },
     "models": {
-      "deepseek-v4-pro": {
+      "nvidia/llama-3.3-nemotron-super-49b-v1": {
         "context_window": 128000,
         "max_output_tokens": 8192,
-        "verification": {
-          "status": "operational",
-          "source": "velaclaw-trial"
-        },
-        "architecture": {
-          "type": "moe",
-          "total": "671B",
-          "active": "37B",
-          "experts": 256
-        },
-        "pricing": {
-          "input_per_1m": 0.28,
-          "output_per_1m": 0.42
-        }
-      },
-      "deepseek-v4-flash": {
-        "context_window": 128000,
-        "max_output_tokens": 8192,
-        "pricing": {
-          "input_per_1m": 0.55,
-          "output_per_1m": 2.19
-        }
-      },
-      "deepseek-chat": {
-        "context_window": 64000,
-        "max_output_tokens": 8192,
-        "deprecated": true,
-        "alias_of": "deepseek-v4-pro",
         "verification": {
           "status": "operational",
           "source": "eos",
-          "notes": "Legacy alias — use deepseek-v4-pro for API calls"
-        },
-        "architecture": {
-          "type": "moe",
-          "total": "671B",
-          "active": "37B",
-          "experts": 256
-        },
-        "pricing": {
-          "input_per_1m": 0.28,
-          "output_per_1m": 0.42
+          "notes": "HK deployment verified chat model (hiddenpath/eos main@299575a)"
         }
       },
-      "deepseek-reasoner": {
+      "meta/llama-3.1-8b-instruct": {
         "context_window": 128000,
         "max_output_tokens": 8192,
-        "deprecated": true,
-        "alias_of": "deepseek-v4-flash",
-        "pricing": {
-          "input_per_1m": 0.55,
-          "output_per_1m": 2.19
+        "verification": {
+          "status": "operational",
+          "source": "eos"
+        }
+      },
+      "moonshotai/kimi-k2-instruct": {
+        "context_window": 128000,
+        "max_output_tokens": 8192,
+        "verification": {
+          "status": "operational",
+          "source": "velaclaw-trial",
+          "notes": "NVIDIA API catalog — OpenAI-compatible chat"
         }
       }
     },

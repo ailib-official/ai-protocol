@@ -164,18 +164,34 @@ metadata:
     license: MIT
     hugging_face: "https://huggingface.co/deepseek-ai/DeepSeek-V3.2"
   models:
-    deepseek-chat:
-      context_window: 64000
+    deepseek-v4-pro:
+      context_window: 128000
       max_output_tokens: 8192
       verification:
         status: operational
+        source: velaclaw-trial
+      architecture: { type: moe, total: "671B", active: "37B", experts: 256 }
+      pricing: { input_per_1m: 0.28, output_per_1m: 0.42 }
+    deepseek-v4-flash:
+      context_window: 128000
+      max_output_tokens: 8192
+      pricing: { input_per_1m: 0.55, output_per_1m: 2.19 }
+    deepseek-chat:
+      context_window: 64000
+      max_output_tokens: 8192
+      deprecated: true
+      alias_of: deepseek-v4-pro
+      verification:
+        status: operational
         source: eos
-        notes: "Aligned with hiddenpath/eos default_providers (PR #3); official docs may list higher limits"
+        notes: "Legacy alias — use deepseek-v4-pro for API calls"
       architecture: { type: moe, total: "671B", active: "37B", experts: 256 }
       pricing: { input_per_1m: 0.28, output_per_1m: 0.42 }
     deepseek-reasoner:
       context_window: 128000
       max_output_tokens: 8192
+      deprecated: true
+      alias_of: deepseek-v4-flash
       pricing: { input_per_1m: 0.55, output_per_1m: 2.19 }
   sdk:
     note: "OpenAI-compatible — use openai SDK with base_url override"

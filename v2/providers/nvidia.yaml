@@ -157,6 +157,13 @@ metadata:
       verification:
         status: operational
         source: eos
+    moonshotai/kimi-k2-instruct:
+      context_window: 128000
+      max_output_tokens: 8192
+      verification:
+        status: operational
+        source: velaclaw-trial
+        notes: "NVIDIA API catalog — OpenAI-compatible chat"
   sdk:
     note: "OpenAI-compatible — use openai SDK with base_url override"
     python: openai
