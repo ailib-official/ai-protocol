@@ -41,6 +41,21 @@
       "server_error": "server_error"
     }
   },
+  "availability": {
+    "required": false,
+    "regions": [
+      "global"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/models",
+      "expected_status": [
+        200,
+        401
+      ],
+      "timeout_ms": 3000
+    }
+  },
   "capabilities": {
     "required": [
       "text",
@@ -69,6 +84,29 @@
       "streaming_usage": true,
       "system_messages": true,
       "image_generation": true
+    }
+  },
+  "capability_profile": {
+    "phase": "ios_v1",
+    "inputs": {
+      "modalities": [
+        "text",
+        "image",
+        "audio"
+      ]
+    },
+    "outcomes": {
+      "types": [
+        "text_completion",
+        "structured_json",
+        "tool_call_sequence"
+      ]
+    },
+    "systems": {
+      "requires": [
+        "mcp",
+        "search"
+      ]
     }
   },
   "parameters": {
@@ -385,6 +423,10 @@
         "max_output_tokens": 16384,
         "release_date": "2026-02-12",
         "status": "research_preview"
+      },
+      "gpt-4o-mini": {
+        "context_window": 128000,
+        "max_output_tokens": 16384
       }
     },
     "sdk": {

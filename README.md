@@ -183,6 +183,7 @@ npm run validate:schemas     # Validate JSON schema syntax only
 # Execution governance automation
 npm run drift:check          # Detect P0 provider/fixture/case drift
 npm run gate:manifest-consumption   # Cross-repo latest-manifest consumption gate
+npm run gate:manifest-authority     # Public manifest hygiene (TEST-002, no app provenance)
 npm run gate:compliance-matrix      # Cross-repo full compliance matrix gate
 npm run gate:fullchain             # One-shot governance fullchain gate
 npm run gate:fullchain:with-rollback # Fullchain + fail-fast rollback drill
@@ -196,6 +197,7 @@ node scripts/release-gate.js --report-only   # Advisory release gate report (non
 The canonical validation script is `scripts/validate.js`, which uses AJV v8 with JSON Schema 2020-12 and ajv-formats.  
 Execution governance scripts:
 - `scripts/drift-detect.js`: verifies P0 provider readiness coverage across v2 manifests, compliance fixtures, and loading cases
+- `scripts/gate-manifest-authority.js`: blocks hiddenpath URLs and application-specific provenance in manifest trees ([docs/MANIFEST_AUTHORITY.md](docs/MANIFEST_AUTHORITY.md), [ARCH-005])
 - `scripts/gate-manifest-consumption.js`: runs protocol + Rust/Python/TS latest-manifest consumption checks and writes gate report (`reports/manifest-gates/`)
 - `scripts/gate-compliance-matrix.js`: runs protocol + Rust/Python/TS compliance matrix checks and writes gate report (`reports/compliance-gates/`)
 - `scripts/gate-fullchain.js`: orchestrates drift + manifest + compliance + release gates in one run (`reports/fullchain-gates/`)

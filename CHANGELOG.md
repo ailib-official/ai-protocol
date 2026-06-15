@@ -4,6 +4,10 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ## Unreleased
 
+### Changed
+
+- **Manifest authority (P0–P2)**: Removed application-specific `verification.source` values (`eos`, `velaclaw-trial`) and `hiddenpath` deployment notes from v2 provider manifests (NVIDIA, Groq, OpenAI, Google, DeepSeek). `verification.source` is now an enum in `schemas/v2/metadata-model-entry.json`. New `docs/MANIFEST_AUTHORITY.md` and `npm run gate:manifest-authority` (TEST-002 + provenance hygiene); wired into `validate` CI and `gate-fullchain`.
+
 ### Added
 
 - **EOS-ARCH-R2 availability (Phase 0–1)**: Optional `approval_ids` on `schemas/v2/availability.json`; first v2 `availability.regions` usage on DeepSeek (cn+global reference), OpenAI, Google; new v2 providers **NVIDIA NIM** and **Groq** with Eos-aligned model capacity metadata; compliance cases `load-v2-availability-eos.yaml` (load-012–014).

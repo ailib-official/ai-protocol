@@ -1,21 +1,21 @@
 {
   "$schema": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json",
-  "id": "deepseek",
+  "id": "groq",
   "protocol_version": "2.0",
-  "name": "DeepSeek",
-  "version": "3.2.0",
+  "name": "Groq",
+  "version": "1.0.0",
   "status": "stable",
   "category": "ai_provider",
-  "official_url": "https://api-docs.deepseek.com/",
-  "support_contact": "https://api-docs.deepseek.com/",
+  "official_url": "https://console.groq.com/docs",
+  "support_contact": "https://support.groq.com",
   "endpoint": {
-    "base_url": "https://api.deepseek.com/v1",
+    "base_url": "https://api.groq.com/openai/v1",
     "chat": "/chat/completions",
     "auth": {
       "type": "bearer",
       "header": "Authorization",
       "prefix": "Bearer",
-      "token_env": "DEEPSEEK_API_KEY"
+      "token_env": "GROQ_API_KEY"
     }
   },
   "error_classification": {
@@ -24,7 +24,6 @@
       "401": "authentication",
       "403": "permission_denied",
       "404": "not_found",
-      "413": "request_too_large",
       "429": "rate_limited",
       "500": "server_error",
       "503": "overloaded"
@@ -32,14 +31,12 @@
     "by_error_code": {
       "context_length_exceeded": "request_too_large",
       "model_not_found": "not_found",
-      "rate_limit_exceeded": "rate_limited",
-      "insufficient_quota": "quota_exhausted"
+      "rate_limit_exceeded": "rate_limited"
     }
   },
   "availability": {
     "required": false,
     "regions": [
-      "cn",
       "global"
     ],
     "check": {
@@ -59,40 +56,13 @@
       "tools"
     ],
     "optional": [
-      "vision",
       "parallel_tools",
-      "agentic",
-      "reasoning",
-      "structured_output",
-      "batch"
+      "agentic"
     ],
     "feature_flags": {
-      "structured_output": true,
       "parallel_tool_calls": true,
-      "extended_thinking": true,
       "streaming_usage": true,
       "system_messages": true
-    }
-  },
-  "capability_profile": {
-    "phase": "ios_v1",
-    "inputs": {
-      "modalities": [
-        "text"
-      ]
-    },
-    "outcomes": {
-      "types": [
-        "text_completion",
-        "structured_json",
-        "tool_call_sequence"
-      ]
-    },
-    "systems": {
-      "requires": [
-        "mcp",
-        "search"
-      ]
     }
   },
   "parameters": {
@@ -114,20 +84,6 @@
       "range": [
         0,
         1
-      ]
-    },
-    "frequency_penalty": {
-      "type": "float",
-      "range": [
-        -2,
-        2
-      ]
-    },
-    "presence_penalty": {
-      "type": "float",
-      "range": [
-        -2,
-        2
       ]
     },
     "stream": {
@@ -179,18 +135,7 @@
   "multimodal": {
     "input": {
       "vision": {
-        "supported": true,
-        "formats": [
-          "jpeg",
-          "png",
-          "gif",
-          "webp"
-        ],
-        "encoding_methods": [
-          "base64_inline",
-          "url"
-        ],
-        "document_understanding": true
+        "supported": false
       },
       "audio": {
         "supported": false
@@ -220,6 +165,13 @@
       "adapter": "openai"
     }
   },
+  "services": {
+    "list_models": {
+      "path": "/models",
+      "method": "GET",
+      "response_binding": "data"
+    }
+  },
   "retry_policy": {
     "strategy": "exponential_backoff",
     "max_retries": 3,
@@ -243,69 +195,15 @@
   },
   "metadata": {
     "api_compatibility": "openai",
-    "open_source": {
-      "license": "MIT",
-      "hugging_face": "https://huggingface.co/deepseek-ai/DeepSeek-V3.2"
-    },
     "models": {
-      "deepseek-v4-pro": {
+      "llama-3.1-8b-instant": {
         "context_window": 128000,
         "max_output_tokens": 8192,
         "verification": {
           "status": "verified",
           "source": "official_documentation",
-          "verified_at": "2026-06-09",
-          "notes": "https://api-docs.deepseek.com/"
-        },
-        "architecture": {
-          "type": "moe",
-          "total": "671B",
-          "active": "37B",
-          "experts": 256
-        },
-        "pricing": {
-          "input_per_1m": 0.28,
-          "output_per_1m": 0.42
-        }
-      },
-      "deepseek-v4-flash": {
-        "context_window": 128000,
-        "max_output_tokens": 8192,
-        "pricing": {
-          "input_per_1m": 0.55,
-          "output_per_1m": 2.19
-        }
-      },
-      "deepseek-chat": {
-        "context_window": 64000,
-        "max_output_tokens": 8192,
-        "deprecated": true,
-        "alias_of": "deepseek-v4-pro",
-        "verification": {
-          "status": "deprecated",
-          "source": "official_documentation",
-          "verified_at": "2026-06-09",
-          "notes": "Legacy alias — use deepseek-v4-pro for API calls"
-        },
-        "architecture": {
-          "type": "moe",
-          "total": "671B",
-          "active": "37B",
-          "experts": 256
-        },
-        "pricing": {
-          "input_per_1m": 0.28,
-          "output_per_1m": 0.42
-        }
-      },
-      "deepseek-reasoner": {
-        "context_window": 128000,
-        "max_output_tokens": 8192,
-        "deprecated": true,
-        "alias_of": "deepseek-v4-flash",
-        "pricing": {
-          "input_per_1m": 0.55,
-          "output_per_1m": 2.19
+          "verified_at": "2026-05-29",
+          "notes": "https://console.groq.com/docs/models"
         }
       }
     },

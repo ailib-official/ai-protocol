@@ -1,4 +1,4 @@
-# Groq V2 provider — OpenAI-compatible fast inference (Eos default)
+# Groq V2 provider — OpenAI-compatible fast inference
 # AI-Protocol V2 Provider Manifest
 # Last Updated: 2026-05-29
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
@@ -144,9 +144,10 @@ metadata:
       context_window: 128000
       max_output_tokens: 8192
       verification:
-        status: operational
-        source: eos
-        notes: "Eos default Groq model (hiddenpath/eos PR #3)"
+        status: verified
+        source: official_documentation
+        verified_at: "2026-05-29"
+        notes: "https://console.groq.com/docs/models"
   sdk:
     note: "OpenAI-compatible — use openai SDK with base_url override"
     python: openai

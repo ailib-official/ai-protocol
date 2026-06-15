@@ -39,6 +39,21 @@
       "DEADLINE_EXCEEDED": "timeout"
     }
   },
+  "availability": {
+    "required": false,
+    "regions": [
+      "global"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/models",
+      "expected_status": [
+        200,
+        401
+      ],
+      "timeout_ms": 3000
+    }
+  },
   "capabilities": {
     "required": [
       "text",
@@ -62,6 +77,30 @@
       "extended_thinking": true,
       "streaming_usage": false,
       "system_messages": true
+    }
+  },
+  "capability_profile": {
+    "phase": "ios_v1",
+    "inputs": {
+      "modalities": [
+        "text",
+        "image",
+        "audio",
+        "video"
+      ]
+    },
+    "outcomes": {
+      "types": [
+        "text_completion",
+        "structured_json",
+        "tool_call_sequence"
+      ]
+    },
+    "systems": {
+      "requires": [
+        "mcp",
+        "search"
+      ]
     }
   },
   "parameters": {
@@ -349,6 +388,22 @@
           "input_per_1m": 0.15,
           "output_per_1m": 0.6
         }
+      },
+      "gemini-2.5-flash-lite": {
+        "context_window": 1048576,
+        "max_output_tokens": 65536
+      },
+      "gemini-2.5-flash": {
+        "context_window": 1048576,
+        "max_output_tokens": 65536
+      },
+      "gemini-2.5-pro": {
+        "context_window": 2097152,
+        "max_output_tokens": 65536
+      },
+      "gemini-3.1-flash-lite-preview": {
+        "context_window": 1048576,
+        "max_output_tokens": 65536
       }
     },
     "context_caching": {

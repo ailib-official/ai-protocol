@@ -625,7 +625,7 @@ models:
 
 ### Verification
 
-Add verification metadata (optional but recommended):
+Add verification metadata (optional but recommended). **Public manifests must not embed application or deployment provenance** (e.g. `eos`, `velaclaw-trial`, `hiddenpath` URLs, PR numbers). See [MANIFEST_AUTHORITY.md](./MANIFEST_AUTHORITY.md).
 
 ```yaml
 models:
@@ -638,12 +638,12 @@ models:
       input_per_token: 0.000001
       output_per_token: 0.000002
 
-    # Optional verification meta
+    # Optional verification meta (v2 metadata.models)
     verification:
       status: "verified"
       verified_at: "2026-02-05"
-      source: "official_documentation"
-      notes: "Tested with API endpoints /v1/chat/completions"
+      source: "official_documentation"  # api_probe | compliance_registry | provider_catalog
+      notes: "https://docs.example.com/models/my-model"
 ```
 
 ---
