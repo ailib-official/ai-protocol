@@ -44,6 +44,7 @@ jobs:
       run: |
         npm ci
         npm run validate
+        npm run gate:manifest-authority
 
     - name: Build JSON artifacts
       run: npm run build

@@ -212,26 +212,30 @@
         "context_window": 128000,
         "max_output_tokens": 8192,
         "verification": {
-          "status": "operational",
-          "source": "eos",
-          "notes": "HK deployment verified chat model (hiddenpath/eos main@299575a)"
+          "status": "verified",
+          "source": "api_probe",
+          "verified_at": "2026-05-28",
+          "notes": "Chat completions smoke-tested on NVIDIA API catalog"
         }
       },
       "meta/llama-3.1-8b-instruct": {
         "context_window": 128000,
         "max_output_tokens": 8192,
         "verification": {
-          "status": "operational",
-          "source": "eos"
+          "status": "verified",
+          "source": "provider_catalog",
+          "verified_at": "2026-02-04",
+          "notes": "https://docs.api.nvidia.com/nim/reference/llm-apis"
         }
       },
       "moonshotai/kimi-k2-instruct": {
         "context_window": 128000,
         "max_output_tokens": 8192,
         "verification": {
-          "status": "operational",
-          "source": "velaclaw-trial",
-          "notes": "NVIDIA API catalog — OpenAI-compatible chat"
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-02-04",
+          "notes": "https://docs.api.nvidia.com/nim/reference/moonshotai-kimi-k2-instruct"
         }
       }
     },

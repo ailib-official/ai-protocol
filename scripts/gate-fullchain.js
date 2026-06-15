@@ -55,6 +55,10 @@ function main() {
   const checks = [
     { label: 'drift-check', command: `node scripts/drift-detect.js${reportOnly ? ' --report-only' : ''}` },
     {
+      label: 'manifest-authority-gate',
+      command: 'node scripts/gate-manifest-authority.js',
+    },
+    {
       label: 'manifest-consumption-gate',
       command: `node scripts/gate-manifest-consumption.js${reportOnly ? ' --report-only' : ''}`,
     },

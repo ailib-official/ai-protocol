@@ -1,0 +1,19 @@
+# Protocol Loading - manifest authority (no app-specific provenance in YAML sources)
+
+---
+suite: "protocol-loading"
+name: "V2 NVIDIA manifest passes manifest-authority hygiene"
+id: "load-022"
+description: "NVIDIA v2 provider must not embed eos/hiddenpath/velaclaw verification sources"
+tags: ["protocol-loading", "nvidia", "v2", "governance", "manifest-authority"]
+setup:
+  provider: "nvidia"
+  manifest_path: "../../../../v2/providers/nvidia.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../v2/providers/nvidia.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "nvidia"
+  protocol_version: "2.0"

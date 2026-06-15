@@ -168,8 +168,10 @@ metadata:
       context_window: 128000
       max_output_tokens: 8192
       verification:
-        status: operational
-        source: velaclaw-trial
+        status: verified
+        source: official_documentation
+        verified_at: "2026-06-09"
+        notes: "https://api-docs.deepseek.com/"
       architecture: { type: moe, total: "671B", active: "37B", experts: 256 }
       pricing: { input_per_1m: 0.28, output_per_1m: 0.42 }
     deepseek-v4-flash:
@@ -182,8 +184,9 @@ metadata:
       deprecated: true
       alias_of: deepseek-v4-pro
       verification:
-        status: operational
-        source: eos
+        status: deprecated
+        source: official_documentation
+        verified_at: "2026-06-09"
         notes: "Legacy alias — use deepseek-v4-pro for API calls"
       architecture: { type: moe, total: "671B", active: "37B", experts: 256 }
       pricing: { input_per_1m: 0.28, output_per_1m: 0.42 }

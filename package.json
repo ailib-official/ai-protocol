@@ -22,6 +22,7 @@
     "validate:capability-profile": "node scripts/validate-capability-profile-boundary.js",
     "drift:check": "node scripts/drift-detect.js",
     "gate:manifest-consumption": "node scripts/gate-manifest-consumption.js",
+    "gate:manifest-authority": "node scripts/gate-manifest-authority.js",
     "gate:compliance-matrix": "node scripts/gate-compliance-matrix.js",
     "gate:compliance-matrix:required": "node scripts/gate-compliance-matrix.js",
     "gate:compliance-matrix:report-only": "node scripts/gate-compliance-matrix.js --report-only",
