@@ -1,0 +1,20 @@
+# Protocol Loading - forward compatibility (unknown field tolerance)
+
+---
+suite: "protocol-loading"
+name: "V2 manifest tolerates unknown top-level extension fields"
+id: "load-023"
+description: "Manifests with future/unknown top-level keys must load without deserialization errors"
+tags: ["protocol-loading", "forward-compat", "v2", "governance"]
+setup:
+  provider: "google"
+  manifest_path: "fixtures/providers/mock-forward-compat-unknown-fields-v2.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/providers/mock-forward-compat-unknown-fields-v2.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "google"
+  protocol_version: "2.0"
+  runtime_deserialize: true

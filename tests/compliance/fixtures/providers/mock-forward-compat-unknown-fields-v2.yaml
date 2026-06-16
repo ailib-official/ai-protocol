@@ -1,0 +1,22 @@
+# Forward-compat fixture: unknown top-level fields must not break runtime parsing.
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
+id: google
+protocol_version: "2.0"
+endpoint:
+  base_url: "https://generativelanguage.googleapis.com/v1beta"
+  chat: "/models/{model}:generateContent"
+  auth:
+    type: bearer
+    token_env: "GEMINI_API_KEY"
+error_classification:
+  by_http_status:
+    "429": "rate_limited"
+capabilities:
+  required: ["text", "streaming", "tools"]
+  optional: ["vision", "audio", "video", "image_generation", "stt", "tts"]
+# Future manifest fields — runtimes must ignore, not reject.
+reasoning_effort:
+  supported: true
+  values: [low, medium, high]
+max_context_window: 2000000
+future_extension_flag: true
