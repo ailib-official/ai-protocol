@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/pack.json",
+  "title": "AI-Protocol V2 Prism Pack Manifest",
+  "description": "Prism Pack capability contract: a curated bundle of provider routes for cost/latency/balanced routing. Extends the v2 provider manifest ecosystem; references provider ids and model ids from ai-protocol v2 provider manifests. Contract only — no marketplace or registry implementation.",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "version",
+    "protocol_version",
+    "provider_routes"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Schema reference URL (must point to schemas/v2/pack.json)"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-_]{1,63}$",
+      "description": "Stable pack identifier (lowercase, alphanumeric, hyphens, underscores)"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable pack name"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.]+)?$",
+      "description": "Pack manifest SemVer"
+    },
+    "protocol_version": {
+      "type": "string",
+      "const": "2.0",
+      "description": "AI-Protocol version this pack conforms to"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short summary of pack intent and routing strategy"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "stable", "deprecated"],
+      "default": "draft",
+      "description": "Pack lifecycle status"
+    },
+    "optimize_default": {
+      "type": "string",
+      "enum": ["cost", "latency", "balanced"],
+      "default": "cost",
+      "description": "Default routing optimize mode when the consumer does not specify one (aligns with Prism /v1/route/decide)"
+    },
+    "provider_routes": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered provider/model routes; lower priority value = higher preference within the same optimize mode",
+      "items": {
+        "$ref": "#/$defs/provider_route"
+      }
+    },
+    "signing_info": {
+      "$ref": "#/$defs/signing_info",
+      "description": "Optional publisher signature metadata (future registry use; not required for draft packs)"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Opaque publisher metadata (tags, docs links, billing hints)",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "provider_route": {
+      "type": "object",
+      "required": ["provider", "model", "priority"],
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-_]{1,63}$",
+          "description": "Provider id — must match an ai-protocol v2 provider manifest id"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Model id within the provider manifest metadata.models"
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Route preference rank (0 = primary)"
+        },
+        "cost_weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Relative cost weight for balanced optimize mode (0 = ignore cost, 1 = cost-only)"
+        },
+        "capability_tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "description": "Capability tags for filtering (e.g. chat, reasoning, vision)"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Publisher notes for this route (alias handling, SLA caveats)"
+        }
+      }
+    },
+    "signing_info": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "publisher": {
+          "type": "string",
+          "description": "Publisher identity (org or individual)"
+        },
+        "signed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 signature timestamp"
+        },
+        "algorithm": {
+          "type": "string",
+          "enum": ["ed25519", "rsa-pss-sha256"],
+          "description": "Signature algorithm identifier"
+        },
+        "public_key_id": {
+          "type": "string",
+          "description": "Key id for verifying the pack manifest signature"
+        },
+        "signature": {
+          "type": "string",
+          "description": "Base64-encoded detached signature over canonical JSON (registry TBD)"
+        }
+      }
+    }
+  }
+}

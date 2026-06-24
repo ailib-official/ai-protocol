@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/pack.json",
+  "id": "deepseek-economy-pack",
+  "name": "DeepSeek Economy Pack",
+  "version": "0.1.0",
+  "protocol_version": "2.0",
+  "description": "Cost-optimized chat routes centered on DeepSeek models. Primary: deepseek-chat; fallback: deepseek-reasoner for reasoning-tagged requests. NOT PRODUCTION SLA — example pack for Prism Pack contract (PR-PP-001).",
+  "status": "draft",
+  "optimize_default": "cost",
+  "provider_routes": [
+    {
+      "provider": "deepseek",
+      "model": "deepseek-chat",
+      "priority": 0,
+      "cost_weight": 1.0,
+      "capability_tags": ["chat", "economy"],
+      "notes": "Primary economy route; legacy alias of deepseek-v4-pro per provider manifest"
+    },
+    {
+      "provider": "deepseek",
+      "model": "deepseek-reasoner",
+      "priority": 1,
+      "cost_weight": 0.85,
+      "capability_tags": ["chat", "reasoning"],
+      "notes": "Reasoning-capable fallback; higher cost than deepseek-chat"
+    },
+    {
+      "provider": "groq",
+      "model": "llama-3.1-8b-instant",
+      "priority": 2,
+      "cost_weight": 0.7,
+      "capability_tags": ["chat", "fallback"],
+      "notes": "Cross-provider fallback when DeepSeek is unhealthy (aligns with prism-core cost_router fixtures)"
+    }
+  ],
+  "metadata": {
+    "publisher": "ailib-prism",
+    "task_ref": "PR-PP-001",
+    "docs": "https://github.com/ailib-official/ai-protocol/blob/main/docs/PACK_SPECIFICATION.md",
+    "billing_hint": "pay_per_use",
+    "sla": "NOT PRODUCTION SLA — contract example only"
+  }
+}

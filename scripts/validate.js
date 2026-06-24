@@ -41,6 +41,7 @@ const colors = {
 // Supports: main, master, or semantic version tags (v1.0, v1.0.0, v0.2.1, etc.)
 const SCHEMA_V1_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/ailib-official\/ai-protocol\/(main|master|v\d+\.\d+(\.\d+)?)\/schemas\/v1\.json|(\.\.\/)+schemas\/v1\.json)$/;
 const SCHEMA_V2_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/ailib-official\/ai-protocol\/(main|master|v\d+\.\d+(\.\d+)?)\/schemas\/v2\/provider\.json|(\.\.\/)+schemas\/v2\/provider\.json)$/;
+const SCHEMA_PACK_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/ailib-official\/ai-protocol\/(main|master|v\d+\.\d+(\.\d+)?)\/schemas\/v2\/pack\.json|(\.\.\/)+schemas\/v2\/pack\.json)$/;
 
 // Validation results tracking
 const results = {
@@ -289,11 +290,50 @@ function getYamlFiles(dir) {
 }
 
 /**
+ * Get all JSON files in a directory (recursive)
+ */
+function getJsonFiles(dir) {
+  const collected = [];
+
+  const walk = (currentDir) => {
+    let entries = [];
+    try {
+      entries = readdirSync(currentDir);
+    } catch (error) {
+      return;
+    }
+
+    entries.forEach(entry => {
+      const fullPath = join(currentDir, entry);
+      let stats;
+      try {
+        stats = statSync(fullPath);
+      } catch (error) {
+        return;
+      }
+
+      if (stats.isDirectory()) {
+        if (entry === 'node_modules' || entry.startsWith('.')) {
+          return;
+        }
+        walk(fullPath);
+      } else if (stats.isFile() && entry.endsWith('.json')) {
+        collected.push(fullPath);
+      }
+    });
+  };
+
+  walk(dir);
+  return collected;
+}
+
+/**
  * Main validation function
  */
 function main() {
   const args = process.argv.slice(2);
   const validateProviders = args.includes('--providers') || args.length === 0;
+  const validatePacks = args.includes('--packs') || args.length === 0;
   const validateModels = args.includes('--models') || args.length === 0;
   const validateExamples = args.includes('--examples');
   const validateSchemas = args.includes('--schemas') || args.length === 0;
@@ -374,7 +414,7 @@ function main() {
   let v2SubSchemas = [];
   try {
     v2SubSchemas = readdirSync(v2SchemaDir)
-      .filter((f) => f.endsWith('.json') && f !== 'provider.json');
+      .filter((f) => f.endsWith('.json') && f !== 'provider.json' && f !== 'pack.json');
   } catch (e) {
     v2SubSchemas = [];
   }
@@ -423,6 +463,25 @@ function main() {
     } else {
       providerFilesV2.forEach(file => {
         validateFile(file, schemaPathV2, v2Validator, v2SchemaCache, SCHEMA_V2_PATTERN);
+      });
+    }
+    console.log('');
+  }
+
+  // Validate v2 Prism pack manifests (JSON)
+  if (validatePacks) {
+    console.log(`${colors.blue}📋 Validating v2 pack manifests...${colors.reset}`);
+    console.log('----------------------------------------');
+
+    const packDir = join(ROOT_DIR, 'v2', 'packs');
+    const packFiles = getJsonFiles(packDir);
+    const packSchemaPath = join(ROOT_DIR, 'schemas', 'v2', 'pack.json');
+
+    if (packFiles.length === 0) {
+      console.log(`${colors.yellow}⚠️  No pack JSON files found in ${packDir}${colors.reset}`);
+    } else {
+      packFiles.forEach(file => {
+        validateFile(file, packSchemaPath, v2Validator, v2SchemaCache, SCHEMA_PACK_PATTERN);
       });
     }
     console.log('');
