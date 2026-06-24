@@ -1,0 +1,123 @@
+# Text Tool Call — Standard format parsing (L1 strict)
+
+---
+suite: "text-tool-call"
+name: "Parse standard tool_call block"
+id: "ttc-001"
+description: "Verify strict parsing of canonical <tool_call> JSON format"
+tags: ["text-tool-call", "basic-parse", "P0"]
+input:
+  type: "text_tool_parse"
+  response_text: |
+    I'll list the files for you.
+    <tool_call>
+    {"name": "shell", "arguments": {"command": "ls -la"}}
+    </tool_call>
+  config:
+    lenient_parsing: false
+expected:
+  remaining_text: "I'll list the files for you."
+  tool_calls:
+    - name: "shell"
+      arguments: {"command": "ls -la"}
+
+---
+suite: "text-tool-call"
+name: "Parse attribute name variant"
+id: "ttc-002"
+description: "Lenient parser extracts name from XML attribute and maps parameters to arguments"
+tags: ["text-tool-call", "attribute-variant", "P0"]
+input:
+  type: "text_tool_parse"
+  response_text: |
+    <tool_call name="shell">{"command": "ls"}</tool_call>
+  config:
+    lenient_parsing: true
+expected:
+  remaining_text: ""
+  tool_calls:
+    - name: "shell"
+      arguments: {"command": "ls"}
+
+---
+suite: "text-tool-call"
+name: "Unwrap nested tool_calls wrapper"
+id: "ttc-003"
+description: "Lenient parser strips <tool_calls> outer wrapper and ignores id attribute"
+tags: ["text-tool-call", "nested-wrapper", "P0"]
+input:
+  type: "text_tool_parse"
+  response_text: |
+    <tool_calls>
+    <tool_call id="1">{"name": "shell", "parameters": {"command": "ls"}}</tool_call>
+    </tool_calls>
+  config:
+    lenient_parsing: true
+expected:
+  remaining_text: ""
+  tool_calls:
+    - name: "shell"
+      arguments: {"command": "ls"}
+
+---
+suite: "text-tool-call"
+name: "Map field alias parameters to arguments"
+id: "ttc-004"
+description: "Lenient parser normalizes parameters/params/args to arguments"
+tags: ["text-tool-call", "field-alias", "P0"]
+input:
+  type: "text_tool_parse"
+  response_text: |
+    <tool_call>
+    {"name": "search", "params": {"query": "AI protocol", "limit": 10}}
+    </tool_call>
+  config:
+    lenient_parsing: true
+expected:
+  remaining_text: ""
+  tool_calls:
+    - name: "search"
+      arguments: {"query": "AI protocol", "limit": 10}
+
+---
+suite: "text-tool-call"
+name: "Adapt shell dialect to standard tool"
+id: "ttc-005"
+description: "Lenient parser maps <shell><command> dialect to shell tool"
+tags: ["text-tool-call", "dialect", "P0"]
+input:
+  type: "text_tool_parse"
+  response_text: |
+    Running command:
+    <shell><command>ls</command></shell>
+  config:
+    lenient_parsing: true
+expected:
+  remaining_text: "Running command:"
+  tool_calls:
+    - name: "shell"
+      arguments: {"command": "ls"}
+
+---
+suite: "text-tool-call"
+name: "Generate L2 prompt with tool list"
+id: "ttc-006"
+description: "Verify prompt_instructions includes tool names and counterexample warnings"
+tags: ["text-tool-call", "prompt-compliance", "P1"]
+input:
+  type: "text_tool_prompt"
+  tools:
+    - name: "shell"
+      description: "Execute shell commands"
+    - name: "file_read"
+      description: "Read file contents"
+  config:
+    prompt_level: "L2"
+    locale: "en"
+expected:
+  prompt_contains:
+    - "<tool_call>"
+    - "shell"
+    - "file_read"
+    - "<shell>"
+    - "WILL BE IGNORED"

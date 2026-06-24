@@ -158,6 +158,26 @@ termination:
     length: "max_tokens"
     tool_calls: "tool_use"
 
+tool_calling:
+  native:
+    supported: true
+    reliability: partial
+    parallel: true
+    streaming: true
+    notes: "deepseek-reasoner function calling unstable; recommend text fallback"
+  text_fallback:
+    format: xml_json
+    wrapper: tool_call
+    body: json
+    name_location: json_field
+    args_key: parameters
+    known_dialects:
+      - tag: shell
+        map_to: shell
+      - tag: bash
+        map_to: shell
+    prompt_level: L2
+
 metadata:
   api_compatibility: openai
   open_source:

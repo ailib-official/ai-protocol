@@ -1,0 +1,66 @@
+# Text Tool Call Format Specification
+# AI-Protocol — 文本工具调用标准格式
+# Version: 1.0.0 | Status: draft
+
+version: "1.0.0"
+status: draft
+
+# Canonical wire format for LLMs that cannot use native function calling.
+standard_format:
+  wrapper_tag: "tool_call"
+  body_format: json
+  required_fields:
+    - name        # string — tool name
+    - arguments   # object — tool parameters
+  example: |
+    <tool_call>
+    {"name": "shell", "arguments": {"command": "ls -la"}}
+    </tool_call>
+
+# Field aliases accepted by lenient parser (L2)
+field_aliases:
+  arguments:
+    - parameters
+    - params
+    - args
+  name:
+    attribute: "name"   # <tool_call name="shell">...</tool_call>
+
+# Wrapper aliases stripped by lenient parser (L3)
+wrapper_aliases:
+  outer:
+    - tool_calls
+  ignored_attributes:
+    - id
+    - index
+
+# Known dialect mappings (L4) — tag → standard tool name
+known_dialects:
+  - tag: shell
+    map_to: shell
+    extract:
+      command: "command"   # <shell><command>...</command></shell>
+  - tag: bash
+    map_to: shell
+    extract:
+      command: "text"      # <bash>...</bash> — inner text as command
+  - tag: function
+    map_to: "$attribute"   # <function name="x"> — name from attribute
+
+# Tool result round-trip format (inserted into conversation as assistant/user text)
+result_format:
+  wrapper_tag: "tool_result"
+  body_format: json
+  required_fields:
+    - tool_use_id
+    - content
+  example: |
+    <tool_result>
+    {"tool_use_id": "call_abc", "content": "file listing output..."}
+    </tool_result>
+
+# Error handling
+error_handling:
+  on_unrecognized_format: ignore   # leave as plain text, do not execute
+  on_malformed_json: skip_call     # skip individual call, continue parsing others
+  max_call_depth: 1                # no recursive tool_call inside tool_call body
