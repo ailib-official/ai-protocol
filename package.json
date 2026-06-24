@@ -17,6 +17,7 @@
     "validate:providers": "node scripts/validate.js --providers",
     "validate:models": "node scripts/validate.js --models",
     "validate:examples": "node scripts/validate.js --examples",
+    "validate:packs": "node scripts/validate.js --packs",
     "validate:schemas": "node scripts/validate.js --schemas",
     "validate:specs": "node scripts/validate.js --specs",
     "validate:capability-profile": "node scripts/validate-capability-profile-boundary.js",
