@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/tool-calling.json",
+  "title": "Tool Calling Capability Declaration",
+  "description": "Describes native function calling support and text fallback configuration for a provider.",
+  "type": "object",
+  "properties": {
+    "native": {
+      "type": "object",
+      "properties": {
+        "supported": { "type": "boolean", "default": true },
+        "reliability": {
+          "type": "string",
+          "enum": ["full", "partial", "unreliable"],
+          "default": "full"
+        },
+        "parallel": { "type": "boolean" },
+        "streaming": { "type": "boolean" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "text_fallback": {
+      "type": ["object", "null"],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": ["xml_json", "markdown_fence", "custom"]
+        },
+        "wrapper": { "type": "string" },
+        "body": {
+          "type": "string",
+          "enum": ["json", "yaml", "plain"]
+        },
+        "name_location": {
+          "type": "string",
+          "enum": ["attribute", "json_field"]
+        },
+        "args_key": { "type": "string" },
+        "known_dialects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["tag", "map_to"],
+            "properties": {
+              "tag": { "type": "string" },
+              "map_to": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "prompt_level": {
+          "type": "string",
+          "enum": ["L1", "L2", "L3"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

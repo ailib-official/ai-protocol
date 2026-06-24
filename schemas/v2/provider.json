@@ -205,6 +205,10 @@
     "pricing": {
       "$ref": "./pricing.json",
       "description": "Optional pricing for cost estimation (per 1k tokens)"
+    },
+    "tool_calling": {
+      "$ref": "./tool-calling.json",
+      "description": "Native function calling and text fallback configuration (optional)"
     }
   },
   "additionalProperties": false

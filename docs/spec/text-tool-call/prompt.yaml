@@ -1,0 +1,125 @@
+# Text Tool Call Prompt Templates
+# AI-Protocol — L1/L2/L3 三级 prompt 策略
+# Version: 1.0.0 | Status: draft
+
+version: "1.0.0"
+status: draft
+
+levels:
+  L1:
+    description: "Standard instruction + example — obedient models (GPT-4, Claude)"
+    en: |
+      ## Tool Use Protocol
+
+      You have access to tools. To invoke a tool, output EXACTLY:
+
+      <tool_call>
+      {"name": "tool_name", "arguments": {"param": "value"}}
+      </tool_call>
+
+      Rules:
+      - JSON must contain "name" (string) and "arguments" (object).
+      - One tool call per <tool_call> block.
+      - Plain text outside tool call blocks is shown to the user.
+    zh: |
+      ## 工具调用协议
+
+      你可以使用工具。调用工具时，必须严格输出以下格式：
+
+      <tool_call>
+      {"name": "工具名", "arguments": {"参数": "值"}}
+      </tool_call>
+
+      规则：
+      - JSON 必须包含 "name"（字符串）和 "arguments"（对象）。
+      - 每个 <tool_call> 块只包含一次工具调用。
+      - 工具调用块之外的文本将展示给用户。
+
+  L2:
+    description: "Counterexample warnings — models with format bias (DeepSeek, Ollama)"
+    en: |
+      ## Tool Use Protocol
+
+      You have access to tools. To invoke a tool, output EXACTLY:
+
+      <tool_call>
+      {"name": "tool_name", "arguments": {"param": "value"}}
+      </tool_call>
+
+      CRITICAL RULES:
+      - Use <tool_call> ONLY. <shell>, <bash>, <function> WILL BE IGNORED.
+      - JSON must contain "name" (string) and "arguments" (object).
+      - Do NOT wrap in <tool_calls> or any other tag.
+      - Do NOT put "name" in XML attributes — it must be inside the JSON body.
+      - If you output any other format, the tool WILL NOT execute.
+
+      Available tools:
+      {tool_list}
+    zh: |
+      ## 工具调用协议
+
+      你可以使用工具。调用工具时，必须严格输出以下格式：
+
+      <tool_call>
+      {"name": "工具名", "arguments": {"参数": "值"}}
+      </tool_call>
+
+      关键规则：
+      - 只能使用 <tool_call>。<shell>、<bash>、<function> 将被忽略。
+      - JSON 必须包含 "name" 和 "arguments"。
+      - 不要用 <tool_calls> 或其他标签包裹。
+      - 不要把 name 放在 XML 属性中 — 必须在 JSON 体内。
+      - 任何其他格式都不会被执行。
+
+      可用工具：
+      {tool_list}
+
+  L3:
+    description: "Few-shot examples — stubborn models"
+    en: |
+      ## Tool Use Protocol
+
+      Example conversation:
+
+      User: List files in the current directory.
+      Assistant: I'll list the files for you.
+      <tool_call>
+      {"name": "shell", "arguments": {"command": "ls -la"}}
+      </tool_call>
+
+      User: Read config.toml
+      Assistant:
+      <tool_call>
+      {"name": "file_read", "arguments": {"path": "config.toml"}}
+      </tool_call>
+
+      Now follow the same format for your tools:
+
+      <tool_call>
+      {"name": "tool_name", "arguments": {"param": "value"}}
+      </tool_call>
+
+      CRITICAL: <shell>, <bash>, <function> formats WILL BE IGNORED.
+
+      Available tools:
+      {tool_list}
+    zh: |
+      ## 工具调用协议 — 示例
+
+      示例对话：
+
+      用户：列出当前目录文件。
+      助手：我来列出文件。
+      <tool_call>
+      {"name": "shell", "arguments": {"command": "ls -la"}}
+      </tool_call>
+
+      请严格遵循相同格式。禁止使用 <shell>、<bash>、<function>。
+
+      可用工具：
+      {tool_list}
+
+variables:
+  tool_list:
+    template: "- {name}: {description}"
+    separator: "\n"
