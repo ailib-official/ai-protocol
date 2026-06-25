@@ -1,21 +1,22 @@
-# 智谱 GLM-5 V2 正式提供商清单 — SOTA 开源编码模型，OpenAI 兼容 API
+# Zhipu GLM-5.2 V2 Provider Manifest — SOTA 开源编码 + 视觉 Agent 模型
 # AI-Protocol V2 Provider Manifest
-# Provider: Zhipu AI (智谱AI) | Models: GLM-5
-# Last Updated: 2026-02-16
+# Provider: Zhipu AI (智谱AI) | Models: GLM-5.2 / GLM-5V-Turbo
+# Last Updated: 2026-06-26 (updated from GLM-5 → 5.2)
+# Source: https://z.ai/blog/glm-5 (2026-02), https://docs.z.ai (2026-06)
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 
 # === Ring 1: Core Skeleton ===
 id: zhipu
 protocol_version: "2.0"
 name: "Zhipu AI"
-version: "5.0.0"
+version: "5.2.0"
 status: stable
 category: ai_provider
-official_url: "https://open.bigmodel.cn/dev/api"
-support_contact: "https://open.bigmodel.cn/"
+official_url: "https://docs.z.ai"
+support_contact: "https://z.ai"
 
 endpoint:
-  base_url: "https://open.bigmodel.cn/api/paas/v4"
+  base_url: "https://api.z.ai/api/paas/v4"
   chat: "/chat/completions"
   auth:
     type: "bearer"
@@ -27,6 +28,7 @@ error_classification:
   by_http_status:
     "400": "invalid_request"
     "401": "authentication"
+    "402": "insufficient_quota"
     "403": "permission_denied"
     "404": "not_found"
     "429": "rate_limited"
@@ -42,6 +44,7 @@ availability:
   required: false
   regions:
     - cn
+    - global
   check:
     method: GET
     path: "/models"
@@ -55,6 +58,7 @@ capabilities:
     - streaming
     - tools
   optional:
+    - vision
     - parallel_tools
     - agentic
     - reasoning
@@ -62,23 +66,34 @@ capabilities:
   feature_flags:
     structured_output: true
     parallel_tool_calls: true
+    extended_thinking: true
     streaming_usage: true
     system_messages: true
 
+  tool_calling:
+    native:
+      reliability: "full"
+    text_fallback:
+      enabled: false
+
 capability_profile:
-  phase: "ios_v1"
+  phase: "production"
   inputs:
     modalities: ["text", "image"]
   outcomes:
     types: ["text_completion", "structured_json", "tool_call_sequence"]
   systems:
-    requires: ["mcp", "search"]
+    requires: ["mcp"]
+  mcp_atlas:
+    evaluated: true
+    benchmark: "500-task public subset"
 
 parameters:
-  temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
+  temperature: { type: float, range: [0.0, 1.0], default: 0.7 }
   max_tokens: { type: integer, min: 1, max: 128000 }
   top_p: { type: float, range: [0.0, 1.0] }
   stream: { type: boolean }
+  reasoning_effort: { type: string, enum: ["high", "max"], default: "max" }
 
 streaming:
   decoder:
@@ -94,6 +109,10 @@ streaming:
       emit: "PartialContentDelta"
       fields:
         content: "$.choices[*].delta.content"
+    - match: "exists($.choices[*].delta.reasoning_content)"
+      emit: "ThinkingDelta"
+      fields:
+        thinking: "$.choices[*].delta.reasoning_content"
     - match: "exists($.choices[*].delta.tool_calls)"
       emit: "PartialToolCall"
       fields:
@@ -111,11 +130,17 @@ streaming:
 multimodal:
   input:
     vision:
-      supported: false
+      supported: true
+      models: ["glm-5v-turbo"]
+      formats: ["jpeg", "png", "webp"]
+      encoding_methods: ["base64_inline", "url"]
+      document_understanding: true
+      screenshot_analysis: true
     audio:
       supported: false
     video:
-      supported: false
+      supported: true
+      models: ["glm-5v-turbo"]
   output:
     text: true
     audio:
@@ -157,11 +182,32 @@ metadata:
   api_compatibility: openai
   open_source:
     license: MIT
-    hugging_face: "https://huggingface.co/zhipuai/glm-5"
+    hugging_face: "https://huggingface.co/zai-org/GLM-5.2"
   agentic_engineering:
     supported: true
-    capabilities: [long_horizon_planning, multi_step_workflows, autonomous_debugging]
+    capabilities: [long_horizon_planning, multi_step_workflows, autonomous_debugging, computer_use]
   models:
+    glm-5.2:
+      context_window: 1048576
+      max_output_tokens: 128000
+      release_date: "2026-05"
+      architecture: { type: moe, total: "744B", active: "40B" }
+      thinking: "dual_mode"
+      reasoning_effort: ["high", "max"]
+    glm-5v-turbo:
+      context_window: unknown
+      max_output_tokens: 64000
+      release_date: "2026-04"
+      architecture: { type: moe, total: "744B", active: "40B" }
+      vision: true
+      computer_use: true
+      mcp_support: true
+    glm-5.1:
+      context_window: 200000
+      max_output_tokens: 128000
+      release_date: "2026-03"
+      architecture: { type: moe, total: "744B", active: "40B" }
+      status: "superseded by GLM-5.2"
     glm-5:
       context_window: 200000
       max_output_tokens: 128000
@@ -170,8 +216,9 @@ metadata:
       pricing: { input_per_1m: 1.00, output_per_1m: 3.20 }
   regional:
     primary: china
-    alternative_base: "https://api.z.ai/v1"
-    international_partners: [aimlapi]
+    international_base: "https://api.z.ai/api/paas/v4"
+    legacy_base: "https://open.bigmodel.cn/api/paas/v4"
+    international_partners: [aimlapi, openrouter]
   sdk:
     note: "OpenAI-compatible — use openai SDK with base_url override"
     python: openai

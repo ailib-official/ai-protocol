@@ -1,21 +1,23 @@
-# DeepSeek V2 正式提供商清单 — OpenAI 兼容 API，超高性价比
+# DeepSeek V4 Provider Manifest — OpenAI/Anthropic 双兼容 API
 # AI-Protocol V2 Provider Manifest
-# Provider: DeepSeek AI | Models: V3.2 / R1
-# Last Updated: 2026-02-16
+# Provider: DeepSeek AI | Models: V4-Pro / V4-Flash
+# Last Updated: 2026-06-26 (updated from V3.2 → V4)
+# Source: https://api-docs.deepseek.com/updates (2026-04-24)
+# Important: deepseek-chat / deepseek-reasoner DEPRECATED — retired 2026-07-24
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 
 # === Ring 1: Core Skeleton ===
 id: deepseek
 protocol_version: "2.0"
 name: "DeepSeek"
-version: "3.2.0"
+version: "4.0.0"
 status: stable
 category: ai_provider
 official_url: "https://api-docs.deepseek.com/"
 support_contact: "https://api-docs.deepseek.com/"
 
 endpoint:
-  base_url: "https://api.deepseek.com/v1"
+  base_url: "https://api.deepseek.com"
   chat: "/chat/completions"
   auth:
     type: "bearer"
@@ -27,6 +29,7 @@ error_classification:
   by_http_status:
     "400": "invalid_request"
     "401": "authentication"
+    "402": "insufficient_quota"
     "403": "permission_denied"
     "404": "not_found"
     "413": "request_too_large"
@@ -57,7 +60,6 @@ capabilities:
     - streaming
     - tools
   optional:
-    - vision
     - parallel_tools
     - agentic
     - reasoning
@@ -70,14 +72,21 @@ capabilities:
     streaming_usage: true
     system_messages: true
 
+  tool_calling:
+    native:
+      reliability: "partial"
+    text_fallback:
+      enabled: true
+      prompt_level: "L2"
+
 capability_profile:
-  phase: "ios_v1"
+  phase: "production"
   inputs:
     modalities: ["text"]
   outcomes:
     types: ["text_completion", "structured_json", "tool_call_sequence"]
   systems:
-    requires: ["mcp", "search"]
+    requires: ["mcp"]
 
 parameters:
   temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
@@ -86,6 +95,7 @@ parameters:
   frequency_penalty: { type: float, range: [-2.0, 2.0] }
   presence_penalty: { type: float, range: [-2.0, 2.0] }
   stream: { type: boolean }
+  reasoning_effort: { type: string, enum: ["low", "medium", "high"], default: "medium" }
 
 streaming:
   decoder:
@@ -101,6 +111,10 @@ streaming:
       emit: "PartialContentDelta"
       fields:
         content: "$.choices[*].delta.content"
+    - match: "exists($.choices[*].delta.reasoning_content)"
+      emit: "ThinkingDelta"
+      fields:
+        thinking: "$.choices[*].delta.reasoning_content"
     - match: "exists($.choices[*].delta.tool_calls)"
       emit: "PartialToolCall"
       fields:
@@ -118,10 +132,7 @@ streaming:
 multimodal:
   input:
     vision:
-      supported: true
-      formats: [jpeg, png, gif, webp]
-      encoding_methods: [base64_inline, url]
-      document_understanding: true
+      supported: false
     audio:
       supported: false
     video:
@@ -134,19 +145,23 @@ multimodal:
       supported: false
 
 # === Ring 3: Advanced Extensions ===
-api_families: ["chat_completions"]
+api_families: ["chat_completions", "anthropic_messages"]
 default_api_family: "chat_completions"
 
 endpoints:
-  chat:
+  chat_openai:
     path: "/chat/completions"
     method: "POST"
     adapter: "openai"
+  chat_anthropic:
+    path: "/anthropic/v1/messages"
+    method: "POST"
+    adapter: "anthropic"
 
 retry_policy:
   strategy: "exponential_backoff"
   max_retries: 3
-  min_delay_ms: 1000
+  min_delay_ms: 500
   max_delay_ms: 30000
   jitter: "full"
   retry_on_http_status: [429, 500, 502, 503]
@@ -158,65 +173,36 @@ termination:
     length: "max_tokens"
     tool_calls: "tool_use"
 
-tool_calling:
-  native:
-    supported: true
-    reliability: partial
-    parallel: true
-    streaming: true
-    notes: "deepseek-reasoner function calling unstable; recommend text fallback"
-  text_fallback:
-    format: xml_json
-    wrapper: tool_call
-    body: json
-    name_location: json_field
-    args_key: parameters
-    known_dialects:
-      - tag: shell
-        map_to: shell
-      - tag: bash
-        map_to: shell
-    prompt_level: L2
-
 metadata:
-  api_compatibility: openai
+  api_compatibility: [openai, anthropic]
   open_source:
-    license: MIT
-    hugging_face: "https://huggingface.co/deepseek-ai/DeepSeek-V3.2"
+    license: "MIT (weights)"
+    hugging_face: "https://huggingface.co/collections/deepseek-ai/deepseek-v4"
   models:
     deepseek-v4-pro:
-      context_window: 128000
-      max_output_tokens: 8192
-      verification:
-        status: verified
-        source: official_documentation
-        verified_at: "2026-06-09"
-        notes: "https://api-docs.deepseek.com/"
-      architecture: { type: moe, total: "671B", active: "37B", experts: 256 }
-      pricing: { input_per_1m: 0.28, output_per_1m: 0.42 }
+      context_window: 1048576
+      max_output_tokens: 393216
+      release_date: "2026-04-24"
+      architecture: { type: moe, total: "1.6T", active: "49B" }
+      pricing: { input_per_1m: 0.435, output_per_1m: 0.87, cache_hit_input_per_1m: 0.003625 }
+      thinking: "dual_mode"
     deepseek-v4-flash:
-      context_window: 128000
-      max_output_tokens: 8192
-      pricing: { input_per_1m: 0.55, output_per_1m: 2.19 }
+      context_window: 1048576
+      max_output_tokens: 393216
+      release_date: "2026-04-24"
+      architecture: { type: moe, total: "284B", active: "13B" }
+      pricing: { input_per_1m: 0.14, output_per_1m: 0.28, cache_hit_input_per_1m: 0.0028 }
+      thinking: "dual_mode"
+  deprecated:
     deepseek-chat:
-      context_window: 64000
-      max_output_tokens: 8192
-      deprecated: true
-      alias_of: deepseek-v4-pro
-      verification:
-        status: deprecated
-        source: official_documentation
-        verified_at: "2026-06-09"
-        notes: "Legacy alias — use deepseek-v4-pro for API calls"
-      architecture: { type: moe, total: "671B", active: "37B", experts: 256 }
-      pricing: { input_per_1m: 0.28, output_per_1m: 0.42 }
+      retired_on: "2026-07-24"
+      maps_to: "deepseek-v4-flash (non-thinking)"
+      note: "Use deepseek-v4-flash instead"
     deepseek-reasoner:
-      context_window: 128000
-      max_output_tokens: 8192
-      deprecated: true
-      alias_of: deepseek-v4-flash
-      pricing: { input_per_1m: 0.55, output_per_1m: 2.19 }
+      retired_on: "2026-07-24"
+      maps_to: "deepseek-v4-flash (thinking mode)"
+      note: "Use deepseek-v4-flash with thinking mode instead"
   sdk:
-    note: "OpenAI-compatible — use openai SDK with base_url override"
+    note: "OpenAI-compatible — use openai SDK with base_url override. Also supports Anthropic Messages API format."
     python: openai
     typescript: openai
