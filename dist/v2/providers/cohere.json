@@ -31,6 +31,21 @@
       "503": "overloaded"
     }
   },
+  "availability": {
+    "required": false,
+    "regions": [
+      "global"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/models",
+      "expected_status": [
+        200,
+        401
+      ],
+      "timeout_ms": 3000
+    }
+  },
   "capabilities": {
     "required": [
       "text",
@@ -44,6 +59,33 @@
     "feature_flags": {
       "structured_output": true,
       "system_messages": true
+    },
+    "tool_calling": {
+      "native": {
+        "supported": true,
+        "reliability": "full"
+      }
+    }
+  },
+  "capability_profile": {
+    "phase": "ios_v1",
+    "inputs": {
+      "modalities": [
+        "text"
+      ]
+    },
+    "outcomes": {
+      "types": [
+        "text_completion",
+        "structured_json",
+        "tool_call_sequence"
+      ]
+    },
+    "systems": {
+      "requires": [
+        "mcp",
+        "search"
+      ]
     }
   },
   "parameters": {

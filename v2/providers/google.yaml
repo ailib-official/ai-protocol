@@ -1,7 +1,6 @@
-# Google Gemini V2 正式提供商清单 — 全模态支持（音频/视频/CU），合并 v2-alpha 与深度调研数据
-# AI-Protocol V2 Provider Manifest
-# Provider: Google | Models: Gemini 3 Pro / Flash
-# Last Updated: 2026-02-16
+# Google Gemini V2 Provider Manifest — 全模态（音频/视频/CU）
+# Provider: Google | Models: Gemini 3 Pro / Flash / 3.1 Flash
+# Last Updated: 2026-06-26 (add tool_calling)
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 
 # === Ring 1: Core Skeleton ===
@@ -74,6 +73,13 @@ capabilities:
     extended_thinking: true
     streaming_usage: false
     system_messages: true
+
+  tool_calling:
+    native:
+      supported: true
+      reliability: "full"
+      parallel: true
+      streaming: true
 
 capability_profile:
   phase: "ios_v1"

@@ -35,6 +35,21 @@
       "insufficient_quota": "quota_exhausted"
     }
   },
+  "availability": {
+    "required": false,
+    "regions": [
+      "cn"
+    ],
+    "check": {
+      "method": "GET",
+      "path": "/models",
+      "expected_status": [
+        200,
+        401
+      ],
+      "timeout_ms": 3000
+    }
+  },
   "capabilities": {
     "required": [
       "text",
@@ -54,6 +69,37 @@
       "parallel_tool_calls": true,
       "streaming_usage": true,
       "system_messages": true
+    },
+    "tool_calling": {
+      "native": {
+        "supported": true,
+        "reliability": "full",
+        "parallel": true,
+        "streaming": true
+      }
+    }
+  },
+  "capability_profile": {
+    "phase": "ios_v1",
+    "inputs": {
+      "modalities": [
+        "text",
+        "image",
+        "video"
+      ]
+    },
+    "outcomes": {
+      "types": [
+        "text_completion",
+        "structured_json",
+        "tool_call_sequence"
+      ]
+    },
+    "systems": {
+      "requires": [
+        "mcp",
+        "search"
+      ]
     }
   },
   "parameters": {
@@ -80,14 +126,6 @@
     "stream": {
       "type": "boolean"
     }
-  },
-  "parameter_mappings": {
-    "temperature": "temperature",
-    "max_tokens": "max_tokens",
-    "stream": "stream",
-    "top_p": "top_p",
-    "tools": "tools",
-    "tool_choice": "tool_choice"
   },
   "streaming": {
     "decoder": {

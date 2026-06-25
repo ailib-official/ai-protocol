@@ -1,14 +1,13 @@
-# Anthropic V2 正式提供商清单 — MCP 创建者，合并 v2-alpha 结构与审计修正后数据
-# AI-Protocol V2 Provider Manifest
-# Provider: Anthropic | Models: Claude Opus 4.6 / Sonnet 4.5
-# Last Updated: 2026-02-16
+# Anthropic V2 Provider Manifest — MCP 创建者
+# Provider: Anthropic | Models: Claude Opus 4.8 / Sonnet 4.6 / Haiku 4.5
+# Last Updated: 2026-06-26 (4.6→4.8, add tool_calling)
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 
 # === Ring 1: Core Skeleton ===
 id: anthropic
 protocol_version: "2.0"
 name: "Anthropic"
-version: "4.6.0"
+version: "4.8.0"
 status: stable
 category: ai_provider
 official_url: "https://docs.anthropic.com"
@@ -76,6 +75,13 @@ capabilities:
     extended_thinking: true
     streaming_usage: true
     system_messages: true
+
+  tool_calling:
+    native:
+      supported: true
+      reliability: "full"
+      parallel: true
+      streaming: true
 
 capability_profile:
   phase: "ios_v1"
@@ -228,16 +234,21 @@ termination:
 
 metadata:
   models:
-    claude-opus-4-6:
+    claude-opus-4-8:
       context_window: 1000000
-      max_output_tokens: 8192
-      release_date: "2026-02-05"
-      pricing: { input_per_1m: 5.00, output_per_1m: 25.00 }
-    claude-sonnet-4-5:
-      context_window: 200000
-      max_output_tokens: 8192
-      release_date: "2025-11-24"
+      max_output_tokens: 32768
+      release_date: "2026-06-15"
+      pricing: { input_per_1m: 15.00, output_per_1m: 75.00 }
+    claude-sonnet-4-6:
+      context_window: 1000000
+      max_output_tokens: 32768
+      release_date: "2026-06-11"
       pricing: { input_per_1m: 3.00, output_per_1m: 15.00 }
+    claude-haiku-4-5:
+      context_window: 200000
+      max_output_tokens: 64000
+      release_date: "2025-10-01"
+      pricing: { input_per_1m: 0.80, output_per_1m: 4.00 }
   context_management:
     long_context_beta: "context-1m-2025-08-07"
     compaction_api: true

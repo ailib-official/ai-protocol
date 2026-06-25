@@ -1,46 +1,38 @@
 {
   "$schema": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json",
-  "id": "zhipu",
+  "id": "doubao",
   "protocol_version": "2.0",
-  "name": "Zhipu AI",
-  "version": "5.2.0",
+  "name": "Doubao (Volcengine Ark)",
+  "version": "3.0.0",
   "status": "stable",
   "category": "ai_provider",
-  "official_url": "https://docs.z.ai",
-  "support_contact": "https://z.ai",
+  "official_url": "https://www.volcengine.com/docs/82379",
+  "support_contact": "https://www.volcengine.com/contact",
   "endpoint": {
-    "base_url": "https://api.z.ai/api/paas/v4",
+    "base_url": "https://ark.cn-beijing.volces.com/api/v3",
     "chat": "/chat/completions",
     "auth": {
       "type": "bearer",
       "header": "Authorization",
       "prefix": "Bearer",
-      "token_env": "ZHIPU_API_KEY"
+      "token_env": "VOLCENGINE_API_KEY"
     }
   },
   "error_classification": {
     "by_http_status": {
       "400": "invalid_request",
       "401": "authentication",
-      "402": "insufficient_quota",
       "403": "permission_denied",
       "404": "not_found",
       "429": "rate_limited",
       "500": "server_error",
       "503": "overloaded"
-    },
-    "by_error_code": {
-      "context_length_exceeded": "request_too_large",
-      "model_not_found": "not_found",
-      "rate_limit_exceeded": "rate_limited",
-      "insufficient_quota": "quota_exhausted"
     }
   },
   "availability": {
     "required": false,
     "regions": [
-      "cn",
-      "global"
+      "cn"
     ],
     "check": {
       "method": "GET",
@@ -49,7 +41,7 @@
         200,
         401
       ],
-      "timeout_ms": 5000
+      "timeout_ms": 3000
     }
   },
   "capabilities": {
@@ -60,27 +52,28 @@
     ],
     "optional": [
       "vision",
+      "audio",
       "parallel_tools",
-      "agentic",
       "reasoning",
-      "structured_output"
+      "structured_output",
+      "image_generation",
+      "stt",
+      "tts"
     ],
     "feature_flags": {
       "structured_output": true,
       "parallel_tool_calls": true,
-      "extended_thinking": true,
       "streaming_usage": true,
-      "system_messages": true
+      "system_messages": true,
+      "image_generation": true
     },
     "tool_calling": {
       "native": {
         "supported": true,
         "reliability": "full",
         "parallel": true,
-        "streaming": true,
-        "notes": "Well-evaluated on MCP-Atlas 500-task benchmark; reliable native tool calling"
-      },
-      "text_fallback": null
+        "streaming": true
+      }
     }
   },
   "capability_profile": {
@@ -88,7 +81,8 @@
     "inputs": {
       "modalities": [
         "text",
-        "image"
+        "image",
+        "audio"
       ]
     },
     "outcomes": {
@@ -100,7 +94,8 @@
     },
     "systems": {
       "requires": [
-        "mcp"
+        "mcp",
+        "search"
       ]
     }
   },
@@ -109,14 +104,14 @@
       "type": "float",
       "range": [
         0,
-        1
+        2
       ],
-      "default": 0.7
+      "default": 1
     },
     "max_tokens": {
       "type": "integer",
       "min": 1,
-      "max": 128000
+      "max": 16384
     },
     "top_p": {
       "type": "float",
@@ -127,14 +122,6 @@
     },
     "stream": {
       "type": "boolean"
-    },
-    "reasoning_effort": {
-      "type": "string",
-      "enum": [
-        "high",
-        "max"
-      ],
-      "default": "max"
     }
   },
   "streaming": {
@@ -153,13 +140,6 @@
         "emit": "PartialContentDelta",
         "fields": {
           "content": "$.choices[*].delta.content"
-        }
-      },
-      {
-        "match": "exists($.choices[*].delta.reasoning_content)",
-        "emit": "ThinkingDelta",
-        "fields": {
-          "thinking": "$.choices[*].delta.reasoning_content"
         }
       },
       {
@@ -193,6 +173,7 @@
         "formats": [
           "jpeg",
           "png",
+          "gif",
           "webp"
         ],
         "encoding_methods": [
@@ -202,23 +183,41 @@
         "document_understanding": true
       },
       "audio": {
-        "supported": false
-      },
-      "video": {
         "supported": true,
         "formats": [
-          "mp4",
-          "mov",
-          "avi"
-        ]
+          "mp3",
+          "wav",
+          "flac",
+          "m4a",
+          "ogg"
+        ],
+        "speech_recognition": true,
+        "real_time_streaming": true
+      },
+      "video": {
+        "supported": false
       }
     },
     "output": {
       "text": true,
       "audio": {
-        "supported": false
+        "supported": true,
+        "formats": [
+          "mp3",
+          "wav"
+        ],
+        "real_time_tts": true,
+        "natural_voice": true,
+        "voice_selection": true
       },
       "image": {
+        "supported": true,
+        "formats": [
+          "png",
+          "jpeg"
+        ]
+      },
+      "video": {
         "supported": false
       }
     }
@@ -237,7 +236,8 @@
   "services": {
     "list_models": {
       "path": "/models",
-      "method": "GET"
+      "method": "GET",
+      "response_binding": "data"
     }
   },
   "retry_policy": {
@@ -258,90 +258,16 @@
     "mapping": {
       "stop": "end_turn",
       "length": "max_tokens",
-      "tool_calls": "tool_use"
+      "tool_calls": "tool_use",
+      "content_filter": "refusal"
     }
   },
   "metadata": {
     "api_compatibility": "openai",
-    "open_source": {
-      "license": "MIT",
-      "hugging_face": "https://huggingface.co/zai-org/GLM-5.2"
-    },
-    "agentic_engineering": {
-      "supported": true,
-      "capabilities": [
-        "long_horizon_planning",
-        "multi_step_workflows",
-        "autonomous_debugging",
-        "computer_use"
-      ]
-    },
-    "models": {
-      "glm-5.2": {
-        "context_window": 1048576,
-        "max_output_tokens": 128000,
-        "release_date": "2026-05-01",
-        "architecture": {
-          "type": "moe",
-          "total": "744B",
-          "active": "40B"
-        },
-        "thinking": "dual_mode",
-        "reasoning_effort": [
-          "high",
-          "max"
-        ]
-      },
-      "glm-5v-turbo": {
-        "context_window": 200000,
-        "max_output_tokens": 64000,
-        "release_date": "2026-04-01",
-        "architecture": {
-          "type": "moe",
-          "total": "744B",
-          "active": "40B"
-        },
-        "vision": true,
-        "computer_use": true,
-        "mcp_support": true
-      },
-      "glm-5.1": {
-        "context_window": 200000,
-        "max_output_tokens": 128000,
-        "release_date": "2026-03-01",
-        "architecture": {
-          "type": "moe",
-          "total": "744B",
-          "active": "40B"
-        },
-        "status": "deprecated"
-      },
-      "glm-5": {
-        "context_window": 200000,
-        "max_output_tokens": 128000,
-        "release_date": "2026-02-11",
-        "architecture": {
-          "type": "moe",
-          "total": "744B",
-          "active": "40B"
-        },
-        "pricing": {
-          "input_per_1m": 1,
-          "output_per_1m": 3.2
-        }
-      }
-    },
     "regional": {
-      "primary": "china",
-      "international_base": "https://api.z.ai/api/paas/v4",
-      "legacy_base": "https://open.bigmodel.cn/api/paas/v4",
-      "international_partners": [
-        "aimlapi",
-        "openrouter"
-      ]
+      "primary": "china"
     },
     "sdk": {
-      "note": "OpenAI-compatible — use openai SDK with base_url override",
       "python": "openai",
       "typescript": "openai"
     }

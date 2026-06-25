@@ -87,6 +87,10 @@
           "additionalProperties": {
             "type": "boolean"
           }
+        },
+        "tool_calling": {
+          "$ref": "./tool-calling.json",
+          "description": "Tool calling capability declaration (VL-TTC-001)"
         }
       },
       "additionalProperties": false

@@ -3,7 +3,7 @@
   "id": "openai",
   "protocol_version": "2.0",
   "name": "OpenAI",
-  "version": "5.3.0",
+  "version": "5.5.0",
   "status": "stable",
   "category": "ai_provider",
   "official_url": "https://platform.openai.com/docs",
@@ -84,6 +84,14 @@
       "streaming_usage": true,
       "system_messages": true,
       "image_generation": true
+    },
+    "tool_calling": {
+      "native": {
+        "supported": true,
+        "reliability": "full",
+        "parallel": true,
+        "streaming": true
+      }
     }
   },
   "capability_profile": {
@@ -400,14 +408,21 @@
   },
   "metadata": {
     "models": {
-      "gpt-5.2": {
+      "gpt-5.5": {
+        "context_window": 1048576,
+        "max_output_tokens": 128000,
+        "release_date": "2026-06-19",
+        "notes": "Latest frontier model for complex reasoning and coding"
+      },
+      "gpt-5.4": {
         "context_window": 400000,
         "max_output_tokens": 16384,
-        "release_date": "2025-12-10",
-        "pricing": {
-          "input_per_1m": 1.75,
-          "output_per_1m": 14
-        }
+        "release_date": "2026-03-01"
+      },
+      "gpt-5.4-mini": {
+        "context_window": 400000,
+        "max_output_tokens": 16384,
+        "release_date": "2026-03-01"
       },
       "gpt-5.3-codex": {
         "context_window": 400000,
@@ -417,12 +432,6 @@
           "input_per_1m": 1.25,
           "output_per_1m": 10
         }
-      },
-      "gpt-5.3-codex-spark": {
-        "context_window": 128000,
-        "max_output_tokens": 16384,
-        "release_date": "2026-02-12",
-        "status": "research_preview"
       },
       "gpt-4o-mini": {
         "context_window": 128000,

@@ -1,6 +1,5 @@
 # Groq V2 provider — OpenAI-compatible fast inference
-# AI-Protocol V2 Provider Manifest
-# Last Updated: 2026-05-29
+# Last Updated: 2026-06-26 (add tool_calling)
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 
 id: groq
@@ -57,6 +56,12 @@ capabilities:
     parallel_tool_calls: true
     streaming_usage: true
     system_messages: true
+
+  tool_calling:
+    native:
+      supported: true
+      reliability: "full"
+      parallel: true
 
 parameters:
   temperature: { type: float, range: [0.0, 2.0], default: 1.0 }

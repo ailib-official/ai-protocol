@@ -1,10 +1,11 @@
 # Qwen V2 provider manifest — P0 multimodal generative coverage
+# Last Updated: 2026-06-26 (add tool_calling, Qwen3→3.7)
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 
 id: qwen
 protocol_version: "2.0"
 name: "Qwen (DashScope)"
-version: "3.0.0"
+version: "3.7.0"
 status: stable
 category: ai_provider
 official_url: "https://help.aliyun.com/zh/model-studio"
@@ -61,6 +62,13 @@ capabilities:
     streaming_usage: true
     system_messages: true
     image_generation: true
+
+  tool_calling:
+    native:
+      supported: true
+      reliability: "full"
+      parallel: true
+      streaming: true
 
 capability_profile:
   phase: "ios_v1"

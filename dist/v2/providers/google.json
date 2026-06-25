@@ -77,6 +77,14 @@
       "extended_thinking": true,
       "streaming_usage": false,
       "system_messages": true
+    },
+    "tool_calling": {
+      "native": {
+        "supported": true,
+        "reliability": "full",
+        "parallel": true,
+        "streaming": true
+      }
     }
   },
   "capability_profile": {

@@ -1,7 +1,5 @@
 # Cohere V2 Provider Manifest — Chat + Rerank
-# AI-Protocol V2 Provider Manifest
-# Provider: Cohere | Rerank v3.5/v4, Command R+
-# Last Updated: 2026-02-19
+# Last Updated: 2026-06-26 (add tool_calling)
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 
 # === Ring 1: Core Skeleton ===
@@ -57,6 +55,11 @@ capabilities:
   feature_flags:
     structured_output: true
     system_messages: true
+
+  tool_calling:
+    native:
+      supported: true
+      reliability: "full"
 
 capability_profile:
   phase: "ios_v1"

@@ -74,13 +74,25 @@ capabilities:
 
   tool_calling:
     native:
+      supported: true
       reliability: "partial"
+      parallel: true
+      streaming: true
+      notes: "DeepSeek native tool calling is unreliable — LLM often outputs <shell> instead; text fallback required"
     text_fallback:
-      enabled: true
+      format: "xml_json"
+      wrapper: "tool_call"
+      body: "json"
+      name_location: "json_field"
+      args_key: "arguments"
+      known_dialects:
+        - { tag: "shell", map_to: "shell" }
+        - { tag: "bash", map_to: "shell" }
+        - { tag: "function", map_to: "" }
       prompt_level: "L2"
 
 capability_profile:
-  phase: "production"
+  phase: "ios_v1"
   inputs:
     modalities: ["text"]
   outcomes:

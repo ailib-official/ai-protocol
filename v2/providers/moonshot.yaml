@@ -1,7 +1,6 @@
-# Moonshot Kimi V2 正式提供商清单 — Agent Swarm 先驱，OpenAI 兼容 API
-# AI-Protocol V2 Provider Manifest
-# Provider: Moonshot AI | Models: Kimi K2.5 / K2-Thinking
-# Last Updated: 2026-02-16
+# Moonshot Kimi V2 Provider Manifest — Agent Swarm 先驱
+# Provider: Moonshot AI | Models: Kimi K2.6 / K2.5 / K2-Thinking
+# Last Updated: 2026-06-26 (add tool_calling)
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
 
 # === Ring 1: Core Skeleton ===
@@ -66,6 +65,13 @@ capabilities:
     parallel_tool_calls: true
     streaming_usage: true
     system_messages: true
+
+  tool_calling:
+    native:
+      supported: true
+      reliability: "full"
+      parallel: true
+      streaming: true
 
 capability_profile:
   phase: "ios_v1"

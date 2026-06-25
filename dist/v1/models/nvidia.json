@@ -1,34 +1,242 @@
 {
   "$schema": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json",
-  "protocol_version": "1.1",
+  "protocol_version": "1.5",
   "models": {
-    "nvidia-nemotron-4-340b-instruct": {
+    "nvidia/nemotron-3-ultra-550b-a55b": {
       "provider": "nvidia",
-      "model_id": "nvidia-nemotron-4-340b-instruct",
-      "display_name": "Nemotron 4 340B Instruct",
+      "model_id": "nvidia/nemotron-3-ultra-550b-a55b",
+      "display_name": "Nemotron 3 Ultra 550B (A55B)",
       "verification": {
         "status": "verified",
-        "verified_at": "2026-02-04",
-        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
-        "notes": "NVIDIA flagship 340B chat model; OpenAI-compatible chat completions."
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "NVIDIA flagship 550B MoE with 1M context, agentic reasoning, coding, planning, tool calling."
       },
-      "context_window": 128000,
+      "context_window": 1000000,
       "capabilities": [
         "chat",
-        "vision",
-        "tools",
         "streaming",
+        "tools",
         "agentic",
-        "parallel_tools",
+        "reasoning",
+        "parallel_tools"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "nemotron",
+        "moe",
+        "flagship",
+        "long-context",
+        "agentic"
+      ]
+    },
+    "nvidia/nemotron-3-super-120b-a12b": {
+      "provider": "nvidia",
+      "model_id": "nvidia/nemotron-3-super-120b-a12b",
+      "display_name": "Nemotron 3 Super 120B (A12B)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "NVIDIA 120B MoE with 1M context, agentic reasoning, coding, tool calling."
+      },
+      "context_window": 1000000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
+        "agentic",
+        "reasoning",
+        "parallel_tools"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "nemotron",
+        "moe",
+        "long-context",
+        "agentic"
+      ]
+    },
+    "nvidia/nemotron-3-nano-30b-a3b": {
+      "provider": "nvidia",
+      "model_id": "nvidia/nemotron-3-nano-30b-a3b",
+      "display_name": "Nemotron 3 Nano 30B (A3B)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "NVIDIA 30B MoE with 1M context, coding, reasoning, tool calling."
+      },
+      "context_window": 1000000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
         "reasoning"
       ],
       "status": "active",
       "tags": [
         "nvidia",
         "nemotron",
-        "flagship",
-        "reasoning",
+        "moe",
+        "long-context",
+        "efficient"
+      ]
+    },
+    "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning": {
+      "provider": "nvidia",
+      "model_id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+      "display_name": "Nemotron 3 Nano Omni 30B (A3B) Reasoning",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "NVIDIA omni-modal (image/video/audio/text) reasoning model."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "vision",
+        "audio",
+        "streaming",
+        "tools",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "nemotron",
+        "moe",
+        "multimodal",
+        "omni",
+        "reasoning"
+      ]
+    },
+    "nvidia/nemotron-4-340b-instruct": {
+      "provider": "nvidia",
+      "model_id": "nvidia/nemotron-4-340b-instruct",
+      "display_name": "Nemotron 4 340B Instruct",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-02-04",
+        "source": "list_models:/v1/models",
+        "notes": "NVIDIA legacy flagship 340B chat model; vision, tools, streaming."
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "vision",
+        "streaming",
+        "tools",
+        "parallel_tools"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "nemotron",
+        "legacy",
+        "vision"
+      ]
+    },
+    "nvidia/llama-3.3-nemotron-super-49b-v1": {
+      "provider": "nvidia",
+      "model_id": "nvidia/llama-3.3-nemotron-super-49b-v1",
+      "display_name": "Llama 3.3 Nemotron Super 49B v1",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models"
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "nemotron",
+        "llama",
+        "reasoning"
+      ]
+    },
+    "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
+      "provider": "nvidia",
+      "model_id": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+      "display_name": "Llama 3.3 Nemotron Super 49B v1.5",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Updated version of Nemotron Super 49B with improved reasoning."
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "nemotron",
+        "llama",
+        "reasoning"
+      ]
+    },
+    "nvidia/llama-3.1-nemotron-70b-instruct": {
+      "provider": "nvidia",
+      "model_id": "nvidia/llama-3.1-nemotron-70b-instruct",
+      "display_name": "Llama 3.1 Nemotron 70B Instruct",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Nemotron fine-tuned Llama 3.1 70B."
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "streaming",
         "tools"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "nemotron",
+        "llama",
+        "instruct"
+      ]
+    },
+    "nvidia/llama-3.1-nemotron-ultra-253b-v1": {
+      "provider": "nvidia",
+      "model_id": "nvidia/llama-3.1-nemotron-ultra-253b-v1",
+      "display_name": "Llama 3.1 Nemotron Ultra 253B v1",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Nemotron fine-tuned Llama 3.1 253B (MoE)."
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "nemotron",
+        "llama",
+        "ultra",
+        "reasoning"
       ]
     },
     "nvidia/llama3-chatqa-1.5-70b": {
@@ -38,174 +246,632 @@
       "verification": {
         "status": "verified",
         "verified_at": "2026-02-04",
-        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
+        "source": "list_models:/v1/models",
         "notes": "70B chat QA model on NVIDIA API Catalog."
       },
       "context_window": 32768,
       "capabilities": [
         "chat",
-        "tools",
         "streaming",
-        "agentic"
+        "tools"
       ],
       "status": "active",
       "tags": [
         "nvidia",
         "llama",
         "chatqa",
-        "70b"
+        "70b",
+        "qa"
       ]
     },
-    "deepseek-ai/deepseek-r1": {
+    "nvidia/nemotron-nano-12b-v2-vl": {
       "provider": "nvidia",
-      "model_id": "deepseek-ai/deepseek-r1",
-      "display_name": "DeepSeek R1 (via NVIDIA)",
+      "model_id": "nvidia/nemotron-nano-12b-v2-vl",
+      "display_name": "Nemotron Nano 12B VL v2",
       "verification": {
         "status": "verified",
-        "verified_at": "2026-02-04",
-        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
-        "notes": "Reasoning model available on NVIDIA API Catalog."
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Vision-language model for image understanding, multi-image and video comprehension."
       },
-      "context_window": 64000,
+      "context_window": 131072,
       "capabilities": [
         "chat",
-        "tools",
+        "vision",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "nemotron",
+        "vl",
+        "vision"
+      ]
+    },
+    "nvidia/llama-nemotron-embed-1b-v2": {
+      "provider": "nvidia",
+      "model_id": "nvidia/llama-nemotron-embed-1b-v2",
+      "display_name": "Llama Nemotron Embed 1B v2",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "26-language document QA embedding model."
+      },
+      "context_window": 512,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "embedding",
+        "retrieval"
+      ]
+    },
+    "nvidia/nv-embed-v1": {
+      "provider": "nvidia",
+      "model_id": "nvidia/nv-embed-v1",
+      "display_name": "NV-Embed v1",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models"
+      },
+      "context_window": 512,
+      "capabilities": [
+        "chat",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "nvidia",
+        "embedding",
+        "retrieval"
+      ]
+    },
+    "deepseek-ai/deepseek-v4-flash": {
+      "provider": "nvidia",
+      "model_id": "deepseek-ai/deepseek-v4-flash",
+      "display_name": "DeepSeek V4 Flash (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
+        "notes": "284B MoE (13B activated), 1M context, hybrid attention (CSA+HCA). Supports think/non-think/think-max modes."
+      },
+      "context_window": 1000000,
+      "capabilities": [
+        "chat",
         "streaming",
-        "reasoning"
+        "tools",
+        "reasoning",
+        "agentic"
       ],
       "status": "active",
       "tags": [
         "deepseek",
+        "moe",
+        "coding",
         "reasoning",
+        "long-context",
         "nvidia-catalog"
       ]
     },
-    "mistralai/mistral-large-2-instruct": {
+    "deepseek-ai/deepseek-v4-pro": {
       "provider": "nvidia",
-      "model_id": "mistralai/mistral-large-2-instruct",
-      "display_name": "Mistral Large 2 Instruct (via NVIDIA)",
+      "model_id": "deepseek-ai/deepseek-v4-pro",
+      "display_name": "DeepSeek V4 Pro (via NVIDIA NIM)",
       "verification": {
         "status": "verified",
-        "verified_at": "2026-02-04",
-        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
-        "notes": "Mistral flagship instruct model on NVIDIA API Catalog."
+        "verified_at": "2026-06-11",
+        "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro",
+        "notes": "1.6T MoE (49B activated), 1M context. Top-tier coding and reasoning on NVIDIA NIM."
+      },
+      "context_window": 1000000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
+        "reasoning",
+        "agentic"
+      ],
+      "status": "active",
+      "tags": [
+        "deepseek",
+        "moe",
+        "coding",
+        "reasoning",
+        "long-context",
+        "flagship",
+        "nvidia-catalog"
+      ]
+    },
+    "mistralai/mistral-large-3-675b-instruct-2512": {
+      "provider": "nvidia",
+      "model_id": "mistralai/mistral-large-3-675b-instruct-2512",
+      "display_name": "Mistral Large 3 675B Instruct 2512 (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Mistral flagship 675B MoE VLM, 128K context, multimodal."
       },
       "context_window": 128000,
       "capabilities": [
         "chat",
         "vision",
-        "tools",
         "streaming",
+        "tools",
         "agentic"
       ],
       "status": "active",
       "tags": [
         "mistral",
-        "instruct",
+        "large",
+        "vlm",
         "nvidia-catalog"
       ]
     },
-    "mistralai/mixtral-8x22b-instruct": {
+    "mistralai/mistral-small-4-119b-2603": {
       "provider": "nvidia",
-      "model_id": "mistralai/mixtral-8x22b-instruct",
-      "display_name": "Mixtral 8x22B Instruct (via NVIDIA)",
+      "model_id": "mistralai/mistral-small-4-119b-2603",
+      "display_name": "Mistral Small 4 119B 2603 (via NVIDIA NIM)",
       "verification": {
         "status": "verified",
-        "verified_at": "2026-02-04",
-        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
-        "notes": "MoE 8x22B instruct model on NVIDIA API Catalog."
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Mistral Small 4 MoE 119B, 256K context, multimodal."
       },
-      "context_window": 65536,
+      "context_window": 256000,
       "capabilities": [
         "chat",
-        "tools",
+        "vision",
         "streaming",
-        "agentic"
+        "tools"
       ],
       "status": "active",
       "tags": [
         "mistral",
-        "mixtral",
+        "small",
         "moe",
         "nvidia-catalog"
       ]
     },
-    "meta/llama3-70b": {
+    "mistralai/mistral-medium-3.5-128b": {
       "provider": "nvidia",
-      "model_id": "meta/llama3-70b",
-      "display_name": "Llama 3 70B (via NVIDIA)",
+      "model_id": "mistralai/mistral-medium-3.5-128b",
+      "display_name": "Mistral Medium 3.5 128B (via NVIDIA NIM)",
       "verification": {
         "status": "verified",
-        "verified_at": "2026-02-04",
-        "source": "https://docs.api.nvidia.com/nim/reference/llm-apis",
-        "notes": "Meta Llama 3 70B on NVIDIA API Catalog."
-      },
-      "context_window": 8192,
-      "capabilities": [
-        "chat",
-        "tools",
-        "streaming"
-      ],
-      "status": "active",
-      "tags": [
-        "meta",
-        "llama",
-        "70b",
-        "nvidia-catalog"
-      ]
-    },
-    "moonshotai/kimi-k2-instruct": {
-      "provider": "nvidia",
-      "model_id": "moonshotai/kimi-k2-instruct",
-      "display_name": "Kimi K2 Instruct (via NVIDIA)",
-      "verification": {
-        "status": "verified",
-        "verified_at": "2026-02-04",
-        "source": "https://docs.api.nvidia.com/nim/reference/moonshotai-kimi-k2-instruct",
-        "notes": "Moonshot Kimi K2 MoE 1T/32B; agentic, tools, 128K context on NVIDIA API Catalog."
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Mistral Medium 128B for text generation and coding."
       },
       "context_window": 128000,
       "capabilities": [
         "chat",
-        "tools",
         "streaming",
-        "agentic",
+        "tools"
+      ],
+      "status": "active",
+      "tags": [
+        "mistral",
+        "medium",
+        "nvidia-catalog"
+      ]
+    },
+    "mistralai/ministral-14b-instruct-2512": {
+      "provider": "nvidia",
+      "model_id": "mistralai/ministral-14b-instruct-2512",
+      "display_name": "Ministral 14B Instruct 2512 (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Ministral 14B general VLM, 256K context."
+      },
+      "context_window": 256000,
+      "capabilities": [
+        "chat",
+        "vision",
+        "streaming",
+        "tools"
+      ],
+      "status": "active",
+      "tags": [
+        "mistral",
+        "ministral",
+        "vlm",
+        "nvidia-catalog"
+      ]
+    },
+    "mistralai/codestral-22b-instruct-v0.1": {
+      "provider": "nvidia",
+      "model_id": "mistralai/codestral-22b-instruct-v0.1",
+      "display_name": "Codestral 22B Instruct v0.1 (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Mistral coding-specialized 22B model, 256K context."
+      },
+      "context_window": 256000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
         "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "mistral",
+        "codestral",
+        "coding",
+        "nvidia-catalog"
+      ]
+    },
+    "qwen/qwen3.5-397b-a17b": {
+      "provider": "nvidia",
+      "model_id": "qwen/qwen3.5-397b-a17b",
+      "display_name": "Qwen 3.5 397B A17B (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "https://huggingface.co/Qwen/Qwen3.5-397B-A17B",
+        "notes": "Qwen3.5 flagship 397B MoE (17B activated), 262K context (extensible to 1M), native vision-language, thinking mode."
+      },
+      "context_window": 262144,
+      "capabilities": [
+        "chat",
+        "vision",
+        "streaming",
+        "tools",
+        "reasoning",
+        "agentic"
+      ],
+      "status": "active",
+      "tags": [
+        "qwen",
+        "moe",
+        "vlm",
+        "reasoning",
+        "nvidia-catalog"
+      ]
+    },
+    "qwen/qwen3.5-122b-a10b": {
+      "provider": "nvidia",
+      "model_id": "qwen/qwen3.5-122b-a10b",
+      "display_name": "Qwen 3.5 122B A10B (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Qwen3.5 122B MoE (10B activated), 262K context, coding and reasoning."
+      },
+      "context_window": 262144,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "qwen",
+        "moe",
+        "reasoning",
+        "efficient",
+        "nvidia-catalog"
+      ]
+    },
+    "qwen/qwen3-next-80b-a3b-instruct": {
+      "provider": "nvidia",
+      "model_id": "qwen/qwen3-next-80b-a3b-instruct",
+      "display_name": "Qwen3 Next 80B A3B Instruct (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Qwen3 Next 80B MoE (3B active), 262K context, reasoning and agentic tasks."
+      },
+      "context_window": 262144,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "qwen",
+        "moe",
+        "efficient",
+        "nvidia-catalog"
+      ]
+    },
+    "moonshotai/kimi-k2.6": {
+      "provider": "nvidia",
+      "model_id": "moonshotai/kimi-k2.6",
+      "display_name": "Kimi K2.6 (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "https://huggingface.co/moonshotai/Kimi-K2.6",
+        "notes": "Moonshot Kimi K2.6 1T MoE (32B activated), 256K context, agentic coding, vision, video. Supports thinking and instant modes."
+      },
+      "context_window": 262144,
+      "capabilities": [
+        "chat",
+        "vision",
+        "video",
+        "streaming",
+        "tools",
+        "agentic",
+        "reasoning",
+        "parallel_tools"
       ],
       "status": "active",
       "tags": [
         "moonshot",
         "kimi",
         "moe",
-        "nvidia-catalog",
-        "agentic"
+        "agentic",
+        "vision",
+        "nvidia-catalog"
       ]
     },
-    "minimaxai/minimax-m2": {
+    "z-ai/glm-5.1": {
       "provider": "nvidia",
-      "model_id": "minimaxai/minimax-m2",
-      "display_name": "MiniMax M2 (via NVIDIA)",
+      "model_id": "z-ai/glm-5.1",
+      "display_name": "GLM 5.1 (via NVIDIA NIM)",
       "verification": {
         "status": "verified",
-        "verified_at": "2026-02-04",
-        "source": "https://docs.api.nvidia.com/nim/reference/minimaxai-minimax-m2",
-        "notes": "MiniMax M2 MoE 230B/10B; coding, reasoning, tool-use, 128K context on NVIDIA API Catalog."
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Z.ai flagship LLM for agentic workflows, coding, and long-horizon reasoning."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
+        "agentic",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "z-ai",
+        "glm",
+        "agentic",
+        "reasoning",
+        "nvidia-catalog"
+      ]
+    },
+    "minimaxai/minimax-m2.7": {
+      "provider": "nvidia",
+      "model_id": "minimaxai/minimax-m2.7",
+      "display_name": "MiniMax M2.7 (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "MiniMax M2.7 230B MoE, 128K context, coding and reasoning."
       },
       "context_window": 128000,
       "capabilities": [
         "chat",
-        "tools",
         "streaming",
-        "agentic",
+        "tools",
         "reasoning"
       ],
       "status": "active",
       "tags": [
         "minimax",
         "moe",
-        "nvidia-catalog",
+        "reasoning",
+        "nvidia-catalog"
+      ]
+    },
+    "google/gemma-4-31b-it": {
+      "provider": "nvidia",
+      "model_id": "google/gemma-4-31b-it",
+      "display_name": "Gemma 4 31B IT (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Google Gemma 4 31B dense instruct model, frontier reasoning."
+      },
+      "context_window": 256000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "google",
+        "gemma",
+        "instruct",
+        "reasoning",
+        "nvidia-catalog"
+      ]
+    },
+    "google/diffusiongemma-26b-a4b-it": {
+      "provider": "nvidia",
+      "model_id": "google/diffusiongemma-26b-a4b-it",
+      "display_name": "DiffusionGemma 26B A4B IT (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Google DiffusionGemma 26B MoE, image generation and understanding."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "vision",
+        "streaming"
+      ],
+      "status": "active",
+      "tags": [
+        "google",
+        "diffusion",
+        "vision",
+        "nvidia-catalog"
+      ]
+    },
+    "meta/llama-4-maverick-17b-128e-instruct": {
+      "provider": "nvidia",
+      "model_id": "meta/llama-4-maverick-17b-128e-instruct",
+      "display_name": "Llama 4 Maverick 17B 128e Instruct (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Meta Llama 4 Maverick MoE 17B/128e, 1M context, multimodal."
+      },
+      "context_window": 1000000,
+      "capabilities": [
+        "chat",
+        "vision",
+        "streaming",
+        "tools"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "moe",
+        "multimodal",
+        "nvidia-catalog"
+      ]
+    },
+    "meta/llama-3.3-70b-instruct": {
+      "provider": "nvidia",
+      "model_id": "meta/llama-3.3-70b-instruct",
+      "display_name": "Llama 3.3 70B Instruct (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "Meta Llama 3.3 70B instruct, 128K context."
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools"
+      ],
+      "status": "active",
+      "tags": [
+        "meta",
+        "llama",
+        "instruct",
+        "nvidia-catalog"
+      ]
+    },
+    "stepfun-ai/step-3.7-flash": {
+      "provider": "nvidia",
+      "model_id": "stepfun-ai/step-3.7-flash",
+      "display_name": "Step 3.7 Flash (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "https://huggingface.co/stepfun-ai/Step-3.7-Flash",
+        "notes": "StepFun 198B MoE (11B activated), 256K context, vision-language, agentic. Top SWE-Bench Pro performer."
+      },
+      "context_window": 262144,
+      "capabilities": [
+        "chat",
+        "vision",
+        "streaming",
+        "tools",
+        "reasoning"
+      ],
+      "status": "active",
+      "tags": [
+        "stepfun",
+        "moe",
+        "vlm",
+        "agentic",
         "coding",
-        "agentic"
+        "nvidia-catalog"
+      ]
+    },
+    "stepfun-ai/step-3.5-flash": {
+      "provider": "nvidia",
+      "model_id": "stepfun-ai/step-3.5-flash",
+      "display_name": "Step 3.5 Flash (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "StepFun 3.5 Flash, predecessor to Step 3.7."
+      },
+      "context_window": 131072,
+      "capabilities": [
+        "chat",
+        "vision",
+        "streaming",
+        "tools"
+      ],
+      "status": "active",
+      "tags": [
+        "stepfun",
+        "flash",
+        "vlm",
+        "nvidia-catalog"
+      ]
+    },
+    "openai/gpt-oss-120b": {
+      "provider": "nvidia",
+      "model_id": "openai/gpt-oss-120b",
+      "display_name": "GPT-OSS 120B (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "OpenAI open-source GPT-OSS 120B model, 128K context."
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools"
+      ],
+      "status": "active",
+      "tags": [
+        "openai",
+        "gpt-oss",
+        "nvidia-catalog"
+      ]
+    },
+    "openai/gpt-oss-20b": {
+      "provider": "nvidia",
+      "model_id": "openai/gpt-oss-20b",
+      "display_name": "GPT-OSS 20B (via NVIDIA NIM)",
+      "verification": {
+        "status": "verified",
+        "verified_at": "2026-06-11",
+        "source": "list_models:/v1/models",
+        "notes": "OpenAI open-source GPT-OSS 20B model, 128K context."
+      },
+      "context_window": 128000,
+      "capabilities": [
+        "chat",
+        "streaming",
+        "tools"
+      ],
+      "status": "active",
+      "tags": [
+        "openai",
+        "gpt-oss",
+        "efficient",
+        "nvidia-catalog"
       ]
     }
   }
