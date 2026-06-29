@@ -120,3 +120,5 @@ go:
     - pkg/contact
   notes:
     - "Cross-provider FallbackClient lives in pkg/contact (policy layer)."
+  mixed:
+    pkg/ailib: "E client surface; imports internal/resilience for bounded micro-retry (like TS transport)."
