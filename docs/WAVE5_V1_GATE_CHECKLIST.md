@@ -25,15 +25,16 @@ This document mirrors the blocking items from task **PT-073**. Check boxes off w
 ## 3. E/P separation integrity (blocking)
 
 - [ ] No P-module imports in core packages (Rust: static check `tests/compliance/ep-boundary/check_ep_boundary.py`; extend for Python/TS as needed).
-  - **Partial CI (2026-06-29):** Rust `pt073-rust-core-wasm.yml` (`--rust-root`); Python `pt073-python-e-only.yml` + `pt073-python-full.yml` (`--python-root` + architecture tests); TS `pt073-ts-core.yml` + `pt073-ts-full.yml` (`--ts-root`, PT-073f). Go: PT-073f.
+  - **CI (2026-06-29):** Rust `pt073-rust-core-wasm.yml` (`--rust-root`); Python `pt073-python-e-only.yml` + `pt073-python-full.yml` (`--python-root`); TS `pt073-ts-core.yml` + `pt073-ts-full.yml` (`--ts-root`); Go `pt073-go.yml` (`--go-root`, PT-073f-R3).
 - [ ] **ExecutionMetadata** contract present and JSON-schema aligned (`schemas/v2/execution-metadata.json`) on all four runtimes.
+  - **Partial (PT-073f-R3):** cross-runtime samples under `tests/compliance/fixtures/execution-metadata/` + `validate_execution_metadata_samples.py`; per-runtime schema tests in pt073 workflows.
 - [ ] **ai-lib-contact** (Rust) / **contact** (TS subpath, Python extra marker) builds and integrates against core.
 
 ## 4. Migration documentation (blocking)
 
 - [x] **CHANGELOG** per repo: crate/package names, breaking paths, optional facade behavior.
   - Python PR #5 `f0fa875`, TS PR #5 `0df05ee` (2026-06-29); Rust/Go baseline per `PT-073d-CHANGELOG-AUDIT`.
-- [ ] Downstream consumers (e.g. spiderswitch) tracked: updated or explicit follow-up issue.
+- [ ] Downstream consumers tracked — **deferred (non-blocking)**; see PT-073-core §4 (Prism/eos/Vela; spiderswitch legacy showcase only).
 
 ## 5. Governance gates (blocking)
 

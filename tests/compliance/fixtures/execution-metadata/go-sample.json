@@ -1,0 +1,7 @@
+{
+  "provider_id": "testprov",
+  "model_id": "m1",
+  "execution_latency_ms": 5,
+  "translation_latency_ms": 1,
+  "micro_retry_count": 0
+}

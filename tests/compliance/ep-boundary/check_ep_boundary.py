@@ -5,6 +5,7 @@ Usage (from ai-protocol repo):
   python tests/compliance/ep-boundary/check_ep_boundary.py --rust-root /path/to/ai-lib-rust
   python tests/compliance/ep-boundary/check_ep_boundary.py --python-root /path/to/ai-lib-python
   python tests/compliance/ep-boundary/check_ep_boundary.py --ts-root /path/to/ai-lib-ts
+  python tests/compliance/ep-boundary/check_ep_boundary.py --go-root /path/to/ai-lib-go
 
 Exit 0 if no forbidden imports; exit 1 with a report otherwise.
 """
@@ -89,6 +90,16 @@ _TS_CONTACT = (
     "resilience",
     "interceptors",
     "negotiation",
+)
+
+# Go: pure E trees (pkg/ailib is mixed — see module-matrix.yaml)
+_GO_EXECUTION_DIRS = (
+    "internal/protocol",
+    "internal/stream",
+)
+_GO_CONTACT_IMPORT = (
+    re.compile(r'"github\.com/ailib-official/ai-lib-go/pkg/contact'),
+    re.compile(r'"github\.com/ailib-official/ai-lib-go/internal/resilience'),
 )
 
 
@@ -239,12 +250,19 @@ def main() -> int:
         type=Path,
         help="Path to ai-lib-ts repository root",
     )
+    src.add_argument(
+        "--go-root",
+        type=Path,
+        help="Path to ai-lib-go repository root",
+    )
     args = ap.parse_args()
 
     if args.rust_root is not None:
         return _main_rust(args.rust_root.resolve())
     if args.ts_root is not None:
         return _main_typescript(args.ts_root.resolve())
+    if args.go_root is not None:
+        return _main_go(args.go_root.resolve())
     return _main_python(args.python_root.resolve())
 
 
@@ -376,6 +394,46 @@ def _main_typescript(root: Path) -> int:
         "ep-boundary (typescript): FORBIDDEN contact-layer import in execution surface:",
         file=sys.stderr,
     )
+    for path, hits in bad:
+        try:
+            rel = path.relative_to(root)
+        except ValueError:
+            rel = path
+        print(f"  {rel}:", file=sys.stderr)
+        for line_no, line in hits:
+            print(f"    L{line_no}: {line}", file=sys.stderr)
+    return 1
+
+
+def _main_go(root: Path) -> int:
+    bad: list[tuple[Path, list[tuple[int, str]]]] = []
+    files: list[Path] = []
+    for rel in _GO_EXECUTION_DIRS:
+        tree = root / rel
+        if not tree.is_dir():
+            continue
+        files.extend(sorted(tree.rglob("*.go")))
+
+    for go_path in files:
+        line_hits: list[tuple[int, str]] = []
+        try:
+            text = go_path.read_text(encoding="utf-8")
+        except OSError as e:
+            line_hits.append((0, f"<read error: {e}>"))
+            bad.append((go_path, line_hits))
+            continue
+        for i, line in enumerate(text.splitlines(), start=1):
+            stripped = line.split("//", 1)[0]
+            if any(cre.search(stripped) for cre in _GO_CONTACT_IMPORT):
+                line_hits.append((i, line.strip()))
+        if line_hits:
+            bad.append((go_path, line_hits))
+
+    if not bad:
+        print(f"ep-boundary (go): OK ({len(files)} files under {', '.join(_GO_EXECUTION_DIRS)})")
+        return 0
+
+    print("ep-boundary (go): FORBIDDEN contact-layer import in E-only trees:", file=sys.stderr)
     for path, hits in bad:
         try:
             rel = path.relative_to(root)

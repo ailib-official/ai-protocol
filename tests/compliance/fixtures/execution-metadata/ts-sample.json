@@ -1,0 +1,13 @@
+{
+  "provider_id": "mock-anthropic",
+  "model_id": "claude-test",
+  "execution_latency_ms": 12,
+  "translation_latency_ms": 3,
+  "micro_retry_count": 0,
+  "usage": {
+    "prompt_tokens": 10,
+    "completion_tokens": 4,
+    "total_tokens": 14,
+    "cache_read_tokens": 2
+  }
+}
