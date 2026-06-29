@@ -30,13 +30,14 @@ This document mirrors the blocking items from task **PT-073**. Check boxes off w
 
 ## 4. Migration documentation (blocking)
 
-- [ ] **CHANGELOG** per repo: crate/package names, breaking paths, optional facade behavior.
+- [x] **CHANGELOG** per repo: crate/package names, breaking paths, optional facade behavior.
+  - Python PR #5 `f0fa875`, TS PR #5 `0df05ee` (2026-06-29); Rust/Go baseline per `PT-073d-CHANGELOG-AUDIT`.
 - [ ] Downstream consumers (e.g. spiderswitch) tracked: updated or explicit follow-up issue.
 
 ## 5. Governance gates (blocking)
 
-- [ ] `npm run drift:check` — no critical findings.
-- [ ] Fullchain / release gate — PASS in **required** mode when enforcing v1.0.
+- [x] `npm run drift:check` — no critical findings (local 2026-06-29: 0 drifts; report `reports/drift/drift-2026-06-29T15-14-05-656Z.json`).
+- [x] Fullchain / release gate — PASS in **required** mode (local 2026-06-29: `gate:fullchain` exit 0; report `reports/fullchain-gates/fullchain-gate-2026-06-29T15-23-06-754Z.json`). CI: `.github/workflows/governance-report.yml`.
 - [ ] Rollback drill evidence current.
 
 ## 6. Release
