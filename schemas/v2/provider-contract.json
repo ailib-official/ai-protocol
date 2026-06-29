@@ -101,6 +101,51 @@
                 "id_field": { "type": "string" },
                 "content_field": { "type": "string" }
               }
+            },
+            "document": {
+              "type": "object",
+              "description": "Maps ContentBlock::Document to provider-native document or inline payload",
+              "properties": {
+                "format": {
+                  "type": "string",
+                  "enum": ["anthropic_document", "gemini_inline_data", "openai_file"],
+                  "description": "Wire shape family for document blocks"
+                },
+                "source_wrapper": {
+                  "type": "string",
+                  "enum": ["anthropic_source", "gemini_inline_data", "openai_file"],
+                  "description": "Nested source object style (Anthropic base64/url source)"
+                },
+                "base64_field": {
+                  "type": "string",
+                  "description": "JSON path to base64 payload relative to encoded block (e.g. source.data, inlineData.data)"
+                },
+                "mime_type_field": {
+                  "type": "string",
+                  "description": "JSON path to MIME type (e.g. source.media_type, inlineData.mimeType)"
+                },
+                "type_field": {
+                  "type": "string",
+                  "description": "Top-level discriminator value when provider uses typed content blocks (e.g. document)"
+                },
+                "default_mime_type": {
+                  "type": "string",
+                  "default": "application/pdf",
+                  "description": "Fallback MIME when unified block omits mime_type"
+                },
+                "ref_resolution": {
+                  "type": "string",
+                  "enum": ["error_before_encode", "resolve_at_runtime"],
+                  "default": "error_before_encode",
+                  "description": "Whether document ref must be resolved before encoder runs"
+                },
+                "supported": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Explicit opt-out when api_style lacks native document blocks"
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false

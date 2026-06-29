@@ -10,6 +10,7 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-079-R1 declarative document encoding**: `content_block_mapping.document` on `schemas/v2/provider-contract.json`; reference contracts `v2/contracts/anthropic-messages.contract.yaml` and `gemini-generate.contract.yaml`; spec `docs/spec/content-block-encoding/document.md`; compliance fixtures `tests/compliance/cases/11-content-block-encoding/`; `validate.js` validates `v2/contracts/*.yaml`.
 - **EOS-ARCH-R2 availability (Phase 0–1)**: Optional `approval_ids` on `schemas/v2/availability.json`; first v2 `availability.regions` usage on DeepSeek (cn+global reference), OpenAI, Google; new v2 providers **NVIDIA NIM** and **Groq** with Eos-aligned model capacity metadata; compliance cases `load-v2-availability-eos.yaml` (load-012–014).
 - **EOS-ARCH-R2 availability (Phase 3 backfill)**: Remaining v2 providers (anthropic, cohere, jina, qwen, zhipu, moonshot, doubao) now declare `availability.regions`; compliance cases load-015–016.
 - **PT-075-R1 metadata.models schema**: Typed `schemas/v2/metadata-model-entry.json` (`context_window`, `max_output_tokens`, `status`, `verification`); `provider.json` metadata.models ref; compliance cases load-017–018.

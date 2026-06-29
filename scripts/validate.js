@@ -42,6 +42,7 @@ const colors = {
 const SCHEMA_V1_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/ailib-official\/ai-protocol\/(main|master|v\d+\.\d+(\.\d+)?)\/schemas\/v1\.json|(\.\.\/)+schemas\/v1\.json)$/;
 const SCHEMA_V2_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/ailib-official\/ai-protocol\/(main|master|v\d+\.\d+(\.\d+)?)\/schemas\/v2\/provider\.json|(\.\.\/)+schemas\/v2\/provider\.json)$/;
 const SCHEMA_PACK_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/ailib-official\/ai-protocol\/(main|master|v\d+\.\d+(\.\d+)?)\/schemas\/v2\/pack\.json|(\.\.\/)+schemas\/v2\/pack\.json)$/;
+const SCHEMA_CONTRACT_PATTERN = /^(https:\/\/raw\.githubusercontent\.com\/ailib-official\/ai-protocol\/(main|master|v\d+\.\d+(\.\d+)?)\/schemas\/v2\/provider-contract\.json|(\.\.\/)+schemas\/v2\/provider-contract\.json)$/;
 
 // Validation results tracking
 const results = {
@@ -171,7 +172,11 @@ function validateFile(filePath, schemaPath, validator, schemaCache, expectedSche
   } else {
     // Remove $schema field when loading for AJV compilation
     const schema = loadSchema(schemaPath, true);
-    validate = validator.compile(schema);
+    if (schema.$id && validator.getSchema(schema.$id)) {
+      validate = validator.getSchema(schema.$id);
+    } else {
+      validate = validator.compile(schema);
+    }
     schemaCache.set(schemaPath, validate);
   }
 
@@ -334,6 +339,7 @@ function main() {
   const args = process.argv.slice(2);
   const validateProviders = args.includes('--providers') || args.length === 0;
   const validatePacks = args.includes('--packs') || args.length === 0;
+  const validateContracts = args.includes('--contracts') || args.length === 0;
   const validateModels = args.includes('--models') || args.length === 0;
   const validateExamples = args.includes('--examples');
   const validateSchemas = args.includes('--schemas') || args.length === 0;
@@ -482,6 +488,25 @@ function main() {
     } else {
       packFiles.forEach(file => {
         validateFile(file, packSchemaPath, v2Validator, v2SchemaCache, SCHEMA_PACK_PATTERN);
+      });
+    }
+    console.log('');
+  }
+
+  // Validate v2 provider contracts (YAML)
+  if (validateContracts) {
+    console.log(`${colors.blue}📋 Validating v2 provider contracts...${colors.reset}`);
+    console.log('---------------------------------------------');
+
+    const contractDir = join(ROOT_DIR, 'v2', 'contracts');
+    const contractFiles = getYamlFiles(contractDir);
+    const contractSchemaPath = join(ROOT_DIR, 'schemas', 'v2', 'provider-contract.json');
+
+    if (contractFiles.length === 0) {
+      console.log(`${colors.yellow}⚠️  No contract files found in ${contractDir}${colors.reset}`);
+    } else {
+      contractFiles.forEach(file => {
+        validateFile(file, contractSchemaPath, v2Validator, v2SchemaCache, SCHEMA_CONTRACT_PATTERN);
       });
     }
     console.log('');

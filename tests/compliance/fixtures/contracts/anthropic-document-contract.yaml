@@ -1,0 +1,9 @@
+# Fixture pointer for PT-079 content_block_encoding compliance (schema phase)
+# Canonical contract: ../../../../v2/contracts/anthropic-messages.contract.yaml
+contract_path: "v2/contracts/anthropic-messages.contract.yaml"
+provider_id: anthropic
+api_style: anthropic_messages
+document_mapping:
+  format: anthropic_document
+  type_field: document
+  ref_resolution: error_before_encode
