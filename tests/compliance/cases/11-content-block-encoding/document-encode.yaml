@@ -1,0 +1,64 @@
+# Content Block Encoding — runtime manifest encoder (ALR-DOC-002-R3)
+
+---
+suite: "content-block-encoding"
+name: "Anthropic document base64 via manifest encoder"
+id: "cbe-010"
+description: "Encode ContentBlock::Document to Anthropic document wire shape"
+tags: ["content-block-encoding", "document", "P0"]
+input:
+  type: "content_block_encode"
+  api_style: "anthropic_messages"
+  blocks:
+    - block_type: "document"
+      source_type: "base64"
+      data: "JVBERi0xLjQK"
+      mime_type: "application/pdf"
+expected:
+  encoded:
+    - type: "document"
+      source:
+        type: "base64"
+        media_type: "application/pdf"
+        data: "JVBERi0xLjQK"
+
+---
+suite: "content-block-encoding"
+name: "Gemini document inline via manifest encoder"
+id: "cbe-011"
+description: "Encode ContentBlock::Document to Gemini inlineData wire shape"
+tags: ["content-block-encoding", "document", "P0"]
+input:
+  type: "content_block_encode"
+  api_style: "gemini_generate"
+  blocks:
+    - block_type: "text"
+      text: "Summarize"
+    - block_type: "document"
+      source_type: "base64"
+      data: "JVBERi0xLjQK"
+      mime_type: "application/pdf"
+expected:
+  encoded:
+    - text: "Summarize"
+    - inlineData:
+        mimeType: "application/pdf"
+        data: "JVBERi0xLjQK"
+
+---
+suite: "content-block-encoding"
+name: "Document ref rejected before encode"
+id: "cbe-012"
+description: "Contract ref_resolution error_before_encode fails fast"
+tags: ["content-block-encoding", "document", "P0"]
+input:
+  type: "content_block_encode"
+  api_style: "anthropic_messages"
+  blocks:
+    - block_type: "document"
+      source_type: "ref"
+      data: "upload://abc"
+      mime_type: "application/pdf"
+  expect_error: true
+expected:
+  valid: false
