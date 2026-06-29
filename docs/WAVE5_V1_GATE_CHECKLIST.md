@@ -25,6 +25,7 @@ This document mirrors the blocking items from task **PT-073**. Check boxes off w
 ## 3. E/P separation integrity (blocking)
 
 - [ ] No P-module imports in core packages (Rust: static check `tests/compliance/ep-boundary/check_ep_boundary.py`; extend for Python/TS as needed).
+  - **Partial CI (2026-06-29):** Rust `pt073-rust-core-wasm.yml` (`--rust-root`); Python `pt073-python-e-only.yml` + `pt073-python-full.yml` (`--python-root` + architecture tests); TS `pt073-ts-core.yml` + `pt073-ts-full.yml` (`--ts-root`, PT-073f). Go: PT-073f.
 - [ ] **ExecutionMetadata** contract present and JSON-schema aligned (`schemas/v2/execution-metadata.json`) on all four runtimes.
 - [ ] **ai-lib-contact** (Rust) / **contact** (TS subpath, Python extra marker) builds and integrates against core.
 
@@ -38,7 +39,8 @@ This document mirrors the blocking items from task **PT-073**. Check boxes off w
 
 - [x] `npm run drift:check` — no critical findings (local 2026-06-29: 0 drifts; report `reports/drift/drift-2026-06-29T15-14-05-656Z.json`).
 - [x] Fullchain / release gate — PASS in **required** mode (local 2026-06-29: `gate:fullchain` exit 0; report `reports/fullchain-gates/fullchain-gate-2026-06-29T15-23-06-754Z.json`). CI: `.github/workflows/governance-report.yml`.
-- [ ] Rollback drill evidence current.
+- [x] Rollback drill evidence current.
+  - Refreshed 2026-06-29: `npm run rehearse:compliance:rollback:required` — report `compliance-rollback-rehearsal-2026-06-29T15-39-38-864Z.json` (summary.pass=true).
 
 ## 6. Release
 
