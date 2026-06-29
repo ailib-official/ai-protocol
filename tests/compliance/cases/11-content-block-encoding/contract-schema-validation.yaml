@@ -1,0 +1,58 @@
+# Content Block Encoding — ProviderContract schema validation (PT-079-R1)
+# Runtime encode cases (content_block_encode) land in ALR-DOC-002-R3.
+
+---
+suite: "content-block-encoding"
+name: "Anthropic contract validates with document mapping"
+id: "cbe-001"
+description: "Verify anthropic-messages.contract.yaml passes provider-contract.json schema and declares document mapping"
+tags: ["content-block-encoding", "schema", "document", "P0"]
+setup:
+  provider: "anthropic"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/contracts/anthropic-document-contract.yaml"
+  validate_contract_schema: true
+  contract_path: "v2/contracts/anthropic-messages.contract.yaml"
+expected:
+  valid: true
+  document_mapping:
+    format: anthropic_document
+    ref_resolution: error_before_encode
+
+---
+suite: "content-block-encoding"
+name: "Gemini contract validates with document mapping"
+id: "cbe-002"
+description: "Verify gemini-generate.contract.yaml passes provider-contract.json schema and declares inline document mapping"
+tags: ["content-block-encoding", "schema", "document", "P0"]
+setup:
+  provider: "google"
+input:
+  type: "protocol_loading"
+  manifest_path: "fixtures/contracts/gemini-document-contract.yaml"
+  validate_contract_schema: true
+  contract_path: "v2/contracts/gemini-generate.contract.yaml"
+expected:
+  valid: true
+  document_mapping:
+    format: gemini_inline_data
+    ref_resolution: error_before_encode
+
+---
+suite: "content-block-encoding"
+name: "Document mapping rejects unknown ref_resolution enum"
+id: "cbe-003"
+description: "Schema fixture documents that ref must be resolved before encode (no silent ref passthrough)"
+tags: ["content-block-encoding", "document", "P1"]
+input:
+  type: "protocol_loading"
+  contract_fragment:
+    document:
+      format: anthropic_document
+      ref_resolution: error_before_encode
+expected:
+  valid: true
+  ref_resolution_allowed:
+    - error_before_encode
+    - resolve_at_runtime

@@ -16,7 +16,9 @@
         "streaming",
         "request-building",
         "resilience",
-        "credential-resolution"
+        "credential-resolution",
+        "content-block-encoding",
+        "text-tool-call"
       ]
     },
     "name": {
@@ -74,7 +76,10 @@
             "parameter_mapping",
             "retry_decision",
             "credential_resolution",
-            "auth_attachment"
+            "auth_attachment",
+            "text_tool_parse",
+            "text_tool_prompt",
+            "content_block_encode"
           ]
         }
       },

@@ -220,7 +220,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "Flagship 550B MoE, 1M context, agentic reasoning"
         }
       },
@@ -229,7 +229,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "120B MoE, 1M context, agentic reasoning"
         }
       },
@@ -238,7 +238,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "30B MoE, 1M context, efficient reasoning"
         }
       },
@@ -247,7 +247,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "Omni-modal (image/video/audio/text) reasoning"
         }
       },
@@ -256,7 +256,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "nvidia/llama-3.3-nemotron-super-49b-v1": {
@@ -264,8 +264,8 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "eos",
-          "notes": "HK deployment verified chat model (hiddenpath/eos main@299575a)"
+          "source": "provider_catalog",
+          "notes": "Llama 3.3 Nemotron Super 49B chat model"
         }
       },
       "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
@@ -273,7 +273,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "Updated v1.5 with improved reasoning"
         }
       },
@@ -282,7 +282,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "nvidia/llama-3.1-nemotron-ultra-253b-v1": {
@@ -290,7 +290,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "Nemotron fine-tuned Llama 3.1 253B MoE"
         }
       },
@@ -299,7 +299,7 @@
         "max_output_tokens": 4096,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "nvidia/nemotron-nano-12b-v2-vl": {
@@ -307,7 +307,7 @@
         "max_output_tokens": 4096,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "Vision-language model for image/video understanding"
         }
       },
@@ -316,7 +316,7 @@
         "max_output_tokens": 0,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "nvidia/nv-embed-v1": {
@@ -324,7 +324,7 @@
         "max_output_tokens": 0,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "deepseek-ai/deepseek-v4-flash": {
@@ -332,7 +332,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "284B MoE, 13B activated, 1M context"
         }
       },
@@ -341,7 +341,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "1.6T MoE, 49B activated, 1M context"
         }
       },
@@ -350,7 +350,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "Mistral flagship 675B MoE VLM"
         }
       },
@@ -359,7 +359,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "mistralai/mistral-medium-3.5-128b": {
@@ -367,7 +367,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "mistralai/ministral-14b-instruct-2512": {
@@ -375,7 +375,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "mistralai/codestral-22b-instruct-v0.1": {
@@ -383,7 +383,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "Coding-specialized 22B"
         }
       },
@@ -392,7 +392,7 @@
         "max_output_tokens": 81920,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "Qwen3.5 flagship 397B MoE, 17B activated, vision-language"
         }
       },
@@ -401,7 +401,7 @@
         "max_output_tokens": 81920,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "qwen/qwen3-next-80b-a3b-instruct": {
@@ -409,7 +409,7 @@
         "max_output_tokens": 81920,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "moonshotai/kimi-k2.6": {
@@ -417,7 +417,7 @@
         "max_output_tokens": 98304,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "1T MoE, 32B activated, agentic coding, vision"
         }
       },
@@ -426,7 +426,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "minimaxai/minimax-m2.7": {
@@ -434,7 +434,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "google/gemma-4-31b-it": {
@@ -442,7 +442,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "google/diffusiongemma-26b-a4b-it": {
@@ -450,7 +450,7 @@
         "max_output_tokens": 4096,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "meta/llama-4-maverick-17b-128e-instruct": {
@@ -458,7 +458,7 @@
         "max_output_tokens": 4096,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "meta/llama-3.3-70b-instruct": {
@@ -466,7 +466,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "stepfun-ai/step-3.7-flash": {
@@ -474,7 +474,7 @@
         "max_output_tokens": 32768,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim",
+          "source": "provider_catalog",
           "notes": "198B MoE, 11B activated, vision-language, agentic"
         }
       },
@@ -483,7 +483,7 @@
         "max_output_tokens": 16384,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "openai/gpt-oss-120b": {
@@ -491,7 +491,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "openai/gpt-oss-20b": {
@@ -499,7 +499,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "nvidia_nim"
+          "source": "provider_catalog"
         }
       },
       "meta/llama-3.1-8b-instruct": {
@@ -507,7 +507,7 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "operational",
-          "source": "eos"
+          "source": "provider_catalog"
         }
       }
     },

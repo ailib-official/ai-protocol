@@ -155,74 +155,74 @@ metadata:
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "Flagship 550B MoE, 1M context, agentic reasoning"
     nvidia/nemotron-3-super-120b-a12b:
       context_window: 1000000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "120B MoE, 1M context, agentic reasoning"
     nvidia/nemotron-3-nano-30b-a3b:
       context_window: 1000000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "30B MoE, 1M context, efficient reasoning"
     nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:
       context_window: 131072
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "Omni-modal (image/video/audio/text) reasoning"
     nvidia/nemotron-4-340b-instruct:
       context_window: 128000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
     nvidia/llama-3.3-nemotron-super-49b-v1:
       context_window: 128000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: eos
-        notes: "HK deployment verified chat model (hiddenpath/eos main@299575a)"
+        source: provider_catalog
+        notes: "Llama 3.3 Nemotron Super 49B chat model"
     nvidia/llama-3.3-nemotron-super-49b-v1.5:
       context_window: 128000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "Updated v1.5 with improved reasoning"
     nvidia/llama-3.1-nemotron-70b-instruct:
       context_window: 128000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
     nvidia/llama-3.1-nemotron-ultra-253b-v1:
       context_window: 128000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "Nemotron fine-tuned Llama 3.1 253B MoE"
     nvidia/llama3-chatqa-1.5-70b:
       context_window: 32768
       max_output_tokens: 4096
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
     nvidia/nemotron-nano-12b-v2-vl:
       context_window: 131072
       max_output_tokens: 4096
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "Vision-language model for image/video understanding"
 
     # Embedding Models
@@ -231,13 +231,13 @@ metadata:
       max_output_tokens: 0
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
     nvidia/nv-embed-v1:
       context_window: 512
       max_output_tokens: 0
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
 
     # DeepSeek
     deepseek-ai/deepseek-v4-flash:
@@ -245,14 +245,14 @@ metadata:
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "284B MoE, 13B activated, 1M context"
     deepseek-ai/deepseek-v4-pro:
       context_window: 1000000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "1.6T MoE, 49B activated, 1M context"
 
     # Mistral
@@ -261,32 +261,32 @@ metadata:
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "Mistral flagship 675B MoE VLM"
     mistralai/mistral-small-4-119b-2603:
       context_window: 256000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
     mistralai/mistral-medium-3.5-128b:
       context_window: 128000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
     mistralai/ministral-14b-instruct-2512:
       context_window: 256000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
     mistralai/codestral-22b-instruct-v0.1:
       context_window: 256000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "Coding-specialized 22B"
 
     # Qwen
@@ -295,20 +295,20 @@ metadata:
       max_output_tokens: 81920
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "Qwen3.5 flagship 397B MoE, 17B activated, vision-language"
     qwen/qwen3.5-122b-a10b:
       context_window: 262144
       max_output_tokens: 81920
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
     qwen/qwen3-next-80b-a3b-instruct:
       context_window: 262144
       max_output_tokens: 81920
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
 
     # Moonshot / Kimi
     moonshotai/kimi-k2.6:
@@ -316,7 +316,7 @@ metadata:
       max_output_tokens: 98304
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "1T MoE, 32B activated, agentic coding, vision"
 
     # Z.ai / GLM
@@ -325,7 +325,7 @@ metadata:
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
 
     # MiniMax
     minimaxai/minimax-m2.7:
@@ -333,7 +333,7 @@ metadata:
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
 
     # Google
     google/gemma-4-31b-it:
@@ -341,13 +341,13 @@ metadata:
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
     google/diffusiongemma-26b-a4b-it:
       context_window: 131072
       max_output_tokens: 4096
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
 
     # Meta / Llama
     meta/llama-4-maverick-17b-128e-instruct:
@@ -355,13 +355,13 @@ metadata:
       max_output_tokens: 4096
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
     meta/llama-3.3-70b-instruct:
       context_window: 128000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
 
     # StepFun
     stepfun-ai/step-3.7-flash:
@@ -369,14 +369,14 @@ metadata:
       max_output_tokens: 32768
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
         notes: "198B MoE, 11B activated, vision-language, agentic"
     stepfun-ai/step-3.5-flash:
       context_window: 131072
       max_output_tokens: 16384
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
 
     # OpenAI OSS
     openai/gpt-oss-120b:
@@ -384,21 +384,21 @@ metadata:
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
     openai/gpt-oss-20b:
       context_window: 128000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: nvidia_nim
+        source: provider_catalog
 
-    # Legacy (Eos deployment)
+    # Legacy chat model (provider catalog)
     meta/llama-3.1-8b-instruct:
       context_window: 128000
       max_output_tokens: 8192
       verification:
         status: operational
-        source: eos
+        source: provider_catalog
   sdk:
     note: "OpenAI-compatible — use openai SDK with base_url override"
     python: openai
