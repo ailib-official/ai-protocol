@@ -79,7 +79,7 @@
         "reliability": "partial",
         "parallel": true,
         "streaming": true,
-        "notes": "DeepSeek native tool calling is unreliable \u2014 LLM often outputs <shell> instead; text fallback required"
+        "notes": "DeepSeek native tool calling is unreliable — LLM often outputs <shell> instead; text fallback required"
       },
       "text_fallback": {
         "format": "xml_json",
@@ -259,11 +259,6 @@
       "path": "/anthropic/v1/messages",
       "method": "POST",
       "adapter": "anthropic"
-    },
-    "chat": {
-      "path": "/chat/completions",
-      "method": "POST",
-      "adapter": "openai"
     }
   },
   "retry_policy": {
@@ -343,7 +338,7 @@
       }
     },
     "sdk": {
-      "note": "OpenAI-compatible \u2014 use openai SDK with base_url override. Also supports Anthropic Messages API format.",
+      "note": "OpenAI-compatible — use openai SDK with base_url override. Also supports Anthropic Messages API format.",
       "python": "openai",
       "typescript": "openai"
     }

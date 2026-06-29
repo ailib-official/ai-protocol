@@ -190,7 +190,7 @@ metadata:
       verification:
         status: operational
         source: provider_catalog
-        notes: "HK deployment verified chat model (hiddenpath/eos main@299575a)"
+        notes: "Llama 3.3 Nemotron Super 49B chat model"
     nvidia/llama-3.3-nemotron-super-49b-v1.5:
       context_window: 128000
       max_output_tokens: 8192
@@ -392,7 +392,7 @@ metadata:
         status: operational
         source: provider_catalog
 
-    # Legacy (Eos deployment)
+    # Legacy chat model (provider catalog)
     meta/llama-3.1-8b-instruct:
       context_window: 128000
       max_output_tokens: 8192
