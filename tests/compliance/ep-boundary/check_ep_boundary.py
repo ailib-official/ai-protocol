@@ -4,6 +4,7 @@
 Usage (from ai-protocol repo):
   python tests/compliance/ep-boundary/check_ep_boundary.py --rust-root /path/to/ai-lib-rust
   python tests/compliance/ep-boundary/check_ep_boundary.py --python-root /path/to/ai-lib-python
+  python tests/compliance/ep-boundary/check_ep_boundary.py --ts-root /path/to/ai-lib-ts
 
 Exit 0 if no forbidden imports; exit 1 with a report otherwise.
 """
@@ -62,12 +63,48 @@ _PYTHON_CONTACT = (
     "resilience",
 )
 
+# TypeScript: keep in sync with module-matrix.yaml → typescript.execution_layer / typescript.contact
+_TS_EXECUTION = (
+    "types",
+    "errors",
+    "pipeline",
+    "structured",
+    "protocol",
+    "mcp",
+    "embeddings",
+    "stt",
+    "tts",
+    "rerank",
+    "multimodal",
+    "computer_use",
+)
+_TS_CONTACT = (
+    "routing",
+    "cache",
+    "batch",
+    "plugins",
+    "tokens",
+    "telemetry",
+    "guardrails",
+    "resilience",
+    "interceptors",
+    "negotiation",
+)
+
 
 def _python_contact_patterns() -> list[re.Pattern[str]]:
     alt = "|".join(re.escape(n) for n in _PYTHON_CONTACT)
     return [
         re.compile(rf"from\s+ai_lib_python\.({alt})\b"),
         re.compile(rf"import\s+ai_lib_python\.({alt})\b"),
+    ]
+
+
+def _ts_contact_patterns() -> list[re.Pattern[str]]:
+    alt = "|".join(re.escape(n) for n in _TS_CONTACT)
+    return [
+        re.compile(rf"from\s+['\"](?:\.\./)*({alt})/"),
+        re.compile(rf"from\s+['\"]@ailib-official/ai-lib-ts/contact['\"]"),
     ]
 
 
@@ -197,10 +234,17 @@ def main() -> int:
         type=Path,
         help="Path to ai-lib-python repository root",
     )
+    src.add_argument(
+        "--ts-root",
+        type=Path,
+        help="Path to ai-lib-ts repository root",
+    )
     args = ap.parse_args()
 
     if args.rust_root is not None:
         return _main_rust(args.rust_root.resolve())
+    if args.ts_root is not None:
+        return _main_typescript(args.ts_root.resolve())
     return _main_python(args.python_root.resolve())
 
 
@@ -284,6 +328,63 @@ def _main_python(root: Path) -> int:
 
     print(f"ep-boundary (python): OK (execution_layer + client/ under {root / 'src' / 'ai_lib_python'})")
     return 0
+
+
+def _scan_typescript_tree(
+    root: Path, rel_dir: str, patterns: list[re.Pattern[str]]
+) -> list[tuple[Path, list[tuple[int, str]]]]:
+    tree = root / "src" / rel_dir
+    bad: list[tuple[Path, list[tuple[int, str]]]] = []
+    if not tree.is_dir() and rel_dir.endswith(".ts"):
+        candidates = [tree] if tree.is_file() else []
+    elif tree.is_dir():
+        candidates = sorted(tree.rglob("*.ts"))
+    else:
+        candidates = []
+    for ts_path in candidates:
+        line_hits: list[tuple[int, str]] = []
+        try:
+            text = ts_path.read_text(encoding="utf-8")
+        except OSError as e:
+            line_hits.append((0, f"<read error: {e}>"))
+            bad.append((ts_path, line_hits))
+            continue
+        for i, line in enumerate(text.splitlines(), start=1):
+            stripped = line.split("//", 1)[0]
+            if any(cre.search(stripped) for cre in patterns):
+                line_hits.append((i, line.strip()))
+        if line_hits:
+            bad.append((ts_path, line_hits))
+    return bad
+
+
+def _main_typescript(root: Path) -> int:
+    patterns = _ts_contact_patterns()
+    bad: list[tuple[Path, list[tuple[int, str]]]] = []
+    for name in _TS_EXECUTION:
+        bad.extend(_scan_typescript_tree(root, name, patterns))
+    bad.extend(_scan_typescript_tree(root, "core.ts", patterns))
+    bad.extend(_scan_typescript_tree(root, "client", patterns))
+
+    if not bad:
+        print(
+            f"ep-boundary (typescript): OK (execution_layer + core.ts + client/ under {root / 'src'})"
+        )
+        return 0
+
+    print(
+        "ep-boundary (typescript): FORBIDDEN contact-layer import in execution surface:",
+        file=sys.stderr,
+    )
+    for path, hits in bad:
+        try:
+            rel = path.relative_to(root)
+        except ValueError:
+            rel = path
+        print(f"  {rel}:", file=sys.stderr)
+        for line_no, line in hits:
+            print(f"    L{line_no}: {line}", file=sys.stderr)
+    return 1
 
 
 if __name__ == "__main__":
