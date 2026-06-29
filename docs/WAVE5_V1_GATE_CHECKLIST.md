@@ -6,19 +6,17 @@ This document mirrors the blocking items from task **PT-073**. Check boxes off w
 
 ## 1. Core-only compliance (blocking)
 
-- [ ] **Rust** `cargo test -p ai-lib-core` — full compliance matrix PASS (workspace root: `ai-lib-rust`).
+- [x] **Rust** `cargo test -p ai-lib-core` — full compliance matrix PASS (workspace root: `ai-lib-rust`).
   - **Evidence (2026-04-03, local):** `COMPLIANCE_DIR=<ai-protocol>/tests/compliance cargo test -p ai-lib-core --test compliance_from_core` — full YAML suite (shared `crates/ai-lib-core/tests/compliance_runner` with facade `cargo test -p ai-lib-rust --test compliance`). Default `cargo test -p ai-lib-core` also runs unit tests and other integration tests.
-  - **CI (PT-073):** `.github/workflows/pt073-rust-core-wasm.yml` in `ai-lib-rust` (checkout `ailib-official/ai-protocol`; EP boundary; core tests; WASM build + wasmtime; `ai-lib-contact` compile smoke).
-- [ ] **Python** — default / documented E-only install: `pytest tests/compliance/` PASS (no P modules on import path for runner).
-  - **CI (PT-073):** `.github/workflows/pt073-python-e-only.yml` in `ai-lib-python` (`COMPLIANCE_SUBSET=e_only`, `check_ep_boundary.py --python-root`, architecture tests).
-- [ ] **TypeScript** — E-only surface: compliance suite against `@ailib-official/ai-lib-ts/core` (or equivalent) PASS.
-  - **CI (PT-073):** `.github/workflows/pt073-ts-core.yml` in `ai-lib-ts` (`npm run test:core` via `vitest.core.config.ts`; `core.ts` exports protocol V2 loader).
-- [ ] **Go** — `go test ./...` + compliance PASS (already near core-only; confirm `internal/resilience` not required for E-only harness).
-  - **CI:** `.github/workflows/ci.yml` in `ai-lib-go` (existing).
+  - **CI (PT-073):** `.github/workflows/pt073-rust-core-wasm.yml` — green on main 2026-06-29 (run `28364691515`).
+- [x] **Python** — E-only: `pt073-python-e-only.yml`; **full matrix:** `pt073-python-full.yml` (PR #4 `b30b831`, 2026-06-29).
+- [x] **TypeScript** — E-only: `pt073-ts-core.yml`; **full matrix:** `pt073-ts-full.yml` / `test:compliance:full` (PR #4 `324e67a`, 2026-06-29).
+- [x] **Go** — `go test ./...` + compliance PASS.
+  - **CI (PT-073):** `.github/workflows/pt073-go.yml` — green on main 2026-06-29 (run `28380766175`; PR #2 `334ac74`).
 
 ## 2. WASM compliance (blocking, PT-072)
 
-- [ ] `rustup target add wasm32-wasip1` available on CI runners.
+- [x] `rustup target add wasm32-wasip1` available on CI runners (`pt073-rust-core-wasm.yml`, 2026-06-29).
 - [x] `cargo build -p ai-lib-wasm --target wasm32-wasip1 --release` PASS (2026-04-03); `ai-lib-core` builds as dependency of `ai-lib-wasm` for that target.
 - [x] Binary size under **2 MB** (release `ai_lib_wasm.wasm` ~**1.24 MB**, 2026-04-03).
 - [x] **Six** exported WASM functions per PT-061 Phase 1 spec (+ `ailib_out_*` / `ailib_err_*` accessors).
