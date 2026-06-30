@@ -15,6 +15,8 @@ document lists **compliance case files** that are valid for that subset.
 | `cases/07-advanced-capabilities/` | Capability guard + endpoint mapping |
 | `cases/08-generative-capabilities/` | Generative capability matrix |
 | `cases/09-credential-resolution/` | BYOK credential lookup and auth attachment metadata (no network calls) |
+| `cases/10-text-tool-call/` | Text tool call parse / prompt (E-layer) |
+| `cases/11-content-block-encoding/` | Content block encoding + contract schema (E-layer) |
 
 ## Excluded (require P or policy semantics)
 

@@ -18,7 +18,9 @@
         "resilience",
         "credential-resolution",
         "content-block-encoding",
-        "text-tool-call"
+        "text-tool-call",
+        "generative-capabilities",
+        "advanced-capabilities"
       ]
     },
     "name": {
@@ -79,7 +81,14 @@
             "auth_attachment",
             "text_tool_parse",
             "text_tool_prompt",
-            "content_block_encode"
+            "content_block_encode",
+            "capability_check",
+            "response_parsing",
+            "request_building",
+            "capability_guard",
+            "advanced_endpoint_mapping",
+            "fallback_decision",
+            "provider_mock_behavior"
           ]
         }
       },

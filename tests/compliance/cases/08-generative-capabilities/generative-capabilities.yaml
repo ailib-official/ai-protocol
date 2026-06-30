@@ -127,7 +127,7 @@ expected:
 suite: "generative-capabilities"
 name: "Context window overflow error classification"
 id: "gen-005"
-description: "When provider returns context length exceeded error, runtime classifies it as E1003 (invalid_request)"
+description: "When provider returns context length exceeded error, runtime classifies it as E1005 (request_too_large)"
 tags: ["generative", "error-classification", "context-window", "P0"]
 
 setup:

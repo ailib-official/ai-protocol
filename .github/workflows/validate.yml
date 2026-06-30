@@ -10,6 +10,7 @@ on:
       - 'examples/**'
       - 'schemas/**'
       - 'scripts/**'
+      - 'tests/compliance/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/validate.yml'
@@ -22,6 +23,7 @@ on:
       - 'examples/**'
       - 'schemas/**'
       - 'scripts/**'
+      - 'tests/compliance/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/validate.yml'
@@ -44,6 +46,7 @@ jobs:
       run: |
         npm ci
         npm run validate
+        npm run validate:compliance
         npm run gate:manifest-authority
 
     - name: Build JSON artifacts
