@@ -22,7 +22,12 @@ api_families:
     request_format: "openai"
     response_format: "openai"
 
-capabilities: [chat, streaming, tools, vision, parallel_tools, mcp_client]
+capabilities: [text, streaming, tools, vision, reasoning, structured_output, parallel_tools, mcp_client]
+
+feature_flags:
+  structured_output: true
+  extended_thinking: true
+  json_mode: true
 
 parameters:
   temperature: { type: float, range: [0.0, 2.0], default: 1.0 }

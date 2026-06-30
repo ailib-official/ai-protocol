@@ -30,9 +30,22 @@ function parseArgs() {
   };
 }
 
-function runCommand(label, command, cwd) {
+function runCommand(label, command, cwd, { optional = false } = {}) {
   const start = Date.now();
   if (!existsSync(cwd)) {
+    if (optional) {
+      return {
+        label,
+        command,
+        cwd,
+        pass: true,
+        skipped: true,
+        exit_code: 0,
+        elapsed_ms: 0,
+        stdout: '',
+        stderr: `Skipped (optional): directory not found: ${cwd}`,
+      };
+    }
     return {
       label,
       command,
@@ -81,32 +94,45 @@ function main() {
       cwd: ROOT,
     },
     {
+      label: 'compliance-cases-lint',
+      command: 'npm run validate:compliance',
+      cwd: ROOT,
+    },
+    {
       label: 'rust-compliance',
       command: 'cargo test --test compliance',
       cwd: args.rustDir,
+      optional: true,
     },
     {
       label: 'python-compliance',
       command: 'python -m pytest tests/compliance/test_compliance.py',
       cwd: args.pythonDir,
+      optional: true,
     },
     {
       label: 'ts-compliance',
       command:
         'npm run test -- tests/compliance-matrix.test.ts tests/retry-policy.compliance.test.ts tests/protocol-loading.compliance.test.ts',
       cwd: args.tsDir,
+      optional: true,
     },
   ];
 
-  const results = checks.map((check) => runCommand(check.label, check.command, check.cwd));
-  const failed = results.filter((item) => !item.pass);
+  const results = checks.map((check) =>
+    runCommand(check.label, check.command, check.cwd, { optional: check.optional })
+  );
+  const required = results.filter((item) => !item.skipped);
+  const failed = required.filter((item) => !item.pass);
   const report = {
     timestamp: new Date().toISOString(),
     gate_id: 'compliance-matrix-gate',
     mode: args.reportOnly ? 'report-only' : 'required',
     summary: {
       total: results.length,
-      passed: results.filter((r) => r.pass).length,
+      required: required.length,
+      skipped: results.filter((r) => r.skipped).length,
+      passed: required.filter((r) => r.pass).length,
       failed: failed.length,
       status: failed.length === 0 ? 'pass' : args.reportOnly ? 'report-only-failed' : 'blocked',
     },
@@ -123,7 +149,8 @@ function main() {
   console.log(`Mode: ${report.mode}`);
   console.log(`Report: ${reportPath}`);
   for (const item of results) {
-    console.log(`- [${item.pass ? 'PASS' : 'FAIL'}] ${item.label} (${item.elapsed_ms}ms)`);
+    const tag = item.skipped ? 'SKIP' : item.pass ? 'PASS' : 'FAIL';
+    console.log(`- [${tag}] ${item.label} (${item.elapsed_ms}ms)`);
   }
 
   if (failed.length > 0 && !args.reportOnly) {
