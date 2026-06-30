@@ -1,23 +1,32 @@
-# AI-Protocol v1.1 Example: Simple Streaming Chat
-# A minimal example demonstrating basic streaming chat setup
+# AI-Protocol v1.5 Example: Simple Streaming Chat
+# Minimal OpenAI-style streaming configuration (schema-valid subset)
 
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
-# Example: OpenAI with simplified streaming configuration
 id: openai_simple_stream
 protocol_version: "1.5"
-
-version: "v1"
+name: "OpenAI Simple Streaming (Example)"
+status: stable
 
 endpoint:
   base_url: "https://api.openai.com/v1"
-  protocol: "https"
+  protocol: https
+  timeout_ms: 30000
 
 auth:
   type: bearer
   token_env: "OPENAI_API_KEY"
 
-# Simplified parameter mappings for basic use
+availability:
+  required: false
+  regions:
+    - global
+  check:
+    method: GET
+    path: "/models"
+    expected_status: [200, 401]
+    timeout_ms: 3000
+
 parameter_mappings:
   temperature: "temperature"
   max_tokens: "max_tokens"
@@ -25,76 +34,44 @@ parameter_mappings:
   top_p: "top_p"
   model: "model"
 
-# Basic streaming configuration
 streaming:
   decoder:
-    format: "openai_sse"
-    strategy: "openai_event_stream"
-  
-  # Filter for content deltas only
-  frame_selector: "$.type == 'content_block_delta'"
-  
-  # Simple event mapping
+    format: openai_sse
+    strategy: openai_chat
+    done_signal: "[DONE]"
+    prefix: "data: "
   event_map:
-    - match: "$.type == 'content_block_delta'"
-      emit: "PartialContentDelta"
+    - match: "$.choices[0].delta.content"
+      emit: PartialContentDelta
       extract:
-        content: "$.delta.text"
-        sequence_id: "$.index"
-    
-    - match: "$.type == 'message_stop'"
-      emit: "StreamEnd"
+        content: "$.choices[0].delta.content"
+    - match: "$.choices[0].finish_reason"
+      emit: StreamEnd
       extract:
-        finish_reason: "$.reason"
+        finish_reason: "$.choices[0].finish_reason"
 
-# Capabilities for this example
-capabilities: 
+capabilities:
   chat: true
   streaming: true
   tools: false
   vision: false
-  multimodal: false
   agentic: false
   reasoning: false
 
-# Simple error handling
 error_classification:
   by_http_status:
-    "400": "invalid_request"
-    "401": "authentication"
-    "429": "rate_limited"
-    "500": "server_error"
+    "400": invalid_request
+    "401": authentication
+    "429": rate_limited
+    "500": server_error
 
-# Basic retry policy
 retry_policy:
-  strategy: "exponential_backoff"
+  strategy: exponential_backoff
   min_delay_ms: 1000
   max_delay_ms: 30000
-  jitter: "full"
+  jitter: full
   max_retries: 3
   retry_on_http_status: [429, 500]
 
-# Usage tracking
-response_mapping:
-  usage:
-    prompt_tokens_path: "usage.prompt_tokens"
-    completion_tokens_path: "usage.completion_tokens"
-    total_tokens_path: "usage.total_tokens"
-
-# Features enabled in this example
-features:
-  streaming:
-    enabled: true
-    auto_reconnect: true
-    max_reconnect_attempts: 3
-  
-  simple:
-    minimal_configurations: true
-    beginner_friendly: true
-
-# Notes for users
 notes:
-  - "This example shows minimal streaming configuration"
-  - "Tool calling is disabled for simplicity"
-  - "For full features, see v1/providers/openai.yaml"
-  - "Perfect for learning AI-Protocol basics"
+  - "Minimal streaming example; see v1/providers/openai.yaml for the full manifest."

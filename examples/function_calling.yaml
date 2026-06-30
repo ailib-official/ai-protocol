@@ -1,21 +1,31 @@
-# AI-Protocol v1.1 Example: Function Calling Pattern
-# Demonstrates simplified tool/function calling configuration
+# AI-Protocol v1.5 Example: Function Calling
+# OpenAI-style tool streaming configuration (schema-valid subset)
 
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
-# Example: OpenAI with function calling
 id: openai_function_calling
 protocol_version: "1.5"
-
-version: "v1"
+name: "OpenAI Function Calling (Example)"
+status: stable
 
 endpoint:
   base_url: "https://api.openai.com/v1"
-  protocol: "https"
+  protocol: https
+  timeout_ms: 30000
 
 auth:
   type: bearer
   token_env: "OPENAI_API_KEY"
+
+availability:
+  required: false
+  regions:
+    - global
+  check:
+    method: GET
+    path: "/models"
+    expected_status: [200, 401]
+    timeout_ms: 3000
 
 parameter_mappings:
   temperature: "temperature"
@@ -23,318 +33,67 @@ parameter_mappings:
   stream: "stream"
   top_p: "top_p"
   model: "model"
-  tool_choice: "tool_choice"
   tools: "tools"
+  tool_choice: "tool_choice"
 
-# Streaming with tool calling support
 streaming:
   decoder:
-    format: "openai_sse"
-    strategy: "openai_event_stream"
-  
-  # Frame selector for tool-related events
-  frame_selector: "$.type in ['content_block_delta', 'content_block_start', 'content_block_stop', 'message_stop']"
-  
+    format: openai_sse
+    strategy: openai_chat
+    done_signal: "[DONE]"
+    prefix: "data: "
+  accumulator:
+    stateful_tool_parsing: true
+    key_path: "$.choices[0].delta.tool_calls[0].function.arguments"
+    flush_on: "$.choices[0].finish_reason == 'tool_calls'"
   event_map:
-    # Text content (may interleave with tools)
-    - match: "$.type == 'content_block_delta' && $.delta.type == 'text_delta'"
-      emit: "PartialContentDelta"
+    - match: "$.choices[0].delta.content"
+      emit: PartialContentDelta
       extract:
-        content: "$.delta.text"
-        sequence_id: "$.index"
-    
-    # Tool call start
-    - match: "$.type == 'content_block_start' && $.content_block.type == 'tool_call'"
-      emit: "ToolCallStarted"
+        content: "$.choices[0].delta.content"
+    - match: "$.choices[0].delta.tool_calls"
+      emit: PartialToolCall
       extract:
-        tool_call_id: "$.content_block.call_id"
-        tool_name: "$.content_block.function.name"
-        index: "$.index"
-        arguments: "$.content_block.function.arguments"
-    
-    # Tool call streaming (partial arguments)
-    - match: "$.type == 'content_block_delta' && $.delta.type == 'tool_call_delta'"
-      emit: "ToolCallDelta"
+        tool_calls: "$.choices[0].delta.tool_calls"
+    - match: "$.choices[0].finish_reason"
+      emit: StreamEnd
       extract:
-        tool_call_id: "$.call_id"
-        index: "$.index"
-        arguments: "$.delta.arguments"
-    
-    # Stream end with tool calls
-    - match: "$.type == 'message_stop'"
-      emit: "StreamEnd"
-      extract:
-        finish_reason: "$.reason"
-        
-        # Check if response included tool calls
-        tool_calls: "$.tool_calls"
+        finish_reason: "$.choices[0].finish_reason"
 
-# Tool accumulation configuration
 tooling:
-  enabled: true
+  source_model: openai_tool_calls
   tool_use:
-    index_path: "$.content_block.call_id"
-    arguments_path: "$.content_block.function.arguments"
-    name_path: "$.content_block.function.name"
-  
-  # Accumulate partial tool arguments during streaming
-  accumulation:
-    mode: "partial"
-    flush_on: "$.type == 'content_block_stop'"
-    key_path: "$.call_id"
+    index_path: "$.choices[0].delta.tool_calls[0].index"
+    arguments_path: "$.choices[0].delta.tool_calls[0].function.arguments"
+    name_path: "$.choices[0].delta.tool_calls[0].function.name"
 
-# Non-streaming tool call handling
-non_streaming:
-  frame_selector: "$."
-  
-  # Map tool calls from response
-  event_map:
-    - match: "has('tool_calls')"
-      emit: "ToolCalls"
-      extract:
-        tool_calls: "$.tool_calls"
-    
-    - match: "has('content')"
-      emit: "ContentBlockComplete"
-      extract:
-        content_type: "text"
-        content: "$.content"
-
-capabilities: 
+capabilities:
   chat: true
   streaming: true
   tools: true
   vision: false
-  multimodal: false
   agentic: true
   reasoning: false
+  parallel_tools: true
 
-# Response mapping for tool calls
-response_mapping:
-  tool_calls:
-    path: "tool_calls"
-    format: "array"
-    fields:
-      id: "call_id"
-      name: "function.name"
-      args: "function.arguments"
-    array_fan_out: true
-  
-  content:
-    path: "content"
-    filter: "type == 'text'"
-    fields:
-      text: "text"
-  
-  usage:
-    prompt_tokens_path: "usage.prompt_tokens"
-    completion_tokens_path: "usage.completion_tokens"
-    total_tokens_path: "usage.total_tokens"
-
-# Tool execution flow
-tool_execution:
-  # How tools are invoked
-  invocation:
-    - "Runtime receives ToolCallStarted event"
-    - "Runtime executes the tool function"
-    - "Runtime creates new request with tool result"
-    - "Provider processes tool result and continues"
-  
-  # Tool result submission format
-  result_format:
-    role: "assistant"
-    content:
-      - type: "tool_use"
-        id: "previous_tool_call_id"
-        content: '{"result": "output"}'
-  
-  # Maximum tool calls per turn
-  max_tool_calls_per_turn: 10
-  max_tool_depth: 5
-
-# Example tool definitions
-example_tools:
-  - name: "get_weather"
-    description: "Get current weather for a location"
-    parameters:
-      type: "object"
-      properties:
-        location:
-          type: "string"
-          description: "City name"
-        unit:
-          type: "string"
-          enum: ["celsius", "fahrenheit"]
-      required:
-        - "location"
-  
-  - name: "calculate"
-    description: "Perform mathematical calculations"
-    parameters:
-      type: "object"
-      properties:
-        expression:
-          type: "string"
-          description: "Mathematical expression to evaluate"
-      required:
-        - "expression"
-
-# Error classification for tool-related errors
-errorclassification:
+error_classification:
   by_http_status:
-    "400": "invalid_request"
-    "401": "authentication"
-    "429": "rate_limited"
-    "500": "server_error"
-
-  by_error_code:
-    # Tool-specific errors
-    "invalid_tool": "invalid_tool"
-    "tool_execution_failed": "tool_error"
-
+    "400": invalid_request
+    "401": authentication
+    "429": rate_limited
+    "500": server_error
   by_message_contains:
-    "tool": "invalid_tool"
-    "function": "invalid_tool"
+    "tool": invalid_request
+    "function": invalid_request
 
-# Retry policy
 retry_policy:
-  strategy: "exponential_backoff"
+  strategy: exponential_backoff
   min_delay_ms: 1000
   max_delay_ms: 30000
-  jitter: "full"
+  jitter: full
   max_retries: 3
   retry_on_http_status: [429, 500]
 
-# Features
-features:
-  tools:
-    enabled: true
-    
-    # Tool call modes
-    modes:
-      auto: "Model decides when to use tools"
-      none: "No tools"
-      required: "Must use at least one tool"
-      specific: "Use specific tool"
-    
-    # Streaming support
-    streaming:
-      enabled: true
-      partial_arguments: true
-    
-    # Parallel tool calls
-    parallel_execution:
-      enabled: true
-      max_parallel: 5
-    
-    # Error handling
-    error_handling:
-      continue_on_error: false
-      partial_failure_mode: "fail_all"
-
-# Usage patterns
-usage_patterns:
-  - name: "Single Tool Call"
-    description: "Execute a single function"
-    flow: "Request → ToolCall → Execute → Add result → Complete"
-    
-  - name: "Multi-Tool Parallel Execution"
-    description: "Execute multiple independent tools simultaneously"
-    flow: "Request → ToolCalls (parallel) → Execute all → Add results → Complete"
-    
-  - name: "Sequential Tool Calls"
-    description: "Execute tools one after another (output of one feeds into next)"
-    flow: "Request → ToolCall1 → Execute → Request2 → ToolCall2 → Execute → Complete"
-    
-  - name: "Auto Tool Selection"
-    description: "Model decides which tools to use"
-    flow: "Request → Model selects tools → Execute → Continue → Complete"
-
-# Example implementations
-examples:
-  - name: "Simple Tool Calling (Python)"
-    language: "python"
-    code: |
-      from ai_lib_python import AiClient, ToolDefinition
-
-      async def get_weather(location: str, unit: str = "celsius") -> dict:
-          # Simulate weather API call
-          return {"temp": 20, "location": location, "unit": unit}
-
-      # Define tool
-      weather_tool = ToolDefinition(
-          name="get_weather",
-          description="Get current weather for a location",
-          parameters={
-              "type": "object",
-              "properties": {
-                  "location": {"type": "string"},
-                  "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]}
-              },
-              "required": ["location"]
-          }
-      )
-
-      # Create client with tool
-      client = await AiClient.create("openai/gpt-4o")
-      
-      # Make request with tool
-      response = await client.chat().user("What's the weather in Tokyo?").tools([weather_tool]).execute()
-      
-      # Check for tool calls
-      if response.tool_calls:
-          for tool_call in response.tool_calls:
-              result = await get_weather(**tool_call.arguments)
-              # Submit tool result for continuation...
-      else:
-          print(response.content)
-  
-  - name: "Streaming with Tools (Rust)"
-    language: "rust"
-    code: |
-      use ai_lib_rust::{AiClient, Message, ToolDefinition};
-      use ai_lib_rust::types::events::StreamingEvent;
-
-      #[tokio::main]
-      async fn main() -> ai_lib_rust::Result<()> {
-          let client = AiClient::new("openai/gpt-4o").await?;
-          
-          let stream = client.chat()
-              .user("What's 2+2?")
-              .tools(vec![/* tools */])
-              .stream()
-              .execute_stream()
-              .await?;
-          
-          while let Some(event) = stream.next().await {
-              match event? {
-                  StreamingEvent::ToolCallStarted { tool_name, .. } => {
-                      println!("Tool called: {}", tool_name);
-                      // Execute tool...
-                  }
-                  StreamingEvent::PartialContentDelta { content, .. } => {
-                      print!("{}", content);
-                  }
-                  _ => {}
-              }
-          }
-          
-          Ok(())
-      }
-
-# Best practices
-best_practices:
-  - "Always validate tool arguments before execution"
-  - "Provide clear descriptions for tools"
-  - "Use enums for restricted parameter values"
-  - "Consider tool execution time and set appropriate timeouts"
-  - "Handle tool execution errors gracefully"
-  - "Return structured results that the model can parse"
-
-# Notes
 notes:
-  - "Tool calling syntax varies by provider"
-  - "Some providers require manual tool result formatting"
-  - "Streaming tool calls require argument accumulation"
-  - "Not all tool calls will be executed by all models"
-  - "Set tool_choice appropriately (auto/none/required)"
+  - "Streaming tool calls require argument accumulation via streaming.accumulator."
+  - "For full OpenAI manifest see v1/providers/openai.yaml."

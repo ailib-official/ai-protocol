@@ -1,92 +1,57 @@
-# AI-Protocol v1.1 Example: Multimodal Vision
-# Demonstrates image input configuration for vision-capable models
+# AI-Protocol v1.5 Example: Multimodal Vision
+# Gemini-style vision-capable provider (schema-valid subset)
 
 $schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json"
 
-# Example: Google Gemini with vision support
 id: gemini_vision
 protocol_version: "1.5"
-
-version: "v1"
+name: "Google Gemini Vision (Example)"
+status: stable
 
 endpoint:
   base_url: "https://generativelanguage.googleapis.com/v1beta"
-  protocol: "https"
+  protocol: https
+  timeout_ms: 60000
 
 auth:
   type: api_key
   key_env: "GOOGLE_API_KEY"
   header_name: "x-goog-api-key"
 
-# Note: Gemini uses "generateContent" endpoint
+availability:
+  required: false
+  regions:
+    - global
+  check:
+    method: GET
+    path: "/models"
+    expected_status: [200, 401]
+    timeout_ms: 5000
+
 parameter_mappings:
   temperature: "generationConfig.temperature"
   max_tokens: "generationConfig.maxOutputTokens"
   top_p: "generationConfig.topP"
-  top_k: "generationConfig.topK"
   stream: "stream"
-  
-  # For multimodal content
   contents: "contents"
 
-# Gemini supports both response types
 streaming:
-  # SSE streaming for real-time responses
   decoder:
-    format: "sse"
-    strategy: "simple"
+    format: gemini_json
+    strategy: gemini_stream
     delimiter: "\r\n"
     prefix: "data: "
-  
-  frame_selector: "$.candidates"
-  
   event_map:
-    # Content delta for streaming
-    - match: "$.has_delta == true"
-      emit: "PartialContentDelta"
+    - match: "$.candidates[0].content.parts[0].text"
+      emit: PartialContentDelta
       extract:
-        content: "$.text"
-        candidate_index: "$.index"
-    
-    # Stream completion
-    - match: "$.done == true"
-      emit: "StreamEnd"
+        content: "$.candidates[0].content.parts[0].text"
+    - match: "$.candidates[0].finishReason"
+      emit: StreamEnd
       extract:
-        finish_reason: "$.finishReason"
-        safety_ratings: "$.safetyRatings"
+        finish_reason: "$.candidates[0].finishReason"
 
-# Non-streaming mode also supported
-non_streaming:
-  frame_selector: "$.candidates[0]"
-  
-  event_map:
-    - match: "$.has('content')"
-      emit: "ContentBlockComplete"
-      extract:
-        content_type: "text"
-        content: "$.content.parts[0].text"
-
-# Multimodal content structure
-multimodal:
-  enabled: true
-  supported_types:
-    - "image/jpeg"
-    - "image/png"
-    - "image/webp"
-    - "image/gif"
-    - "image/heic"
-  
-  # Maximum image size (in bytes)
-  max_image_size: 20971520  # 20MB
-  
-  # Image resolution recommendations
-  resolution_limits:
-    max_width: 4096
-    max_height: 4096
-    max_pixels: 16777216  # 16 megapixels
-
-# Vision-specific capabilities
-capabilities: 
+capabilities:
   chat: true
   streaming: true
   tools: false
@@ -95,196 +60,23 @@ capabilities:
   agentic: false
   reasoning: false
 
-# Multimodal content block format
-content_block_schema:
-  type: "object"
-  properties:
-    role:
-      type: "string"
-      enum: ["user", "model"]
-    parts:
-      type: "array"
-      items:
-        anyOf:
-          - type: "object"
-            properties:
-              type:
-                type: "string"
-                enum: ["text"]
-              text:
-                type: "string"
-          - type: "object"
-            properties:
-              type:
-                type: "string"
-                enum: ["image_url"]
-              image_url:
-                type: "object"
-                properties:
-                  url:
-                    type: "string"
-                  mime_type:
-                    type: "string"
-
-# Error handling for multimodal requests
 error_classification:
   by_http_status:
-    "400": "invalid_request"
-    "429": "rate_limited"
-    "500": "server_error"
-  
+    "400": invalid_request
+    "429": rate_limited
+    "500": server_error
   by_message_contains:
-    "image": "invalid_image"
-    "vision": "vision_error"
-  
-  notes:
-    - "Common multimodal errors include image parsing failures, size violations, and format incompatibility"
-    - "Could not parse image - Image data is corrupted or unreadable"
-    - "Image too large - File exceeds maximum allowed size"
-    - "Unsupported image format - File uses unsupported MIME type"
+    "image": invalid_request
+    "vision": invalid_request
 
-response_mapping:
-  content:
-    path: "candidates[0].content.parts[0].text"
-    parse_as: "string"
-  
-  usage:
-    prompt_tokens_path: "usageMetadata.promptTokenCount"
-    completion_tokens_path: "usageMetadata.candidatesTokenCount"
-    total_tokens_path: "usageMetadata.totalTokenCount"
+retry_policy:
+  strategy: exponential_backoff
+  min_delay_ms: 1000
+  max_delay_ms: 30000
+  jitter: full
+  max_retries: 3
+  retry_on_http_status: [429, 500]
 
-  # Vision-specific metadata
-  vision_metadata:
-    # Image dimensions processed
-    image_dimensions_path: "image dimensions"
-    
-    # Safety filtering results
-    safety_ratings_path: "candidates[0].safetyRatings"
-    
-    # Content block breakdown
-    content_blocks_path: "candidates[0].content.parts"
-
-# Vision-specific features
-features:
-  vision:
-    enabled: true
-    
-    # Image processing capabilities
-    image_analysis:
-      object_detection: true
-      text_recognition: true
-      scene_understanding: true
-      chart_reading: true
-      document_parsing: true
-    
-    # Multi-image support
-    multi_image:
-      enabled: true
-      max_images_per_request: 16
-    
-    # Video frame support (if available)
-    video_frames:
-      enabled: false
-    
-  safety:
-    content_filtering:
-      enabled: true
-      strict_mode: false
-      
-    # Vision safety categories
-    safety_categories:
-      - "HARASSMENT"
-      - "HATE_SPEECH"
-      - "SEXUALLY_EXPLICIT"
-      - "DANGEROUS_CONTENT"
-
-# Example usage patterns
-usage_patterns:
-  - name: "Single Image Analysis"
-    description: "Analyze a single image"
-    request_format: "Single image URL provided"
-    example: |
-      [Message.user_with_image("Describe this image", image_url="https://example.com/image.jpg")]
-  
-  - name: "Document OCR"
-    description: "Extract text from document images"
-    request_format: "Document image with OCR prompt"
-    example: |
-      [Message.user_with_image("Extract all text from this document", 
-        image_url="https://example.com/document.jpg")]
-  
-  - name: "Chart Analysis"
-    description: "Analyze data visualizations"
-    request_format: "Chart/image with analytical question"
-    example: |
-      [Message.user_with_image("What are the key trends in this chart?",
-        image_url="https://example.com/chart.png")]
-  
-  - name: "Multi-Image Comparison"
-    description: "Compare or summarize multiple images"
-    request_format: "Multiple images in single request"
-    example: |
-      images = [ContentBlock.image_from_url(url1),
-                ContentBlock.image_from_url(url2)]
-      Message("user", MessageContent.blocks([
-        ContentBlock.text("Compare these images"),
-        *images
-      ]))
-
-# Best practices
-best_practices:
-  - "Always provide high-quality images when possible"
-  - "Use appropriate image compression to stay under size limits"
-  - "Provide clear descriptions of what to look for in images"
-  - "For document analysis, prefer high-resolution scans"
-  - "Test with different image formats to ensure compatibility"
-
-# Tips
-tips:
-  - "For best results with text-heavy images, use models optimized for OCR"
-  - "Images with high visual complexity may require longer max_tokens"
-  - "Batch multiple related images in a single request for cost efficiency"
-  - "Use safety ratings to filter inappropriate content programmatically"
-
-# Example code snippets
-examples:
-  - name: "Single Image Analysis (Python)"
-    language: "python"
-    code: |
-      from ai_lib_python import AiClient, Message, ContentBlock
-
-      client = await AiClient.create("google/gemini-2.0-flash-exp")
-      
-      # Image from URL
-      response = await client.chat().user_with_image(
-          "What do you see in this image?",
-          image_url="https://example.com/photo.jpg"
-      ).execute()
-      
-      print(response.content)
-  
-  - name: "Local Image File (Python)"
-    language: "python"
-    code: |
-      import base64
-      
-      with open("photo.jpg", "rb") as f:
-          image_data = base64.b64encode(f.read()).decode()
-      
-      message = Message(
-          role=MessageRole.USER,
-          content=[
-              ContentBlock.text("Describe this image"),
-              ContentBlock.image_base64(image_data, "image/jpeg"),
-          ]
-      )
-      
-      response = await client.chat().messages([message]).execute()
-      print(response.content)
-
-# Notes
 notes:
-  - "Vision capabilities vary by model version"
-  - "Some models have lower resolution limits"
-  - "Image processing time affects response latency"
-  - "Safety filtering may block some images"
+  - "Vision example with multimodal content blocks; image size/format limits are provider-specific."
+  - "For production manifests see v1/providers/gemini.yaml."
