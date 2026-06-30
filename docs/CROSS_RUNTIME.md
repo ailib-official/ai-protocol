@@ -142,6 +142,9 @@ All runtimes must implement the complete error code table as defined in
 | E1003 | `permission_denied` | client | 403 | No | No |
 | E1004 | `not_found` | client | 404 | No | No |
 | E1005 | `request_too_large` | client | 413 | No | No |
+
+**Capability guard (adv-001..004, gen-007):** When a runtime rejects a call because the manifest does not declare an advanced capability (MCP, computer_use, reasoning, video, etc.), compliance cases expect **`E1005`** — a deliberate reuse of the client-error bucket (not a separate `E1006`). Runtimes MUST NOT send HTTP requests for blocked capability calls; the code signals a client-side precondition failure aligned with `schemas/v2/error-codes.yaml` `compliance_aliases`.
+
 | E2001 | `rate_limited` | rate | 429 | Yes | Yes |
 | E2002 | `quota_exhausted` | rate | 429 | No | Yes |
 | E3001 | `server_error` | server | 500 | Yes | Yes |

@@ -21,6 +21,7 @@
     "validate:schemas": "node scripts/validate.js --schemas",
     "validate:specs": "node scripts/validate.js --specs",
     "validate:compliance": "node scripts/validate-compliance-cases.js",
+    "validate:error-codes": "node scripts/validate-error-codes-sync.js",
     "drift:check": "node scripts/drift-detect.js",
     "gate:manifest-consumption": "node scripts/gate-manifest-consumption.js",
     "gate:manifest-authority": "node scripts/gate-manifest-authority.js",
