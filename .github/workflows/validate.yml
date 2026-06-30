@@ -47,6 +47,7 @@ jobs:
         npm ci
         npm run validate
         npm run validate:compliance
+        npm run validate:error-codes
         npm run gate:manifest-authority
 
     - name: Build JSON artifacts

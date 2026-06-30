@@ -62,6 +62,11 @@ error_codes:
     fallbackable: false
     description: "Input exceeds the model's context window or the API payload size limit"
     recovery_hint: "Reduce input size or use a model with a larger context window"
+    # QA-protocol-002: capability_guard / undeclared advanced capability (adv-001..004, gen-007)
+    # intentionally maps to E1005 — client-side rejection before request is sent; not payload size.
+    compliance_aliases:
+      - "capability_not_declared"
+      - "unsupported_capability"
 
   # --- Rate/Quota Errors (2xxx) ---
   E2001:

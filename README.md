@@ -31,7 +31,13 @@ ai-protocol/
 │       ├── multimodal.json    # Extended multimodal capabilities schema
 │       ├── provider-contract.json # Provider contract schema
 │       ├── capability-profile.json # Experimental I/O/S phase metadata schema
-│       └── context-policy.json # Context management policy schema
+│       ├── context-policy.json # Context management policy schema
+│       ├── execution-metadata.json # Wave-5 execution metadata schema
+│       ├── metadata-model-entry.json # Typed metadata.models entries
+│       ├── message-roles.json # Message role enumeration schema
+│       ├── pack.json          # Provider pack schema
+│       ├── pricing.json       # Optional pricing schema
+│       └── tool-calling.json  # Tool calling schema
 ├── v1/                        # v1.x stable version specification
 │   ├── spec.yaml              # Basic specifications: standard parameters, event enumeration
 │   ├── providers/             # Provider configurations (split by vendor for easy PR)
@@ -44,7 +50,7 @@ ai-protocol/
 │       ├── claude.yaml        # Claude series models
 │       └── ...                # More models
 ├── v2/                        # v2 formal provider manifests
-│   └── providers/             # 6 V2 provider manifests (OpenAI, Anthropic, Google, etc.)
+│   └── providers/             # 12 V2 provider manifests (OpenAI, Anthropic, Google, DeepSeek, …)
 ├── v2-alpha/                  # v2-alpha experimental version
 │   └── spec.yaml              # Experimental operator definitions
 ├── tests/                     # Cross-runtime compliance test suite

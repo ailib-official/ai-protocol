@@ -31,6 +31,33 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 - **`check_ep_boundary.py` (Python)**: AST scan of `src/ai_lib_python/client/` forbids static imports of contact-layer subpackages (except under `if TYPE_CHECKING:`); aligns mixed `client` surface with Paper1 §3.2.
 - **`docs/WAVE5_V1_GATE_CHECKLIST.md`**: documents PT-073 CI workflows in `ai-lib-rust`, `ai-lib-ts`, and `ai-lib-python` (Rust / TS / Python order).
 
+## 0.8.4 (2026-04-11) - Wave-5 compliance + EP boundary
+
+### Added
+
+- **PT-073h compliance integrity (PR #18)**: `validate:compliance` case linter; `gate-compliance-matrix.js` local checks; mock-openai fixture aligned with generative cases; E_ONLY_CASES dirs 10/11.
+- **Execution metadata schema** (`schemas/v2/execution-metadata.json`) and generative compliance cases.
+- **EP boundary tooling**: `check_ep_boundary.py` `--rust-root` / `--python-root` / `--ts-root` / `--go-root`.
+- **IOS capability profile** staged rollout across v2 providers; compliance boundary negatives.
+- **Compliance rollback drill** scripts and fullchain integration.
+
+### Changed
+
+- Public URLs migrated from `hiddenpath` to `ailib-official`.
+- Provider compatibility updates for v0.8.4 release train.
+
+## 0.8.3 (2026-03-11) - Advanced capability compliance matrix
+
+### Added
+
+- Expanded **advanced capability** compliance cases (`07-advanced-capabilities`) for cross-runtime parity (capability guard, endpoint mapping, fallback).
+
+## 0.8.2 (2026-03-09) - Wave-3 release baseline
+
+### Added
+
+- Wave-3 closure (PT-036/037) and release baseline advance.
+
 ## 0.8.1 (2026-03-08) - Compliance Matrix Activation and Fullchain Gates
 
 ### Added
