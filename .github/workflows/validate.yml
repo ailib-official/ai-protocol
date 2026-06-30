@@ -48,6 +48,7 @@ jobs:
         npm run validate
         npm run validate:compliance
         npm run validate:error-codes
+        npm run validate:examples
         npm run gate:manifest-authority
 
     - name: Build JSON artifacts
