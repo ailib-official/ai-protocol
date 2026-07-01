@@ -1,6 +1,6 @@
 {
   "name": "@ailib-official/ai-protocol",
-  "version": "0.8.4",
+  "version": "1.0.0",
   "description": "Provider-agnostic AI provider + model registry specification",
   "type": "module",
   "main": "dist/index.json",
