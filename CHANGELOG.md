@@ -4,9 +4,11 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ## Unreleased
 
-### Changed
+## [1.0.0] - 2026-07-01
 
-- **Manifest authority (P0–P2)**: Removed application-specific `verification.source` values (`eos`, `velaclaw-trial`) and `hiddenpath` deployment notes from v2 provider manifests (NVIDIA, Groq, OpenAI, Google, DeepSeek). `verification.source` is now an enum in `schemas/v2/metadata-model-entry.json`. New `docs/MANIFEST_AUTHORITY.md` and `npm run gate:manifest-authority` (TEST-002 + provenance hygiene); wired into `validate` CI and `gate-fullchain`.
+### Milestone
+
+- **Wave-5 v1.0.0**: E/P separation contract frozen; `execution-metadata.json`; EP boundary tooling (`check_ep_boundary.py`, `module-matrix.yaml`); PT-073 gate checklist satisfied; maintainer sign-off (PT-073g SUMMARY §9).
 
 ### Added
 
@@ -15,21 +17,23 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 - **EOS-ARCH-R2 availability (Phase 3 backfill)**: Remaining v2 providers (anthropic, cohere, jina, qwen, zhipu, moonshot, doubao) now declare `availability.regions`; compliance cases load-015–016.
 - **PT-075-R1 metadata.models schema**: Typed `schemas/v2/metadata-model-entry.json` (`context_window`, `max_output_tokens`, `status`, `verification`); `provider.json` metadata.models ref; compliance cases load-017–018.
 - **PT-075-R2 v2-alpha capacity migration**: `scripts/migrate-v1-capacity-to-v2alpha.js` merges `dist/v1/models/**` into `dist/v2-alpha/providers/*.json` metadata.models; compliance load-019–021.
-
-### Added (prior) `v1/models/gemini.yaml` now includes `gemini-2.5-flash-lite` and `gemini-3.1-flash-lite-preview` alongside 2.5 Flash/Pro; `v1/providers/gemini.yaml` documents `chat_completions` via `{base_url}/openai/chat/completions` (Authorization Bearer) for Google AI Studio keys.
 - **Credential-chain compliance (PT-074)**: `tests/compliance/cases/09-credential-resolution/` covers BYOK credential precedence, manifest env handling, custom header/query-param auth attachment, redacted diagnostics, and WASM host-supplied credential boundaries.
-- **Credential-chain single-source semantics (PT-074-B-FIX)**: `cred-009` and `cred-010` lock down "endpoint.auth is the single source of truth when both endpoint.auth and a divergent top-level auth are declared." Runtimes MUST scan only the winning endpoint.auth for env names, MUST NOT silently resolve shadowed legacy envs, and SHOULD surface a diagnostic identifying the shadowed block. Shared fixture `tests/compliance/fixtures/providers/mock-credential-dual-auth.yaml`.
-- **Wave-5 v1 RC gate template**: `docs/WAVE5_V1_GATE_CHECKLIST.md` (PT-073 blocking checklist; sign-off in CI/release process).
-- **E/P boundary (Wave-5 PT-067)**: `schemas/v2/execution-metadata.json`; `tests/compliance/ep-boundary/` (`E_ONLY_CASES.md`, `module-matrix.yaml`, `check_ep_boundary.py`); compliance README section.
+- **Credential-chain single-source semantics (PT-074-B-FIX)**: `cred-009` and `cred-010` lock down endpoint.auth single-source semantics.
+- **Wave-5 v1 RC gate template**: `docs/WAVE5_V1_GATE_CHECKLIST.md` (PT-073 blocking checklist).
+- **E/P boundary (Wave-5 PT-067)**: `schemas/v2/execution-metadata.json`; `tests/compliance/ep-boundary/` (`E_ONLY_CASES.md`, `module-matrix.yaml`, `check_ep_boundary.py`).
 
 ### Changed
 
-- **v2 provider validation**: Remove legacy top-level `parameter_mappings` from v2 YAML (not in `provider.json` schema); restores `validate:providers` green for all 12 v2 manifests.
+- **Manifest authority (P0–P2)**: Removed application-specific `verification.source` values from v2 provider manifests. `verification.source` is now an enum in `schemas/v2/metadata-model-entry.json`. New `docs/MANIFEST_AUTHORITY.md` and `npm run gate:manifest-authority`.
+- **v2 provider validation**: Remove legacy top-level `parameter_mappings` from v2 YAML.
+- **npm package name:** registry publishes as `@ailib-official/ai-protocol` (scoped).
+- **`check_ep_boundary.py` (Python)**: AST scan forbids static P-layer imports in E-only client paths.
+- **PT-073h**: `validate:compliance` case linter; examples CI gate; error-codes sync validation.
 
-### Changed (prior) `scripts/validate.js` accepts `https://raw.githubusercontent.com/ailib-official/ai-protocol/...` (replacing legacy `hiddenpath/ai-protocol`), matching published YAML. `schemas/v1.json` `$schema` pattern allows optional patch version tags (e.g. `v0.8.4`).
-- **npm package name:** registry publishes as `@ailib-official/ai-protocol` (scoped); `package.json` `name` field aligned to match.
-- **`check_ep_boundary.py` (Python)**: AST scan of `src/ai_lib_python/client/` forbids static imports of contact-layer subpackages (except under `if TYPE_CHECKING:`); aligns mixed `client` surface with Paper1 §3.2.
-- **`docs/WAVE5_V1_GATE_CHECKLIST.md`**: documents PT-073 CI workflows in `ai-lib-rust`, `ai-lib-ts`, and `ai-lib-python` (Rust / TS / Python order).
+### Migration
+
+- Runtimes should pin `@ailib-official/ai-protocol@1.0.0` (or git tag `v1.0.0`) in CI and release builds.
+- See `docs/WAVE5_V1_GATE_CHECKLIST.md` and runtime CHANGELOGs for E/P package split migration.
 
 ## 0.8.4 (2026-04-11) - Wave-5 compliance + EP boundary
 
