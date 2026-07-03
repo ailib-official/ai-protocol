@@ -66,3 +66,11 @@ error_handling:
   on_unrecognized_format: ignore   # leave as plain text, do not execute
   on_malformed_json: skip_call     # skip individual call, continue parsing others
   max_call_depth: 1                # no recursive tool_call inside tool_call body
+
+# Hybrid path (native API + text markup in content)
+hybrid_parse:
+  function: parse_hybrid_tool_calls
+  policy: native_first             # use native_tool_calls when non-empty; else lenient text parse
+  compliance_cases:
+    - ttc-008   # native empty → DSML fallback
+    - ttc-009   # native non-empty → ignore text dialect
