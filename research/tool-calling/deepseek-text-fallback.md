@@ -19,6 +19,12 @@ especially on `deepseek-reasoner`. Text fallback is recommended.
 1. `<shell><command>...</command></shell>` — primary bias
 2. `<tool_call name="x">{"command":"..."}` — name in attribute
 3. `<tool_calls><tool_call id="1">{"name":"x","parameters":{...}}` — nested + field alias
+4. **DSML** (2026-07): `<｜｜DSML｜｜invoke name="..."><｜｜DSML｜｜parameter>` — native tools API path, fullwidth U+FF5C delimiter
+
+## Hybrid fallback (2026-07)
+
+When `tool_calls` array is empty but `content` contains markup, use `parse_hybrid_tool_calls` (ai-lib-core).
+See `PROVIDER_TOOL_CALL_AUDIT_2026-07.md` and velaclaw #88.
 
 ## Recommended Manifest Config
 
