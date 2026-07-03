@@ -100,6 +100,30 @@ expected:
 
 ---
 suite: "text-tool-call"
+name: "Adapt DeepSeek DSML dialect to standard tool"
+id: "ttc-007"
+description: "Lenient parser maps DeepSeek DSML invoke/parameter blocks to tool calls"
+tags: ["text-tool-call", "dialect", "deepseek", "P0"]
+input:
+  type: "text_tool_parse"
+  response_text: |
+    我来检查 piubt 服务器上 pifan 服务的概况。
+
+    <｜｜DSML｜｜tool_calls>
+    <｜｜DSML｜｜invoke name="shell">
+    <｜｜DSML｜｜parameter name="command" string="true">ssh piubt "systemctl status pifan" 2>&1</｜｜DSML｜｜parameter>
+    </｜｜DSML｜｜invoke>
+    </｜｜DSML｜｜tool_calls>
+  config:
+    lenient_parsing: true
+expected:
+  remaining_text: "我来检查 piubt 服务器上 pifan 服务的概况。"
+  tool_calls:
+    - name: "shell"
+      arguments: {"command": "ssh piubt \"systemctl status pifan\" 2>&1"}
+
+---
+suite: "text-tool-call"
 name: "Generate L2 prompt with tool list"
 id: "ttc-006"
 description: "Verify prompt_instructions includes tool names and counterexample warnings"

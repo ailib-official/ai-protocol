@@ -46,6 +46,8 @@ known_dialects:
       command: "text"      # <bash>...</bash> — inner text as command
   - tag: function
     map_to: "$attribute"   # <function name="x"> — name from attribute
+  - tag: dsml
+    map_to: "$invoke_name" # DeepSeek DSML: <｜｜DSML｜｜invoke name="..."><｜｜DSML｜｜parameter>
 
 # Tool result round-trip format (inserted into conversation as assistant/user text)
 result_format:
