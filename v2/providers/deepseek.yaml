@@ -89,6 +89,7 @@ capabilities:
         - { tag: "shell", map_to: "shell" }
         - { tag: "bash", map_to: "shell" }
         - { tag: "function", map_to: "" }
+        - { tag: "dsml", map_to: "", notes: "DeepSeek DSML: <｜｜DSML｜｜invoke>/<｜｜DSML｜｜parameter> blocks" }
       prompt_level: "L2"
 
 capability_profile:
