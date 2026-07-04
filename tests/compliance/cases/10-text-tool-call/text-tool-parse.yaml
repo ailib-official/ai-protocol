@@ -124,6 +124,53 @@ expected:
 
 ---
 suite: "text-tool-call"
+name: "Hybrid parse falls back to DSML when native empty"
+id: "ttc-008"
+description: "parse_hybrid_tool_calls uses L4 text parser when native_tool_calls is empty"
+tags: ["text-tool-call", "hybrid", "deepseek", "P0"]
+input:
+  type: "text_tool_hybrid"
+  content: |
+    我来检查 piubt 服务器上 pifan 服务的概况。
+
+    <｜｜DSML｜｜tool_calls>
+    <｜｜DSML｜｜invoke name="shell">
+    <｜｜DSML｜｜parameter name="command" string="true">ssh piubt "systemctl status pifan" 2>&1</｜｜DSML｜｜parameter>
+    </｜｜DSML｜｜invoke>
+    </｜｜DSML｜｜tool_calls>
+  native_tool_calls: []
+  config:
+    lenient_parsing: true
+expected:
+  remaining_text: "我来检查 piubt 服务器上 pifan 服务的概况。"
+  tool_calls:
+    - name: "shell"
+      arguments: {"command": "ssh piubt \"systemctl status pifan\" 2>&1"}
+
+---
+suite: "text-tool-call"
+name: "Hybrid parse prefers native over text markup"
+id: "ttc-009"
+description: "parse_hybrid_tool_calls returns native calls when non-empty, ignores text dialect"
+tags: ["text-tool-call", "hybrid", "P0"]
+input:
+  type: "text_tool_hybrid"
+  content: |
+    <shell><command>ignored</command></shell>
+  native_tool_calls:
+    - id: "call_abc"
+      name: "shell"
+      arguments: {"command": "ls -la"}
+  config:
+    lenient_parsing: true
+expected:
+  remaining_text: |
+    <shell><command>ignored</command></shell>
+  tool_calls:
+    - name: "shell"
+      arguments: {"command": "ls -la"}
+
+suite: "text-tool-call"
 name: "Generate L2 prompt with tool list"
 id: "ttc-006"
 description: "Verify prompt_instructions includes tool names and counterexample warnings"
