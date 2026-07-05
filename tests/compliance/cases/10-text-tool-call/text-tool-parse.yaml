@@ -100,6 +100,30 @@ expected:
 
 ---
 suite: "text-tool-call"
+name: "Generate L2 prompt with tool list"
+id: "ttc-006"
+description: "Verify prompt_instructions includes tool names and counterexample warnings"
+tags: ["text-tool-call", "prompt-compliance", "P1"]
+input:
+  type: "text_tool_prompt"
+  tools:
+    - name: "shell"
+      description: "Execute shell commands"
+    - name: "file_read"
+      description: "Read file contents"
+  config:
+    prompt_level: "L2"
+    locale: "en"
+expected:
+  prompt_contains:
+    - "<tool_call>"
+    - "shell"
+    - "file_read"
+    - "<shell>"
+    - "WILL BE IGNORED"
+
+---
+suite: "text-tool-call"
 name: "Adapt DeepSeek DSML dialect to standard tool"
 id: "ttc-007"
 description: "Lenient parser maps DeepSeek DSML invoke/parameter blocks to tool calls"
@@ -169,27 +193,3 @@ expected:
   tool_calls:
     - name: "shell"
       arguments: {"command": "ls -la"}
-
----
-suite: "text-tool-call"
-name: "Generate L2 prompt with tool list"
-id: "ttc-006"
-description: "Verify prompt_instructions includes tool names and counterexample warnings"
-tags: ["text-tool-call", "prompt-compliance", "P1"]
-input:
-  type: "text_tool_prompt"
-  tools:
-    - name: "shell"
-      description: "Execute shell commands"
-    - name: "file_read"
-      description: "Read file contents"
-  config:
-    prompt_level: "L2"
-    locale: "en"
-expected:
-  prompt_contains:
-    - "<tool_call>"
-    - "shell"
-    - "file_read"
-    - "<shell>"
-    - "WILL BE IGNORED"
