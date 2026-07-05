@@ -69,6 +69,8 @@ capabilities:
       reliability: "full"
       parallel: true
       streaming: true
+      notes: "PT-079 audit: native-only unless live shows text markup fallback"
+    text_fallback: null
 
 capability_profile:
   phase: "ios_v1"
