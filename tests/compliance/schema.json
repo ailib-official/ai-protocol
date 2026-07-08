@@ -81,6 +81,7 @@
             "auth_attachment",
             "text_tool_parse",
             "text_tool_prompt",
+            "text_tool_hybrid",
             "content_block_encode",
             "capability_check",
             "response_parsing",

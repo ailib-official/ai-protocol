@@ -170,6 +170,7 @@ expected:
     - name: "shell"
       arguments: {"command": "ls -la"}
 
+---
 suite: "text-tool-call"
 name: "Generate L2 prompt with tool list"
 id: "ttc-006"
