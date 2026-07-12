@@ -99,6 +99,10 @@
           {
             "tag": "function",
             "map_to": ""
+          },
+          {
+            "tag": "dsml",
+            "map_to": ""
           }
         ],
         "prompt_level": "L2"
@@ -250,6 +254,11 @@
   ],
   "default_api_family": "chat_completions",
   "endpoints": {
+    "chat": {
+      "path": "/chat/completions",
+      "method": "POST",
+      "adapter": "openai"
+    },
     "chat_openai": {
       "path": "/chat/completions",
       "method": "POST",
