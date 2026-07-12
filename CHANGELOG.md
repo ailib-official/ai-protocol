@@ -4,6 +4,10 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ## Unreleased
 
+### Fixed
+
+- **DeepSeek v2 endpoints**: add canonical `endpoints.chat` (OpenAI-compatible `/chat/completions`) alongside existing `chat_openai` / `chat_anthropic`. Runtimes that resolve operation `"chat"` (ai-lib-rust / velaclaw) no longer hit `Protocol not found: chat` against the v2 DeepSeek manifest.
+
 ## [1.0.0] - 2026-07-01
 
 ### Milestone

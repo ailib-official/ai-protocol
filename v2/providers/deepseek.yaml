@@ -162,6 +162,14 @@ api_families: ["chat_completions", "anthropic_messages"]
 default_api_family: "chat_completions"
 
 endpoints:
+  # Canonical operation key used by runtimes (AiClient operation="chat").
+  # Other v2 providers expose `chat`; deepseek previously only had chat_openai,
+  # which caused "Protocol not found: chat" in ai-lib-rust / velaclaw.
+  chat:
+    path: "/chat/completions"
+    method: "POST"
+    adapter: "openai"
+  # Explicit dual-API aliases (kept for documentation / family-aware clients).
   chat_openai:
     path: "/chat/completions"
     method: "POST"
