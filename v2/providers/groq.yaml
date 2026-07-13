@@ -62,6 +62,8 @@ capabilities:
       supported: true
       reliability: "full"
       parallel: true
+      notes: "PT-079 audit: backend-model dependent; no text_fallback until live proves dialect"
+    text_fallback: null
 
 parameters:
   temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
