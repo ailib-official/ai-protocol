@@ -4,5 +4,13 @@
     "v2",
     "v2-alpha"
   ],
-  "latest": "v2"
+  "latest": "v2",
+  "authority": {
+    "lts_wire": "v1",
+    "evolution": "v2",
+    "sandbox": "v2-alpha",
+    "production_default": "v1",
+    "latest_means": "evolution_tip_not_production_default",
+    "doc": "docs/VERSION_AUTHORITY.md"
+  }
 }

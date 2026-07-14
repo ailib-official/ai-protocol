@@ -63,6 +63,14 @@ Defined in `schemas/v2/metadata-model-entry.json`:
 
 Runtimes read manifests as-is. Applications may **filter** or **annotate locally** at serve time; they must not push deployment state into the public repo.
 
+## Version trees (which tree to load)
+
+See **[`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md)** (PT-ARCH-001):
+
+- **Production default wire**: `v1` (`authority.lts_wire` / `production_default`)
+- **`latest` in `dist/index.json`**: evolution tip (`v2`) — **not** production default
+- **Sandbox**: `v2-alpha` — explicit opt-in only
+
 ## CI enforcement
 
 `npm run gate:manifest-authority` scans `v1/`, `v2/`, `v2-alpha/`, and `dist/` for:
