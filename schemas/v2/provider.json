@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json",
   "title": "AI Protocol V2 Provider Manifest",
-  "description": "Complete provider manifest schema for AI-Protocol V2. Supports the three-ring concentric circle model: Ring 1 (Core Skeleton), Ring 2 (Capability Mapping), Ring 3 (Advanced Extensions).",
+  "description": "Complete provider manifest schema for AI-Protocol V2. Supports the three-ring concentric circle model: Ring 1 (Core Skeleton), Ring 2 (Capability Mapping), Ring 3 (Advanced Extensions). Logical layers (PT-ARCH-004): Capability Spec vs Execution Spec vs Policy Spec (Policy stays in app overlay) — see docs/MANIFEST_LOGICAL_LAYERS.md.",
   "type": "object",
   "required": [
     "id",
@@ -127,7 +127,7 @@
     },
     "retry_policy": {
       "type": "object",
-      "description": "Retry policy configuration",
+      "description": "Execution Spec (PT-ARCH-004 / L-Exec): vendor-observed retry defaults for runtimes. Not host Policy Spec — applications may override via overlay; do not encode approval/allowlist/spend here. See docs/MANIFEST_LOGICAL_LAYERS.md.",
       "properties": {
         "strategy": {
           "type": "string",

@@ -58,6 +58,7 @@ ai-protocol/
 ├── examples/                  # Configuration examples
 ├── docs/                      # Documentation
 │   ├── VERSION_AUTHORITY.md   # PT-ARCH-001: v1 LTS vs v2 evolution vs alpha
+│   ├── MANIFEST_LOGICAL_LAYERS.md  # PT-ARCH-004: Capability / Execution / Policy Spec
 │   ├── CAPABILITY_VOCABULARY_BRIDGE.md  # PT-ARCH-002: ProviderCapability ↔ CapabilityTag
 │   ├── CONTEXT_ENVELOPE.md    # PT-ARCH-003: Envelope/Layer experimental schema
 │   ├── V2_ARCHITECTURE.md     # V2 three-layer pyramid architecture design
@@ -77,7 +78,7 @@ AI-Protocol standardizes AI model behavior through the concept of **operators**:
 - **Parameter Operators**: Standardized parameter mapping (`temperature`, `max_tokens`, `stream`, etc.)
 - **Event Operators**: Standardized streaming events (`PartialContentDelta`, `ToolCallStarted`, `StreamError`, etc.)
 - **Capability Operators**: Standardized capability declarations (`chat`, `vision`, `tools`, `streaming`, `multimodal`, etc.)
-- **Error Handling Operators**: Standardized error classification, rate limiting, and retry strategies (`error_classification`, `retry_policy`, `rate_limit_headers`)
+- **Error Handling Operators**: Standardized error classification and rate-limit header maps (`error_classification`, `rate_limit_headers`); **`retry_policy` is Execution Spec defaults** (PT-ARCH-004), not host Policy — see [`docs/MANIFEST_LOGICAL_LAYERS.md`](docs/MANIFEST_LOGICAL_LAYERS.md)
 
 ### 2. Version Isolation
 
