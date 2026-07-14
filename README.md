@@ -57,6 +57,9 @@ ai-protocol/
 │   └── compliance/            # YAML-defined test cases for Rust/Python consistency
 ├── examples/                  # Configuration examples
 ├── docs/                      # Documentation
+│   ├── VERSION_AUTHORITY.md   # PT-ARCH-001: v1 LTS vs v2 evolution vs alpha
+│   ├── CAPABILITY_VOCABULARY_BRIDGE.md  # PT-ARCH-002: ProviderCapability ↔ CapabilityTag
+│   ├── CONTEXT_ENVELOPE.md    # PT-ARCH-003: Envelope/Layer experimental schema
 │   ├── V2_ARCHITECTURE.md     # V2 three-layer pyramid architecture design
 │   ├── SPEC.md                # Provider manifest specification
 │   └── ...                    # More documentation
@@ -78,9 +81,11 @@ AI-Protocol standardizes AI model behavior through the concept of **operators**:
 
 ### 2. Version Isolation
 
-- **v1.x**: Production environment stable version, supporting current mainstream AI models
-- **v2-alpha**: Experimental version, exploring multimodal streams, real-time instructions, and other cutting-edge features
+- **v1.x**: **LTS Wire Authority** — production default until v2 coverage parity (see [`docs/VERSION_AUTHORITY.md`](docs/VERSION_AUTHORITY.md))
+- **v2**: **Evolution Authority** — schema/contract evolution; `dist/index.json` `latest` points here
+- **v2-alpha**: Time-boxed sandbox — explicit opt-in only
 - **Schema Constraints**: Every configuration file is strictly validated through JSON Schema
+- **Do not** treat `latest=v2` as “use v2 for all production providers”
 
 ### 3. Modular Maintenance
 

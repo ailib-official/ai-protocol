@@ -4,6 +4,13 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ## Unreleased
 
+### Added
+
+- **PT-ARCH-001 Version Authority Ladder**: Normative [`docs/VERSION_AUTHORITY.md`](docs/VERSION_AUTHORITY.md). `dist/index.json` now includes an `authority` block clarifying that `latest` is the **evolution tip** (v2), while **`production_default` / `lts_wire` remain `v1`** until coverage parity is announced (closes F1/F7 misread).
+- **PT-ARCH-002 Capability vocabulary bridge (Experimental)**: [`schemas/v2/capability-tag-mapping.json`](schemas/v2/capability-tag-mapping.json), fixture + [`docs/CAPABILITY_VOCABULARY_BRIDGE.md`](docs/CAPABILITY_VOCABULARY_BRIDGE.md) (ProviderCapability ↔ CapabilityTag; Audit F2).
+- **PT-ARCH-003 Context Envelope catch-up (Experimental)**: [`schemas/v2/context-envelope.json`](schemas/v2/context-envelope.json), fixture + [`docs/CONTEXT_ENVELOPE.md`](docs/CONTEXT_ENVELOPE.md) aligned to ai-lib-rust MessageChunk / ContextLayer (Audit F3).
+- **`npm run validate:arch`**: AJV validation for Architecture Workstream fixtures.
+
 ### Fixed
 
 - **DeepSeek v2 endpoints**: add canonical `endpoints.chat` (OpenAI-compatible `/chat/completions`) alongside existing `chat_openai` / `chat_anthropic`. Runtimes that resolve operation `"chat"` (ai-lib-rust / velaclaw) no longer hit `Protocol not found: chat` against the v2 DeepSeek manifest.

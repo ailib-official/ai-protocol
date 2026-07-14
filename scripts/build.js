@@ -69,21 +69,33 @@ function processDirectory(srcDir, destDir) {
 }
 
 function createIndex(distDir) {
+    // PT-ARCH-001: `latest` = evolution tip, NOT production default wire.
+    // See docs/VERSION_AUTHORITY.md.
     const index = {
         versions: ['v1'],
-        latest: 'v1'
+        latest: 'v1',
+        authority: {
+            lts_wire: 'v1',
+            evolution: 'v1',
+            sandbox: null,
+            production_default: 'v1',
+            latest_means: 'evolution_tip_not_production_default',
+            doc: 'docs/VERSION_AUTHORITY.md'
+        }
     };
 
     if (existsSync(join(distDir, 'v2'))) {
         index.versions.push('v2');
         index.latest = 'v2';
+        index.authority.evolution = 'v2';
     }
     if (existsSync(join(distDir, 'v2-alpha'))) {
         index.versions.push('v2-alpha');
+        index.authority.sandbox = 'v2-alpha';
     }
 
     writeFileSync(join(distDir, 'index.json'), JSON.stringify(index, null, 2));
-    console.log(`${colors.green}鉁?Created index.json${colors.reset}`);
+    console.log(`${colors.green}✓ Created index.json${colors.reset}`);
 }
 
 /**

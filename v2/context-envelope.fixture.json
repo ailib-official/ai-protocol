@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.1.0-experimental",
+  "status": "experimental",
+  "strategy": "chat",
+  "budget": {
+    "max_input_tokens": 8192,
+    "reserve_output_tokens": 0,
+    "min_tail_messages": 1
+  },
+  "chunks": [
+    {
+      "layer": "system",
+      "chunk_id": "sys-1",
+      "timestamp": 1,
+      "role": "system",
+      "content": "You are a helpful assistant."
+    },
+    {
+      "layer": "background",
+      "chunk_id": "bg-1",
+      "timestamp": 2,
+      "role": "user",
+      "content": "earlier turn"
+    },
+    {
+      "layer": "active",
+      "chunk_id": "act-1",
+      "timestamp": 3,
+      "role": "user",
+      "content": "current question"
+    }
+  ]
+}

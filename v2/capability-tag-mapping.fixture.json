@@ -1,0 +1,42 @@
+{
+  "schema_version": "0.1.0-experimental",
+  "status": "experimental",
+  "notes": "PT-ARCH-002 seed fixture. Aligns plans capability-mapping.md v0.1.1 with wire ProviderCapability enum. Not for silent production consume.",
+  "mappings": [
+    {
+      "capability_tag": "high-reasoning",
+      "relation": "prefers",
+      "provider_capabilities": ["reasoning", "text"],
+      "notes": "Route quality class; wire may advertise reasoning/agentic"
+    },
+    {
+      "capability_tag": "coding",
+      "relation": "prefers",
+      "provider_capabilities": ["text", "tools"],
+      "notes": "No dedicated wire enum; prefer tools+text capable providers"
+    },
+    {
+      "capability_tag": "speed",
+      "relation": "unrelated_wire",
+      "provider_capabilities": [],
+      "notes": "Cost/latency policy class — not a wire feature flag"
+    },
+    {
+      "capability_tag": "document_understanding",
+      "relation": "requires_any",
+      "provider_capabilities": ["vision"],
+      "notes": "Document pipelines also use content_block_mapping; vision is minimum wire hint"
+    },
+    {
+      "capability_tag": "tool_calling",
+      "relation": "requires_any",
+      "provider_capabilities": ["tools", "parallel_tools", "agentic"]
+    },
+    {
+      "capability_tag": "long_context",
+      "relation": "unrelated_wire",
+      "provider_capabilities": [],
+      "notes": "Deferred route tag; capacity lives in metadata.models"
+    }
+  ]
+}
