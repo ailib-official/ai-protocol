@@ -3,11 +3,11 @@
 > **Status**: Normative (PT-ARCH-001)  
 > **Date**: 2026-07-14  
 > **Closes**: Architecture Audit F1 / F7  
-> **Cadence**: Selective freeze — this doc is Architecture phase B; it does **not** authorize four-runtime upgrade waves.
+> **Cadence**: Selective freeze -- this doc is Architecture phase B; it does **not** authorize four-runtime upgrade waves.
 
 ## 1. Purpose
 
-`ai-protocol` ships three concurrent trees (`v1`, `v2`, `v2-alpha`). Without an explicit ladder, `dist/index.json` `"latest": "v2"` is easy to misread as “production default,” while most runtime pins and coverage still live on **v1**.
+`ai-protocol` ships three concurrent trees (`v1`, `v2`, `v2-alpha`). Without an explicit ladder, `dist/index.json` `"latest": "v2"` is easy to misread as "production default," while most runtime pins and coverage still live on **v1**.
 
 This document is the **Normative authority ladder**. Runtimes and applications must follow it when choosing which tree to load.
 
@@ -24,12 +24,12 @@ This document is the **Normative authority ladder**. Runtimes and applications m
 | Field | Meaning |
 |-------|---------|
 | `versions` | Trees present in this package build |
-| `latest` | **Evolution tip pointer** (currently `v2`) — **not** “recommended production wire” |
+| `latest` | **Evolution tip pointer** (currently `v2`) -- **not** "recommended production wire" |
 | `authority.lts_wire` | Tree products/runtimes should default to for broad provider coverage |
 | `authority.evolution` | Tree carrying forward schema / contract evolution |
 | `authority.sandbox` | Experimental tree |
 | `authority.production_default` | Same as `lts_wire` until an explicit parity announcement |
-| `authority.latest_means` | Human-readable reminder: `latest` ≠ production default |
+| `authority.latest_means` | Human-readable reminder: `latest` != production default |
 
 **Do not** flip `latest` back to `v1` without a separate Maintainer decision + changelog. Fix the **semantics**, not the string, first (F7).
 
@@ -57,13 +57,13 @@ This document is the **Normative authority ladder**. Runtimes and applications m
 
 ## 6. Non-goals
 
-- Mass-migrating all v1 providers into v2 in this task  
-- Four-runtime “Envelope/Tag upgrade” epic  
+- Mass-migrating all v1 providers into v2 in this task
+- Four-runtime "Envelope/Tag upgrade" epic
 - Changing CR-L3 coding freeze (see plans Cadence)
 
 ## 7. Related
 
-- [`MANIFEST_AUTHORITY.md`](./MANIFEST_AUTHORITY.md) — public vs application overlay  
-- Architecture Audit / Cadence (private plans) — F1/F7; A→E sequencing  
-- PT-ARCH-002 — ProviderCapability ↔ CapabilityTag mapping  
-- PT-ARCH-003 — Context Envelope protocol catch-up  
+- [`MANIFEST_AUTHORITY.md`](./MANIFEST_AUTHORITY.md) -- public vs application overlay
+- Architecture Audit / Cadence (private plans) -- F1/F7; A-E sequencing
+- PT-ARCH-002 -- ProviderCapability <-> CapabilityTag mapping
+- PT-ARCH-003 -- Context Envelope protocol catch-up
