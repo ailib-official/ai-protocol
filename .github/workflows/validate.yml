@@ -54,6 +54,10 @@ jobs:
     - name: Build JSON artifacts
       run: npm run build
 
+    # After build: AJV Architecture fixtures + assert dist/index.json authority ladder
+    - name: Validate Architecture fixtures and authority block
+      run: npm run validate:arch
+
     - name: Upload dist folder
       uses: actions/upload-artifact@v4
       with:

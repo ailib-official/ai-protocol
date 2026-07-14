@@ -4,6 +4,10 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ## Unreleased
 
+### Fixed
+
+- **PT-ARCH #28 follow-up**: Wire `npm run validate:arch` into CI (after `build`); assert `dist/index.json` `authority.production_default=v1` / `latest=v2`; normalize `docs/VERSION_AUTHORITY.md` to ASCII punctuation (avoid mojibake).
+
 ### Added
 
 - **PT-ARCH-001 Version Authority Ladder**: Normative [`docs/VERSION_AUTHORITY.md`](docs/VERSION_AUTHORITY.md). `dist/index.json` now includes an `authority` block clarifying that `latest` is the **evolution tip** (v2), while **`production_default` / `lts_wire` remain `v1`** until coverage parity is announced (closes F1/F7 misread).
