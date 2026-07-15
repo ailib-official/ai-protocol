@@ -70,15 +70,26 @@ Recommended resolution order for a requested provider key `K`:
 
 PROTO-PIN discipline still applies: document which tree was loaded ([`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md)).
 
-## 6. Schema
+## 6. Schema + published package surface
 
 Optional field on `schemas/v2/provider.json`:
 
 ```text
-aliases: string[]   # alternate ids that resolve to this manifest's canonical `id`
+aliases: string[]   # alternate ids that MUST resolve to this manifest's canonical `id`
 ```
 
-Primary `id` remains required and unique within a tree.
+Primary `id` remains required and unique within a tree. Schema descriptions are
+**Normative**: runtimes that load a tree MUST resolve `aliases` (exact `id`
+first, then alias match).
+
+**Published for third parties** (no governance-doc dependency):
+
+| Artifact | Role |
+|----------|------|
+| `dist/provider-identity.json` | Machine-readable canonical + alias map (copy of `v2/provider-identity.fixture.json`) |
+| `dist/index.json` → `identity` | Pointer: `map`, `schema`, `doc` |
+| `schemas/v2/provider-identity.json` | AJV schema for the map |
+| `schemas/v2/provider.json` → `aliases` | Per-manifest Normative resolve contract |
 
 **Do not** introduce parallel wire keys such as `canonical_id` + `provider_slug`.
 Org vs product naming is expressed as **`id` (API product) + `aliases` (compat /
@@ -96,8 +107,9 @@ Applied to `v1/providers`, `v2/providers`, and `v2-alpha/providers`:
 5. An alias MUST NOT be claimed by two different primaries in the same tree.
 6. A file stem/id MUST NOT equal an alias owned by a different primary
    (no silent dual-identity).
-7. Gemini family (Option A): no `google.yaml` primary in v2 / v2-alpha;
-   `gemini.yaml` MUST list `aliases: [google]`; fixture `canonical_id=gemini`.
+7. Family map (from published identity map): for each alias in the map, no
+   `{alias}.yaml` primary in v2 / v2-alpha; `{canonical_id}.yaml` MUST list those
+   aliases; `dist/provider-identity.json` MUST match the source fixture.
 
 New provider ids MUST be introduced as a new primary `id` (new file) or as an
 `aliases` entry on an existing primary — never as an undocumented second name.
@@ -113,6 +125,8 @@ scope for these tree gates (test doubles).
 - [ ] Contracts for Gemini generate use `provider_id: gemini`
 - [ ] `npm run validate:arch` registry gates pass
 - [ ] Compliance / docs that cite provider ids note the alias when crossing trees
+- [ ] `dist/provider-identity.json` published and matches fixture
+- [ ] `dist/index.json` has `identity.map` pointer
 - [ ] No new wire fields that duplicate `id` / `aliases` resolve semantics
 
 ## 9. Non-goals

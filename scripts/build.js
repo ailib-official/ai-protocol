@@ -71,6 +71,7 @@ function processDirectory(srcDir, destDir) {
 function createIndex(distDir) {
     // PT-ARCH-001: `latest` = evolution tip, NOT production default wire.
     // See docs/VERSION_AUTHORITY.md.
+    // PT-ARCH-005c: publish identity pointer for third-party package consumers.
     const index = {
         versions: ['v1'],
         latest: 'v1',
@@ -81,6 +82,12 @@ function createIndex(distDir) {
             production_default: 'v1',
             latest_means: 'evolution_tip_not_production_default',
             doc: 'docs/VERSION_AUTHORITY.md'
+        },
+        identity: {
+            map: 'provider-identity.json',
+            schema: 'schemas/v2/provider-identity.json',
+            doc: 'docs/PROVIDER_IDENTITY.md',
+            note: 'Runtimes MUST resolve manifest aliases and this published map; primary key remains provider.id'
         }
     };
 
@@ -94,8 +101,24 @@ function createIndex(distDir) {
         index.authority.sandbox = 'v2-alpha';
     }
 
-    writeFileSync(join(distDir, 'index.json'), JSON.stringify(index, null, 2));
+    writeFileSync(join(distDir, 'index.json'), JSON.stringify(index, null, 2) + '\n');
     console.log(`${colors.green}✓ Created index.json${colors.reset}`);
+}
+
+/**
+ * PT-ARCH-005c: publish machine-readable identity map next to index.json so
+ * npm/package consumers can resolve aliases without reading governance docs.
+ */
+function publishIdentityMap(distDir) {
+    const src = join(ROOT_DIR, 'v2', 'provider-identity.fixture.json');
+    if (!existsSync(src)) {
+        console.error(`${colors.red}✗ Missing ${relative(ROOT_DIR, src)}${colors.reset}`);
+        process.exit(1);
+    }
+    const dest = join(distDir, 'provider-identity.json');
+    const body = JSON.stringify(JSON.parse(readFileSync(src, 'utf-8')), null, 2) + '\n';
+    writeFileSync(dest, body);
+    console.log(`${colors.green}✓ Published provider-identity.json${colors.reset}`);
 }
 
 /**
@@ -129,6 +152,7 @@ function main() {
     });
 
     createIndex(DIST_DIR);
+    publishIdentityMap(DIST_DIR);
 
     console.log(`${colors.green}馃帀 Build Complete! Converted ${totalFiles} files.${colors.reset}`);
 }

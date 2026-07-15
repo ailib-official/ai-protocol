@@ -19,11 +19,11 @@
     "id": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-_]{1,63}$",
-      "description": "Canonical provider identifier within this tree (lowercase, alphanumeric, hyphens, underscores). See docs/PROVIDER_IDENTITY.md (PT-ARCH-005)."
+      "description": "Normative (PT-ARCH-005): canonical provider identifier within the loaded tree. Runtimes MUST treat this as the primary pin key. Filename stem MUST equal `id`. See docs/PROVIDER_IDENTITY.md and dist/provider-identity.json."
     },
     "aliases": {
       "type": "array",
-      "description": "Alternate ids that MUST resolve to this manifest's canonical `id` (PT-ARCH-005). Do not publish a second primary manifest in the same tree using one of these as `id`.",
+      "description": "Normative (PT-ARCH-005/005c): alternate lookup keys that MUST resolve to this manifest's `id`. Runtimes MUST accept an alias as equivalent to `id` when loading a tree (exact `id` match first, then alias match). Do NOT publish a second primary manifest in the same tree whose `id` is one of these aliases. Published package map: dist/provider-identity.json (also pointed from dist/index.json identity). Do NOT invent parallel wire keys such as canonical_id or provider_slug.",
       "items": {
         "type": "string",
         "pattern": "^[a-z0-9][a-z0-9-_]{1,63}$"
