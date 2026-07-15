@@ -4,6 +4,10 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ## Unreleased
 
+### Added
+
+- **PT-ARCH-004 Manifest logical layers**: Normative [`docs/MANIFEST_LOGICAL_LAYERS.md`](docs/MANIFEST_LOGICAL_LAYERS.md) — Capability Spec / Execution Spec / Policy Spec; clarifies public `retry_policy` as **L-Exec defaults** (host Policy stays in app overlay). Schema `provider.json` descriptions updated (Audit F4; no forced physical multi-file split).
+
 ### Fixed
 
 - **PT-ARCH #28 follow-up**: Wire `npm run validate:arch` into CI (after `build`); assert `dist/index.json` `authority.production_default=v1` / `latest=v2`; normalize `docs/VERSION_AUTHORITY.md` to ASCII punctuation (avoid mojibake).

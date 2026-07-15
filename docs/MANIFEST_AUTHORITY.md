@@ -6,6 +6,10 @@
 
 **`ailib-official/ai-protocol` manifests are the single public authority** for provider wire format, capabilities, and model capacity metadata consumed by ai-lib runtimes.
 
+**Logical layers** (Capability Spec / Execution Spec / Policy Spec) are Normative in
+[`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md) (PT-ARCH-004). Policy Spec and
+product defaults stay in **application overlay**, not public YAML.
+
 Applications (Eos, VelaClaw, ai-lib-gateway, etc.) **must not** require special fields, provenance tags, or deployment notes in public manifests. If an application needs:
 
 - default model subsets for a region or deployment
