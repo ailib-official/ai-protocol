@@ -6,6 +6,8 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-ARCH-005c Publish identity map**: `npm run build` emits `dist/provider-identity.json` and `dist/index.json` `identity` pointer; `provider.json` / `provider-identity.json` schema descriptions Normative for alias resolve; `validate:arch` asserts publish parity and drives family checks from the map (third-party schema/dist consumers; no dual wire keys).
+
 - **PT-ARCH-005b Provider identity registry gates**: `validate:arch` enforces tree-wide uniqueness, filename=`id`, and alias non-collision across `v1` / `v2` / `v2-alpha` providers; rejects parallel wire keys (`canonical_id` / `provider_slug`). v2-alpha `gemini` gains `aliases: [google]`. See [`docs/PROVIDER_IDENTITY.md`](docs/PROVIDER_IDENTITY.md) §7.
 - **PT-ARCH-006 Protocol docs hygiene**: Refresh [`docs/SPEC.md`](docs/SPEC.md) / [`RUNTIME_INTEGRATION.md`](docs/RUNTIME_INTEGRATION.md) headers; fix dangling `schemas/v2/message.json` in [`V2_ARCHITECTURE.md`](docs/V2_ARCHITECTURE.md) → `message-roles.json` + Experimental `context-envelope`; repair `GETTING_STARTED` relative links; cross-link authority ladder (Audit F6).
 

@@ -12,5 +12,11 @@
     "production_default": "v1",
     "latest_means": "evolution_tip_not_production_default",
     "doc": "docs/VERSION_AUTHORITY.md"
+  },
+  "identity": {
+    "map": "provider-identity.json",
+    "schema": "schemas/v2/provider-identity.json",
+    "doc": "docs/PROVIDER_IDENTITY.md",
+    "note": "Runtimes MUST resolve manifest aliases and this published map; primary key remains provider.id"
   }
 }

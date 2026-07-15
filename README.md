@@ -59,7 +59,7 @@ ai-protocol/
 ├── docs/                      # Documentation
 │   ├── VERSION_AUTHORITY.md   # PT-ARCH-001: v1 LTS vs v2 evolution vs alpha
 │   ├── MANIFEST_LOGICAL_LAYERS.md  # PT-ARCH-004: Capability / Execution / Policy Spec
-│   ├── PROVIDER_IDENTITY.md   # PT-ARCH-005: canonical gemini + google alias
+│   ├── PROVIDER_IDENTITY.md   # PT-ARCH-005: id+aliases; dist/provider-identity.json
 │   ├── CAPABILITY_VOCABULARY_BRIDGE.md  # PT-ARCH-002: ProviderCapability ↔ CapabilityTag
 │   ├── CONTEXT_ENVELOPE.md    # PT-ARCH-003: Envelope/Layer experimental schema
 │   ├── V2_ARCHITECTURE.md     # V2 three-layer pyramid (hygiene: no dangling message.json)
@@ -248,9 +248,11 @@ npm run build
 Build: run `npm run validate` first. This command then:
 1.  Cleans the `dist/` directory to remove stale files from previous builds.
 2.  Converts all YAML under `v1/`, `v2/`, and `v2-alpha/` into JSON in `dist/`.
-3.  Generates a `dist/index.json` manifest index with version information.
+3.  Generates a `dist/index.json` manifest index (`authority` + `identity` pointers).
+4.  Publishes `dist/provider-identity.json` (canonical id + alias map for package consumers).
 
-Runtimes (like `ai-lib-rust`) should consume the `dist/` directory directly.
+Runtimes (like `ai-lib-rust`) should consume the `dist/` directory directly (including
+`provider-identity.json` for alias resolve; see [`docs/PROVIDER_IDENTITY.md`](docs/PROVIDER_IDENTITY.md)).
 
 ### CI/CD Pipeline
 

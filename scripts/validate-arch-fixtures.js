@@ -206,6 +206,9 @@ for (const f of fixtures) {
 }
 
 const indexPath = join(ROOT, 'dist', 'index.json');
+const identitySrcPath = join(ROOT, 'v2', 'provider-identity.fixture.json');
+const identityDistPath = join(ROOT, 'dist', 'provider-identity.json');
+
 if (!existsSync(indexPath)) {
   failed += 1;
   console.error(
@@ -237,92 +240,107 @@ if (!existsSync(indexPath)) {
     );
   }
 
+  // PT-ARCH-005c: published identity pointer for package consumers.
+  const identityPtr = index.identity;
+  if (!identityPtr || typeof identityPtr !== 'object') {
+    authorityFailed += 1;
+    console.error('FAIL dist/index.json: missing identity pointer object');
+  } else if (identityPtr.map !== 'provider-identity.json') {
+    authorityFailed += 1;
+    console.error(
+      `FAIL dist/index.json identity.map: got ${JSON.stringify(identityPtr.map)}, expected "provider-identity.json"`,
+    );
+  }
+
   if (authorityFailed === 0) {
     console.log(
-      'OK   dist/index.json authority: production_default=v1, latest=v2 (evolution tip)',
+      'OK   dist/index.json authority + identity pointer (production_default=v1, latest=v2)',
     );
   }
   failed += authorityFailed;
+}
+
+// PT-ARCH-005c: dist identity map must match source fixture (third-party publish surface).
+{
+  let pubFailed = 0;
+  if (!existsSync(identityDistPath)) {
+    pubFailed += 1;
+    console.error(
+      'FAIL dist/provider-identity.json missing — run `npm run build` before validate:arch',
+    );
+  } else if (!existsSync(identitySrcPath)) {
+    pubFailed += 1;
+    console.error('FAIL v2/provider-identity.fixture.json missing');
+  } else {
+    const src = JSON.parse(readFileSync(identitySrcPath, 'utf8'));
+    const dist = JSON.parse(readFileSync(identityDistPath, 'utf8'));
+    if (JSON.stringify(src) !== JSON.stringify(dist)) {
+      pubFailed += 1;
+      console.error(
+        'FAIL dist/provider-identity.json does not match v2/provider-identity.fixture.json',
+      );
+    } else {
+      console.log('OK   dist/provider-identity.json matches fixture');
+    }
+  }
+  failed += pubFailed;
 }
 
 for (const tree of PROVIDER_TREES) {
   failed += validateProviderRegistry(tree.name, tree.dir);
 }
 
-// PT-ARCH-005: Gemini API identity — canonical gemini + alias google on v2 (Option A).
+// PT-ARCH-005 / 005c: family checks driven by published identity map (not dual wire keys).
 {
   let identityFailed = 0;
-  const googlePath = join(ROOT, 'v2', 'providers', 'google.yaml');
-  const geminiV2Path = join(ROOT, 'v2', 'providers', 'gemini.yaml');
+  const map = JSON.parse(readFileSync(identitySrcPath, 'utf8'));
+  const canonical = map.canonical_id;
+  const aliases = Array.isArray(map.aliases) ? map.aliases : [];
 
-  if (existsSync(googlePath)) {
+  if (typeof canonical !== 'string' || aliases.length === 0) {
     identityFailed += 1;
     console.error(
-      'FAIL v2/providers/google.yaml must not exist (canonical id is gemini; google is alias)',
+      'FAIL provider-identity map missing canonical_id or aliases',
     );
   }
 
-  if (!existsSync(geminiV2Path)) {
-    identityFailed += 1;
-    console.error('FAIL v2/providers/gemini.yaml missing');
-  } else {
-    const gemini = yaml.load(readFileSync(geminiV2Path, 'utf8'));
-    if (!gemini || gemini.id !== 'gemini') {
+  for (const treeName of ['v2', 'v2-alpha']) {
+    const primaryPath = join(ROOT, treeName, 'providers', `${canonical}.yaml`);
+    for (const alias of aliases) {
+      const aliasPath = join(ROOT, treeName, 'providers', `${alias}.yaml`);
+      if (existsSync(aliasPath)) {
+        identityFailed += 1;
+        console.error(
+          `FAIL ${treeName}/providers/${alias}.yaml must not exist (alias of ${canonical}; use aliases on primary)`,
+        );
+      }
+    }
+    if (!existsSync(primaryPath)) {
+      identityFailed += 1;
+      console.error(`FAIL ${treeName}/providers/${canonical}.yaml missing`);
+      continue;
+    }
+    const doc = yaml.load(readFileSync(primaryPath, 'utf8'));
+    if (!doc || doc.id !== canonical) {
       identityFailed += 1;
       console.error(
-        `FAIL v2/providers/gemini.yaml id: got ${JSON.stringify(gemini && gemini.id)}, expected "gemini"`,
+        `FAIL ${treeName}/providers/${canonical}.yaml id: got ${JSON.stringify(doc && doc.id)}, expected ${JSON.stringify(canonical)}`,
       );
     }
-    const aliases = Array.isArray(gemini.aliases) ? gemini.aliases : [];
-    if (!aliases.includes('google')) {
-      identityFailed += 1;
-      console.error(
-        'FAIL v2/providers/gemini.yaml aliases must include "google" (PT-ARCH-005 Option A)',
-      );
-    }
-  }
-
-  const map = JSON.parse(
-    readFileSync(join(ROOT, 'v2', 'provider-identity.fixture.json'), 'utf8'),
-  );
-  if (map.canonical_id !== 'gemini' || !map.aliases.includes('google')) {
-    identityFailed += 1;
-    console.error(
-      'FAIL provider-identity.fixture.json must set canonical_id=gemini and aliases include google',
-    );
-  }
-
-  // Sandbox should not reintroduce google as a second primary; prefer alias on gemini.
-  const alphaGoogle = join(ROOT, 'v2-alpha', 'providers', 'google.yaml');
-  const alphaGemini = join(ROOT, 'v2-alpha', 'providers', 'gemini.yaml');
-  if (existsSync(alphaGoogle)) {
-    identityFailed += 1;
-    console.error(
-      'FAIL v2-alpha/providers/google.yaml must not exist (use gemini + aliases)',
-    );
-  }
-  if (existsSync(alphaGemini)) {
-    const alpha = yaml.load(readFileSync(alphaGemini, 'utf8'));
-    const alphaAliases = Array.isArray(alpha && alpha.aliases)
-      ? alpha.aliases
-      : [];
-    if (!alpha || alpha.id !== 'gemini') {
-      identityFailed += 1;
-      console.error(
-        `FAIL v2-alpha/providers/gemini.yaml id: got ${JSON.stringify(alpha && alpha.id)}, expected "gemini"`,
-      );
-    }
-    if (!alphaAliases.includes('google')) {
-      identityFailed += 1;
-      console.error(
-        'FAIL v2-alpha/providers/gemini.yaml aliases must include "google" (graduation alignment)',
-      );
+    const docAliases = Array.isArray(doc && doc.aliases) ? doc.aliases : [];
+    for (const alias of aliases) {
+      if (!docAliases.includes(alias)) {
+        identityFailed += 1;
+        console.error(
+          `FAIL ${treeName}/providers/${canonical}.yaml aliases must include ${JSON.stringify(alias)} (from identity map)`,
+        );
+      }
     }
   }
 
   if (identityFailed === 0) {
     console.log(
-      'OK   provider identity: canonical gemini + alias google (PT-ARCH-005 Option A)',
+      `OK   provider identity map applied: canonical ${canonical} + aliases [${aliases.join(', ')}]`,
     );
   }
   failed += identityFailed;
