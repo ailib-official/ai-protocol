@@ -13,11 +13,25 @@ import { spawnSync } from 'child_process';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, '..');
-
-const DEFAULT_RUST_DIR = resolve(ROOT, '../rustapp/ai-lib-rust');
-const DEFAULT_PYTHON_DIR = resolve(ROOT, '../rustapp/ai-lib-python');
-const DEFAULT_TS_DIR = resolve(ROOT, '../rustapp/ai-lib-ts');
 const REPORT_DIR = join(ROOT, 'reports', 'manifest-gates');
+
+const DEFAULT_RUNTIME_ROOTS = [
+  resolve(ROOT, '..'),
+  resolve(ROOT, '../rustapp'),
+];
+
+function resolveRuntimeDir(envKey, folderName) {
+  if (process.env[envKey]) {
+    return resolve(process.env[envKey]);
+  }
+  for (const root of DEFAULT_RUNTIME_ROOTS) {
+    const candidate = join(root, folderName);
+    if (existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return resolve(ROOT, `../${folderName}`);
+}
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -26,25 +40,42 @@ function parseArgs() {
   const rustFlag = args.find((arg) => arg.startsWith('--rust-dir='));
   const pythonFlag = args.find((arg) => arg.startsWith('--python-dir='));
   const tsFlag = args.find((arg) => arg.startsWith('--ts-dir='));
+  const skipMissing =
+    args.includes('--skip-missing-runtimes') ||
+    process.env.AI_PROTOCOL_SKIP_MISSING_RUNTIMES === '1';
 
   return {
     reportOnly,
+    skipMissing,
     outputPath: outputFlag ? resolve(process.cwd(), outputFlag.slice('--output='.length)) : null,
     rustDir: rustFlag
       ? resolve(process.cwd(), rustFlag.slice('--rust-dir='.length))
-      : (process.env.AI_LIB_RUST_DIR ? resolve(process.env.AI_LIB_RUST_DIR) : DEFAULT_RUST_DIR),
+      : resolveRuntimeDir('AI_LIB_RUST_DIR', 'ai-lib-rust'),
     pythonDir: pythonFlag
       ? resolve(process.cwd(), pythonFlag.slice('--python-dir='.length))
-      : (process.env.AI_LIB_PYTHON_DIR ? resolve(process.env.AI_LIB_PYTHON_DIR) : DEFAULT_PYTHON_DIR),
+      : resolveRuntimeDir('AI_LIB_PYTHON_DIR', 'ai-lib-python'),
     tsDir: tsFlag
       ? resolve(process.cwd(), tsFlag.slice('--ts-dir='.length))
-      : (process.env.AI_LIB_TS_DIR ? resolve(process.env.AI_LIB_TS_DIR) : DEFAULT_TS_DIR),
+      : resolveRuntimeDir('AI_LIB_TS_DIR', 'ai-lib-ts'),
   };
 }
 
-function runCommand(label, command, cwd) {
+function runCommand(label, command, cwd, { skipMissing = false } = {}) {
   const start = Date.now();
   if (!existsSync(cwd)) {
+    if (skipMissing) {
+      return {
+        label,
+        command,
+        cwd,
+        pass: true,
+        skipped: true,
+        exit_code: 0,
+        elapsed_ms: 0,
+        stdout: '',
+        stderr: `Skipped missing runtime directory: ${cwd}`,
+      };
+    }
     return {
       label,
       command,
@@ -105,7 +136,7 @@ function main() {
     },
     {
       label: 'python-manifest-consumption',
-      command: 'python -m pytest tests/integration/test_generative_manifest_consumption.py',
+      command: 'python3 -m pytest tests/integration/test_generative_manifest_consumption.py',
       cwd: args.pythonDir,
       policy: 'required',
     },
@@ -118,7 +149,9 @@ function main() {
   ];
 
   const results = checks.map((check) =>
-    runCommand(check.label, check.command, check.cwd)
+    runCommand(check.label, check.command, check.cwd, {
+      skipMissing: args.skipMissing && check.cwd !== ROOT,
+    }),
   );
 
   const failed = results.filter((item) => !item.pass).map((item) => ({

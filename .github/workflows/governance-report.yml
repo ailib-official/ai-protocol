@@ -48,6 +48,8 @@ jobs:
         run: node scripts/gate-compliance-matrix.js --report-only
 
       - name: Run fullchain gate (report-only)
+        env:
+          AI_PROTOCOL_SKIP_MISSING_RUNTIMES: '1'
         run: node scripts/gate-fullchain.js --report-only
 
       - name: Upload governance reports
@@ -78,6 +80,10 @@ jobs:
         run: npm ci
 
       - name: Run fullchain gate (required)
+        env:
+          # Protocol-only checkout: drift/authority/compliance still required;
+          # runtime consumption runs when sibling dirs exist (local / matrix).
+          AI_PROTOCOL_SKIP_MISSING_RUNTIMES: '1'
         run: node scripts/gate-fullchain.js
 
       - name: Upload required gate reports
