@@ -62,8 +62,9 @@ ai-protocol/
 │   ├── PROVIDER_IDENTITY.md   # PT-ARCH-005: canonical gemini + google alias
 │   ├── CAPABILITY_VOCABULARY_BRIDGE.md  # PT-ARCH-002: ProviderCapability ↔ CapabilityTag
 │   ├── CONTEXT_ENVELOPE.md    # PT-ARCH-003: Envelope/Layer experimental schema
-│   ├── V2_ARCHITECTURE.md     # V2 three-layer pyramid architecture design
-│   ├── SPEC.md                # Provider manifest specification
+│   ├── V2_ARCHITECTURE.md     # V2 three-layer pyramid (hygiene: no dangling message.json)
+│   ├── SPEC.md                # Provider manifest specification (living reference)
+│   ├── RUNTIME_INTEGRATION.md # Runtime author how-to (points at authority ladder)
 │   └── ...                    # More documentation
 ├── research/                  # Research documents (official API excerpts and verification)
 │   └── providers/             # Provider-specific official documentation research

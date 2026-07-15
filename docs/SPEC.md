@@ -1,9 +1,15 @@
-# AI Protocol 鈥?Provider Manifest Specification
+# AI Protocol — Provider Manifest Specification
 
-**Version:** 1.1 (Draft)  
-**Status:** Proposed  
+**Version:** 1.1  
+**Status:** Living reference (not a frozen RFC)  
 **Audience:** Runtime implementers, provider maintainers, toolchain authors  
-**Last Updated:** 2026-01-10
+**Last Updated:** 2026-07-15 (PT-ARCH-006 hygiene)
+
+> **Authority:** Tree choice (v1 LTS vs v2 evolution) is normative in
+> [`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md). Logical manifest layers:
+> [`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md). Provider id aliases:
+> [`PROVIDER_IDENTITY.md`](./PROVIDER_IDENTITY.md). Schema truth remains under
+> `schemas/` + `npm run validate`.
 
 ---
 
@@ -377,11 +383,18 @@ A manifest conforming to this specification is:
 
 ### Status
 
-This document is a **Draft** and subject to revision based on implementation feedback.
+This document is a **living reference**. Normative Architecture Workstream docs
+(`VERSION_AUTHORITY`, `MANIFEST_*`, `PROVIDER_IDENTITY`, Experimental bridges)
+supersede aged wording here when they conflict. Wire schemas under `schemas/`
+remain the validation truth source.
 
 ---
 
 ## References
 
+* [VERSION_AUTHORITY.md](./VERSION_AUTHORITY.md) — which tree to load (PT-ARCH-001)
+* [MANIFEST_LOGICAL_LAYERS.md](./MANIFEST_LOGICAL_LAYERS.md) — Cap / Exec / Pol (PT-ARCH-004)
+* [PROVIDER_IDENTITY.md](./PROVIDER_IDENTITY.md) — canonical ids + aliases (PT-ARCH-005)
+* [V2_ARCHITECTURE.md](./V2_ARCHITECTURE.md) — V2 pyramid design
 * [JSON Schema Draft 2020-12](https://json-schema.org/draft/2020-12/schema)
 * [RFC 2119 - Key words for use in RFCs](https://tools.ietf.org/html/rfc2119)
