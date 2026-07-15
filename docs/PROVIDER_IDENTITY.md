@@ -80,22 +80,50 @@ aliases: string[]   # alternate ids that resolve to this manifest's canonical `i
 
 Primary `id` remains required and unique within a tree.
 
-## 7. Reviewer checklist
+**Do not** introduce parallel wire keys such as `canonical_id` + `provider_slug`.
+Org vs product naming is expressed as **`id` (API product) + `aliases` (compat /
+org nicknames)**. Optional non-resolve metadata (for example a future `vendor`
+label) may be proposed separately; it MUST NOT participate in lookup.
+
+## 7. Registry gates (`npm run validate:arch`)
+
+Applied to `v1/providers`, `v2/providers`, and `v2-alpha/providers`:
+
+1. Filename stem MUST equal manifest `id` (no `google.yaml` with `id: gemini`).
+2. `id` MUST be unique within the tree.
+3. Each `aliases` entry MUST NOT equal the manifest's own `id`.
+4. An alias MUST NOT collide with another primary `id` in the same tree.
+5. An alias MUST NOT be claimed by two different primaries in the same tree.
+6. A file stem/id MUST NOT equal an alias owned by a different primary
+   (no silent dual-identity).
+7. Gemini family (Option A): no `google.yaml` primary in v2 / v2-alpha;
+   `gemini.yaml` MUST list `aliases: [google]`; fixture `canonical_id=gemini`.
+
+New provider ids MUST be introduced as a new primary `id` (new file) or as an
+`aliases` entry on an existing primary — never as an undocumented second name.
+
+Compliance **mock** fixtures under `tests/compliance/fixtures/` are out of
+scope for these tree gates (test doubles).
+
+## 8. Reviewer checklist
 
 - [ ] No new primary id for Gemini API other than `gemini` (v2+) / documented LTS `gemini` (v1)
-- [ ] v2 gemini manifest lists `google` under `aliases`
-- [ ] No `v2/providers/google.yaml` primary alongside `gemini`
+- [ ] v2 / v2-alpha gemini manifests list `google` under `aliases`
+- [ ] No `google.yaml` primary alongside `gemini` in v2 / v2-alpha
 - [ ] Contracts for Gemini generate use `provider_id: gemini`
+- [ ] `npm run validate:arch` registry gates pass
 - [ ] Compliance / docs that cite provider ids note the alias when crossing trees
+- [ ] No new wire fields that duplicate `id` / `aliases` resolve semantics
 
-## 8. Non-goals
+## 9. Non-goals
 
 - Renaming all v1 model `provider: gemini` rows in this task (already aligned)
 - Renaming compliance mock fixture ids that are not the real Gemini API primary
 - Forcing four-runtime code changes in the same PR (runtimes follow §5 on their schedule)
 - Treating streaming `adapter: "gemini"` or SDK package `@google/genai` as the provider id
+- Adding `canonical_id` / `provider_slug` (or similar) parallel primary keys
 
-## 9. Related
+## 10. Related
 
 - [`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md) — which tree to load  
 - [`MANIFEST_AUTHORITY.md`](./MANIFEST_AUTHORITY.md) — public vs overlay  
