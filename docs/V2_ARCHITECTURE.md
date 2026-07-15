@@ -1,9 +1,17 @@
 # V2 Protocol Architecture Design
 
-> **Status**: Finalized  
+> **Status**: Finalized (hygiene pass PT-ARCH-006 / F6)  
 > **Version**: 1.0  
 > **Date**: 2026-02-16  
+> **Updated**: 2026-07-15 — fix dangling schema links; cross-link authority docs  
 > **Task ID**: S3.8 (v1.0 定稿：包含 ProviderContract、ProviderDriver 架构、Context Policy、完整能力体系)
+
+**Normative companions (Architecture Workstream)**
+
+- [`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md) — v1 LTS wire vs v2 evolution tip  
+- [`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md) — Capability / Execution / Policy Spec  
+- [`PROVIDER_IDENTITY.md`](./PROVIDER_IDENTITY.md) — canonical `gemini` + alias `google`  
+- [`CONTEXT_ENVELOPE.md`](./CONTEXT_ENVELOPE.md) — Experimental Envelope / Layer (PT-ARCH-003)  
 
 ## 1. Overview
 
@@ -62,10 +70,13 @@ It is designed to be extremely stable and backward-compatible.
 
 | Component | Description | Schema |
 |-----------|-------------|--------|
-| **Message Format** | Standardized message structure: role, content, metadata | `schemas/v2/message.json` |
-| **Error Codes** | Unified error code system across all providers | `schemas/v2/errors.json` |
+| **Message roles** | Canonical chat roles (`user` / `assistant` / `system` / `tool`) | [`schemas/v2/message-roles.json`](../schemas/v2/message-roles.json) |
+| **Context envelope** (Experimental) | Layered chunks / budget assembly catch-up | [`schemas/v2/context-envelope.json`](../schemas/v2/context-envelope.json) — see [`CONTEXT_ENVELOPE.md`](./CONTEXT_ENVELOPE.md) |
+| **Error Codes** | Unified error code system across all providers | [`schemas/v2/errors.json`](../schemas/v2/errors.json) |
 | **Version Declaration** | Protocol version and compatibility metadata | Part of manifest root |
 | **Basic Metadata** | Provider ID, name, status, protocol_version | Part of manifest root |
+
+> **Note (PT-ARCH-006 / F6):** There is **no** `schemas/v2/message.json`. Earlier drafts referred to a monolithic message schema that was never published. Use **message-roles** for roles and **context-envelope** (Experimental) for layered assembly. Wire message *content* encoding follows provider contracts (`schemas/v2/provider-contract.json`).
 
 #### 2.1.2 Message Format (L1)
 

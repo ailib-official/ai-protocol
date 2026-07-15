@@ -1,6 +1,13 @@
 # AI-Protocol Runtime Integration Guide
 
-**Version**: v0.4.0 | **Last Updated**: 2026-02-05
+**Version**: v0.5.0 | **Last Updated**: 2026-07-15 (PT-ARCH-006 hygiene)
+
+> **Start here for authority:** [`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md)
+> (`production_default` / LTS wire = **v1**; `latest` = evolution tip **v2**).
+> Manifest layers: [`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md).
+> Provider identity: [`PROVIDER_IDENTITY.md`](./PROVIDER_IDENTITY.md).
+> This guide remains a **how-to** for runtime authors; it does not override those
+> Normative docs when wording conflicts.
 
 ---
 
@@ -925,6 +932,6 @@ Common patterns:
 
 ---
 
-**Last Updated**: 2026-02-05 | **Version**: v0.4.0
+**Last Updated**: 2026-07-15 | **Version**: v0.5.0
 
 Need help? Check [GETTING_STARTED.md](GETTING_STARTED.md) or [CONTRIBUTING_PROVIDER.md](CONTRIBUTING_PROVIDER.md).

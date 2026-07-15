@@ -6,6 +6,8 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-ARCH-006 Protocol docs hygiene**: Refresh [`docs/SPEC.md`](docs/SPEC.md) / [`RUNTIME_INTEGRATION.md`](docs/RUNTIME_INTEGRATION.md) headers; fix dangling `schemas/v2/message.json` in [`V2_ARCHITECTURE.md`](docs/V2_ARCHITECTURE.md) → `message-roles.json` + Experimental `context-envelope`; repair `GETTING_STARTED` relative links; cross-link authority ladder (Audit F6).
+
 - **PT-ARCH-005 Provider identity**: Normative [`docs/PROVIDER_IDENTITY.md`](docs/PROVIDER_IDENTITY.md) — **Option A**: canonical id `gemini`, alias `google` (official Gemini API product name; org/SDK `google` is alias); `aliases` on `schemas/v2/provider.json`; `v2/providers/gemini.yaml` (+ contracts `provider_id: gemini`); fixture + `validate:arch` checks (Audit F5). v1 / v2-alpha already aligned on `gemini`.
 
 - **PT-ARCH-004 Manifest logical layers**: Normative [`docs/MANIFEST_LOGICAL_LAYERS.md`](docs/MANIFEST_LOGICAL_LAYERS.md) — Capability Spec / Execution Spec / Policy Spec; clarifies public `retry_policy` as **L-Exec defaults** (host Policy stays in app overlay). Schema `provider.json` descriptions updated (Audit F4; no forced physical multi-file split).

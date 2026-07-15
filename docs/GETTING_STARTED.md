@@ -1,6 +1,6 @@
 # Getting Started with AI-Protocol
 
-**Version**: v0.4.0 | **Last Updated**: 2026-02-05
+**Version**: v0.5.0 | **Last Updated**: 2026-07-15
 
 ---
 
@@ -498,10 +498,11 @@ except AiLibError as e:
 - [Official Documentation](https://github.com/ailib-official/ai-protocol)
 - [Python Runtime](https://github.com/ailib-official/ai-lib-python)
 - [Rust Runtime](https://github.com/ailib-official/ai-lib-rust)
-- [Specification](docs/SPEC.md)
-- [Provider Manifests](v1/providers/)
-- [Model Registry](v1/models/)
+- [Specification](SPEC.md)
+- [Version Authority](VERSION_AUTHORITY.md)
+- [Provider Manifests](https://github.com/ailib-official/ai-protocol/tree/main/v1/providers)
+- [Model Registry](https://github.com/ailib-official/ai-protocol/tree/main/v1/models)
 
 ---
 
-**Last Updated**: 2026-02-05 | **Version**: v0.4.0
+**Last Updated**: 2026-07-15 | **Version**: v0.5.0
