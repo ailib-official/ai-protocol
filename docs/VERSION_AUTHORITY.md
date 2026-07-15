@@ -65,7 +65,7 @@ This document is the **Normative authority ladder**. Runtimes and applications m
 
 - [`MANIFEST_AUTHORITY.md`](./MANIFEST_AUTHORITY.md) -- public vs application overlay
 - [`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md) -- Capability / Execution / Policy Spec (PT-ARCH-004)
-- [`PROVIDER_IDENTITY.md`](./PROVIDER_IDENTITY.md) -- canonical `google` + alias `gemini` (PT-ARCH-005)
+- [`PROVIDER_IDENTITY.md`](./PROVIDER_IDENTITY.md) -- canonical `gemini` + alias `google` (PT-ARCH-005 Option A)
 - Architecture Audit / Cadence (private plans) -- F1/F7; A-E sequencing
 - PT-ARCH-002 -- ProviderCapability <-> CapabilityTag mapping
 - PT-ARCH-003 -- Context Envelope protocol catch-up

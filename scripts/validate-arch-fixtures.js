@@ -98,35 +98,35 @@ if (!existsSync(indexPath)) {
   failed += authorityFailed;
 }
 
-// PT-ARCH-005: Google Gemini identity — canonical google + alias gemini on v2.
+// PT-ARCH-005: Gemini API identity — canonical gemini + alias google on v2 (Option A).
 {
   let identityFailed = 0;
   const googlePath = join(ROOT, 'v2', 'providers', 'google.yaml');
   const geminiV2Path = join(ROOT, 'v2', 'providers', 'gemini.yaml');
 
-  if (existsSync(geminiV2Path)) {
+  if (existsSync(googlePath)) {
     identityFailed += 1;
     console.error(
-      'FAIL v2/providers/gemini.yaml must not exist (canonical id is google; gemini is alias)',
+      'FAIL v2/providers/google.yaml must not exist (canonical id is gemini; google is alias)',
     );
   }
 
-  if (!existsSync(googlePath)) {
+  if (!existsSync(geminiV2Path)) {
     identityFailed += 1;
-    console.error('FAIL v2/providers/google.yaml missing');
+    console.error('FAIL v2/providers/gemini.yaml missing');
   } else {
-    const google = yaml.load(readFileSync(googlePath, 'utf8'));
-    if (!google || google.id !== 'google') {
+    const gemini = yaml.load(readFileSync(geminiV2Path, 'utf8'));
+    if (!gemini || gemini.id !== 'gemini') {
       identityFailed += 1;
       console.error(
-        `FAIL v2/providers/google.yaml id: got ${JSON.stringify(google && google.id)}, expected "google"`,
+        `FAIL v2/providers/gemini.yaml id: got ${JSON.stringify(gemini && gemini.id)}, expected "gemini"`,
       );
     }
-    const aliases = Array.isArray(google.aliases) ? google.aliases : [];
-    if (!aliases.includes('gemini')) {
+    const aliases = Array.isArray(gemini.aliases) ? gemini.aliases : [];
+    if (!aliases.includes('google')) {
       identityFailed += 1;
       console.error(
-        'FAIL v2/providers/google.yaml aliases must include "gemini" (PT-ARCH-005)',
+        'FAIL v2/providers/gemini.yaml aliases must include "google" (PT-ARCH-005 Option A)',
       );
     }
   }
@@ -134,16 +134,16 @@ if (!existsSync(indexPath)) {
   const map = JSON.parse(
     readFileSync(join(ROOT, 'v2', 'provider-identity.fixture.json'), 'utf8'),
   );
-  if (map.canonical_id !== 'google' || !map.aliases.includes('gemini')) {
+  if (map.canonical_id !== 'gemini' || !map.aliases.includes('google')) {
     identityFailed += 1;
     console.error(
-      'FAIL provider-identity.fixture.json must set canonical_id=google and aliases include gemini',
+      'FAIL provider-identity.fixture.json must set canonical_id=gemini and aliases include google',
     );
   }
 
   if (identityFailed === 0) {
     console.log(
-      'OK   provider identity: v2 canonical google + alias gemini (PT-ARCH-005)',
+      'OK   provider identity: v2 canonical gemini + alias google (PT-ARCH-005 Option A)',
     );
   }
   failed += identityFailed;

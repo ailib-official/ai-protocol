@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json",
-  "id": "google",
+  "id": "gemini",
   "aliases": [
-    "gemini"
+    "google"
   ],
   "protocol_version": "2.0",
   "name": "Google Gemini",

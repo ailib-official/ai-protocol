@@ -1,7 +1,7 @@
 # Fixture pointer for PT-079 content_block_encoding compliance (schema phase)
 # Canonical contract: ../../../../v2/contracts/gemini-generate.contract.yaml
 contract_path: "v2/contracts/gemini-generate.contract.yaml"
-provider_id: google
+provider_id: gemini
 api_style: gemini_generate
 document_mapping:
   format: gemini_inline_data

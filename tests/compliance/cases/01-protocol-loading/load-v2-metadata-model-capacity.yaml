@@ -20,18 +20,18 @@ expected:
 
 ---
 suite: "protocol-loading"
-name: "Load V2 Google manifest with metadata.models capacity"
+name: "Load V2 Gemini manifest with metadata.models capacity"
 id: "load-018"
-description: "Verify google v2 provider validates metadata.models including preview status values"
-tags: ["protocol-loading", "google", "v2", "metadata", "pt-075"]
+description: "Verify gemini v2 provider validates metadata.models including preview status values"
+tags: ["protocol-loading", "gemini", "v2", "metadata", "pt-075"]
 setup:
-  provider: "google"
-  manifest_path: "../../../../v2/providers/google.yaml"
+  provider: "gemini"
+  manifest_path: "../../../../v2/providers/gemini.yaml"
 input:
   type: "protocol_loading"
-  manifest_path: "../../../../v2/providers/google.yaml"
+  manifest_path: "../../../../v2/providers/gemini.yaml"
 expected:
   valid: true
   errors: []
-  provider_id: "google"
+  provider_id: "gemini"
   protocol_version: "2.0"

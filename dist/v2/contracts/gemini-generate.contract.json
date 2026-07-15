@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider-contract.json",
   "contract_version": "1.0",
-  "provider_id": "google",
+  "provider_id": "gemini",
   "api_style": "gemini_generate",
   "api_version": "v1beta",
   "request_mapping": {
