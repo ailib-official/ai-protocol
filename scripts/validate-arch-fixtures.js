@@ -290,58 +290,102 @@ for (const tree of PROVIDER_TREES) {
   failed += validateProviderRegistry(tree.name, tree.dir);
 }
 
-// PT-ARCH-005 / 005c: family checks driven by published identity map (not dual wire keys).
+// PT-ARCH-005 / 005c / 005d: multi-family checks driven by published identity map.
 {
   let identityFailed = 0;
   const map = JSON.parse(readFileSync(identitySrcPath, 'utf8'));
-  const canonical = map.canonical_id;
-  const aliases = Array.isArray(map.aliases) ? map.aliases : [];
+  const families = Array.isArray(map.families)
+    ? map.families
+    : map.canonical_id
+      ? [{ canonical_id: map.canonical_id, aliases: map.aliases, trees: map.trees }]
+      : [];
 
-  if (typeof canonical !== 'string' || aliases.length === 0) {
+  if (families.length === 0) {
     identityFailed += 1;
-    console.error(
-      'FAIL provider-identity map missing canonical_id or aliases',
-    );
+    console.error('FAIL provider-identity map missing families[]');
   }
 
-  for (const treeName of ['v2', 'v2-alpha']) {
-    const primaryPath = join(ROOT, treeName, 'providers', `${canonical}.yaml`);
-    for (const alias of aliases) {
-      const aliasPath = join(ROOT, treeName, 'providers', `${alias}.yaml`);
-      if (existsSync(aliasPath)) {
-        identityFailed += 1;
-        console.error(
-          `FAIL ${treeName}/providers/${alias}.yaml must not exist (alias of ${canonical}; use aliases on primary)`,
-        );
-      }
-    }
-    if (!existsSync(primaryPath)) {
-      identityFailed += 1;
-      console.error(`FAIL ${treeName}/providers/${canonical}.yaml missing`);
-      continue;
-    }
-    const doc = yaml.load(readFileSync(primaryPath, 'utf8'));
-    if (!doc || doc.id !== canonical) {
+  const seenCanonical = new Set();
+  const seenAlias = new Map(); // alias -> canonical
+
+  for (const family of families) {
+    const canonical = family && family.canonical_id;
+    const aliases = Array.isArray(family && family.aliases) ? family.aliases : [];
+    if (typeof canonical !== 'string' || aliases.length === 0) {
       identityFailed += 1;
       console.error(
-        `FAIL ${treeName}/providers/${canonical}.yaml id: got ${JSON.stringify(doc && doc.id)}, expected ${JSON.stringify(canonical)}`,
+        'FAIL provider-identity family missing canonical_id or aliases',
+      );
+      continue;
+    }
+    if (seenCanonical.has(canonical)) {
+      identityFailed += 1;
+      console.error(
+        `FAIL provider-identity duplicate canonical_id ${JSON.stringify(canonical)}`,
       );
     }
-    const docAliases = Array.isArray(doc && doc.aliases) ? doc.aliases : [];
+    seenCanonical.add(canonical);
+
     for (const alias of aliases) {
-      if (!docAliases.includes(alias)) {
+      if (alias === canonical) {
         identityFailed += 1;
         console.error(
-          `FAIL ${treeName}/providers/${canonical}.yaml aliases must include ${JSON.stringify(alias)} (from identity map)`,
+          `FAIL provider-identity alias ${JSON.stringify(alias)} equals canonical ${JSON.stringify(canonical)}`,
         );
+      }
+      if (seenAlias.has(alias)) {
+        identityFailed += 1;
+        console.error(
+          `FAIL provider-identity alias ${JSON.stringify(alias)} claimed by both ${seenAlias.get(alias)} and ${canonical}`,
+        );
+      }
+      seenAlias.set(alias, canonical);
+    }
+
+    const gatedTrees = family.trees
+      ? Object.keys(family.trees).filter((t) => t === 'v2' || t === 'v2-alpha')
+      : ['v2', 'v2-alpha'];
+
+    for (const treeName of gatedTrees) {
+      const primaryPath = join(ROOT, treeName, 'providers', `${canonical}.yaml`);
+      for (const alias of aliases) {
+        const aliasPath = join(ROOT, treeName, 'providers', `${alias}.yaml`);
+        if (existsSync(aliasPath)) {
+          identityFailed += 1;
+          console.error(
+            `FAIL ${treeName}/providers/${alias}.yaml must not exist (alias of ${canonical}; use aliases on primary)`,
+          );
+        }
+      }
+      if (!existsSync(primaryPath)) {
+        identityFailed += 1;
+        console.error(`FAIL ${treeName}/providers/${canonical}.yaml missing`);
+        continue;
+      }
+      const doc = yaml.load(readFileSync(primaryPath, 'utf8'));
+      if (!doc || doc.id !== canonical) {
+        identityFailed += 1;
+        console.error(
+          `FAIL ${treeName}/providers/${canonical}.yaml id: got ${JSON.stringify(doc && doc.id)}, expected ${JSON.stringify(canonical)}`,
+        );
+      }
+      const docAliases = Array.isArray(doc && doc.aliases) ? doc.aliases : [];
+      for (const alias of aliases) {
+        if (!docAliases.includes(alias)) {
+          identityFailed += 1;
+          console.error(
+            `FAIL ${treeName}/providers/${canonical}.yaml aliases must include ${JSON.stringify(alias)} (from identity map)`,
+          );
+        }
       }
     }
   }
 
   if (identityFailed === 0) {
-    console.log(
-      `OK   provider identity map applied: canonical ${canonical} + aliases [${aliases.join(', ')}]`,
-    );
+    const summary = families
+      .map((f) => `${f.canonical_id}←[${(f.aliases || []).join(',')}]`)
+      .join('; ');
+    console.log(`OK   provider identity map applied: ${summary}`);
   }
   failed += identityFailed;
 }
