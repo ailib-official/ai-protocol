@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * PT-ARCH-001/002/003 — validate Architecture fixtures + dist authority block.
+ * PT-ARCH-001…005 — validate Architecture fixtures + dist authority + identity.
  *
  * Run after `npm run build` so dist/index.json exists (CI order: build then validate:arch).
  */
@@ -9,6 +9,7 @@ import { join, dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { Ajv2020 } from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
+import yaml from 'js-yaml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -21,6 +22,10 @@ const fixtures = [
   {
     schema: 'schemas/v2/context-envelope.json',
     data: 'v2/context-envelope.fixture.json',
+  },
+  {
+    schema: 'schemas/v2/provider-identity.json',
+    data: 'v2/provider-identity.fixture.json',
   },
 ];
 
@@ -91,6 +96,57 @@ if (!existsSync(indexPath)) {
     );
   }
   failed += authorityFailed;
+}
+
+// PT-ARCH-005: Google Gemini identity — canonical google + alias gemini on v2.
+{
+  let identityFailed = 0;
+  const googlePath = join(ROOT, 'v2', 'providers', 'google.yaml');
+  const geminiV2Path = join(ROOT, 'v2', 'providers', 'gemini.yaml');
+
+  if (existsSync(geminiV2Path)) {
+    identityFailed += 1;
+    console.error(
+      'FAIL v2/providers/gemini.yaml must not exist (canonical id is google; gemini is alias)',
+    );
+  }
+
+  if (!existsSync(googlePath)) {
+    identityFailed += 1;
+    console.error('FAIL v2/providers/google.yaml missing');
+  } else {
+    const google = yaml.load(readFileSync(googlePath, 'utf8'));
+    if (!google || google.id !== 'google') {
+      identityFailed += 1;
+      console.error(
+        `FAIL v2/providers/google.yaml id: got ${JSON.stringify(google && google.id)}, expected "google"`,
+      );
+    }
+    const aliases = Array.isArray(google.aliases) ? google.aliases : [];
+    if (!aliases.includes('gemini')) {
+      identityFailed += 1;
+      console.error(
+        'FAIL v2/providers/google.yaml aliases must include "gemini" (PT-ARCH-005)',
+      );
+    }
+  }
+
+  const map = JSON.parse(
+    readFileSync(join(ROOT, 'v2', 'provider-identity.fixture.json'), 'utf8'),
+  );
+  if (map.canonical_id !== 'google' || !map.aliases.includes('gemini')) {
+    identityFailed += 1;
+    console.error(
+      'FAIL provider-identity.fixture.json must set canonical_id=google and aliases include gemini',
+    );
+  }
+
+  if (identityFailed === 0) {
+    console.log(
+      'OK   provider identity: v2 canonical google + alias gemini (PT-ARCH-005)',
+    );
+  }
+  failed += identityFailed;
 }
 
 process.exit(failed === 0 ? 0 : 1);

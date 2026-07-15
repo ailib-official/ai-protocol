@@ -1,0 +1,29 @@
+{
+  "canonical_id": "google",
+  "aliases": ["gemini"],
+  "trees": {
+    "v1": {
+      "primary_id": "gemini",
+      "file": "v1/providers/gemini.yaml",
+      "note": "LTS wire keeps historical primary; resolve google → gemini via alias map"
+    },
+    "v2": {
+      "primary_id": "google",
+      "file": "v2/providers/google.yaml",
+      "aliases_on_manifest": ["gemini"],
+      "note": "Evolution canonical; no gemini.yaml primary in this tree"
+    },
+    "v2-alpha": {
+      "primary_id": "gemini",
+      "file": "v2-alpha/providers/gemini.yaml",
+      "graduation_target": "google",
+      "note": "Sandbox divergence until graduation to google + aliases"
+    }
+  },
+  "runtime_lookup": [
+    "exact_id_match",
+    "manifest_aliases",
+    "normative_alias_map_for_v1",
+    "fail_closed"
+  ]
+}

@@ -19,7 +19,16 @@
     "id": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-_]{1,63}$",
-      "description": "Stable provider identifier (lowercase, alphanumeric, hyphens, underscores)"
+      "description": "Canonical provider identifier within this tree (lowercase, alphanumeric, hyphens, underscores). See docs/PROVIDER_IDENTITY.md (PT-ARCH-005)."
+    },
+    "aliases": {
+      "type": "array",
+      "description": "Alternate ids that MUST resolve to this manifest's canonical `id` (PT-ARCH-005). Do not publish a second primary manifest in the same tree using one of these as `id`.",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-_]{1,63}$"
+      },
+      "uniqueItems": true
     },
     "protocol_version": {
       "type": "string",

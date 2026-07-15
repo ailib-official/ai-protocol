@@ -6,6 +6,8 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-ARCH-005 Provider identity**: Normative [`docs/PROVIDER_IDENTITY.md`](docs/PROVIDER_IDENTITY.md) — canonical id `google`, alias `gemini`; `aliases` on `schemas/v2/provider.json`; `v2/providers/google.yaml` declares the alias; fixture + `validate:arch` checks (Audit F5). v1 LTS keeps historical `gemini` primary; v2-alpha remains diverged until graduation.
+
 - **PT-ARCH-004 Manifest logical layers**: Normative [`docs/MANIFEST_LOGICAL_LAYERS.md`](docs/MANIFEST_LOGICAL_LAYERS.md) — Capability Spec / Execution Spec / Policy Spec; clarifies public `retry_policy` as **L-Exec defaults** (host Policy stays in app overlay). Schema `provider.json` descriptions updated (Audit F4; no forced physical multi-file split).
 
 ### Fixed

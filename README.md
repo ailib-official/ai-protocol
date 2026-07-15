@@ -59,6 +59,7 @@ ai-protocol/
 ├── docs/                      # Documentation
 │   ├── VERSION_AUTHORITY.md   # PT-ARCH-001: v1 LTS vs v2 evolution vs alpha
 │   ├── MANIFEST_LOGICAL_LAYERS.md  # PT-ARCH-004: Capability / Execution / Policy Spec
+│   ├── PROVIDER_IDENTITY.md   # PT-ARCH-005: canonical google + gemini alias
 │   ├── CAPABILITY_VOCABULARY_BRIDGE.md  # PT-ARCH-002: ProviderCapability ↔ CapabilityTag
 │   ├── CONTEXT_ENVELOPE.md    # PT-ARCH-003: Envelope/Layer experimental schema
 │   ├── V2_ARCHITECTURE.md     # V2 three-layer pyramid architecture design
