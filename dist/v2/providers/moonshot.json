@@ -1,6 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json",
   "id": "moonshot",
+  "aliases": [
+    "kimi"
+  ],
   "protocol_version": "2.0",
   "name": "Moonshot AI",
   "version": "2.5.0",
@@ -75,8 +78,10 @@
         "supported": true,
         "reliability": "full",
         "parallel": true,
-        "streaming": true
-      }
+        "streaming": true,
+        "notes": "PT-079 audit: native-only unless live shows DSML/shell text fallback"
+      },
+      "text_fallback": null
     }
   },
   "capability_profile": {

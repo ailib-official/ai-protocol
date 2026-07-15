@@ -35,17 +35,30 @@ Canonical id follows the **API product** name, not the org / SDK package prefix.
 | **Canonical provider id** | `gemini` | Evolution / v2+ primary id; matches `v2/providers/gemini.yaml` and `v2/contracts/*` `provider_id` |
 | **Alias** | `google` | Org / historical nickname; MUST resolve to the same provider family as `gemini` |
 
+**Multi-family map (PT-ARCH-005d)** — the published identity document is a
+`families[]` list. Each family has its own `canonical_id` + `aliases`. P0
+families beyond Gemini:
+
+| Canonical | Alias(es) | Rationale |
+|-----------|-----------|-----------|
+| `moonshot` | `kimi` | API / org id vs product nickname |
+| `zhipu` | `glm` | Org id vs model-family nickname |
+
+Do **not** introduce provider path namespaces (e.g. `google/gemini`) as wire
+primary ids — flat `id` + aliases only.
+
 **Rules**
 
-1. Products and runtimes MUST treat `gemini` and `google` as the **same provider family**.
-2. New manifests in **v2** (evolution) MUST use primary `id: gemini` and SHOULD declare
-   `aliases: ["google"]` on that manifest.
+1. Products and runtimes MUST treat each canonical and its aliases as the **same provider family**.
+2. New manifests in **v2** (evolution) MUST use the primary `id` and SHOULD declare
+   mapped `aliases` on that manifest.
 3. Do **not** publish a second primary manifest in the **same tree** whose `id` is an
    alias of another primary (no silent dual identity).
 4. Driver / adapter string names (e.g. streaming `adapter: "gemini"`) are **implementation
    labels**, not provider ids — they are out of scope for this alias map.
 5. Compliance **mock** fixture ids (e.g. `mock-google-v2.yaml` with `id: google`) are
    test doubles, not the Gemini API primary in `v2/providers/`.
+6. An alias MUST NOT be claimed by two different families in the published map.
 
 ## 4. Per-tree rules (2026-07-15)
 
@@ -64,8 +77,9 @@ Recommended resolution order for a requested provider key `K`:
 
 1. Exact match on manifest `id` in the loaded tree.
 2. If no exact match: find a manifest whose `aliases` contains `K` (v2+).
-3. If still none and the tree is **v1**: apply the Normative alias map — if `K == google`,
-   load `id: gemini`; if `K == gemini`, load as today.
+3. If still none: apply the Normative multi-family identity map
+   (`dist/provider-identity.json` → `families[]`) — if `K` is an alias (or
+   canonical) of a family, load that family's `canonical_id`.
 4. Else fail closed (unknown provider). Do **not** invent ids.
 
 PROTO-PIN discipline still applies: document which tree was loaded ([`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md)).
@@ -107,9 +121,11 @@ Applied to `v1/providers`, `v2/providers`, and `v2-alpha/providers`:
 5. An alias MUST NOT be claimed by two different primaries in the same tree.
 6. A file stem/id MUST NOT equal an alias owned by a different primary
    (no silent dual-identity).
-7. Family map (from published identity map): for each alias in the map, no
-   `{alias}.yaml` primary in v2 / v2-alpha; `{canonical_id}.yaml` MUST list those
-   aliases; `dist/provider-identity.json` MUST match the source fixture.
+7. Family map (from published identity map): for each family in `families[]`, and
+   for each gated tree listed under that family's `trees` (`v2` / `v2-alpha`),
+   no `{alias}.yaml` primary; `{canonical_id}.yaml` MUST list those aliases;
+   `dist/provider-identity.json` MUST match the source fixture; canonical ids and
+   aliases MUST be unique across families.
 
 New provider ids MUST be introduced as a new primary `id` (new file) or as an
 `aliases` entry on an existing primary — never as an undocumented second name.

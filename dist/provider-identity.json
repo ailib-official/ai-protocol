@@ -1,33 +1,79 @@
 {
-  "canonical_id": "gemini",
-  "aliases": [
-    "google"
-  ],
-  "trees": {
-    "v1": {
-      "primary_id": "gemini",
-      "file": "v1/providers/gemini.yaml",
-      "note": "LTS wire already uses canonical gemini; resolve google → gemini via alias map"
-    },
-    "v2": {
-      "primary_id": "gemini",
-      "file": "v2/providers/gemini.yaml",
-      "aliases_on_manifest": [
+  "families": [
+    {
+      "canonical_id": "gemini",
+      "aliases": [
         "google"
       ],
-      "note": "Evolution canonical; no google.yaml primary in this tree"
+      "trees": {
+        "v1": {
+          "primary_id": "gemini",
+          "file": "v1/providers/gemini.yaml",
+          "note": "LTS wire already uses canonical gemini; resolve google → gemini via alias map"
+        },
+        "v2": {
+          "primary_id": "gemini",
+          "file": "v2/providers/gemini.yaml",
+          "aliases_on_manifest": [
+            "google"
+          ],
+          "note": "Evolution canonical; no google.yaml primary in this tree"
+        },
+        "v2-alpha": {
+          "primary_id": "gemini",
+          "file": "v2-alpha/providers/gemini.yaml",
+          "graduation_target": "gemini",
+          "note": "Sandbox already aligned on gemini; ensure aliases include google on graduation"
+        }
+      }
     },
-    "v2-alpha": {
-      "primary_id": "gemini",
-      "file": "v2-alpha/providers/gemini.yaml",
-      "graduation_target": "gemini",
-      "note": "Sandbox already aligned on gemini; ensure aliases include google on graduation"
+    {
+      "canonical_id": "moonshot",
+      "aliases": [
+        "kimi"
+      ],
+      "trees": {
+        "v1": {
+          "primary_id": "moonshot",
+          "file": "v1/providers/moonshot.yaml",
+          "note": "API product / org id moonshot; kimi is product nickname"
+        },
+        "v2": {
+          "primary_id": "moonshot",
+          "file": "v2/providers/moonshot.yaml",
+          "aliases_on_manifest": [
+            "kimi"
+          ],
+          "note": "Canonical moonshot; resolve kimi → moonshot"
+        }
+      }
+    },
+    {
+      "canonical_id": "zhipu",
+      "aliases": [
+        "glm"
+      ],
+      "trees": {
+        "v1": {
+          "primary_id": "zhipu",
+          "file": "v1/providers/zhipu.yaml",
+          "note": "Org id zhipu; glm is model-family nickname"
+        },
+        "v2": {
+          "primary_id": "zhipu",
+          "file": "v2/providers/zhipu.yaml",
+          "aliases_on_manifest": [
+            "glm"
+          ],
+          "note": "Canonical zhipu; resolve glm → zhipu"
+        }
+      }
     }
-  },
+  ],
   "runtime_lookup": [
     "exact_id_match",
     "manifest_aliases",
-    "normative_alias_map_for_v1",
+    "normative_alias_map",
     "fail_closed"
   ]
 }
