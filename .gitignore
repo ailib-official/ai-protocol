@@ -80,3 +80,6 @@ validation*.log
 # ===== OS Files =====
 .DS_Store
 Thumbs.db
+
+# Local npm pack artifacts
+*.tgz

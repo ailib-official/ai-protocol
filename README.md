@@ -14,61 +14,34 @@
 
 ## 📁 Project Structure
 
+**Public authority** (what runtimes / GOV-006 consume): `schemas/`, `v1/`, `v2/`, `v2-alpha/`, `dist/`, `docs/`, `tests/compliance/`.  
+See [`docs/PUBLIC_SURFACE.md`](./docs/PUBLIC_SURFACE.md) (PT-ARCH-F10). Historical notes live under [`archive/`](./archive/README.md) and are **not** wire contracts.
+
 ```
 ai-protocol/
 ├── schemas/                    # JSON Schema validation specifications
 │   ├── v1.json                # v1.x provider/model configuration Schema
 │   ├── spec.json              # Specification file (spec.yaml) Schema
 │   └── v2/                    # V2 protocol schemas
-│       ├── provider.json      # V2 provider manifest schema (three-ring model)
-│       ├── capabilities.json  # Capability declaration schema
-│       ├── errors.json        # Standard error code definitions (13 codes)
-│       ├── endpoint.json      # Endpoint configuration schema
-│       ├── availability.json  # Availability schema
-│       ├── regions.json       # Region configuration schema
-│       ├── mcp.json           # MCP integration schema
-│       ├── computer-use.json  # Computer Use abstraction schema
-│       ├── multimodal.json    # Extended multimodal capabilities schema
-│       ├── provider-contract.json # Provider contract schema
-│       ├── capability-profile.json # Experimental I/O/S phase metadata schema
-│       ├── context-policy.json # Context management policy schema
-│       ├── execution-metadata.json # Wave-5 execution metadata schema
-│       ├── metadata-model-entry.json # Typed metadata.models entries
-│       ├── message-roles.json # Message role enumeration schema
-│       ├── pack.json          # Provider pack schema
-│       ├── pricing.json       # Optional pricing schema
-│       └── tool-calling.json  # Tool calling schema
-├── v1/                        # v1.x stable version specification
-│   ├── spec.yaml              # Basic specifications: standard parameters, event enumeration
-│   ├── providers/             # Provider configurations (split by vendor for easy PR)
-│   │   ├── openai.yaml        # OpenAI compatible interface
-│   │   ├── anthropic.yaml     # Anthropic Claude interface
-│   │   ├── gemini.yaml        # Google Gemini interface
-│   │   └── ...                # 30+ providers (see full list below)
-│   └── models/                # Model instance registry
-│       ├── gpt.yaml           # GPT series models
-│       ├── claude.yaml        # Claude series models
-│       └── ...                # More models
-├── v2/                        # v2 formal provider manifests
-│   └── providers/             # 12 V2 provider manifests (OpenAI, Anthropic, Google, DeepSeek, …)
-├── v2-alpha/                  # v2-alpha experimental version
-│   └── spec.yaml              # Experimental operator definitions
-├── tests/                     # Cross-runtime compliance test suite
-│   └── compliance/            # YAML-defined test cases for Rust/Python consistency
-├── examples/                  # Configuration examples
-├── docs/                      # Documentation
-│   ├── VERSION_AUTHORITY.md   # PT-ARCH-001: v1 LTS vs v2 evolution vs alpha
-│   ├── MANIFEST_LOGICAL_LAYERS.md  # PT-ARCH-004: Capability / Execution / Policy Spec
-│   ├── PROVIDER_IDENTITY.md   # PT-ARCH-005: id+aliases; dist/provider-identity.json
-│   ├── CAPABILITY_VOCABULARY_BRIDGE.md  # PT-ARCH-002: ProviderCapability ↔ CapabilityTag
-│   ├── CONTEXT_ENVELOPE.md    # PT-ARCH-003: Envelope/Layer experimental schema
-│   ├── V2_ARCHITECTURE.md     # V2 three-layer pyramid (hygiene: no dangling message.json)
-│   ├── SPEC.md                # Provider manifest specification (living reference)
-│   ├── RUNTIME_INTEGRATION.md # Runtime author how-to (points at authority ladder)
-│   └── ...                    # More documentation
-├── research/                  # Research documents (official API excerpts and verification)
-│   └── providers/             # Provider-specific official documentation research
-└── scripts/                   # Maintenance scripts
+├── v1/                        # v1.x LTS wire
+│   ├── providers/
+│   └── models/
+├── v2/                        # v2 evolution tip
+│   ├── providers/
+│   └── architecture/          # F11 freeze snapshots
+├── v2-alpha/                  # Explicit sandbox
+├── dist/                      # Published JSON (npm package surface)
+├── docs/                      # Normative / Experimental companions
+│   ├── PUBLIC_SURFACE.md      # PT-ARCH-F10: authority vs archive
+│   ├── VERSION_AUTHORITY.md
+│   ├── MANIFEST_LOGICAL_LAYERS.md
+│   ├── PROVIDER_IDENTITY.md
+│   ├── ERROR_CONTRACT_NAMES.md
+│   └── ...
+├── tests/compliance/          # Cross-runtime compliance
+├── examples/
+├── scripts/                   # build / validate / gates
+└── archive/                   # Historical + research (non-authority)
 ```
 
 ## 🔧 Core Concepts

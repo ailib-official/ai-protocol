@@ -14,6 +14,7 @@
 - [`CONTEXT_ENVELOPE.md`](./CONTEXT_ENVELOPE.md) — Experimental Envelope / Layer (PT-ARCH-003)  
 - [`ARCHITECTURE_TESTS.md`](./ARCHITECTURE_TESTS.md) — `validate:arch` F11 pilot gates (PT-ARCH-008)  
 - [`ERROR_CONTRACT_NAMES.md`](./ERROR_CONTRACT_NAMES.md) — contract semantic names ↔ E codes (PT-ARCH-007 / F9)  
+- [`PUBLIC_SURFACE.md`](./PUBLIC_SURFACE.md) — authority tree vs `archive/` (PT-ARCH-F10 / F10)  
 
 ## 1. Overview
 
