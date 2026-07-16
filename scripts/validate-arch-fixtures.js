@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * PT-ARCH-001…005(+b) — validate Architecture fixtures + dist authority +
- * provider-identity registry gates.
+ * PT-ARCH-001…005(+b/d) + PT-ARCH-008 — validate Architecture fixtures,
+ * dist authority, provider-identity registry gates, and F11 pilot assertions
+ * (vocabulary freeze, Policy Spec deny, Experimental facade freeze).
  *
  * Run after `npm run build` so dist/index.json exists (CI order: build then validate:arch).
  *
@@ -388,6 +389,121 @@ for (const tree of PROVIDER_TREES) {
     console.log(`OK   provider identity map applied: ${summary}`);
   }
   failed += identityFailed;
+}
+
+// ---------------------------------------------------------------------------
+// PT-ARCH-008 (F11 pilot): vocabulary freeze + Policy deny + Experimental facade
+// ---------------------------------------------------------------------------
+{
+  let archTestFailed = 0;
+  const vocabSnapPath = join(ROOT, 'v2', 'architecture', 'capability-tag-freeze.snapshot.json');
+  const facadeSnapPath = join(ROOT, 'v2', 'architecture', 'experimental-facade.snapshot.json');
+  const tagFixturePath = join(ROOT, 'v2', 'capability-tag-mapping.fixture.json');
+
+  // 1) Vocabulary freeze — CapabilityTag set must match snapshot.
+  if (!existsSync(vocabSnapPath) || !existsSync(tagFixturePath)) {
+    archTestFailed += 1;
+    console.error('FAIL PT-ARCH-008 vocabulary freeze files missing');
+  } else {
+    const snap = JSON.parse(readFileSync(vocabSnapPath, 'utf8'));
+    const fixture = JSON.parse(readFileSync(tagFixturePath, 'utf8'));
+    const expected = Array.isArray(snap.capability_tags) ? [...snap.capability_tags].sort() : [];
+    const actual = Array.isArray(fixture.mappings)
+      ? fixture.mappings
+          .map((m) => m && m.capability_tag)
+          .filter((t) => typeof t === 'string')
+          .sort()
+      : [];
+    if (JSON.stringify(expected) !== JSON.stringify(actual)) {
+      archTestFailed += 1;
+      console.error(
+        `FAIL CapabilityTag freeze drift: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`,
+      );
+    } else {
+      console.log(`OK   CapabilityTag vocabulary freeze (${actual.length} tags)`);
+    }
+  }
+
+  // 2) Policy Spec deny — public provider YAML must not grow host-policy keys.
+  const POLICY_FORBIDDEN_TOP_LEVEL = new Set([
+    'approval',
+    'approvals',
+    'allowlist',
+    'tool_allowlist',
+    'spend_cap',
+    'spend_caps',
+    'default_models',
+    'eos_default',
+    'capability_index',
+    'candidate_rankings',
+    'route_tag_inventory',
+    'hiddenpath',
+  ]);
+  let policyFailed = 0;
+  for (const tree of PROVIDER_TREES) {
+    if (!existsSync(tree.dir)) continue;
+    for (const name of readdirSync(tree.dir).sort()) {
+      if (!name.endsWith('.yaml') && !name.endsWith('.yml')) continue;
+      const filePath = join(tree.dir, name);
+      let doc;
+      try {
+        doc = yaml.load(readFileSync(filePath, 'utf8'));
+      } catch {
+        continue;
+      }
+      if (!doc || typeof doc !== 'object') continue;
+      for (const key of Object.keys(doc)) {
+        if (POLICY_FORBIDDEN_TOP_LEVEL.has(key)) {
+          policyFailed += 1;
+          console.error(
+            `FAIL ${tree.name}/providers/${name}: Policy Spec key ${JSON.stringify(key)} forbidden in public YAML (PT-ARCH-004 §4.2)`,
+          );
+        }
+      }
+    }
+  }
+  if (policyFailed === 0) {
+    console.log('OK   public provider trees have no Policy Spec top-level keys');
+  }
+  archTestFailed += policyFailed;
+
+  // 3) Experimental facade freeze — status + required keys.
+  let facadeFailed = 0;
+  if (!existsSync(facadeSnapPath)) {
+    facadeFailed += 1;
+    console.error('FAIL PT-ARCH-008 experimental-facade.snapshot.json missing');
+  } else {
+    const facadeSnap = JSON.parse(readFileSync(facadeSnapPath, 'utf8'));
+    const fixtures = facadeSnap.fixtures && typeof facadeSnap.fixtures === 'object' ? facadeSnap.fixtures : {};
+    for (const [rel, spec] of Object.entries(fixtures)) {
+      const path = join(ROOT, rel);
+      if (!existsSync(path)) {
+        facadeFailed += 1;
+        console.error(`FAIL Experimental facade fixture missing: ${rel}`);
+        continue;
+      }
+      const doc = JSON.parse(readFileSync(path, 'utf8'));
+      if (doc.status !== spec.required_status) {
+        facadeFailed += 1;
+        console.error(
+          `FAIL ${rel} status: got ${JSON.stringify(doc.status)}, expected ${JSON.stringify(spec.required_status)}`,
+        );
+      }
+      const requiredKeys = Array.isArray(spec.required_keys) ? spec.required_keys : [];
+      for (const key of requiredKeys) {
+        if (!(key in doc)) {
+          facadeFailed += 1;
+          console.error(`FAIL ${rel} missing required key ${JSON.stringify(key)}`);
+        }
+      }
+    }
+    if (facadeFailed === 0) {
+      console.log('OK   Experimental facade freeze (Envelope + Tag mapping)');
+    }
+  }
+  archTestFailed += facadeFailed;
+
+  failed += archTestFailed;
 }
 
 process.exit(failed === 0 ? 0 : 1);
