@@ -11,7 +11,7 @@ These paths are the **public wire-contract + compliance** surface consumers shou
 |------|------|
 | `schemas/` | JSON Schema contracts |
 | `v1/` | LTS wire manifests + models |
-| `v2/` | Evolution tip manifests + architecture fixtures |
+| `v2/` | Evolution tip manifests + architecture fixtures; includes `contracts/` (ProviderContract overlays) and `packs/` (route bundles — see [`PACK_CONTRACT_BOUNDARIES.md`](./PACK_CONTRACT_BOUNDARIES.md)) |
 | `v2-alpha/` | Explicit sandbox |
 | `dist/` | Published JSON package surface (`npm` `files`) |
 | `docs/` | Normative / Experimental companions (VERSION_AUTHORITY, identity, layers, …) |
@@ -39,4 +39,5 @@ Historical root markdown (comparisons, old release notes, audit drafts) lives un
 
 - [`MANIFEST_AUTHORITY.md`](./MANIFEST_AUTHORITY.md) — public vs application overlay  
 - [`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md) — which tree to load  
+- [`PACK_CONTRACT_BOUNDARIES.md`](./PACK_CONTRACT_BOUNDARIES.md) — Pack / ProviderContract vs provider.yaml (F12)  
 - [`../archive/README.md`](../archive/README.md) — archive disclaimer  

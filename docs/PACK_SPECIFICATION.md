@@ -1,6 +1,6 @@
 # Prism Pack Specification (AI-Protocol V2 extension)
 
-> **Status**: Draft contract (PR-PP-001)  
+> **Status**: Schema detail (PR-PP-001); **coexistence Normative** → [`PACK_CONTRACT_BOUNDARIES.md`](./PACK_CONTRACT_BOUNDARIES.md) (PT-ARCH-010 / F12)  
 > **Scope**: Schema + example only — **no** marketplace, registry, or runtime loader in Phase 2.
 
 ## Overview
