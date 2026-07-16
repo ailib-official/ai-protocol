@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 /**
- * PT-ARCH-001…005(+b/d) + PT-ARCH-007/008 — validate Architecture fixtures,
+ * PT-ARCH-001…005(+b/d) + PT-ARCH-007/008/010 — validate Architecture fixtures,
  * dist authority, provider-identity registry gates, F9 error contract names,
- * and F11 pilot assertions (vocabulary freeze, Policy Spec deny, Experimental facade).
+ * F11 pilot assertions (vocabulary freeze, Policy Spec deny, Experimental facade),
+ * and F12 Pack/ProviderContract boundary resolve gates.
  *
  * Run after `npm run build` so dist/index.json exists (CI order: build then validate:arch).
  *
  * Identity model (no dual wire keys): primary `id` + optional `aliases[]`.
  * Registry gates forbid silent dual-identity without an alias map.
  */
-import { existsSync, readFileSync, readdirSync } from 'fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'fs';
 import { join, dirname, resolve, basename } from 'path';
 import { fileURLToPath } from 'url';
 import { Ajv2020 } from 'ajv/dist/2020.js';
@@ -583,6 +584,137 @@ for (const tree of PROVIDER_TREES) {
     }
   }
   archTestFailed += facadeFailed;
+
+  // 4) F12 — Pack / ProviderContract provider ids must resolve via registry + identity.
+  function collectResolvableProviderIds() {
+    const ids = new Set();
+    for (const tree of PROVIDER_TREES) {
+      if (!existsSync(tree.dir)) continue;
+      for (const name of readdirSync(tree.dir).sort()) {
+        if (!name.endsWith('.yaml') && !name.endsWith('.yml')) continue;
+        const filePath = join(tree.dir, name);
+        let doc;
+        try {
+          doc = yaml.load(readFileSync(filePath, 'utf8'));
+        } catch {
+          continue;
+        }
+        if (!doc || typeof doc !== 'object' || typeof doc.id !== 'string') continue;
+        ids.add(doc.id);
+        if (Array.isArray(doc.aliases)) {
+          for (const a of doc.aliases) {
+            if (typeof a === 'string' && a) ids.add(a);
+          }
+        }
+      }
+    }
+    if (existsSync(identityDistPath)) {
+      try {
+        const map = JSON.parse(readFileSync(identityDistPath, 'utf8'));
+        const families = Array.isArray(map.families) ? map.families : [];
+        for (const family of families) {
+          if (family && typeof family.canonical_id === 'string') {
+            ids.add(family.canonical_id);
+          }
+          if (family && Array.isArray(family.aliases)) {
+            for (const a of family.aliases) {
+              if (typeof a === 'string' && a) ids.add(a);
+            }
+          }
+        }
+      } catch {
+        // identity gates above already report parse/missing issues
+      }
+    }
+    return ids;
+  }
+
+  const resolvableIds = collectResolvableProviderIds();
+  let boundaryFailed = 0;
+
+  const contractDir = join(ROOT, 'v2', 'contracts');
+  if (existsSync(contractDir)) {
+    for (const name of readdirSync(contractDir).sort()) {
+      if (!name.endsWith('.yaml') && !name.endsWith('.yml')) continue;
+      const filePath = join(contractDir, name);
+      let doc;
+      try {
+        doc = yaml.load(readFileSync(filePath, 'utf8'));
+      } catch (e) {
+        boundaryFailed += 1;
+        console.error(`FAIL v2/contracts/${name}: YAML parse error: ${e.message}`);
+        continue;
+      }
+      const pid = doc && doc.provider_id;
+      if (typeof pid !== 'string' || !pid) {
+        boundaryFailed += 1;
+        console.error(`FAIL v2/contracts/${name}: missing provider_id`);
+        continue;
+      }
+      if (!resolvableIds.has(pid)) {
+        boundaryFailed += 1;
+        console.error(
+          `FAIL v2/contracts/${name}: provider_id ${JSON.stringify(pid)} does not resolve to a public provider id/alias (F12)`,
+        );
+      }
+    }
+  }
+
+  const packDir = join(ROOT, 'v2', 'packs');
+  const packFiles = [];
+  if (existsSync(packDir)) {
+    const walk = (currentDir) => {
+      for (const name of readdirSync(currentDir).sort()) {
+        const full = join(currentDir, name);
+        const st = statSync(full);
+        if (st.isDirectory()) {
+          walk(full);
+        } else if (name.endsWith('.json')) {
+          packFiles.push(full);
+        }
+      }
+    };
+    walk(packDir);
+  }
+  for (const filePath of packFiles) {
+    const rel = filePath.replace(`${ROOT}/`, '');
+    let doc;
+    try {
+      doc = JSON.parse(readFileSync(filePath, 'utf8'));
+    } catch (e) {
+      boundaryFailed += 1;
+      console.error(`FAIL ${rel}: JSON parse error: ${e.message}`);
+      continue;
+    }
+    const routes = Array.isArray(doc.provider_routes) ? doc.provider_routes : [];
+    for (let i = 0; i < routes.length; i += 1) {
+      const provider = routes[i] && routes[i].provider;
+      if (typeof provider !== 'string' || !provider) {
+        boundaryFailed += 1;
+        console.error(`FAIL ${rel}: provider_routes[${i}].provider missing`);
+        continue;
+      }
+      if (!resolvableIds.has(provider)) {
+        boundaryFailed += 1;
+        console.error(
+          `FAIL ${rel}: provider ${JSON.stringify(provider)} does not resolve to a public provider id/alias (F12)`,
+        );
+      }
+    }
+  }
+
+  const boundariesDoc = join(ROOT, 'docs', 'PACK_CONTRACT_BOUNDARIES.md');
+  if (!existsSync(boundariesDoc)) {
+    boundaryFailed += 1;
+    console.error('FAIL docs/PACK_CONTRACT_BOUNDARIES.md missing (PT-ARCH-010 / F12)');
+  }
+
+  if (boundaryFailed === 0) {
+    console.log(
+      'OK   Pack/ProviderContract boundaries (contracts + packs resolve; Normative doc present)',
+    );
+  }
+  archTestFailed += boundaryFailed;
 
   failed += archTestFailed;
 }
