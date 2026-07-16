@@ -40,4 +40,5 @@ Historical root markdown (comparisons, old release notes, audit drafts) lives un
 - [`MANIFEST_AUTHORITY.md`](./MANIFEST_AUTHORITY.md) — public vs application overlay  
 - [`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md) — which tree to load  
 - [`PACK_CONTRACT_BOUNDARIES.md`](./PACK_CONTRACT_BOUNDARIES.md) — Pack / ProviderContract vs provider.yaml (F12)  
+- [`CAPABILITY_CATALOG.md`](./CAPABILITY_CATALOG.md) — Capability Catalog skeleton (F8 / C2)  
 - [`../archive/README.md`](../archive/README.md) — archive disclaimer  

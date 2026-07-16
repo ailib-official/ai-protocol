@@ -21,3 +21,4 @@
 - PT-ARCH-001 [`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md)  
 - PT-ARCH-003 [`CONTEXT_ENVELOPE.md`](./CONTEXT_ENVELOPE.md)  
 - CR-CAP-001: inverted index is **not** a second Tag vocabulary and **not** Execution Runtime  
+- PT-ARCH-011 [`CAPABILITY_CATALOG.md`](./CAPABILITY_CATALOG.md) — first-class Capability directory (F8 skeleton); Tags stay Experimental here  

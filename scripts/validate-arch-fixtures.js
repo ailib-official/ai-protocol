@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 /**
- * PT-ARCH-001…005(+b/d) + PT-ARCH-007/008/010 — validate Architecture fixtures,
+ * PT-ARCH-001…005(+b/d) + PT-ARCH-007/008/010/011 — validate Architecture fixtures,
  * dist authority, provider-identity registry gates, F9 error contract names,
  * F11 pilot assertions (vocabulary freeze, Policy Spec deny, Experimental facade),
- * and F12 Pack/ProviderContract boundary resolve gates.
+ * F12 Pack/ProviderContract boundary resolve gates,
+ * and F8 Capability Catalog skeleton coverage.
  *
  * Run after `npm run build` so dist/index.json exists (CI order: build then validate:arch).
  *
@@ -36,6 +37,10 @@ const fixtures = [
   {
     schema: 'schemas/v2/error-contract-names.json',
     data: 'v2/error-contract-names.fixture.json',
+  },
+  {
+    schema: 'schemas/v2/capability-catalog.json',
+    data: 'v2/capability-catalog.fixture.json',
   },
 ];
 
@@ -715,6 +720,79 @@ for (const tree of PROVIDER_TREES) {
     );
   }
   archTestFailed += boundaryFailed;
+
+  // 5) F8 — Capability Catalog skeleton covers wire ProviderCapability enum exactly.
+  let catalogFailed = 0;
+  const catalogDocPath = join(ROOT, 'docs', 'CAPABILITY_CATALOG.md');
+  if (!existsSync(catalogDocPath)) {
+    catalogFailed += 1;
+    console.error('FAIL docs/CAPABILITY_CATALOG.md missing (PT-ARCH-011 / F8)');
+  }
+  const capsSchemaPath = join(ROOT, 'schemas', 'v2', 'capabilities.json');
+  const catalogFixturePath = join(ROOT, 'v2', 'capability-catalog.fixture.json');
+  if (!existsSync(capsSchemaPath) || !existsSync(catalogFixturePath)) {
+    catalogFailed += 1;
+    console.error('FAIL F8 catalog coverage: missing capabilities.json or capability-catalog.fixture.json');
+  } else {
+    const capsSchema = JSON.parse(readFileSync(capsSchemaPath, 'utf8'));
+    const expected = new Set(
+      (((capsSchema.$defs || {}).capability_name || {}).enum) || [],
+    );
+    const catalog = JSON.parse(readFileSync(catalogFixturePath, 'utf8'));
+    if (catalog.status !== 'normative_skeleton' && catalog.status !== 'normative') {
+      catalogFailed += 1;
+      console.error(
+        `FAIL capability-catalog status: got ${JSON.stringify(catalog.status)}, expected normative_skeleton|normative`,
+      );
+    }
+    const ids = [];
+    const seen = new Set();
+    for (const entry of Array.isArray(catalog.entries) ? catalog.entries : []) {
+      if (!entry || typeof entry.id !== 'string') {
+        catalogFailed += 1;
+        console.error('FAIL capability-catalog entry missing id');
+        continue;
+      }
+      if (entry.kind !== 'provider_capability') {
+        catalogFailed += 1;
+        console.error(
+          `FAIL capability-catalog entry ${JSON.stringify(entry.id)}: skeleton allows kind provider_capability only`,
+        );
+      }
+      if (seen.has(entry.id)) {
+        catalogFailed += 1;
+        console.error(`FAIL capability-catalog duplicate id ${JSON.stringify(entry.id)}`);
+      }
+      seen.add(entry.id);
+      ids.push(entry.id);
+      if (!expected.has(entry.id)) {
+        catalogFailed += 1;
+        console.error(
+          `FAIL capability-catalog id ${JSON.stringify(entry.id)} not in capabilities.json capability_name enum`,
+        );
+      }
+      for (const field of ['schema_ref', 'version', 'compatibility', 'metadata', 'provider_mapping']) {
+        if (!(field in entry)) {
+          catalogFailed += 1;
+          console.error(`FAIL capability-catalog ${entry.id}: missing C2 field ${field}`);
+        }
+      }
+    }
+    for (const need of expected) {
+      if (!seen.has(need)) {
+        catalogFailed += 1;
+        console.error(
+          `FAIL capability-catalog missing ProviderCapability ${JSON.stringify(need)} (F8 coverage)`,
+        );
+      }
+    }
+    if (catalogFailed === 0) {
+      console.log(
+        `OK   Capability Catalog skeleton (${ids.length} provider_capability entries ↔ wire enum)`,
+      );
+    }
+  }
+  archTestFailed += catalogFailed;
 
   failed += archTestFailed;
 }

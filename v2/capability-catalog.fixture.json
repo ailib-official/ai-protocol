@@ -1,0 +1,430 @@
+{
+  "schema_version": "0.1.0",
+  "status": "normative_skeleton",
+  "notes": "PT-ARCH-011 / F8 / C2 skeleton. First-class Capability directory for wire ProviderCapability ids. CapabilityTag remains Experimental via capability-tag-mapping. Not an inverted index (CR-CAP-001).",
+  "entries": [
+    {
+      "id": "text",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Core text generation / chat completion",
+        "runtime_module_hint": "Core (always loaded)"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "streaming",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Streaming response delivery",
+        "runtime_module_hint": "streaming.*"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "vision",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Image / visual input understanding",
+        "runtime_module_hint": "multimodal.vision"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "audio",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Audio input understanding",
+        "runtime_module_hint": "multimodal.audio"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "video",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Video input understanding",
+        "runtime_module_hint": "multimodal.video"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "tools",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Tool / function calling",
+        "runtime_module_hint": "tools.*"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "parallel_tools",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Parallel tool invocations in one turn",
+        "runtime_module_hint": "tools.parallel"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "agentic",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Agentic multi-step tool loops",
+        "runtime_module_hint": "agentic.*"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "reasoning",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Extended reasoning / thinking blocks",
+        "runtime_module_hint": "reasoning.*"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "embeddings",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Embedding vectors",
+        "runtime_module_hint": "embeddings.*"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "structured_output",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Schema-constrained / JSON-mode output",
+        "runtime_module_hint": "structured.*"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "batch",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Batch inference APIs",
+        "runtime_module_hint": "batch.*"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "image_generation",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Image generation",
+        "runtime_module_hint": "generation.image"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "computer_use",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Computer-use / GUI agent actions",
+        "runtime_module_hint": "computer_use.*"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "mcp_client",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "MCP client capability",
+        "runtime_module_hint": "mcp.client"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "mcp_server",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "MCP server capability",
+        "runtime_module_hint": "mcp.server"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "stt",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Speech-to-text",
+        "runtime_module_hint": "stt.*"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "tts",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Text-to-speech",
+        "runtime_module_hint": "tts.*"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    },
+    {
+      "id": "rerank",
+      "kind": "provider_capability",
+      "schema_ref": "schemas/v2/capabilities.json#/$defs/capability_name",
+      "version": "1.0.0",
+      "compatibility": {
+        "protocol_trees": [
+          "v1",
+          "v2",
+          "v2-alpha"
+        ],
+        "notes": "Declared on provider manifests; LTS production default remains v1 wire (VERSION_AUTHORITY)"
+      },
+      "metadata": {
+        "description": "Reranking",
+        "runtime_module_hint": "rerank.*"
+      },
+      "provider_mapping": {
+        "declaration_path": "capabilities.required|optional",
+        "notes": "Manifest Capability Spec (PT-ARCH-004 L-Cap); not a CapabilityTag and not a host inverted index"
+      }
+    }
+  ],
+  "exclusions": {
+    "capability_tags": "Route/intent tags live in Experimental capability-tag-mapping + plans capability-mapping.md \u2014 not Catalog primary rows in this skeleton",
+    "inverted_index": "Tag\u2192candidate provider lists are host helpers only; never published as protocol Catalog meat",
+    "packs": "v2/packs route bundles reference providers/models; they are not Catalog entries (PACK_CONTRACT_BOUNDARIES)"
+  }
+}
