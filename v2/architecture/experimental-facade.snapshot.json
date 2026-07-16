@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "PT-ARCH-008 Experimental facade shape freeze",
+  "fixtures": {
+    "v2/capability-tag-mapping.fixture.json": {
+      "required_status": "experimental",
+      "required_keys": ["schema_version", "status", "mappings"]
+    },
+    "v2/context-envelope.fixture.json": {
+      "required_status": "experimental",
+      "required_keys": ["schema_version", "status", "strategy", "budget", "chunks"]
+    }
+  }
+}

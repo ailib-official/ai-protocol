@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "PT-ARCH-008 vocabulary freeze (CapabilityTag set)",
+  "capability_tags": [
+    "coding",
+    "document_understanding",
+    "high-reasoning",
+    "long_context",
+    "speed",
+    "tool_calling"
+  ]
+}

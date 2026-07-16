@@ -12,6 +12,7 @@
 - [`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md) — Capability / Execution / Policy Spec  
 - [`PROVIDER_IDENTITY.md`](./PROVIDER_IDENTITY.md) — canonical `gemini` + alias `google`  
 - [`CONTEXT_ENVELOPE.md`](./CONTEXT_ENVELOPE.md) — Experimental Envelope / Layer (PT-ARCH-003)  
+- [`ARCHITECTURE_TESTS.md`](./ARCHITECTURE_TESTS.md) — `validate:arch` F11 pilot gates (PT-ARCH-008)  
 
 ## 1. Overview
 
