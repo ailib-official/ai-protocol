@@ -19,7 +19,9 @@ const FIXTURE_DIR = join(ROOT, 'tests', 'compliance', 'fixtures', 'providers');
 const P0_CASE_DIR = join(ROOT, 'tests', 'compliance', 'cases', '01-protocol-loading');
 const REPORT_DIR = join(ROOT, 'reports', 'drift');
 
-const P0_REQUIRED = ['openai', 'anthropic', 'google', 'deepseek', 'qwen', 'doubao'];
+const P0_REQUIRED = ['openai', 'anthropic', 'gemini', 'deepseek', 'qwen', 'doubao'];
+// Compliance fixtures/cases may still use historical google doubles (PT-ARCH-005).
+const P0_FIXTURE_ALIASES = { gemini: ['google'] };
 
 function readYaml(path) {
   return yaml.load(readFileSync(path, 'utf-8'));
@@ -82,19 +84,31 @@ function detectDrift() {
       continue;
     }
 
-    const v2Fixture = `mock-${pid}-v2.yaml`;
-    const legacyFixture = `mock-${pid}.yaml`;
-    if (!existsSync(join(FIXTURE_DIR, v2Fixture)) && !existsSync(join(FIXTURE_DIR, legacyFixture))) {
+    const fixtureNames = [pid, ...(P0_FIXTURE_ALIASES[pid] || [])];
+    const hasFixture = fixtureNames.some(
+      (name) =>
+        existsSync(join(FIXTURE_DIR, `mock-${name}-v2.yaml`)) ||
+        existsSync(join(FIXTURE_DIR, `mock-${name}.yaml`)),
+    );
+    if (!hasFixture) {
       drifts.push({
         severity: 'high',
         type: 'missing-compliance-fixture',
         provider: pid,
-        expected_fixture: `${v2Fixture} | ${legacyFixture}`,
+        expected_fixture: fixtureNames
+          .flatMap((name) => [`mock-${name}-v2.yaml`, `mock-${name}.yaml`])
+          .join(' | '),
       });
     }
 
-    if (!caseProviderIds.has(pid)) {
-      drifts.push({ severity: 'high', type: 'missing-compliance-case', provider: pid, case_dir: P0_CASE_DIR });
+    const hasCase = fixtureNames.some((name) => caseProviderIds.has(name));
+    if (!hasCase) {
+      drifts.push({
+        severity: 'high',
+        type: 'missing-compliance-case',
+        provider: pid,
+        case_dir: P0_CASE_DIR,
+      });
     }
   }
 
