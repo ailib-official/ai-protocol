@@ -1,5 +1,8 @@
 # AI-Protocol: 数据态的规则书
 
+> 原根目录 `README_CN.md` 已迁至 `docs/README.zh-CN.md`（PT-ARCH-F10 仓面整理）。  
+> 公共权威面说明见 [`PUBLIC_SURFACE.md`](./PUBLIC_SURFACE.md)。
+
 AI-Protocol 是一个**供应商无关**（provider-agnostic）的 AI 模型规范，标准化了我们与智能体的交互方式，**无论模态如何**（文本、视觉、音频、视频）。我们将"数据态的规则书"与"语言态的运行时"解耦，为 AI 生态系统提供统一的基础设施。
 
 **我们通过提供原始 API 归一化的声明式运行时，来补充像 [MCP](https://modelcontextprotocol.io) 这样的标准。** 虽然 MCP 专注于工具调用和上下文管理的高级协议，AI-Protocol 专注于底层 API 调用的标准化和归一化，使运行时能够统一处理不同供应商的 API。

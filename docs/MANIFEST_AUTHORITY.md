@@ -10,6 +10,9 @@
 [`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md) (PT-ARCH-004). Policy Spec and
 product defaults stay in **application overlay**, not public YAML.
 
+**Repository layout** (what is authority vs archive) is Normative in
+[`PUBLIC_SURFACE.md`](./PUBLIC_SURFACE.md) (PT-ARCH-F10 / F10).
+
 Applications (Eos, VelaClaw, ai-lib-gateway, etc.) **must not** require special fields, provenance tags, or deployment notes in public manifests. If an application needs:
 
 - default model subsets for a region or deployment
