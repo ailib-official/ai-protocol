@@ -130,7 +130,7 @@ function main() {
     },
     {
       label: 'rust-manifest-consumption',
-      command: 'cargo test --test generative_manifest_consumption --features multimodal',
+      command: 'cargo test -p ai-lib-rust --test generative_manifest_consumption --features multimodal',
       cwd: args.rustDir,
       policy: 'required',
     },

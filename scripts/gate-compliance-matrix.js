@@ -13,20 +13,34 @@ import { spawnSync } from 'child_process';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = resolve(__dirname, '..');
-
-const DEFAULT_RUST_DIR = resolve(ROOT, '../rustapp/ai-lib-rust');
-const DEFAULT_PYTHON_DIR = resolve(ROOT, '../rustapp/ai-lib-python');
-const DEFAULT_TS_DIR = resolve(ROOT, '../rustapp/ai-lib-ts');
 const REPORT_DIR = join(ROOT, 'reports', 'compliance-gates');
+
+const DEFAULT_RUNTIME_ROOTS = [
+  resolve(ROOT, '..'),
+  resolve(ROOT, '../rustapp'),
+];
+
+function resolveRuntimeDir(envKey, folderName) {
+  if (process.env[envKey]) {
+    return resolve(process.env[envKey]);
+  }
+  for (const root of DEFAULT_RUNTIME_ROOTS) {
+    const candidate = join(root, folderName);
+    if (existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return resolve(ROOT, `../${folderName}`);
+}
 
 function parseArgs() {
   const args = process.argv.slice(2);
   const reportOnly = args.includes('--report-only');
   return {
     reportOnly,
-    rustDir: process.env.AI_LIB_RUST_DIR ? resolve(process.env.AI_LIB_RUST_DIR) : DEFAULT_RUST_DIR,
-    pythonDir: process.env.AI_LIB_PYTHON_DIR ? resolve(process.env.AI_LIB_PYTHON_DIR) : DEFAULT_PYTHON_DIR,
-    tsDir: process.env.AI_LIB_TS_DIR ? resolve(process.env.AI_LIB_TS_DIR) : DEFAULT_TS_DIR,
+    rustDir: resolveRuntimeDir('AI_LIB_RUST_DIR', 'ai-lib-rust'),
+    pythonDir: resolveRuntimeDir('AI_LIB_PYTHON_DIR', 'ai-lib-python'),
+    tsDir: resolveRuntimeDir('AI_LIB_TS_DIR', 'ai-lib-ts'),
   };
 }
 
@@ -100,7 +114,7 @@ function main() {
     },
     {
       label: 'rust-compliance',
-      command: 'cargo test --test compliance',
+      command: 'cargo test -p ai-lib-rust --test compliance',
       cwd: args.rustDir,
       optional: true,
     },
