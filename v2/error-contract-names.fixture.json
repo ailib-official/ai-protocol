@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1.0",
+  "status": "normative",
+  "notes": "PT-ARCH-007 / F9 / G5. Contract names coexist with E codes; see docs/ERROR_CONTRACT_NAMES.md.",
+  "contract_names": [
+    {
+      "name": "CapabilityUnavailable",
+      "description": "Requested capability, model, or path is unavailable under declared protocol facts",
+      "maps_to_error_codes": ["E1004", "E1005"],
+      "notes": "E1005 includes compliance aliases capability_not_declared / unsupported_capability"
+    },
+    {
+      "name": "PolicyRejected",
+      "description": "Host or provider policy denied the action (allowlist, spend, approval, account policy)",
+      "maps_to_error_codes": ["E1003"],
+      "notes": "Host Policy Spec denials should prefer this name even when no provider round-trip occurred"
+    },
+    {
+      "name": "ProtocolViolation",
+      "description": "Request or response violates the protocol contract (shape, required fields, unsupported combination)",
+      "maps_to_error_codes": ["E1001"]
+    },
+    {
+      "name": "ProviderFailure",
+      "description": "Well-formed request failed on the provider or transport side",
+      "maps_to_error_codes": ["E2001", "E2002", "E3001", "E3002", "E3003", "E9999"]
+    }
+  ]
+}

@@ -19,8 +19,7 @@ Intentional vocabulary / Experimental shape changes require:
 2. Update the matching snapshot under `v2/architecture/`
 3. Cite F-ID / Protocol Proposal in the PR (GOV-006 for stable consume fields)
 
-## Non-goals (this pilot)
+## Related
 
-- Full four-runtime Facade consume matrix
-- Promoting Experimental schemas to stable
-- PT-ARCH-007 error semantic name mapping (F9) — separate task
+- PT-ARCH-007 / F9: [`ERROR_CONTRACT_NAMES.md`](./ERROR_CONTRACT_NAMES.md) — contract names ↔ E codes (also loaded by `validate:arch`)
+- PT-ARCH-004: [`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md)
