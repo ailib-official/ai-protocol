@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/error-contract-names.json",
+  "title": "AI-Protocol Error Contract Names",
+  "description": "PT-ARCH-007 / F9 / G5 — cross-language contract semantic names mapped onto E codes. Additive; does not replace schemas/v2/error-codes.yaml.",
+  "type": "object",
+  "required": ["schema_version", "status", "contract_names"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Document version for the contract-name mapping"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["normative", "experimental", "draft"],
+      "description": "Publication status of this mapping document"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "contract_names": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "description", "maps_to_error_codes"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Za-z0-9]+$",
+            "description": "PascalCase contract semantic name"
+          },
+          "description": {
+            "type": "string"
+          },
+          "maps_to_error_codes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^E[0-9]{4}$"
+            },
+            "uniqueItems": true,
+            "description": "E codes that may surface as this contract name"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

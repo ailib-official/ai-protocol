@@ -1,6 +1,8 @@
 # AI-Protocol Standard Error Codes — Reference Data
 # This file provides the canonical error code definitions used by all runtimes.
 # See schemas/v2/errors.json for the JSON Schema definition.
+# Contract semantic names (CapabilityUnavailable, …) map onto these E codes —
+# see docs/ERROR_CONTRACT_NAMES.md and v2/error-contract-names.fixture.json (PT-ARCH-007 / F9).
 
 version: "2.0"
 last_updated: "2026-02-14"

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * PT-ARCH-001…005(+b/d) + PT-ARCH-008 — validate Architecture fixtures,
- * dist authority, provider-identity registry gates, and F11 pilot assertions
- * (vocabulary freeze, Policy Spec deny, Experimental facade freeze).
+ * PT-ARCH-001…005(+b/d) + PT-ARCH-007/008 — validate Architecture fixtures,
+ * dist authority, provider-identity registry gates, F9 error contract names,
+ * and F11 pilot assertions (vocabulary freeze, Policy Spec deny, Experimental facade).
  *
  * Run after `npm run build` so dist/index.json exists (CI order: build then validate:arch).
  *
@@ -32,6 +32,18 @@ const fixtures = [
     schema: 'schemas/v2/provider-identity.json',
     data: 'v2/provider-identity.fixture.json',
   },
+  {
+    schema: 'schemas/v2/error-contract-names.json',
+    data: 'v2/error-contract-names.fixture.json',
+  },
+];
+
+/** G5 / PT-ARCH-007 required contract semantic names. */
+const REQUIRED_CONTRACT_NAMES = [
+  'CapabilityUnavailable',
+  'PolicyRejected',
+  'ProtocolViolation',
+  'ProviderFailure',
 ];
 
 const EXPECTED_AUTHORITY = {
@@ -389,6 +401,75 @@ for (const tree of PROVIDER_TREES) {
     console.log(`OK   provider identity map applied: ${summary}`);
   }
   failed += identityFailed;
+}
+
+// ---------------------------------------------------------------------------
+// PT-ARCH-007 (F9 / G5): error contract names ↔ E-code map
+// ---------------------------------------------------------------------------
+{
+  let contractFailed = 0;
+  const contractPath = join(ROOT, 'v2', 'error-contract-names.fixture.json');
+  const errorCodesPath = join(ROOT, 'schemas', 'v2', 'error-codes.yaml');
+
+  if (!existsSync(contractPath) || !existsSync(errorCodesPath)) {
+    contractFailed += 1;
+    console.error('FAIL PT-ARCH-007 error contract mapping files missing');
+  } else {
+    const contractDoc = JSON.parse(readFileSync(contractPath, 'utf8'));
+    const errorDoc = yaml.load(readFileSync(errorCodesPath, 'utf8'));
+    const knownCodes = new Set(Object.keys((errorDoc && errorDoc.error_codes) || {}));
+    const names = Array.isArray(contractDoc.contract_names) ? contractDoc.contract_names : [];
+    const seen = new Set();
+
+    for (const required of REQUIRED_CONTRACT_NAMES) {
+      if (!names.some((n) => n && n.name === required)) {
+        contractFailed += 1;
+        console.error(`FAIL error contract map missing required name ${JSON.stringify(required)}`);
+      }
+    }
+
+    for (const entry of names) {
+      const name = entry && entry.name;
+      if (typeof name !== 'string') {
+        contractFailed += 1;
+        console.error('FAIL error contract entry missing name');
+        continue;
+      }
+      if (seen.has(name)) {
+        contractFailed += 1;
+        console.error(`FAIL duplicate error contract name ${JSON.stringify(name)}`);
+      }
+      seen.add(name);
+
+      const codes = Array.isArray(entry.maps_to_error_codes) ? entry.maps_to_error_codes : [];
+      if (codes.length === 0) {
+        contractFailed += 1;
+        console.error(`FAIL ${name} maps_to_error_codes must be non-empty`);
+      }
+      for (const code of codes) {
+        if (!knownCodes.has(code)) {
+          contractFailed += 1;
+          console.error(
+            `FAIL ${name} maps to unknown E code ${JSON.stringify(code)} (not in error-codes.yaml)`,
+          );
+        }
+      }
+    }
+
+    if (contractDoc.status !== 'normative') {
+      contractFailed += 1;
+      console.error(
+        `FAIL error-contract-names status: got ${JSON.stringify(contractDoc.status)}, expected "normative"`,
+      );
+    }
+  }
+
+  if (contractFailed === 0) {
+    console.log(
+      `OK   error contract names (${REQUIRED_CONTRACT_NAMES.length} G5 names ↔ E codes)`,
+    );
+  }
+  failed += contractFailed;
 }
 
 // ---------------------------------------------------------------------------

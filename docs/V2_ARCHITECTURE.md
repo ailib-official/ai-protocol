@@ -13,6 +13,7 @@
 - [`PROVIDER_IDENTITY.md`](./PROVIDER_IDENTITY.md) — canonical `gemini` + alias `google`  
 - [`CONTEXT_ENVELOPE.md`](./CONTEXT_ENVELOPE.md) — Experimental Envelope / Layer (PT-ARCH-003)  
 - [`ARCHITECTURE_TESTS.md`](./ARCHITECTURE_TESTS.md) — `validate:arch` F11 pilot gates (PT-ARCH-008)  
+- [`ERROR_CONTRACT_NAMES.md`](./ERROR_CONTRACT_NAMES.md) — contract semantic names ↔ E codes (PT-ARCH-007 / F9)  
 
 ## 1. Overview
 
@@ -93,7 +94,9 @@ message:
 
 #### 2.1.3 Standard Error Codes (L1)
 
-Every runtime MUST map provider-specific errors to these standard error codes:
+Every runtime MUST map provider-specific errors to these standard error codes.
+Cross-language **contract** surfaces SHOULD additionally map to semantic names in
+[`ERROR_CONTRACT_NAMES.md`](./ERROR_CONTRACT_NAMES.md) (PT-ARCH-007 / F9 / G5).
 
 | Code | Name | HTTP Status | Retryable | Fallbackable | Description |
 |------|------|-------------|-----------|--------------|-------------|
