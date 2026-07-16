@@ -23,4 +23,5 @@ Intentional vocabulary / Experimental shape changes require:
 
 - PT-ARCH-007 / F9: [`ERROR_CONTRACT_NAMES.md`](./ERROR_CONTRACT_NAMES.md) — contract names ↔ E codes (also loaded by `validate:arch`)
 - PT-ARCH-010 / F12: [`PACK_CONTRACT_BOUNDARIES.md`](./PACK_CONTRACT_BOUNDARIES.md) — Pack / ProviderContract resolve gates in `validate:arch`
+- PT-ARCH-011 / F8: [`CAPABILITY_CATALOG.md`](./CAPABILITY_CATALOG.md) — Catalog skeleton coverage in `validate:arch`
 - PT-ARCH-004: [`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md)

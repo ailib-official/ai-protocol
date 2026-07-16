@@ -2,7 +2,7 @@
 
 > **Status**: Normative (coexistence rules)  
 > **Closes**: Architecture Audit **F12** (Pack/Contract 边界未 Normative)  
-> **Does not**: invent Capability Catalog (F8); open pack marketplace; rewrite wire manifests
+> **Does not**: open pack marketplace; rewrite wire manifests; grow Catalog meat (see CAPABILITY_CATALOG)
 
 ## 1. Three physical artifacts — one authority story
 
@@ -28,7 +28,7 @@ packs/     ── optional route curated sets (draft→stable lifecycle)
 3. **Packs do not invent providers.** Every Pack `provider_routes[].provider` MUST resolve the same way. Packs MUST NOT embed full endpoint/capability copies of manifests.
 4. **v1 tooling stays on manifests.** LTS production default remains `v1` wire ([`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md)). Packs are a **v2 extension**; v1 CI/tooling is not required to load `v2/packs/`.
 5. **Identity aliases apply.** Prefer canonical ids (`gemini`, not `google`) in new contracts/packs; aliases remain resolvable via [`PROVIDER_IDENTITY.md`](./PROVIDER_IDENTITY.md) / `dist/provider-identity.json`.
-6. **Not a Capability Catalog.** Packs and contracts are **not** F8’s first-class Schema·Version·Compatibility·Mapping catalog. Tag filtering on pack routes is advisory metadata, not the Tag vocabulary SSOT ([`CAPABILITY_VOCABULARY_BRIDGE.md`](./CAPABILITY_VOCABULARY_BRIDGE.md)).
+6. **Not a Capability Catalog.** Packs and contracts are **not** the F8 Catalog ([`CAPABILITY_CATALOG.md`](./CAPABILITY_CATALOG.md)). Tag filtering on pack routes is advisory metadata, not the Tag vocabulary SSOT ([`CAPABILITY_VOCABULARY_BRIDGE.md`](./CAPABILITY_VOCABULARY_BRIDGE.md)).
 7. **Not a host Policy surface.** Packs MUST NOT encode allowlists, spend caps, or product defaults that belong in host Policy Spec ([`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md) §4.2).
 
 ## 3. Layer mapping (PT-ARCH-004)
@@ -57,5 +57,5 @@ packs/     ── optional route curated sets (draft→stable lifecycle)
 - Pack marketplace / signed registry / runtime pack loader
 - Moving all L-Exec fields out of provider YAML into contracts
 - Promoting draft example packs to production SLA
-- F8 Capability Catalog
+- Growing Capability Catalog meat beyond F8 skeleton ([`CAPABILITY_CATALOG.md`](./CAPABILITY_CATALOG.md))
 - CR-L3-003/004 ACK / L4

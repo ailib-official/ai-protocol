@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/capability-catalog.json",
+  "title": "AI-Protocol Capability Catalog (Normative skeleton)",
+  "description": "PT-ARCH-011 / F8 / Maintainer C2 — first-class Capability directory (Schema·Version·Compatibility·Metadata·Provider Mapping). Skeleton covers wire ProviderCapability ids only. Not an inverted index; CapabilityTag stays Experimental via capability-tag-mapping.",
+  "type": "object",
+  "required": ["schema_version", "status", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["normative_skeleton", "normative", "experimental", "draft"],
+      "description": "normative_skeleton = F8 first slice (directory only); promote status when Catalog grows meat under GOV-006"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/catalog_entry" }
+    },
+    "exclusions": {
+      "type": "object",
+      "description": "Explicit non-Catalog surfaces (documentation aid; validated as object only)",
+      "additionalProperties": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "catalog_entry": {
+      "type": "object",
+      "required": ["id", "kind", "schema_ref", "version", "compatibility", "metadata", "provider_mapping"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Stable Capability id (wire ProviderCapability name in this skeleton)"
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["provider_capability"],
+          "description": "Skeleton kind set; future kinds require Protocol Proposal"
+        },
+        "schema_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Pointer to the schema that defines this Capability's declaration shape"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Catalog entry SemVer (Capability contract version, not protocol tree)"
+        },
+        "compatibility": {
+          "type": "object",
+          "required": ["protocol_trees"],
+          "additionalProperties": false,
+          "properties": {
+            "protocol_trees": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "enum": ["v1", "v2", "v2-alpha"]
+              }
+            },
+            "notes": { "type": "string" }
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "required": ["description"],
+          "additionalProperties": false,
+          "properties": {
+            "description": { "type": "string", "minLength": 1 },
+            "runtime_module_hint": {
+              "type": "string",
+              "description": "Optional non-normative hint from capabilities.json module mapping"
+            }
+          }
+        },
+        "provider_mapping": {
+          "type": "object",
+          "required": ["declaration_path"],
+          "additionalProperties": false,
+          "properties": {
+            "declaration_path": {
+              "type": "string",
+              "description": "Where providers declare this Capability on manifests"
+            },
+            "notes": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

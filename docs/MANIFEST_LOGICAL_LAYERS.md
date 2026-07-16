@@ -73,7 +73,7 @@ Related wire resilience fields (`error_classification`, `rate_limit_headers`) ar
 ## 5. Schema / packaging guidance (no forced split)
 
 1. **Logical first**: new fields must declare L-Cap / L-Exec in the PR description; L-Pol fields are rejected from public trees.
-2. **Physical optional**: schema `$ref` partitions or packs (`v2/contracts`, capability packs) are allowed when they reduce fatigue — **not required** to close F4. Coexistence rules are Normative in [`PACK_CONTRACT_BOUNDARIES.md`](./PACK_CONTRACT_BOUNDARIES.md) (PT-ARCH-010 / F12).
+2. **Physical optional**: schema `$ref` partitions or packs (`v2/contracts`, capability packs) are allowed when they reduce fatigue — **not required** to close F4. Coexistence rules are Normative in [`PACK_CONTRACT_BOUNDARIES.md`](./PACK_CONTRACT_BOUNDARIES.md) (PT-ARCH-010 / F12). Capability identities: [`CAPABILITY_CATALOG.md`](./CAPABILITY_CATALOG.md) (PT-ARCH-011 / F8).
 3. **Ring model**: existing Ring 1–3 language in `provider.json` remains packaging taxonomy; map Rings onto L-Cap / L-Exec without inventing a fourth product layer.
 4. **Experimental surfaces**: CapabilityTag mapping / Context Envelope stay Experimental ([`CAPABILITY_VOCABULARY_BRIDGE.md`](./CAPABILITY_VOCABULARY_BRIDGE.md), [`CONTEXT_ENVELOPE.md`](./CONTEXT_ENVELOPE.md)); do not smuggle host Policy into them.
 
