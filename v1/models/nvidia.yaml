@@ -64,6 +64,36 @@ models:
     status: active
     tags: ["nvidia", "nemotron", "omni", "reasoning"]
 
+  # Live NIM 2026-07-21: catalog id is `nvidia/nemotron-mini-4b-instruct`
+  # (hyphenated `nvidia-nemotron-…` is NOT a valid wire id).
+  "nvidia/nemotron-mini-4b-instruct":
+    provider: nvidia
+    model_id: "nvidia/nemotron-mini-4b-instruct"
+    display_name: "Nemotron Mini 4B Instruct"
+    verification:
+      status: verified
+      verified_at: "2026-07-21"
+      source: "https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-mini-4b-instruct"
+      notes: "Wire model must keep nvidia/ org prefix; bare id → 404 page not found"
+    context_window: 4096
+    capabilities: [chat, streaming]
+    status: active
+    tags: ["nvidia", "nemotron", "mini", "slm"]
+
+  "nvidia/nemotron-4-340b-instruct":
+    provider: nvidia
+    model_id: "nvidia/nemotron-4-340b-instruct"
+    display_name: "Nemotron 4 340B Instruct"
+    verification:
+      status: verified
+      verified_at: "2026-07-21"
+      source: "https://build.nvidia.com/nvidia/nemotron-4-340b-instruct"
+      notes: "Catalog-listed; some accounts get Not found for account (entitlement)"
+    context_window: 128000
+    capabilities: [chat, tools, streaming]
+    status: active
+    tags: ["nvidia", "nemotron", "340b"]
+
   # NVIDIA Llama-Nemotron series
   "nvidia/llama-3.3-nemotron-super-49b-v1":
     provider: nvidia
