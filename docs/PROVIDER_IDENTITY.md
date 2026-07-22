@@ -101,6 +101,7 @@ first, then alias match).
 | Artifact | Role |
 |----------|------|
 | `dist/provider-identity.json` | Machine-readable canonical + alias map (copy of `v2/provider-identity.fixture.json`) |
+| `v2/alias-resolve.golden.json` | Cross-runtime golden vectors (MULTI-ALIAS-XLANG-001); checked by `validate:arch` |
 | `dist/index.json` → `identity` | Pointer: `map`, `schema`, `doc` |
 | `schemas/v2/provider-identity.json` | AJV schema for the map |
 | `schemas/v2/provider.json` → `aliases` | Per-manifest Normative resolve contract |

@@ -794,6 +794,71 @@ for (const tree of PROVIDER_TREES) {
   }
   archTestFailed += catalogFailed;
 
+  // 6) MULTI-ALIAS-XLANG-001 — golden alias→canonical vectors match identity map.
+  let goldenFailed = 0;
+  const goldenPath = join(ROOT, 'v2', 'alias-resolve.golden.json');
+  const identityFixturePath = join(ROOT, 'v2', 'provider-identity.fixture.json');
+  if (!existsSync(goldenPath)) {
+    goldenFailed += 1;
+    console.error('FAIL v2/alias-resolve.golden.json missing (MULTI-ALIAS-XLANG-001)');
+  } else if (!existsSync(identityFixturePath)) {
+    goldenFailed += 1;
+    console.error('FAIL v2/provider-identity.fixture.json missing (needed for golden check)');
+  } else {
+    const golden = JSON.parse(readFileSync(goldenPath, 'utf8'));
+    const identity = JSON.parse(readFileSync(identityFixturePath, 'utf8'));
+    if (golden.status !== 'experimental') {
+      goldenFailed += 1;
+      console.error(
+        `FAIL alias-resolve.golden status: got ${JSON.stringify(golden.status)}, expected experimental`,
+      );
+    }
+    const norm = golden.normalization || {};
+    if (norm.case !== 'exact' || norm.hyphen_underscore !== 'none') {
+      goldenFailed += 1;
+      console.error(
+        'FAIL alias-resolve.golden normalization must be case=exact, hyphen_underscore=none (P0)',
+      );
+    }
+
+    function resolveFromMap(map, key) {
+      const families = Array.isArray(map.families) ? map.families : [];
+      for (const family of families) {
+        if (!family || typeof family.canonical_id !== 'string') continue;
+        if (key === family.canonical_id) return family.canonical_id;
+        const aliases = Array.isArray(family.aliases) ? family.aliases : [];
+        if (aliases.includes(key)) return family.canonical_id;
+      }
+      return null;
+    }
+
+    const vectors = Array.isArray(golden.vectors) ? golden.vectors : [];
+    if (vectors.length === 0) {
+      goldenFailed += 1;
+      console.error('FAIL alias-resolve.golden vectors must be non-empty');
+    }
+    for (const v of vectors) {
+      if (!v || typeof v.input !== 'string') {
+        goldenFailed += 1;
+        console.error('FAIL alias-resolve.golden vector missing input string');
+        continue;
+      }
+      const expected =
+        v.canonical === null || v.canonical === undefined ? null : String(v.canonical);
+      const got = resolveFromMap(identity, v.input);
+      if (got !== expected) {
+        goldenFailed += 1;
+        console.error(
+          `FAIL golden ${JSON.stringify(v.input)}: map→${JSON.stringify(got)} golden→${JSON.stringify(expected)}`,
+        );
+      }
+    }
+    if (goldenFailed === 0) {
+      console.log(`OK   alias-resolve golden (${vectors.length} vectors ↔ provider-identity map)`);
+    }
+  }
+  archTestFailed += goldenFailed;
+
   failed += archTestFailed;
 }
 

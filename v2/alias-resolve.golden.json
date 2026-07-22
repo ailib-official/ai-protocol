@@ -1,0 +1,23 @@
+{
+  "status": "experimental",
+  "task": "MULTI-ALIAS-XLANG-001",
+  "description": "Cross-runtime golden vectors for provider identity alias → canonical resolve (F5).",
+  "source_map": "v2/provider-identity.fixture.json",
+  "published_map": "dist/provider-identity.json",
+  "normalization": {
+    "case": "exact",
+    "hyphen_underscore": "none",
+    "note": "P0: exact string match on canonical_id and aliases[]; no case/hyphen folding. Fail closed on unknown keys."
+  },
+  "vectors": [
+    { "input": "google", "canonical": "gemini" },
+    { "input": "gemini", "canonical": "gemini" },
+    { "input": "kimi", "canonical": "moonshot" },
+    { "input": "moonshot", "canonical": "moonshot" },
+    { "input": "glm", "canonical": "zhipu" },
+    { "input": "zhipu", "canonical": "zhipu" },
+    { "input": "openai", "canonical": null },
+    { "input": "Google", "canonical": null },
+    { "input": "GOOGLE", "canonical": null }
+  ]
+}

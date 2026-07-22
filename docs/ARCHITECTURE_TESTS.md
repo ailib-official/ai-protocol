@@ -10,6 +10,7 @@
 | **Vocabulary freeze** | `v2/capability-tag-mapping.fixture.json` `capability_tag` set matches `v2/architecture/capability-tag-freeze.snapshot.json` |
 | **Policy Spec deny** | Public provider YAML must not introduce host Policy Spec top-level keys (PT-ARCH-004 §4.2) |
 | **Experimental facade freeze** | Envelope + Tag mapping fixtures stay `status: experimental` with frozen required top-level keys |
+| **Alias-resolve golden** | `v2/alias-resolve.golden.json` vectors match `provider-identity` map (MULTI-ALIAS-XLANG-001) |
 
 ## Updating snapshots
 
@@ -26,3 +27,4 @@ Intentional vocabulary / Experimental shape changes require:
 - PT-ARCH-010 / F12: [`PACK_CONTRACT_BOUNDARIES.md`](./PACK_CONTRACT_BOUNDARIES.md) — Pack / ProviderContract resolve gates in `validate:arch`
 - PT-ARCH-011 / F8: [`CAPABILITY_CATALOG.md`](./CAPABILITY_CATALOG.md) — Catalog skeleton coverage in `validate:arch`
 - PT-ARCH-004: [`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md)
+- MULTI-ALIAS-XLANG-001: [`PROVIDER_IDENTITY.md`](./PROVIDER_IDENTITY.md) + `v2/alias-resolve.golden.json`
