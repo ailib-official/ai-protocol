@@ -18,6 +18,7 @@
 
 ## Related
 
+- **PT-VOCAB-001** [`VOCABULARY_FREEZE_DRAFT.md`](./VOCABULARY_FREEZE_DRAFT.md) — G1 ownership freeze draft (Facade / Catalog prerequisite)
 - PT-ARCH-001 [`VERSION_AUTHORITY.md`](./VERSION_AUTHORITY.md)  
 - PT-ARCH-003 [`CONTEXT_ENVELOPE.md`](./CONTEXT_ENVELOPE.md)  
 - CR-CAP-001: inverted index is **not** a second Tag vocabulary and **not** Execution Runtime  
