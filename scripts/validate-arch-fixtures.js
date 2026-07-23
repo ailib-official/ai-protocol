@@ -4,7 +4,8 @@
  * dist authority, provider-identity registry gates, F9 error contract names,
  * F11 pilot assertions (vocabulary freeze, Policy Spec deny, Experimental facade),
  * F12 Pack/ProviderContract boundary resolve gates,
- * and F8 Capability Catalog skeleton coverage.
+ * F8 Capability Catalog skeleton coverage,
+ * and PT-ME-004 ME-001 baseline (ai_provider metadata.models non-empty; omit≠false).
  *
  * Run after `npm run build` so dist/index.json exists (CI order: build then validate:arch).
  *
@@ -45,6 +46,10 @@ const fixtures = [
   {
     schema: 'schemas/v2/metadata-model-entry.json',
     data: 'v2/metadata-model-entry.fixture.json',
+  },
+  {
+    schema: 'schemas/v2/metadata-model-entry.json',
+    data: 'v2/metadata-model-entry-omit.fixture.json',
   },
 ];
 
@@ -212,12 +217,17 @@ function validateProviderRegistry(treeName, dir) {
   return gateFailed;
 }
 
+const compiledBySchema = new Map();
 for (const f of fixtures) {
-  const schema = JSON.parse(readFileSync(join(ROOT, f.schema), 'utf8'));
-  // Avoid needing remote meta-schema fetch in offline CI.
-  delete schema.$schema;
+  let validate = compiledBySchema.get(f.schema);
+  if (!validate) {
+    const schema = JSON.parse(readFileSync(join(ROOT, f.schema), 'utf8'));
+    // Avoid needing remote meta-schema fetch in offline CI.
+    delete schema.$schema;
+    validate = ajv.compile(schema);
+    compiledBySchema.set(f.schema, validate);
+  }
   const data = JSON.parse(readFileSync(join(ROOT, f.data), 'utf8'));
-  const validate = ajv.compile(schema);
   const ok = validate(data);
   if (!ok) {
     failed += 1;
@@ -862,6 +872,66 @@ for (const tree of PROVIDER_TREES) {
     }
   }
   archTestFailed += goldenFailed;
+
+  // 7) PT-ME-004 — ME-001 baseline: every v2 ai_provider has non-empty metadata.models;
+  //    omit model_capabilities is allowed (unknown); do NOT require ads ≡ model union.
+  let meFailed = 0;
+  const v2ProvDir = join(ROOT, 'v2', 'providers');
+  if (!existsSync(v2ProvDir)) {
+    meFailed += 1;
+    console.error('FAIL PT-ME-004: v2/providers missing');
+  } else {
+    const files = readdirSync(v2ProvDir).filter((f) => f.endsWith('.yaml') || f.endsWith('.yml'));
+    let aiProviderCount = 0;
+    for (const name of files) {
+      const filePath = join(v2ProvDir, name);
+      let doc;
+      try {
+        doc = yaml.load(readFileSync(filePath, 'utf8'));
+      } catch (e) {
+        meFailed += 1;
+        console.error(`FAIL PT-ME-004 load ${name}: ${e.message}`);
+        continue;
+      }
+      if (!doc || doc.category !== 'ai_provider') continue;
+      aiProviderCount += 1;
+      const models = doc.metadata && doc.metadata.models ? doc.metadata.models : null;
+      const keys = models && typeof models === 'object' ? Object.keys(models) : [];
+      if (keys.length === 0) {
+        meFailed += 1;
+        console.error(
+          `FAIL PT-ME-004 ${name}: ai_provider MUST have non-empty metadata.models (ME-001 baseline)`,
+        );
+        continue;
+      }
+      for (const mid of keys) {
+        const entry = models[mid];
+        if (!entry || typeof entry !== 'object') {
+          meFailed += 1;
+          console.error(`FAIL PT-ME-004 ${name}: model "${mid}" entry invalid`);
+          continue;
+        }
+        // Explicit anti-pattern: do not encode "unknown" by forcing false on all flags.
+        // We only assert presence of models; omitted model_capabilities is OK (omit fixture).
+        if (entry.model_capabilities === null) {
+          meFailed += 1;
+          console.error(
+            `FAIL PT-ME-004 ${name}/${mid}: model_capabilities must be object or omitted (not null)`,
+          );
+        }
+      }
+    }
+    if (aiProviderCount === 0) {
+      meFailed += 1;
+      console.error('FAIL PT-ME-004: no category=ai_provider manifests in v2/providers');
+    }
+    if (meFailed === 0) {
+      console.log(
+        `OK   ME-001 baseline (${aiProviderCount} ai_provider non-empty metadata.models; ads≠SoT; omit≠false)`,
+      );
+    }
+  }
+  archTestFailed += meFailed;
 
   failed += archTestFailed;
 }

@@ -31,10 +31,21 @@ Existing capacity fields (`context_window`, `max_output_tokens`, `pricing`, `sta
 
 1. **Omit = unknown.** Never serialize “unknown” as `false`.  
 2. **Prefer model over ads.** If `model_capabilities` / `modalities` exist for a model id, use them for that model; do not assume provider `required`/`optional` apply uniformly.  
-3. **`thinking` vs `reasoning`.** Boolean support → `model_capabilities.reasoning`; mode label → `thinking` (e.g. `dual_mode`).  
-4. **L-Exec untouched.** Provider `capabilities.tool_calling` dialects / streaming bindings stay Execution Spec.  
-5. **No Tag auto-map.** Do not equate `reasoning: true` with CapabilityTag `high-reasoning`.  
-6. **Provenance.** Use existing `verification.source` enum only (no `models_dev` value).
+3. **Ads may drift.** Provider `capabilities.required` / `optional` need **not** equal the union/intersection of model flags (allowed inconsistency; model wins for that id).  
+4. **`thinking` vs `reasoning`.** Boolean support → `model_capabilities.reasoning`; mode label → `thinking` (e.g. `dual_mode`).  
+5. **L-Exec untouched.** Provider `capabilities.tool_calling` dialects / streaming bindings stay Execution Spec.  
+6. **No Tag auto-map.** Do not equate `reasoning: true` with CapabilityTag `high-reasoning`.  
+7. **Provenance.** Use existing `verification.source` enum only (no `models_dev` value).
+
+## 3.1 Compliance gates (PT-ME-004)
+
+`npm run validate:arch` enforces:
+
+- Every v2 `category: ai_provider` has non-empty `metadata.models`
+- `metadata-model-entry-omit.fixture.json` validates (capacity-only; no `model_capabilities`)
+- Full entry fixture still validates when capabilities present
+
+Aggregator (`third_party_aggregator`) is **not** in this baseline gate.
 
 ## 4. Logical layer
 
