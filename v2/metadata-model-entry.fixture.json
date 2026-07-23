@@ -1,0 +1,31 @@
+{
+  "$comment": "PT-ME-001 Experimental fixture for metadata-model-entry.json — omit means unknown",
+  "context_window": 1048576,
+  "max_output_tokens": 393216,
+  "release_date": "2026-04-24",
+  "status": "active",
+  "thinking": "dual_mode",
+  "model_capabilities": {
+    "tool_call": true,
+    "structured_output": true,
+    "reasoning": true,
+    "attachment": false
+  },
+  "modalities": {
+    "input": ["text"],
+    "output": ["text"]
+  },
+  "family": "deepseek-v4",
+  "open_weights": true,
+  "pricing": {
+    "input_per_1m": 0.435,
+    "output_per_1m": 0.87,
+    "cache_hit_input_per_1m": 0.003625
+  },
+  "verification": {
+    "status": "verified",
+    "source": "official_documentation",
+    "verified_at": "2026-07-23",
+    "notes": "Illustrative Experimental fixture for schema validation only"
+  }
+}

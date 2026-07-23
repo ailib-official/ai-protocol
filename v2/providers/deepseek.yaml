@@ -207,6 +207,21 @@ metadata:
       architecture: { type: moe, total: "1.6T", active: "49B" }
       pricing: { input_per_1m: 0.435, output_per_1m: 0.87, cache_hit_input_per_1m: 0.003625 }
       thinking: "dual_mode"
+      # Experimental PT-ME-001 — omit = unknown; prefer over provider capability ads
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: false
+      modalities:
+        input: [text]
+        output: [text]
+      family: "deepseek-v4"
+      open_weights: true
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-23"
     deepseek-v4-flash:
       context_window: 1048576
       max_output_tokens: 393216
@@ -214,6 +229,20 @@ metadata:
       architecture: { type: moe, total: "284B", active: "13B" }
       pricing: { input_per_1m: 0.14, output_per_1m: 0.28, cache_hit_input_per_1m: 0.0028 }
       thinking: "dual_mode"
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: false
+      modalities:
+        input: [text]
+        output: [text]
+      family: "deepseek-flash"
+      open_weights: true
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-23"
   deprecated:
     deepseek-chat:
       retired_on: "2026-07-24"

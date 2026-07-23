@@ -19,7 +19,7 @@ provenance in the public tree ([`MANIFEST_AUTHORITY.md`](./MANIFEST_AUTHORITY.md
 
 | Layer | Name | Question it answers | Typical field families |
 |-------|------|---------------------|------------------------|
-| **L-Cap** | **Capability Spec** | What can this provider/model do? | `capabilities`, `feature_flags`, `capability_profile`, `multimodal`, `tool_calling`, `computer_use`, `mcp`, capacity under `metadata.models` |
+| **L-Cap** | **Capability Spec** | What can this provider/model do? | `capabilities` (ads + L-Exec-adjacent nests), `feature_flags`, `capability_profile`, `multimodal`, `tool_calling`, `computer_use`, `mcp`, capacity + **Experimental** `metadata.models.*.model_capabilities` / `modalities` ([`MODEL_CAPABILITY_METADATA.md`](./MODEL_CAPABILITY_METADATA.md)) |
 | **L-Exec** | **Execution Spec** | How do runtimes talk to the wire? | `endpoint` / `endpoints`, `streaming`, `error_classification`, `rate_limit_headers`, `termination`, `parameters`, `api_families`, `provider_contract`, **`retry_policy` (see §3)** |
 | **L-Pol** | **Policy Spec** | What may *this host* allow or override? | **Not** in public provider YAML. Lives in application overlay / host config (approval, allowlists, spend caps, region product defaults, route Tag inventories) |
 
@@ -56,7 +56,7 @@ Related wire resilience fields (`error_classification`, `rate_limit_headers`) ar
 
 | Layer | Examples |
 |-------|----------|
-| L-Cap | Declared ops (`chat`, `tools`, …), modality flags, model `context_window` / `max_output_tokens` |
+| L-Cap | Declared ops (`chat`, `tools`, …), modality flags, model `context_window` / `max_output_tokens`, Experimental per-model `model_capabilities` / `modalities` (omit = unknown; prefer over provider `required`/`optional` ads when present) |
 | L-Exec | Base URL, auth scheme shape, streaming decoder hints, HTTP→error map, **retry defaults**, termination map |
 | Shared hygiene | Stable `id`, `protocol_version`, `official_url`, allowed `verification.source` values |
 

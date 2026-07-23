@@ -1,4 +1,23 @@
 # Protocol Loading - V2 metadata.models capacity (PT-075-R1)
+# + Experimental model_capabilities seed (PT-ME-001) on DeepSeek
+
+---
+suite: "protocol-loading"
+name: "Load V2 DeepSeek manifest with Experimental model_capabilities"
+id: "load-022"
+description: "Verify deepseek v2 validates metadata.models model_capabilities/modalities (PT-ME-001 Experimental; omit=unknown)"
+tags: ["protocol-loading", "deepseek", "v2", "metadata", "pt-me-001"]
+setup:
+  provider: "deepseek"
+  manifest_path: "../../../../v2/providers/deepseek.yaml"
+input:
+  type: "protocol_loading"
+  manifest_path: "../../../../v2/providers/deepseek.yaml"
+expected:
+  valid: true
+  errors: []
+  provider_id: "deepseek"
+  protocol_version: "2.0"
 
 ---
 suite: "protocol-loading"

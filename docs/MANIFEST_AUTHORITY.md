@@ -28,6 +28,7 @@ Applications (Eos, VelaClaw, ai-lib-gateway, etc.) **must not** require special 
 | Provider wire contract | `endpoint`, `streaming`, `error_classification` |
 | Declared capabilities | `capabilities`, `feature_flags`, `capability_profile` |
 | Model capacity | `metadata.models.context_window`, `max_output_tokens` |
+| Model capability facts (Experimental) | `metadata.models.*.model_capabilities`, `modalities` — omit = unknown; prefer over provider `capabilities.required`/`optional` ads when present ([`MODEL_CAPABILITY_METADATA.md`](./MODEL_CAPABILITY_METADATA.md)) |
 | Public provenance | `verification` with allowed `source` values (below) |
 | Regional availability | `availability.regions`, `approval_ids` (compliance registry) |
 

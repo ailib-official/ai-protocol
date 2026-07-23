@@ -6,6 +6,8 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-ME-001 Model capability metadata (Experimental)**: Extend [`schemas/v2/metadata-model-entry.json`](schemas/v2/metadata-model-entry.json) with optional `model_capabilities`, `modalities`, `reasoning_options`, `family`, `knowledge_cutoff`, `open_weights`. Omit = unknown (never false). Prefer model facts over provider `capabilities.required`/`optional` ads. Docs: [`docs/MODEL_CAPABILITY_METADATA.md`](docs/MODEL_CAPABILITY_METADATA.md); fixture + `validate:arch`; DeepSeek v2 seed annotations (full baseline backfill = PT-ME-003).
+
 - **PT-ARCH-005c Publish identity map**: `npm run build` emits `dist/provider-identity.json` and `dist/index.json` `identity` pointer; `provider.json` / `provider-identity.json` schema descriptions Normative for alias resolve; `validate:arch` asserts publish parity and drives family checks from the map (third-party schema/dist consumers; no dual wire keys).
 
 - **PT-ARCH-005b Provider identity registry gates**: `validate:arch` enforces tree-wide uniqueness, filename=`id`, and alias non-collision across `v1` / `v2` / `v2-alpha` providers; rejects parallel wire keys (`canonical_id` / `provider_slug`). v2-alpha `gemini` gains `aliases: [google]`. See [`docs/PROVIDER_IDENTITY.md`](docs/PROVIDER_IDENTITY.md) §7.

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/metadata-model-entry.json",
   "title": "V2 Provider Metadata Model Entry",
-  "description": "Model-level capacity metadata under provider manifest metadata.models. Integer fields use 0 for unknown. Distinct from capabilities string enums.",
+  "description": "Model-level metadata under provider manifest metadata.models. Integer capacity fields use 0 for unknown. Per-model capability facts (model_capabilities / modalities) are Experimental (PT-ME-001 / ME-001): omitted keys mean unknown — never treat as false. Distinct from provider-level capabilities.required/optional advertisements.",
   "type": "object",
   "properties": {
     "context_window": {
@@ -28,7 +28,95 @@
     "pricing": {
       "type": "object",
       "additionalProperties": true,
-      "description": "Optional per-model pricing hints (not a substitute for pricing.json)"
+      "description": "Optional per-model pricing hints (not a substitute for pricing.json). May include cache_write_per_1m / tiers when known."
+    },
+    "thinking": {
+      "type": "string",
+      "description": "Optional thinking/reasoning mode label (e.g. dual_mode). Orthogonal to model_capabilities.reasoning (boolean support)."
+    },
+    "architecture": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Optional model architecture hints (e.g. moe total/active)."
+    },
+    "model_capabilities": {
+      "type": "object",
+      "description": "Experimental (PT-ME-001). Per-model capability facts. Omitted property = unknown (not false). When present, prefer these over provider capabilities.required/optional ads for this model.",
+      "properties": {
+        "tool_call": {
+          "type": "boolean",
+          "description": "Whether this model supports tool/function calling. Omit if unknown."
+        },
+        "structured_output": {
+          "type": "boolean",
+          "description": "Whether this model supports JSON/schema-constrained output. Omit if unknown."
+        },
+        "reasoning": {
+          "type": "boolean",
+          "description": "Whether this model supports extended reasoning/thinking. Omit if unknown. See also thinking for mode labels."
+        },
+        "attachment": {
+          "type": "boolean",
+          "description": "Whether this model accepts non-text attachments (image/file/etc.). Prefer modalities.input when more precise. Omit if unknown."
+        }
+      },
+      "additionalProperties": false
+    },
+    "modalities": {
+      "type": "object",
+      "description": "Experimental (PT-ME-001). Per-model input/output modalities. Prefer over provider-level multimodal when present.",
+      "properties": {
+        "input": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["text", "image", "audio", "video", "pdf"]
+          },
+          "uniqueItems": true,
+          "description": "Accepted input modalities"
+        },
+        "output": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["text", "image", "audio", "video", "pdf"]
+          },
+          "uniqueItems": true,
+          "description": "Produced output modalities"
+        }
+      },
+      "additionalProperties": false
+    },
+    "reasoning_options": {
+      "type": "array",
+      "description": "Experimental (PT-ME-001). Optional reasoning control shapes (effort/toggle/budget). Structure may evolve; additionalProperties allowed on items.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Option kind (e.g. toggle, effort, budget_tokens)"
+          },
+          "values": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Allowed values when type=effort (or similar)"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "family": {
+      "type": "string",
+      "description": "Experimental (PT-ME-001). Model family/series label for grouping (e.g. deepseek-flash)."
+    },
+    "knowledge_cutoff": {
+      "type": "string",
+      "description": "Experimental (PT-ME-001). Knowledge cutoff label (e.g. 2025-05). Not a hard guarantee."
+    },
+    "open_weights": {
+      "type": "boolean",
+      "description": "Experimental (PT-ME-001). Whether model weights are openly available. Omit if unknown."
     },
     "verification": {
       "type": "object",
