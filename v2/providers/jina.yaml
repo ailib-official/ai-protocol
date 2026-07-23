@@ -1,65 +1,117 @@
-# Jina AI V2 Provider Manifest — Rerank 专用
-# AI-Protocol V2 Provider Manifest
-# Provider: Jina AI | Reranker v2/v3 多语言
-# Last Updated: 2026-02-19
-$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
-
-# === Ring 1: Core Skeleton ===
+$schema: https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json
 id: jina
 protocol_version: "2.0"
-name: "Jina AI"
-version: "v3"
+name: Jina AI
+version: v3
 status: stable
 category: ai_provider
-official_url: "https://jina.ai"
-support_contact: "https://jina.ai/contact"
-
+official_url: https://jina.ai
+support_contact: https://jina.ai/contact
 endpoint:
-  base_url: "https://api.jina.ai"
-  rerank: "/v1/rerank"
+  base_url: https://api.jina.ai
+  rerank: /v1/rerank
   auth:
-    type: "bearer"
-    header: "Authorization"
-    prefix: "Bearer"
-    token_env: "JINA_API_KEY"
-
+    type: bearer
+    header: Authorization
+    prefix: Bearer
+    token_env: JINA_API_KEY
 error_classification:
   by_http_status:
-    "400": "invalid_request"
-    "401": "authentication"
-    "403": "permission_denied"
-    "404": "not_found"
-    "429": "rate_limited"
-    "500": "server_error"
-
+    "400": invalid_request
+    "401": authentication
+    "403": permission_denied
+    "404": not_found
+    "429": rate_limited
+    "500": server_error
 availability:
   required: false
   regions:
     - global
   check:
     method: GET
-    path: "/v1/models"
-    expected_status: [200, 401]
+    path: /v1/models
+    expected_status:
+      - 200
+      - 401
     timeout_ms: 3000
-
-# === Ring 2: Capability Mapping ===
 capabilities:
   required:
     - rerank
   optional: []
-
 capability_profile:
-  phase: "ios_v1"
+  phase: ios_v1
   inputs:
-    modalities: ["text"]
+    modalities:
+      - text
   outcomes:
-    types: ["other"]
+    types:
+      - other
   systems:
-    requires: ["search"]
-
+    requires:
+      - search
 parameters:
-  top_n: { type: integer, min: 1 }
-  model: { type: string, default: "jina-reranker-v2-base-multilingual" }
-
+  top_n:
+    type: integer
+    min: 1
+  model:
+    type: string
+    default: jina-reranker-v2-base-multilingual
 metadata:
-  rerank_models: [jina-reranker-v2-base-multilingual, jina-reranker-v3]
+  rerank_models:
+    - jina-reranker-v2-base-multilingual
+    - jina-reranker-v3
+  models:
+    jina-embeddings-v3:
+      context_window: 8192
+      max_output_tokens: 0
+      family: jina-embeddings
+      model_capabilities:
+        tool_call: false
+        reasoning: false
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      verification:
+        status: unverified
+        source: official_documentation
+        verified_at: "2026-07-24"
+        notes: PT-ME-003 from v1/models/jina; embedding model
+    jina-reranker-v2-base-multilingual:
+      context_window: 1024
+      max_output_tokens: 0
+      family: jina-reranker
+      model_capabilities:
+        tool_call: false
+        reasoning: false
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      verification:
+        status: unverified
+        source: official_documentation
+        verified_at: "2026-07-24"
+        notes: PT-ME-003; matches metadata.rerank_models default
+    jina-reranker-v3:
+      context_window: 1024
+      max_output_tokens: 0
+      family: jina-reranker
+      model_capabilities:
+        tool_call: false
+        reasoning: false
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      verification:
+        status: unverified
+        source: official_documentation
+        verified_at: "2026-07-24"
+        notes: PT-ME-003; listed in metadata.rerank_models

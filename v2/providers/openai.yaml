@@ -1,59 +1,51 @@
-# OpenAI V2 Provider Manifest
-# Provider: OpenAI | Models: GPT-5.5 / GPT-5.4 / GPT-5.4-mini
-# Last Updated: 2026-06-26 (GPT-5→5.5, add tool_calling)
-$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
-
-# === Ring 1: Core Skeleton ===
+$schema: https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json
 id: openai
 protocol_version: "2.0"
-name: "OpenAI"
-version: "5.5.0"
+name: OpenAI
+version: 5.5.0
 status: stable
 category: ai_provider
-official_url: "https://platform.openai.com/docs"
-support_contact: "https://help.openai.com"
-
+official_url: https://platform.openai.com/docs
+support_contact: https://help.openai.com
 endpoint:
-  base_url: "https://api.openai.com/v1"
-  chat: "/chat/completions"
-  embeddings: "/embeddings"
-  stt: "/audio/transcriptions"
-  tts: "/audio/speech"
+  base_url: https://api.openai.com/v1
+  chat: /chat/completions
+  embeddings: /embeddings
+  stt: /audio/transcriptions
+  tts: /audio/speech
   auth:
-    type: "bearer"
-    header: "Authorization"
-    prefix: "Bearer"
-    token_env: "OPENAI_API_KEY"
-
+    type: bearer
+    header: Authorization
+    prefix: Bearer
+    token_env: OPENAI_API_KEY
 error_classification:
   by_http_status:
-    "400": "invalid_request"
-    "401": "authentication"
-    "403": "permission_denied"
-    "404": "not_found"
-    "413": "request_too_large"
-    "429": "rate_limited"
-    "500": "server_error"
-    "503": "overloaded"
+    "400": invalid_request
+    "401": authentication
+    "403": permission_denied
+    "404": not_found
+    "413": request_too_large
+    "429": rate_limited
+    "500": server_error
+    "503": overloaded
   by_error_code:
-    "invalid_api_key": "authentication"
-    "model_not_found": "not_found"
-    "context_length_exceeded": "request_too_large"
-    "rate_limit_exceeded": "rate_limited"
-    "insufficient_quota": "quota_exhausted"
-    "server_error": "server_error"
-
+    invalid_api_key: authentication
+    model_not_found: not_found
+    context_length_exceeded: request_too_large
+    rate_limit_exceeded: rate_limited
+    insufficient_quota: quota_exhausted
+    server_error: server_error
 availability:
   required: false
   regions:
     - global
   check:
     method: GET
-    path: "/models"
-    expected_status: [200, 401]
+    path: /models
+    expected_status:
+      - 200
+      - 401
     timeout_ms: 3000
-
-# === Ring 2: Capability Mapping ===
 capabilities:
   required:
     - text
@@ -80,74 +72,113 @@ capabilities:
     streaming_usage: true
     system_messages: true
     image_generation: true
-
   tool_calling:
     native:
       supported: true
-      reliability: "full"
+      reliability: full
       parallel: true
       streaming: true
-
 capability_profile:
-  phase: "ios_v1"
+  phase: ios_v1
   inputs:
-    modalities: ["text", "image", "audio"]
+    modalities:
+      - text
+      - image
+      - audio
   outcomes:
-    types: ["text_completion", "structured_json", "tool_call_sequence"]
+    types:
+      - text_completion
+      - structured_json
+      - tool_call_sequence
   systems:
-    requires: ["mcp", "search"]
-
+    requires:
+      - mcp
+      - search
 parameters:
-  temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
-  max_tokens: { type: integer, min: 1, max: 128000 }
-  top_p: { type: float, range: [0.0, 1.0] }
-  frequency_penalty: { type: float, range: [-2.0, 2.0] }
-  presence_penalty: { type: float, range: [-2.0, 2.0] }
-  stream: { type: boolean }
-  n: { type: integer, min: 1 }
-  response_format: { type: object }
-
+  temperature:
+    type: float
+    range:
+      - 0
+      - 2
+    default: 1
+  max_tokens:
+    type: integer
+    min: 1
+    max: 128000
+  top_p:
+    type: float
+    range:
+      - 0
+      - 1
+  frequency_penalty:
+    type: float
+    range:
+      - -2
+      - 2
+  presence_penalty:
+    type: float
+    range:
+      - -2
+      - 2
+  stream:
+    type: boolean
+  "n":
+    type: integer
+    min: 1
+  response_format:
+    type: object
 streaming:
   decoder:
-    format: "sse"
-    strategy: "openai_chat"
+    format: sse
+    strategy: openai_chat
     done_signal: "[DONE]"
     prefix: "data: "
   event_map:
-    - match: "$.choices[0].delta.content"
-      emit: "PartialContentDelta"
+    - match: $.choices[0].delta.content
+      emit: PartialContentDelta
       extract:
-        content: "$.choices[0].delta.content"
-    - match: "$.choices[0].delta.tool_calls"
-      emit: "PartialToolCall"
+        content: $.choices[0].delta.content
+    - match: $.choices[0].delta.tool_calls
+      emit: PartialToolCall
       extract:
-        tool_calls: "$.choices[0].delta.tool_calls"
-    - match: "$.choices[0].finish_reason"
-      emit: "StreamEnd"
+        tool_calls: $.choices[0].delta.tool_calls
+    - match: $.choices[0].finish_reason
+      emit: StreamEnd
       extract:
-        finish_reason: "$.choices[0].finish_reason"
-    - match: "$.usage"
-      emit: "UsageReport"
+        finish_reason: $.choices[0].finish_reason
+    - match: $.usage
+      emit: UsageReport
       extract:
-        usage: "$.usage"
+        usage: $.usage
   candidate:
-    candidate_id_path: "$.choices[*].index"
+    candidate_id_path: $.choices[*].index
     fan_out: true
   accumulator:
     stateful_tool_parsing: true
-    key_path: "$.choices[0].delta.tool_calls[0].function.arguments"
-    flush_on: "$.choices[0].finish_reason == 'tool_calls'"
-
+    key_path: $.choices[0].delta.tool_calls[0].function.arguments
+    flush_on: $.choices[0].finish_reason == 'tool_calls'
 multimodal:
   input:
     vision:
       supported: true
-      formats: [jpeg, png, gif, webp]
-      encoding_methods: [base64_inline, url]
+      formats:
+        - jpeg
+        - png
+        - gif
+        - webp
+      encoding_methods:
+        - base64_inline
+        - url
       document_understanding: true
     audio:
       supported: true
-      formats: [mp3, wav, flac, m4a, ogg, aac]
+      formats:
+        - mp3
+        - wav
+        - flac
+        - m4a
+        - ogg
+        - aac
       real_time_streaming: true
       speech_recognition: true
     video:
@@ -156,14 +187,15 @@ multimodal:
     text: true
     audio:
       supported: true
-      formats: [mp3]
+      formats:
+        - mp3
       real_time_tts: true
       natural_voice: true
       voice_selection: true
     image:
       supported: true
-      formats: [png]
-
+      formats:
+        - png
 computer_use:
   supported: true
   status: preview
@@ -171,16 +203,27 @@ computer_use:
   actions:
     screenshot:
       supported: true
-      formats: [png]
+      formats:
+        - png
     mouse:
       supported: true
-      operations: [click, double_click, drag, scroll]
+      operations:
+        - click
+        - double_click
+        - drag
+        - scroll
     keyboard:
       supported: true
-      operations: [type, key_press, shortcut]
+      operations:
+        - type
+        - key_press
+        - shortcut
     browser:
       supported: true
-      operations: [navigate, fill_form, click_element]
+      operations:
+        - navigate
+        - fill_form
+        - click_element
   safety:
     confirmation_required: true
     sandbox_mode: recommended
@@ -191,16 +234,19 @@ computer_use:
     browser: true
     desktop: true
   provider_mapping:
-    tool_type: "computer_use_preview"
-    model_requirement: "computer-use-preview"
-    api_endpoint: "/v1/responses"
-
+    tool_type: computer_use_preview
+    model_requirement: computer-use-preview
+    api_endpoint: /v1/responses
 mcp:
   client:
     supported: true
     protocol_version: "2025-11-25"
-    transports: [streamable_http, sse]
-    auth_methods: [bearer, oauth2]
+    transports:
+      - streamable_http
+      - sse
+    auth_methods:
+      - bearer
+      - oauth2
     capabilities:
       tools: true
       resources: false
@@ -209,80 +255,190 @@ mcp:
     tool_filtering:
       allowed_tools: true
       denied_tools: false
-    approval_modes: [never, always]
+    approval_modes:
+      - never
+      - always
     provider_mapping:
-      tool_type: "mcp"
-      api_endpoint: "/v1/responses"
+      tool_type: mcp
+      api_endpoint: /v1/responses
       config_method: tool_parameter
-
-# === Ring 3: Advanced Extensions ===
-api_families: ["chat_completions", "completions", "embeddings", "assistants", "realtime"]
-default_api_family: "chat_completions"
-
+api_families:
+  - chat_completions
+  - completions
+  - embeddings
+  - assistants
+  - realtime
+default_api_family: chat_completions
 endpoints:
   chat:
-    path: "/chat/completions"
-    method: "POST"
-    adapter: "openai"
+    path: /chat/completions
+    method: POST
+    adapter: openai
   embeddings:
-    path: "/embeddings"
-    method: "POST"
-    adapter: "openai"
-
+    path: /embeddings
+    method: POST
+    adapter: openai
 services:
   list_models:
-    path: "/models"
-    method: "GET"
-    response_binding: "data"
-
+    path: /models
+    method: GET
+    response_binding: data
 rate_limit_headers:
-  requests_limit: "x-ratelimit-limit-requests"
-  requests_remaining: "x-ratelimit-remaining-requests"
-  tokens_limit: "x-ratelimit-limit-tokens"
-  tokens_remaining: "x-ratelimit-remaining-tokens"
-  retry_after: "retry-after"
-
+  requests_limit: x-ratelimit-limit-requests
+  requests_remaining: x-ratelimit-remaining-requests
+  tokens_limit: x-ratelimit-limit-tokens
+  tokens_remaining: x-ratelimit-remaining-tokens
+  retry_after: retry-after
 retry_policy:
-  strategy: "exponential_backoff"
+  strategy: exponential_backoff
   max_retries: 3
   min_delay_ms: 1000
   max_delay_ms: 60000
-  jitter: "full"
-  retry_on_http_status: [429, 500, 502, 503]
-
+  jitter: full
+  retry_on_http_status:
+    - 429
+    - 500
+    - 502
+    - 503
 termination:
-  source_field: "finish_reason"
+  source_field: finish_reason
   mapping:
-    stop: "end_turn"
-    length: "max_tokens"
-    content_filter: "refusal"
-    tool_calls: "tool_use"
-    function_call: "tool_use"
-
+    stop: end_turn
+    length: max_tokens
+    content_filter: refusal
+    tool_calls: tool_use
+    function_call: tool_use
 metadata:
   models:
     gpt-5.5:
       context_window: 1048576
       max_output_tokens: 128000
       release_date: "2026-06-19"
-      notes: "Latest frontier model for complex reasoning and coding"
+      notes: Latest frontier model for complex reasoning and coding
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+          - pdf
+        output:
+          - text
+      family: gpt-5
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
     gpt-5.4:
       context_window: 400000
       max_output_tokens: 16384
       release_date: "2026-03-01"
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+          - pdf
+        output:
+          - text
+      family: gpt-5
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
     gpt-5.4-mini:
       context_window: 400000
       max_output_tokens: 16384
       release_date: "2026-03-01"
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+        output:
+          - text
+      family: gpt-5
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
     gpt-5.3-codex:
       context_window: 400000
       max_output_tokens: 16384
       release_date: "2026-02-05"
-      pricing: { input_per_1m: 1.25, output_per_1m: 10.00 }
+      pricing:
+        input_per_1m: 1.25
+        output_per_1m: 10
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+        output:
+          - text
+      family: gpt-5-codex
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
     gpt-4o-mini:
       context_window: 128000
       max_output_tokens: 16384
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: false
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+        output:
+          - text
+      family: gpt-4o
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
+    o3:
+      context_window: 200000
+      max_output_tokens: 100000
+      family: o-series
+      pricing:
+        input_per_1m: 2
+        output_per_1m: 8
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+          - pdf
+        output:
+          - text
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
   sdk:
     python: openai
     typescript: openai
-    go: "github.com/openai/openai-go"
+    go: github.com/openai/openai-go

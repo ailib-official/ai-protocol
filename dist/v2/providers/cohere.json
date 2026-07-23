@@ -125,6 +125,151 @@
       "rerank-v3.5",
       "rerank-english-v3.0",
       "rerank-multilingual-v3.0"
-    ]
+    ],
+    "models": {
+      "command-a-03-2025": {
+        "context_window": 256000,
+        "max_output_tokens": 8192,
+        "family": "command-a",
+        "pricing": {
+          "input_per_1m": 2.5,
+          "output_per_1m": 10
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "verified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs"
+        }
+      },
+      "command-a-reasoning-08-2025": {
+        "context_window": 256000,
+        "max_output_tokens": 8192,
+        "family": "command-a",
+        "pricing": {
+          "input_per_1m": 2.5,
+          "output_per_1m": 10
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "verified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs"
+        }
+      },
+      "command-a-vision-07-2025": {
+        "context_window": 128000,
+        "max_output_tokens": 8192,
+        "family": "command-a",
+        "pricing": {
+          "input_per_1m": 2.5,
+          "output_per_1m": 10
+        },
+        "model_capabilities": {
+          "tool_call": false,
+          "reasoning": false,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "verified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs"
+        }
+      },
+      "command-a-plus-05-2026": {
+        "context_window": 128000,
+        "max_output_tokens": 8192,
+        "family": "command-a",
+        "pricing": {
+          "input_per_1m": 2.5,
+          "output_per_1m": 10
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "verified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs"
+        }
+      },
+      "command-r-plus-08-2024": {
+        "context_window": 128000,
+        "max_output_tokens": 4096,
+        "family": "command-r",
+        "pricing": {
+          "input_per_1m": 2.5,
+          "output_per_1m": 10
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "verified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs"
+        }
+      }
+    }
   }
 }

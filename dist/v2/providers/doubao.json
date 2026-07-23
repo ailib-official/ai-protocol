@@ -270,6 +270,113 @@
     "sdk": {
       "python": "openai",
       "typescript": "openai"
+    },
+    "models": {
+      "doubao-pro-32k": {
+        "context_window": 32768,
+        "max_output_tokens": 4096,
+        "family": "doubao-pro",
+        "pricing": {
+          "input_per_1m": 0.8,
+          "output_per_1m": 2
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003 migrated from v1/models/doubao; Ark endpoint id may differ"
+        }
+      },
+      "doubao-pro-128k": {
+        "context_window": 131072,
+        "max_output_tokens": 4096,
+        "family": "doubao-pro",
+        "pricing": {
+          "input_per_1m": 5,
+          "output_per_1m": 9
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003 from v1/models/doubao"
+        }
+      },
+      "doubao-lite-32k": {
+        "context_window": 32768,
+        "max_output_tokens": 4096,
+        "family": "doubao-lite",
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003 from v1/models/doubao"
+        }
+      },
+      "doubao-vision-pro-32k": {
+        "context_window": 32768,
+        "max_output_tokens": 4096,
+        "family": "doubao-vision",
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003 from v1/models/doubao"
+        }
+      }
     }
   }
 }

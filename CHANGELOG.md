@@ -6,6 +6,8 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-ME-003 Non-aggregator baseline backfill**: Fill/enrich `metadata.models` + Experimental `model_capabilities`/`modalities` for all `category: ai_provider` v2 providers (empty shells: cohere/qwen/doubao/jina; deepen others). nvidia aggregator out of gate. One-shot helper `scripts/me001-baseline-backfill.js` (not cron).
+
 - **PT-ME-001 Model capability metadata (Experimental)**: Extend [`schemas/v2/metadata-model-entry.json`](schemas/v2/metadata-model-entry.json) with optional `model_capabilities`, `modalities`, `reasoning_options`, `family`, `knowledge_cutoff`, `open_weights`. Omit = unknown (never false). Prefer model facts over provider `capabilities.required`/`optional` ads. Docs: [`docs/MODEL_CAPABILITY_METADATA.md`](docs/MODEL_CAPABILITY_METADATA.md); fixture + `validate:arch`; DeepSeek v2 seed annotations (full baseline backfill = PT-ME-003).
 
 - **PT-ARCH-005c Publish identity map**: `npm run build` emits `dist/provider-identity.json` and `dist/index.json` `identity` pointer; `provider.json` / `provider-identity.json` schema descriptions Normative for alias resolve; `validate:arch` asserts publish parity and drives family checks from the map (third-party schema/dist consumers; no dual wire keys).

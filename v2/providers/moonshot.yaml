@@ -1,55 +1,47 @@
-# Moonshot Kimi V2 Provider Manifest — Agent Swarm 先驱
-# Provider: Moonshot AI | Models: Kimi K2.6 / K2.5 / K2-Thinking
-# Last Updated: 2026-06-26 (add tool_calling)
-$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
-
-# === Ring 1: Core Skeleton ===
+$schema: https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json
 id: moonshot
 aliases:
   - kimi
 protocol_version: "2.0"
-name: "Moonshot AI"
-version: "2.5.0"
+name: Moonshot AI
+version: 2.5.0
 status: stable
 category: ai_provider
-official_url: "https://platform.moonshot.ai/docs/"
-support_contact: "https://platform.moonshot.ai/"
-
+official_url: https://platform.moonshot.ai/docs/
+support_contact: https://platform.moonshot.ai/
 endpoint:
-  base_url: "https://api.moonshot.cn/v1"
-  chat: "/chat/completions"
+  base_url: https://api.moonshot.cn/v1
+  chat: /chat/completions
   auth:
-    type: "bearer"
-    header: "Authorization"
-    prefix: "Bearer"
-    token_env: "MOONSHOT_API_KEY"
-
+    type: bearer
+    header: Authorization
+    prefix: Bearer
+    token_env: MOONSHOT_API_KEY
 error_classification:
   by_http_status:
-    "400": "invalid_request"
-    "401": "authentication"
-    "403": "permission_denied"
-    "404": "not_found"
-    "429": "rate_limited"
-    "500": "server_error"
-    "503": "overloaded"
+    "400": invalid_request
+    "401": authentication
+    "403": permission_denied
+    "404": not_found
+    "429": rate_limited
+    "500": server_error
+    "503": overloaded
   by_error_code:
-    "context_length_exceeded": "request_too_large"
-    "model_not_found": "not_found"
-    "rate_limit_exceeded": "rate_limited"
-    "insufficient_quota": "quota_exhausted"
-
+    context_length_exceeded: request_too_large
+    model_not_found: not_found
+    rate_limit_exceeded: rate_limited
+    insufficient_quota: quota_exhausted
 availability:
   required: false
   regions:
     - cn
   check:
     method: GET
-    path: "/models"
-    expected_status: [200, 401]
+    path: /models
+    expected_status:
+      - 200
+      - 401
     timeout_ms: 3000
-
-# === Ring 2: Capability Mapping ===
 capabilities:
   required:
     - text
@@ -67,132 +59,222 @@ capabilities:
     parallel_tool_calls: true
     streaming_usage: true
     system_messages: true
-
   tool_calling:
     native:
       supported: true
-      reliability: "full"
+      reliability: full
       parallel: true
       streaming: true
       notes: "PT-079 audit: native-only unless live shows DSML/shell text fallback"
     text_fallback: null
-
 capability_profile:
-  phase: "ios_v1"
+  phase: ios_v1
   inputs:
-    modalities: ["text", "image", "video"]
+    modalities:
+      - text
+      - image
+      - video
   outcomes:
-    types: ["text_completion", "structured_json", "tool_call_sequence"]
+    types:
+      - text_completion
+      - structured_json
+      - tool_call_sequence
   systems:
-    requires: ["mcp", "search"]
-
+    requires:
+      - mcp
+      - search
 parameters:
-  temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
-  max_tokens: { type: integer, min: 1, max: 33000 }
-  top_p: { type: float, range: [0.0, 1.0] }
-  stream: { type: boolean }
-
+  temperature:
+    type: float
+    range:
+      - 0
+      - 2
+    default: 1
+  max_tokens:
+    type: integer
+    min: 1
+    max: 33000
+  top_p:
+    type: float
+    range:
+      - 0
+      - 1
+  stream:
+    type: boolean
 streaming:
   decoder:
-    format: "sse"
-    strategy: "openai_chat"
+    format: sse
+    strategy: openai_chat
     done_signal: "[DONE]"
     prefix: "data: "
-  content_path: "$.choices[0].delta.content"
-  tool_call_path: "$.choices[0].delta.tool_calls"
-  usage_path: "$.usage"
+  content_path: $.choices[0].delta.content
+  tool_call_path: $.choices[0].delta.tool_calls
+  usage_path: $.usage
   event_map:
-    - match: "exists($.choices[*].delta.content)"
-      emit: "PartialContentDelta"
+    - match: exists($.choices[*].delta.content)
+      emit: PartialContentDelta
       fields:
-        content: "$.choices[*].delta.content"
-    - match: "exists($.choices[*].delta.tool_calls)"
-      emit: "PartialToolCall"
+        content: $.choices[*].delta.content
+    - match: exists($.choices[*].delta.tool_calls)
+      emit: PartialToolCall
       fields:
-        tool_calls: "$.choices[*].delta.tool_calls"
-    - match: "exists($.usage)"
-      emit: "Metadata"
+        tool_calls: $.choices[*].delta.tool_calls
+    - match: exists($.usage)
+      emit: Metadata
       fields:
-        usage: "$.usage"
-    - match: "$.choices[*].finish_reason != null"
-      emit: "StreamEnd"
+        usage: $.usage
+    - match: $.choices[*].finish_reason != null
+      emit: StreamEnd
       fields:
-        finish_reason: "$.choices[*].finish_reason"
-  stop_condition: "$.choices[0].finish_reason != null"
-
+        finish_reason: $.choices[*].finish_reason
+  stop_condition: $.choices[0].finish_reason != null
 multimodal:
   input:
     vision:
       supported: true
-      formats: [jpeg, png, webp, gif]
-      encoding_methods: [base64_inline, url]
+      formats:
+        - jpeg
+        - png
+        - webp
+        - gif
+      encoding_methods:
+        - base64_inline
+        - url
     audio:
       supported: false
     video:
       supported: true
-      formats: [mp4, avi, mov]
+      formats:
+        - mp4
+        - avi
+        - mov
   output:
     text: true
     audio:
       supported: false
     image:
       supported: false
-
-# === Ring 3: Advanced Extensions ===
-api_families: ["chat_completions"]
-default_api_family: "chat_completions"
-
+api_families:
+  - chat_completions
+default_api_family: chat_completions
 endpoints:
   chat:
-    path: "/chat/completions"
-    method: "POST"
-    adapter: "openai"
-
+    path: /chat/completions
+    method: POST
+    adapter: openai
 services:
   list_models:
-    path: "/models"
-    method: "GET"
-
+    path: /models
+    method: GET
 retry_policy:
-  strategy: "exponential_backoff"
+  strategy: exponential_backoff
   max_retries: 3
   min_delay_ms: 1000
   max_delay_ms: 30000
-  jitter: "full"
-  retry_on_http_status: [429, 500, 502, 503]
-
+  jitter: full
+  retry_on_http_status:
+    - 429
+    - 500
+    - 502
+    - 503
 termination:
-  source_field: "finish_reason"
+  source_field: finish_reason
   mapping:
-    stop: "end_turn"
-    length: "max_tokens"
-    tool_calls: "tool_use"
-
+    stop: end_turn
+    length: max_tokens
+    tool_calls: tool_use
 metadata:
   api_compatibility: openai
   open_source:
-    license: "Modified MIT"
-    hugging_face: "https://huggingface.co/moonshotai/Kimi-K2.5"
+    license: Modified MIT
+    hugging_face: https://huggingface.co/moonshotai/Kimi-K2.5
   agent_swarm:
     supported: true
     status: beta
     max_agents: 100
     max_tool_calls: 1500
-    coordination: "PARL (Parallel Agent RL)"
+    coordination: PARL (Parallel Agent RL)
   models:
     kimi-k2-5:
       context_window: 256000
       max_output_tokens: 33000
-      architecture: { type: moe, total: "1T", active: "32B", experts: 384 }
-      pricing: { input_per_1m: 0.60, output_per_1m: 3.00 }
+      architecture:
+        type: moe
+        total: 1T
+        active: 32B
+        experts: 384
+      pricing:
+        input_per_1m: 0.6
+        output_per_1m: 3
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: false
+      modalities:
+        input:
+          - text
+          - image
+          - video
+        output:
+          - text
+      family: kimi-k2
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
     kimi-k2-thinking:
       context_window: 256000
       max_output_tokens: 33000
-      pricing: { input_per_1m: 0.60, output_per_1m: 2.50 }
+      pricing:
+        input_per_1m: 0.6
+        output_per_1m: 2.5
+      model_capabilities:
+        tool_call: true
+        reasoning: true
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      thinking: thinking
+      family: kimi-k2
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
+    kimi-k2.6:
+      context_window: 262144
+      max_output_tokens: 33000
+      family: kimi-k2
+      pricing:
+        input_per_1m: 0.95
+        output_per_1m: 3.8
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+          - video
+        output:
+          - text
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
   regional:
     primary: china
-    international_partners: [fireworks_ai, together_ai, openrouter, nvidia_nim]
+    international_partners:
+      - fireworks_ai
+      - together_ai
+      - openrouter
+      - nvidia_nim
   sdk:
-    note: "OpenAI-compatible — use openai SDK with base_url override"
+    note: OpenAI-compatible — use openai SDK with base_url override
     python: openai
     typescript: openai
