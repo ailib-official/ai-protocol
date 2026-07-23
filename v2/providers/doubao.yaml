@@ -1,45 +1,40 @@
-# Doubao V2 provider manifest — P0 multimodal generative coverage
-# Last Updated: 2026-06-26 (add tool_calling)
-$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
-
+$schema: https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json
 id: doubao
 protocol_version: "2.0"
-name: "Doubao (Volcengine Ark)"
-version: "3.0.0"
+name: Doubao (Volcengine Ark)
+version: 3.0.0
 status: stable
 category: ai_provider
-official_url: "https://www.volcengine.com/docs/82379"
-support_contact: "https://www.volcengine.com/contact"
-
+official_url: https://www.volcengine.com/docs/82379
+support_contact: https://www.volcengine.com/contact
 endpoint:
-  base_url: "https://ark.cn-beijing.volces.com/api/v3"
-  chat: "/chat/completions"
+  base_url: https://ark.cn-beijing.volces.com/api/v3
+  chat: /chat/completions
   auth:
-    type: "bearer"
-    header: "Authorization"
-    prefix: "Bearer"
-    token_env: "VOLCENGINE_API_KEY"
-
+    type: bearer
+    header: Authorization
+    prefix: Bearer
+    token_env: VOLCENGINE_API_KEY
 error_classification:
   by_http_status:
-    "400": "invalid_request"
-    "401": "authentication"
-    "403": "permission_denied"
-    "404": "not_found"
-    "429": "rate_limited"
-    "500": "server_error"
-    "503": "overloaded"
-
+    "400": invalid_request
+    "401": authentication
+    "403": permission_denied
+    "404": not_found
+    "429": rate_limited
+    "500": server_error
+    "503": overloaded
 availability:
   required: false
   regions:
     - cn
   check:
     method: GET
-    path: "/models"
-    expected_status: [200, 401]
+    path: /models
+    expected_status:
+      - 200
+      - 401
     timeout_ms: 3000
-
 capabilities:
   required:
     - text
@@ -60,67 +55,94 @@ capabilities:
     streaming_usage: true
     system_messages: true
     image_generation: true
-
   tool_calling:
     native:
       supported: true
-      reliability: "full"
+      reliability: full
       parallel: true
       streaming: true
-
 capability_profile:
-  phase: "ios_v1"
+  phase: ios_v1
   inputs:
-    modalities: ["text", "image", "audio"]
+    modalities:
+      - text
+      - image
+      - audio
   outcomes:
-    types: ["text_completion", "structured_json", "tool_call_sequence"]
+    types:
+      - text_completion
+      - structured_json
+      - tool_call_sequence
   systems:
-    requires: ["mcp", "search"]
-
+    requires:
+      - mcp
+      - search
 parameters:
-  temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
-  max_tokens: { type: integer, min: 1, max: 16384 }
-  top_p: { type: float, range: [0.0, 1.0] }
-  stream: { type: boolean }
-
+  temperature:
+    type: float
+    range:
+      - 0
+      - 2
+    default: 1
+  max_tokens:
+    type: integer
+    min: 1
+    max: 16384
+  top_p:
+    type: float
+    range:
+      - 0
+      - 1
+  stream:
+    type: boolean
 streaming:
   decoder:
-    format: "sse"
-    strategy: "openai_chat"
+    format: sse
+    strategy: openai_chat
     done_signal: "[DONE]"
     prefix: "data: "
-  content_path: "$.choices[0].delta.content"
-  tool_call_path: "$.choices[0].delta.tool_calls"
-  usage_path: "$.usage"
+  content_path: $.choices[0].delta.content
+  tool_call_path: $.choices[0].delta.tool_calls
+  usage_path: $.usage
   event_map:
-    - match: "exists($.choices[*].delta.content)"
-      emit: "PartialContentDelta"
+    - match: exists($.choices[*].delta.content)
+      emit: PartialContentDelta
       fields:
-        content: "$.choices[*].delta.content"
-    - match: "exists($.choices[*].delta.tool_calls)"
-      emit: "PartialToolCall"
+        content: $.choices[*].delta.content
+    - match: exists($.choices[*].delta.tool_calls)
+      emit: PartialToolCall
       fields:
-        tool_calls: "$.choices[*].delta.tool_calls"
-    - match: "exists($.usage)"
-      emit: "Metadata"
+        tool_calls: $.choices[*].delta.tool_calls
+    - match: exists($.usage)
+      emit: Metadata
       fields:
-        usage: "$.usage"
-    - match: "$.choices[*].finish_reason != null"
-      emit: "StreamEnd"
+        usage: $.usage
+    - match: $.choices[*].finish_reason != null
+      emit: StreamEnd
       fields:
-        finish_reason: "$.choices[*].finish_reason"
-  stop_condition: "$.choices[0].finish_reason != null"
-
+        finish_reason: $.choices[*].finish_reason
+  stop_condition: $.choices[0].finish_reason != null
 multimodal:
   input:
     vision:
       supported: true
-      formats: [jpeg, png, gif, webp]
-      encoding_methods: [base64_inline, url]
+      formats:
+        - jpeg
+        - png
+        - gif
+        - webp
+      encoding_methods:
+        - base64_inline
+        - url
       document_understanding: true
     audio:
       supported: true
-      formats: [mp3, wav, flac, m4a, ogg]
+      formats:
+        - mp3
+        - wav
+        - flac
+        - m4a
+        - ogg
       speech_recognition: true
       real_time_streaming: true
     video:
@@ -129,47 +151,50 @@ multimodal:
     text: true
     audio:
       supported: true
-      formats: [mp3, wav]
+      formats:
+        - mp3
+        - wav
       real_time_tts: true
       natural_voice: true
       voice_selection: true
     image:
       supported: true
-      formats: [png, jpeg]
+      formats:
+        - png
+        - jpeg
     video:
       supported: false
-
-api_families: ["chat_completions"]
-default_api_family: "chat_completions"
-
+api_families:
+  - chat_completions
+default_api_family: chat_completions
 endpoints:
   chat:
-    path: "/chat/completions"
-    method: "POST"
-    adapter: "openai"
-
+    path: /chat/completions
+    method: POST
+    adapter: openai
 services:
   list_models:
-    path: "/models"
-    method: "GET"
-    response_binding: "data"
-
+    path: /models
+    method: GET
+    response_binding: data
 retry_policy:
-  strategy: "exponential_backoff"
+  strategy: exponential_backoff
   max_retries: 3
   min_delay_ms: 1000
   max_delay_ms: 30000
-  jitter: "full"
-  retry_on_http_status: [429, 500, 502, 503]
-
+  jitter: full
+  retry_on_http_status:
+    - 429
+    - 500
+    - 502
+    - 503
 termination:
-  source_field: "finish_reason"
+  source_field: finish_reason
   mapping:
-    stop: "end_turn"
-    length: "max_tokens"
-    tool_calls: "tool_use"
-    content_filter: "refusal"
-
+    stop: end_turn
+    length: max_tokens
+    tool_calls: tool_use
+    content_filter: refusal
 metadata:
   api_compatibility: openai
   regional:
@@ -177,3 +202,83 @@ metadata:
   sdk:
     python: openai
     typescript: openai
+  models:
+    doubao-pro-32k:
+      context_window: 32768
+      max_output_tokens: 4096
+      family: doubao-pro
+      pricing:
+        input_per_1m: 0.8
+        output_per_1m: 2
+      model_capabilities:
+        tool_call: true
+        reasoning: false
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      verification:
+        status: unverified
+        source: official_documentation
+        verified_at: "2026-07-24"
+        notes: PT-ME-003 migrated from v1/models/doubao; Ark endpoint id may differ
+    doubao-pro-128k:
+      context_window: 131072
+      max_output_tokens: 4096
+      family: doubao-pro
+      pricing:
+        input_per_1m: 5
+        output_per_1m: 9
+      model_capabilities:
+        tool_call: true
+        reasoning: false
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      verification:
+        status: unverified
+        source: official_documentation
+        verified_at: "2026-07-24"
+        notes: PT-ME-003 from v1/models/doubao
+    doubao-lite-32k:
+      context_window: 32768
+      max_output_tokens: 4096
+      family: doubao-lite
+      model_capabilities:
+        tool_call: true
+        reasoning: false
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      verification:
+        status: unverified
+        source: official_documentation
+        verified_at: "2026-07-24"
+        notes: PT-ME-003 from v1/models/doubao
+    doubao-vision-pro-32k:
+      context_window: 32768
+      max_output_tokens: 4096
+      family: doubao-vision
+      model_capabilities:
+        tool_call: true
+        reasoning: false
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+        output:
+          - text
+      verification:
+        status: unverified
+        source: official_documentation
+        verified_at: "2026-07-24"
+        notes: PT-ME-003 from v1/models/doubao

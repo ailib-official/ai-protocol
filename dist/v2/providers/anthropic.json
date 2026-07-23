@@ -358,6 +358,28 @@
         "pricing": {
           "input_per_1m": 15,
           "output_per_1m": 75
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "pdf"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "family": "claude-opus",
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
         }
       },
       "claude-sonnet-4-6": {
@@ -367,6 +389,28 @@
         "pricing": {
           "input_per_1m": 3,
           "output_per_1m": 15
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "pdf"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "family": "claude-sonnet",
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
         }
       },
       "claude-haiku-4-5": {
@@ -376,6 +420,28 @@
         "pricing": {
           "input_per_1m": 0.8,
           "output_per_1m": 4
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "pdf"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "family": "claude-haiku",
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
         }
       }
     },

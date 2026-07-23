@@ -275,6 +275,28 @@
         "pricing": {
           "input_per_1m": 0.6,
           "output_per_1m": 3
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "video"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "family": "kimi-k2",
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
         }
       },
       "kimi-k2-thinking": {
@@ -283,6 +305,56 @@
         "pricing": {
           "input_per_1m": 0.6,
           "output_per_1m": 2.5
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "thinking": "thinking",
+        "family": "kimi-k2",
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
+        }
+      },
+      "kimi-k2.6": {
+        "context_window": 262144,
+        "max_output_tokens": 33000,
+        "family": "kimi-k2",
+        "pricing": {
+          "input_per_1m": 0.95,
+          "output_per_1m": 3.8
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "video"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
         }
       }
     },

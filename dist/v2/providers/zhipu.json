@@ -293,7 +293,27 @@
         "reasoning_effort": [
           "high",
           "max"
-        ]
+        ],
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "family": "glm-5",
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
+        }
       },
       "glm-5v-turbo": {
         "context_window": 200000,
@@ -306,7 +326,29 @@
         },
         "vision": true,
         "computer_use": true,
-        "mcp_support": true
+        "mcp_support": true,
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "video",
+            "pdf"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "family": "glm-5v",
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
+        }
       },
       "glm-5.1": {
         "context_window": 200000,
@@ -317,7 +359,27 @@
           "total": "744B",
           "active": "40B"
         },
-        "status": "deprecated"
+        "status": "deprecated",
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "family": "glm-5",
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
+        }
       },
       "glm-5": {
         "context_window": 200000,
@@ -331,6 +393,25 @@
         "pricing": {
           "input_per_1m": 1,
           "output_per_1m": 3.2
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "family": "glm-5",
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
         }
       }
     },

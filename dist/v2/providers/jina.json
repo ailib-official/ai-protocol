@@ -81,6 +81,80 @@
     "rerank_models": [
       "jina-reranker-v2-base-multilingual",
       "jina-reranker-v3"
-    ]
+    ],
+    "models": {
+      "jina-embeddings-v3": {
+        "context_window": 8192,
+        "max_output_tokens": 0,
+        "family": "jina-embeddings",
+        "model_capabilities": {
+          "tool_call": false,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003 from v1/models/jina; embedding model"
+        }
+      },
+      "jina-reranker-v2-base-multilingual": {
+        "context_window": 1024,
+        "max_output_tokens": 0,
+        "family": "jina-reranker",
+        "model_capabilities": {
+          "tool_call": false,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003; matches metadata.rerank_models default"
+        }
+      },
+      "jina-reranker-v3": {
+        "context_window": 1024,
+        "max_output_tokens": 0,
+        "family": "jina-reranker",
+        "model_capabilities": {
+          "tool_call": false,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24",
+          "notes": "PT-ME-003; listed in metadata.rerank_models"
+        }
+      }
+    }
   }
 }

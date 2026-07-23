@@ -1,49 +1,42 @@
-# Cohere V2 Provider Manifest — Chat + Rerank
-# Last Updated: 2026-06-26 (add tool_calling)
-$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
-
-# === Ring 1: Core Skeleton ===
+$schema: https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json
 id: cohere
 protocol_version: "2.0"
-name: "Cohere"
-version: "v2"
+name: Cohere
+version: v2
 status: stable
 category: ai_provider
-official_url: "https://docs.cohere.com"
-support_contact: "https://cohere.com/contact"
-
+official_url: https://docs.cohere.com
+support_contact: https://cohere.com/contact
 endpoint:
-  base_url: "https://api.cohere.com/v2"
-  chat: "/chat"
-  rerank: "/rerank"
+  base_url: https://api.cohere.com/v2
+  chat: /chat
+  rerank: /rerank
   auth:
-    type: "bearer"
-    header: "Authorization"
-    prefix: "Bearer"
-    token_env: "COHERE_API_KEY"
-
+    type: bearer
+    header: Authorization
+    prefix: Bearer
+    token_env: COHERE_API_KEY
 error_classification:
   by_http_status:
-    "400": "invalid_request"
-    "401": "authentication"
-    "403": "permission_denied"
-    "404": "not_found"
-    "422": "invalid_request"
-    "429": "rate_limited"
-    "500": "server_error"
-    "503": "overloaded"
-
+    "400": invalid_request
+    "401": authentication
+    "403": permission_denied
+    "404": not_found
+    "422": invalid_request
+    "429": rate_limited
+    "500": server_error
+    "503": overloaded
 availability:
   required: false
   regions:
     - global
   check:
     method: GET
-    path: "/models"
-    expected_status: [200, 401]
+    path: /models
+    expected_status:
+      - 200
+      - 401
     timeout_ms: 3000
-
-# === Ring 2: Capability Mapping ===
 capabilities:
   required:
     - text
@@ -55,34 +48,158 @@ capabilities:
   feature_flags:
     structured_output: true
     system_messages: true
-
   tool_calling:
     native:
       supported: true
-      reliability: "full"
-
+      reliability: full
 capability_profile:
-  phase: "ios_v1"
+  phase: ios_v1
   inputs:
-    modalities: ["text"]
+    modalities:
+      - text
   outcomes:
-    types: ["text_completion", "structured_json", "tool_call_sequence"]
+    types:
+      - text_completion
+      - structured_json
+      - tool_call_sequence
   systems:
-    requires: ["mcp", "search"]
-
+    requires:
+      - mcp
+      - search
 parameters:
-  temperature: { type: float, range: [0.0, 1.0], default: 0.3 }
-  max_tokens: { type: integer, min: 1 }
-  stream: { type: boolean }
-  # Rerank-specific (provider mapping)
-  top_n: { type: integer, min: 1 }
-  max_tokens_per_doc: { type: integer, default: 4096 }
-
+  temperature:
+    type: float
+    range:
+      - 0
+      - 1
+    default: 0.3
+  max_tokens:
+    type: integer
+    min: 1
+  stream:
+    type: boolean
+  top_n:
+    type: integer
+    min: 1
+  max_tokens_per_doc:
+    type: integer
+    default: 4096
 streaming:
   decoder:
-    format: "sse"
-    strategy: "cohere_v2"
+    format: sse
+    strategy: cohere_v2
   event_map: []
-
 metadata:
-  rerank_models: [rerank-v3.5, rerank-english-v3.0, rerank-multilingual-v3.0]
+  rerank_models:
+    - rerank-v3.5
+    - rerank-english-v3.0
+    - rerank-multilingual-v3.0
+  models:
+    command-a-03-2025:
+      context_window: 256000
+      max_output_tokens: 8192
+      family: command-a
+      pricing:
+        input_per_1m: 2.5
+        output_per_1m: 10
+      model_capabilities:
+        tool_call: true
+        reasoning: false
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      verification:
+        status: verified
+        source: provider_catalog
+        verified_at: "2026-07-24"
+        notes: PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs
+    command-a-reasoning-08-2025:
+      context_window: 256000
+      max_output_tokens: 8192
+      family: command-a
+      pricing:
+        input_per_1m: 2.5
+        output_per_1m: 10
+      model_capabilities:
+        tool_call: true
+        reasoning: true
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      verification:
+        status: verified
+        source: provider_catalog
+        verified_at: "2026-07-24"
+        notes: PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs
+    command-a-vision-07-2025:
+      context_window: 128000
+      max_output_tokens: 8192
+      family: command-a
+      pricing:
+        input_per_1m: 2.5
+        output_per_1m: 10
+      model_capabilities:
+        tool_call: false
+        reasoning: false
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+        output:
+          - text
+      verification:
+        status: verified
+        source: provider_catalog
+        verified_at: "2026-07-24"
+        notes: PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs
+    command-a-plus-05-2026:
+      context_window: 128000
+      max_output_tokens: 8192
+      family: command-a
+      pricing:
+        input_per_1m: 2.5
+        output_per_1m: 10
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+        output:
+          - text
+      verification:
+        status: verified
+        source: provider_catalog
+        verified_at: "2026-07-24"
+        notes: PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs
+    command-r-plus-08-2024:
+      context_window: 128000
+      max_output_tokens: 4096
+      family: command-r
+      pricing:
+        input_per_1m: 2.5
+        output_per_1m: 10
+      model_capabilities:
+        tool_call: true
+        reasoning: false
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      verification:
+        status: verified
+        source: provider_catalog
+        verified_at: "2026-07-24"
+        notes: PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs

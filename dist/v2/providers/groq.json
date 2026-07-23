@@ -68,8 +68,10 @@
       "native": {
         "supported": true,
         "reliability": "full",
-        "parallel": true
-      }
+        "parallel": true,
+        "notes": "PT-079 audit: backend-model dependent; no text_fallback until live proves dialect"
+      },
+      "text_fallback": null
     }
   },
   "parameters": {
@@ -209,8 +211,77 @@
         "verification": {
           "status": "verified",
           "source": "official_documentation",
-          "verified_at": "2026-05-29",
-          "notes": "https://console.groq.com/docs/models"
+          "verified_at": "2026-07-24"
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "family": "llama-3.1"
+      },
+      "llama-3.3-70b-versatile": {
+        "context_window": 131072,
+        "max_output_tokens": 32768,
+        "family": "llama-3.3",
+        "pricing": {
+          "input_per_1m": 0.59,
+          "output_per_1m": 0.79
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
+        }
+      },
+      "meta-llama/llama-4-scout-17b-16e-instruct": {
+        "context_window": 131072,
+        "max_output_tokens": 8192,
+        "family": "llama-4",
+        "pricing": {
+          "input_per_1m": 0.11,
+          "output_per_1m": 0.34
+        },
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": false,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-24"
         }
       }
     },
