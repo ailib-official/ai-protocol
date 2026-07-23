@@ -52,7 +52,7 @@ AI-Protocol standardizes AI model behavior through the concept of **operators**:
 
 - **Parameter Operators**: Standardized parameter mapping (`temperature`, `max_tokens`, `stream`, etc.)
 - **Event Operators**: Standardized streaming events (`PartialContentDelta`, `ToolCallStarted`, `StreamError`, etc.)
-- **Capability Operators**: Standardized capability declarations (`chat`, `vision`, `tools`, `streaming`, `multimodal`, etc.)
+- **Capability Operators**: Standardized capability declarations (`chat`, `vision`, `tools`, `streaming`, `multimodal`, etc.); **Experimental** per-model facts under `metadata.models.*.model_capabilities` / `modalities` ([`docs/MODEL_CAPABILITY_METADATA.md`](docs/MODEL_CAPABILITY_METADATA.md), PT-ME-001)
 - **Error Handling Operators**: Standardized error classification and rate-limit header maps (`error_classification`, `rate_limit_headers`); **`retry_policy` is Execution Spec defaults** (PT-ARCH-004), not host Policy — see [`docs/MANIFEST_LOGICAL_LAYERS.md`](docs/MANIFEST_LOGICAL_LAYERS.md)
 
 ### 2. Version Isolation

@@ -42,6 +42,10 @@ const fixtures = [
     schema: 'schemas/v2/capability-catalog.json',
     data: 'v2/capability-catalog.fixture.json',
   },
+  {
+    schema: 'schemas/v2/metadata-model-entry.json',
+    data: 'v2/metadata-model-entry.fixture.json',
+  },
 ];
 
 /** G5 / PT-ARCH-007 required contract semantic names. */

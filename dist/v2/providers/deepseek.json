@@ -315,7 +315,28 @@
           "output_per_1m": 0.87,
           "cache_hit_input_per_1m": 0.003625
         },
-        "thinking": "dual_mode"
+        "thinking": "dual_mode",
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "family": "deepseek-v4",
+        "open_weights": true,
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-23"
+        }
       },
       "deepseek-v4-flash": {
         "context_window": 1048576,
@@ -331,7 +352,28 @@
           "output_per_1m": 0.28,
           "cache_hit_input_per_1m": 0.0028
         },
-        "thinking": "dual_mode"
+        "thinking": "dual_mode",
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "family": "deepseek-flash",
+        "open_weights": true,
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-07-23"
+        }
       }
     },
     "deprecated": {
