@@ -1,0 +1,6 @@
+{
+  "$comment": "PT-ME-004 — capacity-only entry; omitted model_capabilities means unknown (not false)",
+  "context_window": 128000,
+  "max_output_tokens": 4096,
+  "status": "active"
+}
