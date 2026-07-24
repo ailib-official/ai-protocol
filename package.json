@@ -41,7 +41,9 @@
     "fact-check:models:strict-all": "node scripts/fact-check-models.js --strict --require-keys",
     "migrate:v2alpha-capacity": "node scripts/migrate-v1-capacity-to-v2alpha.js",
     "verify:v1-v2-capacity": "node scripts/verify-v1-v2-capacity-parity.js",
-    "validate:arch": "node scripts/validate-arch-fixtures.js"
+    "validate:arch": "node scripts/validate-arch-fixtures.js",
+    "me001:oneshot-candidate": "node scripts/me001-oneshot-candidate.js",
+    "test:me001-oneshot": "node --test scripts/me001-oneshot-candidate.test.js"
   },
   "engines": {
     "node": ">=18.0.0"

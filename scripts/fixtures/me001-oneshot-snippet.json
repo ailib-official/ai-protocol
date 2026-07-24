@@ -1,0 +1,69 @@
+{
+  "_comment": "PT-ME-002 fixture — tiny models.dev-shaped slice (not a live dump). zhipuai aliases to zhipu; openai matches id.",
+  "zhipuai": {
+    "id": "zhipuai",
+    "name": "Zhipu AI",
+    "doc": "https://docs.z.ai/guides/overview/pricing",
+    "models": {
+      "glm-fixture": {
+        "id": "glm-fixture",
+        "name": "GLM Fixture",
+        "family": "glm",
+        "attachment": false,
+        "reasoning": true,
+        "reasoning_options": [{ "type": "toggle" }],
+        "tool_call": true,
+        "structured_output": true,
+        "modalities": { "input": ["text"], "output": ["text"] },
+        "open_weights": false,
+        "knowledge": "2025-04",
+        "release_date": "2025-07-28",
+        "limit": { "context": 131072, "output": 8192 },
+        "cost": { "input": 0.6, "output": 2.2 }
+      },
+      "glm-vision-fixture": {
+        "id": "glm-vision-fixture",
+        "name": "GLM Vision Fixture",
+        "family": "glm",
+        "attachment": true,
+        "reasoning": false,
+        "tool_call": true,
+        "modalities": { "input": ["text", "image", "bogus"], "output": ["text"] },
+        "limit": { "context": 64000, "output": 4096 },
+        "cost": { "input": 0.8, "output": 3.2 }
+      }
+    }
+  },
+  "openai": {
+    "id": "openai",
+    "name": "OpenAI",
+    "doc": "https://platform.openai.com/docs",
+    "models": {
+      "gpt-fixture-mini": {
+        "id": "gpt-fixture-mini",
+        "name": "GPT Fixture Mini",
+        "family": "gpt-mini",
+        "attachment": true,
+        "reasoning": false,
+        "tool_call": true,
+        "structured_output": true,
+        "modalities": { "input": ["text", "image"], "output": ["text"] },
+        "open_weights": false,
+        "limit": { "context": 128000, "output": 16384 },
+        "cost": { "input": 0.15, "output": 0.6 }
+      }
+    }
+  },
+  "openrouter": {
+    "id": "openrouter",
+    "name": "OpenRouter",
+    "models": {
+      "should-skip": {
+        "id": "should-skip",
+        "tool_call": true,
+        "modalities": { "input": ["text"], "output": ["text"] },
+        "limit": { "context": 1000, "output": 100 }
+      }
+    }
+  }
+}

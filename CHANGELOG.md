@@ -6,6 +6,8 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-ME-002 Oneshot candidate pipeline**: Offline helper `scripts/me001-oneshot-candidate.js` (+ `scripts/lib/me001-oneshot-map.js`) maps a **local** models.dev-style dump to advisory ME-001 `metadata.models` candidates (allowlist, P0/P1 only, no `dist/` write, no cron). Docs: [`docs/ME001_ONESHOT_CANDIDATE.md`](docs/ME001_ONESHOT_CANDIDATE.md); fixture + `node --test` mapping tests.
+
 - **PT-ADM Wave B (perplexity / yi / baichuan)**: Promote three first-party providers from v1 to v2 with ME-001 `metadata.models` + Experimental `model_capabilities`/`modalities` (PT-ME-010 Wave B ACK). Short model lists: Sonar (`sonar` / `sonar-pro` / `sonar-reasoning-pro`), Yi (`yi-lightning` / `yi-large` / `yi-vision`), Baichuan (`Baichuan4` / `Baichuan3-Turbo` / `Baichuan3-Turbo-128k`).
 
 - **PT-ADM Wave A (xai / mistral / minimax)**: Promote three first-party providers from v1 to v2 with ME-001 `metadata.models` + Experimental `model_capabilities`/`modalities` (PT-ME-010 survey ACK).

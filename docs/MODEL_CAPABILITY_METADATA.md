@@ -71,3 +71,4 @@ See [`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md).
 - ME-001 plan + PT-ME-000 survey (ai-lib-plans)  
 - [`MANIFEST_AUTHORITY.md`](./MANIFEST_AUTHORITY.md)  
 - Baseline backfill: PT-ME-003 (separate)  
+- **Oneshot candidate helper (PT-ME-002)**: [`ME001_ONESHOT_CANDIDATE.md`](./ME001_ONESHOT_CANDIDATE.md) — local models.dev dump → advisory candidates; not SoT  
