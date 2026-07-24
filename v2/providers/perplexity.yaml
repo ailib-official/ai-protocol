@@ -1,0 +1,202 @@
+# Perplexity Sonar — AI-Protocol V2 (PT-ADM-004 Wave B)
+# OpenAI-compatible chat; models annotated Experimental (ME-001).
+# Search-grounded Sonar IDs (not legacy llama-3.1-sonar-* names).
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
+
+id: perplexity
+protocol_version: "2.0"
+name: "Perplexity"
+version: "1.0.0"
+status: stable
+category: ai_provider
+official_url: "https://docs.perplexity.ai"
+support_contact: "https://www.perplexity.ai/contact"
+
+endpoint:
+  base_url: "https://api.perplexity.ai"
+  chat: "/chat/completions"
+  auth:
+    type: "bearer"
+    header: "Authorization"
+    prefix: "Bearer"
+    token_env: "PPLX_API_KEY"
+
+error_classification:
+  by_http_status:
+    "400": "invalid_request"
+    "401": "authentication"
+    "403": "permission_denied"
+    "404": "not_found"
+    "429": "rate_limited"
+    "500": "server_error"
+    "503": "overloaded"
+  by_error_code:
+    "context_length_exceeded": "request_too_large"
+    "model_not_found": "not_found"
+    "rate_limit_exceeded": "rate_limited"
+
+availability:
+  required: false
+  regions:
+    - global
+  check:
+    method: GET
+    path: "/models"
+    expected_status: [200, 401]
+    timeout_ms: 3000
+
+capabilities:
+  required:
+    - text
+    - streaming
+  optional:
+    - structured_output
+    - reasoning
+  feature_flags:
+    streaming_usage: true
+    system_messages: true
+    structured_output: true
+  tool_calling:
+    native:
+      supported: false
+      reliability: "unreliable"
+      parallel: false
+      streaming: false
+      notes: "Sonar focuses on search/RAG; limited tool support (v1 tooling.source_model=unknown)"
+    text_fallback: null
+
+parameters:
+  temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
+  max_tokens: { type: integer, min: 1, max: 128000 }
+  top_p: { type: float, range: [0.0, 1.0] }
+  stream: { type: boolean }
+  frequency_penalty: { type: float, range: [-2.0, 2.0] }
+  presence_penalty: { type: float, range: [-2.0, 2.0] }
+
+streaming:
+  decoder:
+    format: "sse"
+    strategy: "openai_chat"
+    done_signal: "[DONE]"
+    prefix: "data: "
+  content_path: "$.choices[0].delta.content"
+  usage_path: "$.usage"
+  event_map:
+    - match: "exists($.choices[*].delta.content)"
+      emit: "PartialContentDelta"
+      fields:
+        content: "$.choices[*].delta.content"
+    - match: "exists($.usage)"
+      emit: "Metadata"
+      fields:
+        usage: "$.usage"
+    - match: "$.choices[*].finish_reason != null"
+      emit: "StreamEnd"
+      fields:
+        finish_reason: "$.choices[*].finish_reason"
+  stop_condition: "$.choices[0].finish_reason != null"
+
+multimodal:
+  input:
+    vision:
+      supported: false
+    audio:
+      supported: false
+    video:
+      supported: false
+  output:
+    text: true
+    audio:
+      supported: false
+    image:
+      supported: false
+
+api_families:
+  - chat_completions
+default_api_family: chat_completions
+
+endpoints:
+  chat:
+    path: "/chat/completions"
+    method: "POST"
+    adapter: "openai"
+
+services:
+  list_models:
+    path: "/models"
+    method: "GET"
+    response_binding: "data"
+
+retry_policy:
+  strategy: "exponential_backoff"
+  max_retries: 3
+  min_delay_ms: 1000
+  max_delay_ms: 30000
+  jitter: "full"
+  retry_on_http_status: [429, 500, 502, 503]
+
+termination:
+  source_field: "finish_reason"
+  mapping:
+    stop: "end_turn"
+    length: "max_tokens"
+    content_filter: "refusal"
+
+metadata:
+  api_compatibility: openai
+  models:
+    sonar:
+      context_window: 127072
+      max_output_tokens: 8000
+      status: active
+      family: sonar
+      model_capabilities:
+        tool_call: false
+        structured_output: true
+        reasoning: false
+        attachment: false
+      modalities:
+        input: [text]
+        output: [text]
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
+    sonar-pro:
+      context_window: 200000
+      max_output_tokens: 8000
+      status: active
+      family: sonar
+      model_capabilities:
+        tool_call: false
+        structured_output: true
+        reasoning: false
+        attachment: false
+      modalities:
+        input: [text]
+        output: [text]
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
+    sonar-reasoning-pro:
+      context_window: 127072
+      max_output_tokens: 8000
+      status: active
+      family: sonar
+      model_capabilities:
+        tool_call: false
+        structured_output: true
+        reasoning: true
+        attachment: false
+      modalities:
+        input: [text]
+        output: [text]
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-07-24"
+  sdk:
+    note: "OpenAI-compatible — use openai SDK with base_url https://api.perplexity.ai; /chat/completions aliases /v1/sonar"
+    python: openai
+    typescript: openai
