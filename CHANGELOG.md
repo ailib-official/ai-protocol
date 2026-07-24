@@ -6,6 +6,8 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-ADM Wave B (perplexity / yi / baichuan)**: Promote three first-party providers from v1 to v2 with ME-001 `metadata.models` + Experimental `model_capabilities`/`modalities` (PT-ME-010 Wave B ACK). Short model lists: Sonar (`sonar` / `sonar-pro` / `sonar-reasoning-pro`), Yi (`yi-lightning` / `yi-large` / `yi-vision`), Baichuan (`Baichuan4` / `Baichuan3-Turbo` / `Baichuan3-Turbo-128k`).
+
 - **PT-ADM Wave A (xai / mistral / minimax)**: Promote three first-party providers from v1 to v2 with ME-001 `metadata.models` + Experimental `model_capabilities`/`modalities` (PT-ME-010 survey ACK).
 
 - **PT-ME-004 Model capability compliance**: `validate:arch` ME-001 baseline gate (every v2 `ai_provider` non-empty `metadata.models`); omit fixture proves capacity-only entries valid; docs clarify ads≠SoT / omit≠false.
