@@ -47,8 +47,21 @@ Default `--providers` allowlist = every v2 `category: ai_provider` id under `v2/
 
 ## Provider id aliases
 
-Examples: `zhipuai`→`zhipu`, `google`→`gemini`, `moonshotai`→`moonshot`, `x-ai`→`xai`.  
+Examples: `zhipuai`→`zhipu`, `google`→`gemini`, `moonshotai`→`moonshot`, `x-ai`→`xai`,
+`baichuan-ai`→`baichuan`, `qianfan`/`ernie`→`baidu`, `volcengine`→`doubao`, `01-ai`→`yi`,
+`jina-ai`→`jina`.
+
 See `scripts/lib/me001-oneshot-map.js` (`PROVIDER_ID_ALIASES`).
+
+### Slice routes (PT-ME-006)
+
+Some models.dev catalogs are **plan aggregators** (mixed vendors). Whole-block alias would
+pollute a first-party allowlist id. Use `PROVIDER_SLICE_ROUTES` instead — e.g. only
+`hunyuan-*` / `hy*` model ids from `tencent-coding-plan` / `tencent-tokenhub` /
+`tencent-token-plan` map to protocol `hunyuan`.
+
+Reports list `meta.allowlist_unmatched` when an allowlist id still has **zero** dump coverage
+after aliases+slices (often because models.dev has no first-party entry — not a missing alias).
 
 ## Tests
 

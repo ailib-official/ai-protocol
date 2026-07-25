@@ -82,3 +82,26 @@ test('diffAgainstManifest finds missing ids', () => {
   assert.ok(d.missing_in_manifest.includes('gpt-fixture-mini'));
   assert.ok(d.only_in_manifest.includes('gpt-4o'));
 });
+
+test('PROVIDER_ID_ALIASES maps baichuan-ai / yi / baidu synonyms', () => {
+  assert.equal(resolveProviderId('baichuan-ai'), 'baichuan');
+  assert.equal(resolveProviderId('01-ai'), 'yi');
+  assert.equal(resolveProviderId('lingyiwanwu'), 'yi');
+  assert.equal(resolveProviderId('qianfan'), 'baidu');
+  assert.equal(resolveProviderId('volcengine'), 'doubao');
+  assert.equal(resolveProviderId('jina-ai'), 'jina');
+});
+
+test('PROVIDER_SLICE_ROUTES maps hunyuan-* from tencent-coding-plan only', () => {
+  const report = buildCandidates(SNIPPET, ['hunyuan', 'baichuan', 'yi'], {
+    verifiedAt: '2026-07-25',
+  });
+  assert.ok(report.providers.hunyuan);
+  assert.ok(report.providers.hunyuan.models['hunyuan-fixture']);
+  assert.equal(report.providers.hunyuan.models['glm-should-not-map'], undefined);
+  assert.ok(report.providers.baichuan.models['Baichuan-fixture']);
+  assert.ok(report.meta.allowlist_unmatched.includes('yi'));
+  assert.ok(
+    report.meta.slice_routes_applied.some((s) => s.includes('tencent-coding-plan→hunyuan')),
+  );
+});
