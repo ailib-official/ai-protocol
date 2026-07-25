@@ -6,6 +6,8 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-ME-006 Oneshot alias + slice routes**: Expand `PROVIDER_ID_ALIASES` (baidu/doubao/yi/jina synonyms); add `PROVIDER_SLICE_ROUTES` so `hunyuan-*`/`hy*` from Tencent plan catalogs map to protocol `hunyuan` without importing mixed-vendor models. Reports emit `allowlist_unmatched` when models.dev has no coverage. Selective hunyuan thicken: `hunyuan-2.0-instruct` / `hunyuan-2.0-thinking` / `hunyuan-t1`.
+
 - **PT-ME-005 Curated short-list thicken**: Add human-picked models to 14 already-admitted v2 `ai_provider` manifests (soft cap ≤8 / provider). New entries use `verification.status: unverified` + `source: provider_catalog`. Helper: `scripts/me001-curated-thicken.js` (oneshot gap → curated merge; no cron / no auto dist write). Skipped unmatched ids: baichuan / baidu / doubao / hunyuan / jina / yi.
 
 - **PT-ADM Wave C / P2 (hunyuan / baidu / cerebras)**: Admit three P2 first-party providers to v2 with ME-001 short `metadata.models` lists. **baidu** uses Qianfan OpenAI-compat (`https://qianfan.baidubce.com/v2`) — legacy workshop wire stays v1-only. Aliases: `ernie`, `qianfan` → `baidu`.

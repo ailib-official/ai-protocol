@@ -65,5 +65,40 @@
         "limit": { "context": 1000, "output": 100 }
       }
     }
+  },
+  "tencent-coding-plan": {
+    "id": "tencent-coding-plan",
+    "name": "Tencent Coding Plan",
+    "doc": "https://example.invalid/tencent-coding-plan",
+    "models": {
+      "hunyuan-fixture": {
+        "id": "hunyuan-fixture",
+        "family": "hunyuan",
+        "tool_call": true,
+        "reasoning": false,
+        "attachment": false,
+        "modalities": { "input": ["text"], "output": ["text"] },
+        "limit": { "context": 131072, "output": 16384 }
+      },
+      "glm-should-not-map": {
+        "id": "glm-should-not-map",
+        "family": "glm",
+        "tool_call": true,
+        "modalities": { "input": ["text"], "output": ["text"] },
+        "limit": { "context": 1000, "output": 100 }
+      }
+    }
+  },
+  "baichuan-ai": {
+    "id": "baichuan-ai",
+    "name": "Baichuan",
+    "models": {
+      "Baichuan-fixture": {
+        "id": "Baichuan-fixture",
+        "tool_call": true,
+        "modalities": { "input": ["text"], "output": ["text"] },
+        "limit": { "context": 8192, "output": 2048 }
+      }
+    }
   }
 }

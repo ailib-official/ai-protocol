@@ -296,6 +296,81 @@
           "source": "official_documentation",
           "verified_at": "2026-07-25"
         }
+      },
+      "hunyuan-2.0-instruct": {
+        "context_window": 131072,
+        "max_output_tokens": 16384,
+        "status": "active",
+        "family": "hunyuan",
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-006 curated from tencent-coding-plan dump slice; confirm wire id on hunyuan OpenAI-compat endpoint"
+        }
+      },
+      "hunyuan-2.0-thinking": {
+        "context_window": 131072,
+        "max_output_tokens": 16384,
+        "status": "active",
+        "family": "hunyuan",
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-006 curated from tencent-coding-plan dump slice; confirm wire id on hunyuan OpenAI-compat endpoint"
+        }
+      },
+      "hunyuan-t1": {
+        "context_window": 131072,
+        "max_output_tokens": 16384,
+        "status": "active",
+        "family": "hunyuan",
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-006 curated from tencent-coding-plan dump slice; confirm wire id on hunyuan OpenAI-compat endpoint"
+        }
       }
     },
     "sdk": {

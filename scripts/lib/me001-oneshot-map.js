@@ -4,33 +4,102 @@
  */
 export const MODALITY_ENUM = new Set(['text', 'image', 'audio', 'video', 'pdf']);
 
-/** models.dev provider id → ai-protocol canonical id */
+/** models.dev provider id → ai-protocol canonical id (whole-block map) */
 export const PROVIDER_ID_ALIASES = {
   zhipuai: 'zhipu',
   google: 'gemini',
   'google-vertex': 'gemini',
   moonshotai: 'moonshot',
+  'moonshotai-cn': 'moonshot',
   'moonshot-ai': 'moonshot',
   'x-ai': 'xai',
   xai: 'xai',
   'alibaba-cloud': 'qwen',
   alibaba: 'qwen',
+  'alibaba-cn': 'qwen',
   dashscope: 'qwen',
   '01-ai': 'yi',
   '01ai': 'yi',
   lingyiwanwu: 'yi',
+  'lingyi-wanwu': 'yi',
   'baichuan-ai': 'baichuan',
   'baichuan-inc': 'baichuan',
+  ernie: 'baidu',
+  qianfan: 'baidu',
+  wenxin: 'baidu',
+  'baidu-qianfan': 'baidu',
+  volcengine: 'doubao',
+  'volc-engine': 'doubao',
+  byteplus: 'doubao',
+  bytedance: 'doubao',
+  ark: 'doubao',
+  'volcano-ark': 'doubao',
+  'tencent-hunyuan': 'hunyuan',
+  hunyuan: 'hunyuan',
+  'jina-ai': 'jina',
+  jinaai: 'jina',
   'perplexity-ai': 'perplexity',
   'mistral-ai': 'mistral',
   minimax: 'minimax',
   'minimax-cn': 'minimax',
 };
 
+/**
+ * Plan/aggregator blocks that are not 1:1 with a first-party protocol id.
+ * Only models matching `model_id_re` are attributed to `protocol_id`.
+ * (PT-ME-006 — models.dev often lacks baichuan/baidu/doubao/jina/yi; hunyuan
+ * appears inside Tencent Token/Coding plan catalogs.)
+ */
+export const PROVIDER_SLICE_ROUTES = [
+  {
+    models_dev_id: 'tencent-coding-plan',
+    protocol_id: 'hunyuan',
+    model_id_re: /^(hunyuan[-_]|hy\d)/i,
+  },
+  {
+    models_dev_id: 'tencent-tokenhub',
+    protocol_id: 'hunyuan',
+    model_id_re: /^(hunyuan[-_]|hy\d)/i,
+  },
+  {
+    models_dev_id: 'tencent-token-plan',
+    protocol_id: 'hunyuan',
+    model_id_re: /^(hunyuan[-_]|hy\d)/i,
+  },
+];
+
 export function resolveProviderId(modelsDevId) {
   if (!modelsDevId || typeof modelsDevId !== 'string') return null;
   const key = modelsDevId.toLowerCase();
   return PROVIDER_ID_ALIASES[key] || key;
+}
+
+function ensureProviderBucket(byProvider, protocolId, modelsDevId, block) {
+  if (!byProvider[protocolId]) {
+    byProvider[protocolId] = {
+      protocol_id: protocolId,
+      models_dev_id: modelsDevId,
+      name: block?.name || null,
+      doc: block?.doc || null,
+      models: {},
+      source_slices: [],
+    };
+  }
+  const bucket = byProvider[protocolId];
+  if (modelsDevId && !bucket.source_slices.includes(modelsDevId)) {
+    bucket.source_slices.push(modelsDevId);
+  }
+  return bucket;
+}
+
+function ingestModels(byProvider, protocolId, modelsDevId, block, models, opts, modelFilter) {
+  const bucket = ensureProviderBucket(byProvider, protocolId, modelsDevId, block);
+  for (const model of Object.values(models || {})) {
+    if (modelFilter && !modelFilter(model?.id)) continue;
+    const mapped = mapModelToCandidate(model, opts);
+    if (!mapped) continue;
+    bucket.models[mapped.modelId] = mapped.entry;
+  }
 }
 
 export function filterModalities(list) {
@@ -114,38 +183,64 @@ export function buildCandidates(apiJson, allowlist, opts = {}) {
   const allow = new Set((allowlist || []).map((s) => s.toLowerCase()));
   const byProvider = {};
   const skippedProviders = [];
+  const sliceHits = new Set();
 
   if (!apiJson || typeof apiJson !== 'object' || Array.isArray(apiJson)) {
     throw new Error('models.dev dump must be a JSON object keyed by provider id');
   }
 
+  const sliceByDevId = new Map();
+  for (const route of PROVIDER_SLICE_ROUTES) {
+    const key = route.models_dev_id.toLowerCase();
+    if (!sliceByDevId.has(key)) sliceByDevId.set(key, []);
+    sliceByDevId.get(key).push(route);
+  }
+
   for (const [rawId, block] of Object.entries(apiJson)) {
     if (rawId.startsWith('_')) continue; // fixture/meta keys
-    const canonical = resolveProviderId(rawId);
-    if (!canonical || !allow.has(canonical.toLowerCase())) {
-      skippedProviders.push({ models_dev_id: rawId, resolved: canonical, reason: 'not_in_allowlist' });
-      continue;
-    }
+    const rawKey = rawId.toLowerCase();
     const models = block?.models;
-    if (!models || typeof models !== 'object') {
-      skippedProviders.push({ models_dev_id: rawId, resolved: canonical, reason: 'no_models' });
-      continue;
+    const routes = sliceByDevId.get(rawKey) || [];
+    let ingested = false;
+
+    // Whole-block alias (skip when this dump id is only a filtered slice source)
+    const canonical = resolveProviderId(rawId);
+    const wholeBlockOk =
+      canonical &&
+      allow.has(canonical.toLowerCase()) &&
+      // Do not whole-map Tencent plan catalogs onto hunyuan (mixed vendors)
+      !routes.some((r) => r.protocol_id === canonical);
+
+    if (wholeBlockOk) {
+      if (!models || typeof models !== 'object') {
+        skippedProviders.push({ models_dev_id: rawId, resolved: canonical, reason: 'no_models' });
+      } else {
+        ingestModels(byProvider, canonical, rawId, block, models, opts, null);
+        ingested = true;
+      }
     }
-    if (!byProvider[canonical]) {
-      byProvider[canonical] = {
-        protocol_id: canonical,
+
+    for (const route of routes) {
+      if (!allow.has(route.protocol_id.toLowerCase())) continue;
+      if (!models || typeof models !== 'object') continue;
+      const re = route.model_id_re;
+      ingestModels(byProvider, route.protocol_id, rawId, block, models, opts, (id) =>
+        typeof id === 'string' && re.test(id),
+      );
+      sliceHits.add(`${rawId}→${route.protocol_id}`);
+      ingested = true;
+    }
+
+    if (!ingested) {
+      skippedProviders.push({
         models_dev_id: rawId,
-        name: block.name || null,
-        doc: block.doc || null,
-        models: {},
-      };
-    }
-    for (const model of Object.values(models)) {
-      const mapped = mapModelToCandidate(model, opts);
-      if (!mapped) continue;
-      byProvider[canonical].models[mapped.modelId] = mapped.entry;
+        resolved: canonical,
+        reason: routes.length ? 'slice_no_allowlist_hit' : 'not_in_allowlist',
+      });
     }
   }
+
+  const allowlist_unmatched = [...allow].filter((id) => !byProvider[id]);
 
   return {
     meta: {
@@ -156,6 +251,12 @@ export function buildCandidates(apiJson, allowlist, opts = {}) {
       verified_at: opts.verifiedAt || '2026-07-24',
       allowlist: [...allow],
       field_scope: 'ME-001 P0/P1 + capacity/pricing hints',
+      slice_routes_applied: [...sliceHits].sort(),
+      allowlist_unmatched,
+      note_unmatched:
+        allowlist_unmatched.length === 0
+          ? null
+          : 'Allowlist ids with zero dump coverage after aliases+slices — often absent from models.dev (not just missing aliases).',
     },
     providers: byProvider,
     skipped_outside_allowlist_count: skippedProviders.filter((s) => s.reason === 'not_in_allowlist').length,
@@ -186,11 +287,24 @@ export function renderMarkdownReport(report, diffs = {}) {
   lines.push(`- allowlist: ${report.meta.allowlist.join(', ') || '(empty)'}`);
   lines.push(`- providers matched: ${Object.keys(report.providers).length}`);
   lines.push(`- models.dev providers skipped (outside allowlist): ${report.skipped_outside_allowlist_count}`);
+  if (report.meta.slice_routes_applied?.length) {
+    lines.push(`- slice routes applied: ${report.meta.slice_routes_applied.join(', ')}`);
+  }
+  if (report.meta.allowlist_unmatched?.length) {
+    lines.push(
+      `- allowlist unmatched (no dump coverage): **${report.meta.allowlist_unmatched.join(', ')}**`,
+    );
+    if (report.meta.note_unmatched) lines.push(`  - ${report.meta.note_unmatched}`);
+  }
   lines.push('');
 
   for (const [pid, block] of Object.entries(report.providers).sort(([a], [b]) => a.localeCompare(b))) {
     const n = Object.keys(block.models).length;
-    lines.push(`## ${pid} (\`${block.models_dev_id}\`) - ${n} models`);
+    const src =
+      block.source_slices?.length > 1
+        ? block.source_slices.map((s) => `\`${s}\``).join(', ')
+        : `\`${block.models_dev_id}\``;
+    lines.push(`## ${pid} (${src}) - ${n} models`);
     if (block.doc) lines.push(`- doc: ${block.doc}`);
     const d = diffs[pid];
     if (d) {
