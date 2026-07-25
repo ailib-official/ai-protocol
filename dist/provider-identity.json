@@ -68,6 +68,29 @@
           "note": "Canonical zhipu; resolve glm → zhipu"
         }
       }
+    },
+    {
+      "canonical_id": "baidu",
+      "aliases": [
+        "ernie",
+        "qianfan"
+      ],
+      "trees": {
+        "v1": {
+          "primary_id": "baidu",
+          "file": "v1/providers/baidu.yaml",
+          "note": "v1 workshop wire; product nicknames ernie/qianfan resolve via map when hosts use identity"
+        },
+        "v2": {
+          "primary_id": "baidu",
+          "file": "v2/providers/baidu.yaml",
+          "aliases_on_manifest": [
+            "ernie",
+            "qianfan"
+          ],
+          "note": "Canonical baidu; Qianfan OpenAI-compat is the v2 wire; resolve ernie/qianfan → baidu"
+        }
+      }
     }
   ],
   "runtime_lookup": [
