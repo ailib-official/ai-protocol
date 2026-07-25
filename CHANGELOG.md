@@ -6,6 +6,8 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-ME-007 Vendor verification upgrade**: Promote curated `unverified` model entries to `verification.status: verified` + `source: official_documentation` where vendor docs confirm the wire id (31 models). Mark documented deprecations (`magistral-medium-latest`, `qwen/qwen3-32b` on Groq, `kimi-k2-thinking-turbo`). Leave 6 unverified (doubao Ark endpoint ids; hunyuan-2.0-* not on first-party list page). Helper: `scripts/me001-vendor-verify.js`.
+
 - **PT-ME-006 Oneshot alias + slice routes**: Expand `PROVIDER_ID_ALIASES` (baidu/doubao/yi/jina synonyms); add `PROVIDER_SLICE_ROUTES` so `hunyuan-*`/`hy*` from Tencent plan catalogs map to protocol `hunyuan` without importing mixed-vendor models. Reports emit `allowlist_unmatched` when models.dev has no coverage. Selective hunyuan thicken: `hunyuan-2.0-instruct` / `hunyuan-2.0-thinking` / `hunyuan-t1`.
 
 - **PT-ME-005 Curated short-list thicken**: Add human-picked models to 14 already-admitted v2 `ai_provider` manifests (soft cap ≤8 / provider). New entries use `verification.status: unverified` + `source: provider_catalog`. Helper: `scripts/me001-curated-thicken.js` (oneshot gap → curated merge; no cron / no auto dist write). Skipped unmatched ids: baichuan / baidu / doubao / hunyuan / jina / yi.

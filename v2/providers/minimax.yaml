@@ -237,12 +237,10 @@ metadata:
         input_per_1m: 0.3
         output_per_1m: 1.2
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT
+        notes: "PT-ME-007: listed on MiniMax models intro (platform.minimax.io)"
     MiniMax-M2.1:
       context_window: 204800
       max_output_tokens: 131072
@@ -262,15 +260,11 @@ metadata:
         input_per_1m: 0.3
         output_per_1m: 1.2
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT
+        notes: "PT-ME-007: listed on MiniMax models intro (platform.minimax.io)"
   sdk:
-    note: >-
-      OpenAI-compatible — use openai SDK with base_url https://api.minimax.chat/v1 (or
-      api.minimax.io/v1)
+    note: OpenAI-compatible — use openai SDK with base_url https://api.minimax.chat/v1 (or api.minimax.io/v1)
     python: openai
     typescript: openai

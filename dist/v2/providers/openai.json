@@ -602,10 +602,10 @@
           "output_per_1m": 10
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT; Still widely referenced stable multimodal id"
+          "notes": "PT-ME-007: OpenAI platform API examples / models catalog use gpt-4o"
         }
       },
       "o3-mini": {
@@ -634,10 +634,10 @@
           "output_per_1m": 4.4
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+          "notes": "PT-ME-007: OpenAI o-series model id o3-mini documented on platform.openai.com models"
         }
       }
     },

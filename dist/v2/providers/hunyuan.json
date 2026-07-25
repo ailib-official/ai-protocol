@@ -366,10 +366,10 @@
           ]
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-006 curated from tencent-coding-plan dump slice; confirm wire id on hunyuan OpenAI-compat endpoint"
+          "notes": "PT-ME-007: listed on Tencent Hunyuan model docs (cloud.tencent.com product 1729)"
         }
       }
     },

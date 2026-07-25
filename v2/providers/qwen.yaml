@@ -365,12 +365,10 @@ metadata:
         input_per_1m: 0.4
         output_per_1m: 2.4
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT
+        notes: "PT-ME-007: Model Studio vision/models tables list qwen3.5-plus (help.aliyun.com / alibabacloud)"
     qwen3-vl-plus:
       context_window: 262144
       max_output_tokens: 32768
@@ -392,9 +390,7 @@ metadata:
         input_per_1m: 0.2
         output_per_1m: 1.6
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT
+        notes: "PT-ME-007: Model Studio vision tables list qwen3-vl-plus (help.aliyun.com / alibabacloud)"

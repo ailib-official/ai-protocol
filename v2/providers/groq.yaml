@@ -229,16 +229,14 @@ metadata:
         input_per_1m: 0.15
         output_per_1m: 0.6
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT; Hosted open-weight OSS on Groq
+        notes: "PT-ME-007: listed on Groq supported models / reasoning docs"
     qwen/qwen3-32b:
       context_window: 131072
       max_output_tokens: 40960
-      status: active
+      status: deprecated
       family: qwen3
       open_weights: true
       model_capabilities:
@@ -254,12 +252,10 @@ metadata:
         input_per_1m: 0.29
         output_per_1m: 0.59
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT
+        notes: "PT-ME-007: documented on Groq deprecations (shutdown 2026-07-17); keep id for migration notes"
   sdk:
     note: OpenAI-compatible — use openai SDK with base_url override
     python: openai

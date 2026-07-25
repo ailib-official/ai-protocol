@@ -236,12 +236,10 @@ metadata:
         input_per_1m: 2.25
         output_per_1m: 2.75
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT; Cerebras Preview catalog; may rotate
+        notes: "PT-ME-007: listed on Cerebras inference models overview"
   sdk:
     note: OpenAI-compatible — use openai SDK with base_url https://api.cerebras.ai/v1
     python: openai
