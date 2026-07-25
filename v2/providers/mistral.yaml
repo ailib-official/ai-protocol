@@ -1,49 +1,44 @@
-# Mistral AI — AI-Protocol V2 (PT-ADM-002 Wave A)
-# OpenAI-compatible chat; models annotated Experimental (ME-001).
-$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
-
+$schema: https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json
 id: mistral
 protocol_version: "2.0"
-name: "Mistral AI"
-version: "1.0.0"
+name: Mistral AI
+version: 1.0.0
 status: stable
 category: ai_provider
-official_url: "https://docs.mistral.ai"
-support_contact: "https://mistral.ai/contact"
-
+official_url: https://docs.mistral.ai
+support_contact: https://mistral.ai/contact
 endpoint:
-  base_url: "https://api.mistral.ai/v1"
-  chat: "/chat/completions"
+  base_url: https://api.mistral.ai/v1
+  chat: /chat/completions
   auth:
-    type: "bearer"
-    header: "Authorization"
-    prefix: "Bearer"
-    token_env: "MISTRAL_API_KEY"
-
+    type: bearer
+    header: Authorization
+    prefix: Bearer
+    token_env: MISTRAL_API_KEY
 error_classification:
   by_http_status:
-    "400": "invalid_request"
-    "401": "authentication"
-    "403": "permission_denied"
-    "404": "not_found"
-    "429": "rate_limited"
-    "500": "server_error"
-    "503": "overloaded"
+    "400": invalid_request
+    "401": authentication
+    "403": permission_denied
+    "404": not_found
+    "429": rate_limited
+    "500": server_error
+    "503": overloaded
   by_error_code:
-    "context_length_exceeded": "request_too_large"
-    "model_not_found": "not_found"
-    "rate_limit_exceeded": "rate_limited"
-
+    context_length_exceeded: request_too_large
+    model_not_found: not_found
+    rate_limit_exceeded: rate_limited
 availability:
   required: false
   regions:
     - global
   check:
     method: GET
-    path: "/models"
-    expected_status: [200, 401]
+    path: /models
+    expected_status:
+      - 200
+      - 401
     timeout_ms: 3000
-
 capabilities:
   required:
     - text
@@ -62,54 +57,78 @@ capabilities:
   tool_calling:
     native:
       supported: true
-      reliability: "full"
+      reliability: full
       parallel: true
       streaming: true
-      notes: "OpenAI-compatible tool_calls"
+      notes: OpenAI-compatible tool_calls
     text_fallback: null
-
 parameters:
-  temperature: { type: float, range: [0.0, 1.5], default: 0.7 }
-  max_tokens: { type: integer, min: 1, max: 131072 }
-  top_p: { type: float, range: [0.0, 1.0] }
-  stream: { type: boolean }
-  frequency_penalty: { type: float, range: [-2.0, 2.0] }
-  presence_penalty: { type: float, range: [-2.0, 2.0] }
-
+  temperature:
+    type: float
+    range:
+      - 0
+      - 1.5
+    default: 0.7
+  max_tokens:
+    type: integer
+    min: 1
+    max: 131072
+  top_p:
+    type: float
+    range:
+      - 0
+      - 1
+  stream:
+    type: boolean
+  frequency_penalty:
+    type: float
+    range:
+      - -2
+      - 2
+  presence_penalty:
+    type: float
+    range:
+      - -2
+      - 2
 streaming:
   decoder:
-    format: "sse"
-    strategy: "openai_chat"
+    format: sse
+    strategy: openai_chat
     done_signal: "[DONE]"
     prefix: "data: "
-  content_path: "$.choices[0].delta.content"
-  tool_call_path: "$.choices[0].delta.tool_calls"
-  usage_path: "$.usage"
+  content_path: $.choices[0].delta.content
+  tool_call_path: $.choices[0].delta.tool_calls
+  usage_path: $.usage
   event_map:
-    - match: "exists($.choices[*].delta.content)"
-      emit: "PartialContentDelta"
+    - match: exists($.choices[*].delta.content)
+      emit: PartialContentDelta
       fields:
-        content: "$.choices[*].delta.content"
-    - match: "exists($.choices[*].delta.tool_calls)"
-      emit: "PartialToolCall"
+        content: $.choices[*].delta.content
+    - match: exists($.choices[*].delta.tool_calls)
+      emit: PartialToolCall
       fields:
-        tool_calls: "$.choices[*].delta.tool_calls"
-    - match: "exists($.usage)"
-      emit: "Metadata"
+        tool_calls: $.choices[*].delta.tool_calls
+    - match: exists($.usage)
+      emit: Metadata
       fields:
-        usage: "$.usage"
-    - match: "$.choices[*].finish_reason != null"
-      emit: "StreamEnd"
+        usage: $.usage
+    - match: $.choices[*].finish_reason != null
+      emit: StreamEnd
       fields:
-        finish_reason: "$.choices[*].finish_reason"
-  stop_condition: "$.choices[0].finish_reason != null"
-
+        finish_reason: $.choices[*].finish_reason
+  stop_condition: $.choices[0].finish_reason != null
 multimodal:
   input:
     vision:
       supported: true
-      formats: [jpeg, png, gif, webp]
-      encoding_methods: [base64_inline, url]
+      formats:
+        - jpeg
+        - png
+        - gif
+        - webp
+      encoding_methods:
+        - base64_inline
+        - url
     audio:
       supported: false
     video:
@@ -120,39 +139,37 @@ multimodal:
       supported: false
     image:
       supported: false
-
 api_families:
   - chat_completions
 default_api_family: chat_completions
-
 endpoints:
   chat:
-    path: "/chat/completions"
-    method: "POST"
-    adapter: "openai"
-
+    path: /chat/completions
+    method: POST
+    adapter: openai
 services:
   list_models:
-    path: "/models"
-    method: "GET"
-    response_binding: "data"
-
+    path: /models
+    method: GET
+    response_binding: data
 retry_policy:
-  strategy: "exponential_backoff"
+  strategy: exponential_backoff
   max_retries: 3
   min_delay_ms: 1000
   max_delay_ms: 30000
-  jitter: "full"
-  retry_on_http_status: [429, 500, 502, 503]
-
+  jitter: full
+  retry_on_http_status:
+    - 429
+    - 500
+    - 502
+    - 503
 termination:
-  source_field: "finish_reason"
+  source_field: finish_reason
   mapping:
-    stop: "end_turn"
-    length: "max_tokens"
-    tool_calls: "tool_use"
-    content_filter: "refusal"
-
+    stop: end_turn
+    length: max_tokens
+    tool_calls: tool_use
+    content_filter: refusal
 metadata:
   api_compatibility: openai
   models:
@@ -167,8 +184,11 @@ metadata:
         reasoning: false
         attachment: true
       modalities:
-        input: [text, image]
-        output: [text]
+        input:
+          - text
+          - image
+        output:
+          - text
       verification:
         status: verified
         source: official_documentation
@@ -184,8 +204,10 @@ metadata:
         reasoning: false
         attachment: false
       modalities:
-        input: [text]
-        output: [text]
+        input:
+          - text
+        output:
+          - text
       verification:
         status: verified
         source: official_documentation
@@ -201,13 +223,95 @@ metadata:
         reasoning: false
         attachment: false
       modalities:
-        input: [text]
-        output: [text]
+        input:
+          - text
+        output:
+          - text
       verification:
         status: verified
         source: official_documentation
         verified_at: "2026-07-24"
+    magistral-medium-latest:
+      context_window: 128000
+      max_output_tokens: 16384
+      status: active
+      family: magistral-medium
+      knowledge_cutoff: 2025-06
+      open_weights: true
+      model_capabilities:
+        tool_call: true
+        reasoning: true
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      pricing:
+        input_per_1m: 2
+        output_per_1m: 5
+      verification:
+        status: unverified
+        source: provider_catalog
+        verified_at: "2026-07-25"
+        notes: >-
+          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
+          strong SoT
+    pixtral-large-latest:
+      context_window: 128000
+      max_output_tokens: 128000
+      status: active
+      family: pixtral
+      knowledge_cutoff: 2024-11
+      open_weights: true
+      model_capabilities:
+        tool_call: true
+        reasoning: false
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+        output:
+          - text
+      pricing:
+        input_per_1m: 2
+        output_per_1m: 6
+      verification:
+        status: unverified
+        source: provider_catalog
+        verified_at: "2026-07-25"
+        notes: >-
+          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
+          strong SoT
+    mistral-medium-latest:
+      context_window: 262144
+      max_output_tokens: 262144
+      status: active
+      family: mistral-medium
+      open_weights: true
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+        output:
+          - text
+      pricing:
+        input_per_1m: 1.5
+        output_per_1m: 7.5
+      verification:
+        status: unverified
+        source: provider_catalog
+        verified_at: "2026-07-25"
+        notes: >-
+          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
+          strong SoT
   sdk:
-    note: "OpenAI-compatible — use openai SDK with base_url https://api.mistral.ai/v1"
+    note: OpenAI-compatible — use openai SDK with base_url https://api.mistral.ai/v1
     python: openai
     typescript: openai

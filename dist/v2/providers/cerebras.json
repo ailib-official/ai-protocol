@@ -289,6 +289,37 @@
           "verified_at": "2026-07-25",
           "notes": "Widely used; check Cerebras deprecation calendar for migration to gpt-oss-120b"
         }
+      },
+      "zai-glm-4.7": {
+        "context_window": 131072,
+        "max_output_tokens": 40960,
+        "status": "public_preview",
+        "family": "glm",
+        "open_weights": true,
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 2.25,
+          "output_per_1m": 2.75
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT; Cerebras Preview catalog; may rotate"
+        }
       }
     },
     "sdk": {

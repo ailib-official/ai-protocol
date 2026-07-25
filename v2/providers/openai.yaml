@@ -438,6 +438,62 @@ metadata:
         status: verified
         source: official_documentation
         verified_at: "2026-07-24"
+    gpt-4o:
+      context_window: 128000
+      max_output_tokens: 16384
+      status: active
+      family: gpt-4o
+      knowledge_cutoff: 2023-09
+      open_weights: false
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: false
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+          - pdf
+        output:
+          - text
+      pricing:
+        input_per_1m: 2.5
+        output_per_1m: 10
+      verification:
+        status: unverified
+        source: provider_catalog
+        verified_at: "2026-07-25"
+        notes: >-
+          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
+          strong SoT; Still widely referenced stable multimodal id
+    o3-mini:
+      context_window: 200000
+      max_output_tokens: 100000
+      status: active
+      family: o-mini
+      knowledge_cutoff: 2024-05
+      open_weights: false
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      pricing:
+        input_per_1m: 1.1
+        output_per_1m: 4.4
+      verification:
+        status: unverified
+        source: provider_catalog
+        verified_at: "2026-07-25"
+        notes: >-
+          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
+          strong SoT
   sdk:
     python: openai
     typescript: openai

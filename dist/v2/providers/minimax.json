@@ -292,6 +292,66 @@
           "source": "official_documentation",
           "verified_at": "2026-07-24"
         }
+      },
+      "MiniMax-M2.7": {
+        "context_window": 204800,
+        "max_output_tokens": 131072,
+        "status": "active",
+        "family": "minimax-m2",
+        "open_weights": true,
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 0.3,
+          "output_per_1m": 1.2
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
+      },
+      "MiniMax-M2.1": {
+        "context_window": 204800,
+        "max_output_tokens": 131072,
+        "status": "active",
+        "family": "minimax-m2",
+        "open_weights": true,
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 0.3,
+          "output_per_1m": 1.2
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
       }
     },
     "sdk": {

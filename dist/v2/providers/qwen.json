@@ -452,6 +452,71 @@
           "verified_at": "2026-07-24",
           "notes": "PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs"
         }
+      },
+      "qwen3.5-plus": {
+        "context_window": 1000000,
+        "max_output_tokens": 65536,
+        "status": "active",
+        "family": "qwen3.5",
+        "knowledge_cutoff": "2025-04",
+        "open_weights": false,
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "video"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 0.4,
+          "output_per_1m": 2.4
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
+      },
+      "qwen3-vl-plus": {
+        "context_window": 262144,
+        "max_output_tokens": 32768,
+        "status": "active",
+        "family": "qwen3-vl",
+        "knowledge_cutoff": "2025-04",
+        "open_weights": false,
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 0.2,
+          "output_per_1m": 1.6
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
       }
     }
   }

@@ -6,6 +6,8 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-ME-005 Curated short-list thicken**: Add human-picked models to 14 already-admitted v2 `ai_provider` manifests (soft cap ≤8 / provider). New entries use `verification.status: unverified` + `source: provider_catalog`. Helper: `scripts/me001-curated-thicken.js` (oneshot gap → curated merge; no cron / no auto dist write). Skipped unmatched ids: baichuan / baidu / doubao / hunyuan / jina / yi.
+
 - **PT-ADM Wave C / P2 (hunyuan / baidu / cerebras)**: Admit three P2 first-party providers to v2 with ME-001 short `metadata.models` lists. **baidu** uses Qianfan OpenAI-compat (`https://qianfan.baidubce.com/v2`) — legacy workshop wire stays v1-only. Aliases: `ernie`, `qianfan` → `baidu`.
 
 - **PT-ME-002 Oneshot candidate pipeline**: Offline helper `scripts/me001-oneshot-candidate.js` (+ `scripts/lib/me001-oneshot-map.js`) maps a **local** models.dev-style dump to advisory ME-001 `metadata.models` candidates (allowlist, P0/P1 only, no `dist/` write, no cron). Docs: [`docs/ME001_ONESHOT_CANDIDATE.md`](docs/ME001_ONESHOT_CANDIDATE.md); fixture + `node --test` mapping tests.

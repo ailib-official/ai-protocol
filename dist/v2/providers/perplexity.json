@@ -285,6 +285,37 @@
           "source": "official_documentation",
           "verified_at": "2026-07-24"
         }
+      },
+      "sonar-deep-research": {
+        "context_window": 128000,
+        "max_output_tokens": 32768,
+        "status": "active",
+        "family": "sonar",
+        "knowledge_cutoff": "2025-01",
+        "open_weights": false,
+        "model_capabilities": {
+          "tool_call": false,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 2,
+          "output_per_1m": 8
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
       }
     },
     "sdk": {
