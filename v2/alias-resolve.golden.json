@@ -16,6 +16,9 @@
     { "input": "moonshot", "canonical": "moonshot" },
     { "input": "glm", "canonical": "zhipu" },
     { "input": "zhipu", "canonical": "zhipu" },
+    { "input": "ernie", "canonical": "baidu" },
+    { "input": "qianfan", "canonical": "baidu" },
+    { "input": "baidu", "canonical": "baidu" },
     { "input": "openai", "canonical": null },
     { "input": "Google", "canonical": null },
     { "input": "GOOGLE", "canonical": null }
