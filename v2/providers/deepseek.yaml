@@ -66,9 +66,7 @@ capabilities:
       reliability: partial
       parallel: true
       streaming: true
-      notes: >-
-        DeepSeek native tool calling is unreliable — LLM often outputs <shell> instead; text
-        fallback required
+      notes: DeepSeek native tool calling is unreliable — LLM often outputs <shell> instead; text fallback required
     text_fallback:
       format: xml_json
       wrapper: tool_call
@@ -299,12 +297,10 @@ metadata:
         output_per_1m: 0.28
         cache_read_per_1m: 0.0028
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT; API alias still widely used alongside deepseek-v4-*
+        notes: "PT-ME-007: listed on DeepSeek API pricing docs (api-docs.deepseek.com)"
     deepseek-reasoner:
       context_window: 1000000
       max_output_tokens: 384000
@@ -326,12 +322,10 @@ metadata:
         output_per_1m: 0.28
         cache_read_per_1m: 0.0028
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT
+        notes: "PT-ME-007: listed on DeepSeek API pricing docs (api-docs.deepseek.com)"
   deprecated:
     deepseek-chat:
       retired_on: "2026-07-24"
@@ -342,8 +336,6 @@ metadata:
       maps_to: deepseek-v4-flash (thinking mode)
       note: Use deepseek-v4-flash with thinking mode instead
   sdk:
-    note: >-
-      OpenAI-compatible — use openai SDK with base_url override. Also supports Anthropic Messages
-      API format.
+    note: OpenAI-compatible — use openai SDK with base_url override. Also supports Anthropic Messages API format.
     python: openai
     typescript: openai

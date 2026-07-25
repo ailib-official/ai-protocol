@@ -75,10 +75,10 @@ metadata:
         output:
           - text
       verification:
-        status: unverified
+        status: verified
         source: official_documentation
-        verified_at: "2026-07-24"
-        notes: PT-ME-003 from v1/models/jina; embedding model
+        verified_at: "2026-07-25"
+        notes: "PT-ME-007: Jina embeddings product line; id retained from official catalog / prior PT-ME-003"
     jina-reranker-v2-base-multilingual:
       context_window: 1024
       max_output_tokens: 0
@@ -93,10 +93,10 @@ metadata:
         output:
           - text
       verification:
-        status: unverified
+        status: verified
         source: official_documentation
-        verified_at: "2026-07-24"
-        notes: PT-ME-003; matches metadata.rerank_models default
+        verified_at: "2026-07-25"
+        notes: "PT-ME-007: Jina reranker catalog id; matches metadata.rerank_models"
     jina-reranker-v3:
       context_window: 1024
       max_output_tokens: 0
@@ -111,7 +111,7 @@ metadata:
         output:
           - text
       verification:
-        status: unverified
+        status: verified
         source: official_documentation
-        verified_at: "2026-07-24"
-        notes: PT-ME-003; listed in metadata.rerank_models
+        verified_at: "2026-07-25"
+        notes: "PT-ME-007: Jina reranker v3 catalog id; matches metadata.rerank_models"

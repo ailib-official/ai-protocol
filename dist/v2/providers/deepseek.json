@@ -401,10 +401,10 @@
           "cache_read_per_1m": 0.0028
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT; API alias still widely used alongside deepseek-v4-*"
+          "notes": "PT-ME-007: listed on DeepSeek API pricing docs (api-docs.deepseek.com)"
         }
       },
       "deepseek-reasoner": {
@@ -433,10 +433,10 @@
           "cache_read_per_1m": 0.0028
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+          "notes": "PT-ME-007: listed on DeepSeek API pricing docs (api-docs.deepseek.com)"
         }
       }
     },

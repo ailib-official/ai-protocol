@@ -590,10 +590,10 @@
           "output_per_1m": 9
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+          "notes": "PT-ME-007: model code on Google AI docs (ai.google.dev/gemini-api/docs/models/gemini-3.5-flash)"
         }
       },
       "gemini-3.5-flash-lite": {
@@ -626,10 +626,10 @@
           "output_per_1m": 2.5
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+          "notes": "PT-ME-007: model code on Google AI docs (ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite)"
         }
       }
     },

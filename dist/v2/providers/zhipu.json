@@ -439,10 +439,10 @@
           "output_per_1m": 2.2
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+          "notes": "PT-ME-007: listed on Z.AI / Zhipu pricing docs (docs.z.ai)"
         }
       },
       "glm-4.6v": {
@@ -472,10 +472,10 @@
           "output_per_1m": 0.9
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+          "notes": "PT-ME-007: listed on Z.AI / Zhipu pricing docs (docs.z.ai)"
         }
       }
     },

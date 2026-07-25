@@ -259,12 +259,10 @@ metadata:
         output_per_1m: 2.5
         cache_read_per_1m: 0.2
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT
+        notes: "PT-ME-007: docs.x.ai/developers/models/grok-4.20-0309-reasoning"
     grok-4.20-0309-non-reasoning:
       context_window: 1000000
       max_output_tokens: 30000
@@ -288,12 +286,10 @@ metadata:
         output_per_1m: 2.5
         cache_read_per_1m: 0.2
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT
+        notes: "PT-ME-007: xAI Grok 4.20 family model id (non-reasoning variant) on docs.x.ai models"
   sdk:
     note: OpenAI-compatible — use openai SDK with base_url https://api.x.ai/v1
     python: openai

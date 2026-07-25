@@ -313,7 +313,7 @@
       "magistral-medium-latest": {
         "context_window": 128000,
         "max_output_tokens": 16384,
-        "status": "active",
+        "status": "deprecated",
         "family": "magistral-medium",
         "knowledge_cutoff": "2025-06",
         "open_weights": true,
@@ -335,10 +335,10 @@
           "output_per_1m": 5
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+          "notes": "PT-ME-007: documented on Mistral native-reasoning page as deprecated; migrate to mistral-medium-3-5"
         }
       },
       "pixtral-large-latest": {
@@ -367,10 +367,10 @@
           "output_per_1m": 6
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+          "notes": "PT-ME-007: Pixtral Large documented on Mistral vision docs (pixtral-large-latest alias family)"
         }
       },
       "mistral-medium-latest": {
@@ -399,10 +399,10 @@
           "output_per_1m": 7.5
         },
         "verification": {
-          "status": "unverified",
-          "source": "provider_catalog",
+          "status": "verified",
+          "source": "official_documentation",
           "verified_at": "2026-07-25",
-          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+          "notes": "PT-ME-007: Mistral medium-latest alias documented in Mistral models/changelog docs"
         }
       }
     },

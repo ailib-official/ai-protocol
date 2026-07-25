@@ -223,12 +223,10 @@ metadata:
         input_per_1m: 0.15
         output_per_1m: 0.6
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT
+        notes: "PT-ME-007: listed on Cohere models docs (docs.cohere.com)"
     c4ai-aya-vision-8b:
       context_window: 16000
       max_output_tokens: 4000
@@ -246,9 +244,7 @@ metadata:
         output:
           - text
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT
+        notes: "PT-ME-007: listed on Cohere models docs (docs.cohere.com)"

@@ -357,12 +357,10 @@ metadata:
         input_per_1m: 5
         output_per_1m: 25
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT; Common API id alongside newer claude-opus-4-8 pin
+        notes: "PT-ME-007: Claude API alias confirmed on Anthropic models overview (aliases to dated snapshot)"
     claude-sonnet-4-5:
       context_window: 1000000
       max_output_tokens: 64000
@@ -386,12 +384,10 @@ metadata:
         input_per_1m: 3
         output_per_1m: 15
       verification:
-        status: unverified
-        source: provider_catalog
+        status: verified
+        source: official_documentation
         verified_at: "2026-07-25"
-        notes: >-
-          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
-          strong SoT
+        notes: "PT-ME-007: Claude API alias confirmed on Anthropic models overview (aliases to dated snapshot)"
   context_management:
     long_context_beta: context-1m-2025-08-07
     compaction_api: true
