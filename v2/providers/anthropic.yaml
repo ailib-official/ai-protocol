@@ -334,6 +334,64 @@ metadata:
         status: verified
         source: official_documentation
         verified_at: "2026-07-24"
+    claude-opus-4-5:
+      context_window: 200000
+      max_output_tokens: 64000
+      status: active
+      family: claude-opus
+      knowledge_cutoff: 2025-05
+      open_weights: false
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+          - pdf
+        output:
+          - text
+      pricing:
+        input_per_1m: 5
+        output_per_1m: 25
+      verification:
+        status: unverified
+        source: provider_catalog
+        verified_at: "2026-07-25"
+        notes: >-
+          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
+          strong SoT; Common API id alongside newer claude-opus-4-8 pin
+    claude-sonnet-4-5:
+      context_window: 1000000
+      max_output_tokens: 64000
+      status: active
+      family: claude-sonnet
+      knowledge_cutoff: "2025-07-31"
+      open_weights: false
+      model_capabilities:
+        tool_call: true
+        structured_output: true
+        reasoning: true
+        attachment: true
+      modalities:
+        input:
+          - text
+          - image
+          - pdf
+        output:
+          - text
+      pricing:
+        input_per_1m: 3
+        output_per_1m: 15
+      verification:
+        status: unverified
+        source: provider_catalog
+        verified_at: "2026-07-25"
+        notes: >-
+          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
+          strong SoT
   context_management:
     long_context_beta: context-1m-2025-08-07
     compaction_api: true

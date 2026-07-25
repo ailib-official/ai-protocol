@@ -314,6 +314,74 @@
           "source": "official_documentation",
           "verified_at": "2026-07-24"
         }
+      },
+      "grok-4.20-0309-reasoning": {
+        "context_window": 1000000,
+        "max_output_tokens": 30000,
+        "status": "active",
+        "family": "grok-4",
+        "open_weights": false,
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "pdf"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 1.25,
+          "output_per_1m": 2.5,
+          "cache_read_per_1m": 0.2
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
+      },
+      "grok-4.20-0309-non-reasoning": {
+        "context_window": 1000000,
+        "max_output_tokens": 30000,
+        "status": "active",
+        "family": "grok-4",
+        "open_weights": false,
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": false,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "pdf"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 1.25,
+          "output_per_1m": 2.5,
+          "cache_read_per_1m": 0.2
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
       }
     },
     "sdk": {

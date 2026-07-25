@@ -269,6 +269,64 @@
           "verified_at": "2026-07-24",
           "notes": "PT-ME-003 baseline; cross-checked with public catalog / v1 models / official docs"
         }
+      },
+      "command-r-08-2024": {
+        "context_window": 128000,
+        "max_output_tokens": 4000,
+        "status": "active",
+        "family": "command-r",
+        "knowledge_cutoff": "2024-06-01",
+        "open_weights": true,
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 0.15,
+          "output_per_1m": 0.6
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
+      },
+      "c4ai-aya-vision-8b": {
+        "context_window": 16000,
+        "max_output_tokens": 4000,
+        "status": "active",
+        "family": "aya",
+        "open_weights": true,
+        "model_capabilities": {
+          "tool_call": false,
+          "reasoning": false,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
       }
     }
   }

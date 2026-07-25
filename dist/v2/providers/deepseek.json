@@ -374,6 +374,70 @@
           "source": "official_documentation",
           "verified_at": "2026-07-23"
         }
+      },
+      "deepseek-chat": {
+        "context_window": 1000000,
+        "max_output_tokens": 384000,
+        "status": "active",
+        "family": "deepseek",
+        "knowledge_cutoff": "2025-09",
+        "open_weights": true,
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 0.14,
+          "output_per_1m": 0.28,
+          "cache_read_per_1m": 0.0028
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT; API alias still widely used alongside deepseek-v4-*"
+        }
+      },
+      "deepseek-reasoner": {
+        "context_window": 1000000,
+        "max_output_tokens": 384000,
+        "status": "active",
+        "family": "deepseek-thinking",
+        "knowledge_cutoff": "2025-09",
+        "open_weights": true,
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 0.14,
+          "output_per_1m": 0.28,
+          "cache_read_per_1m": 0.0028
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
       }
     },
     "deprecated": {

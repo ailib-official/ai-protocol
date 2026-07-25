@@ -559,6 +559,78 @@
           "source": "official_documentation",
           "verified_at": "2026-07-24"
         }
+      },
+      "gemini-3.5-flash": {
+        "context_window": 1048576,
+        "max_output_tokens": 65536,
+        "status": "active",
+        "family": "gemini-flash",
+        "knowledge_cutoff": "2025-01",
+        "open_weights": false,
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "video",
+            "audio",
+            "pdf"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 1.5,
+          "output_per_1m": 9
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
+      },
+      "gemini-3.5-flash-lite": {
+        "context_window": 1048576,
+        "max_output_tokens": 65536,
+        "status": "active",
+        "family": "gemini-flash-lite",
+        "knowledge_cutoff": "2026-03",
+        "open_weights": false,
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": true
+        },
+        "modalities": {
+          "input": [
+            "text",
+            "image",
+            "video",
+            "audio",
+            "pdf"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 0.3,
+          "output_per_1m": 2.5
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
       }
     },
     "context_caching": {

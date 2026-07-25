@@ -1,40 +1,33 @@
-# MiniMax — AI-Protocol V2 (PT-ADM-003 Wave A)
-# OpenAI-compatible chat; models annotated Experimental (ME-001).
-# Endpoint keeps v1 wire `api.minimax.chat` (also documented as api.minimax.io).
-$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json"
-
+$schema: https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/provider.json
 id: minimax
 protocol_version: "2.0"
-name: "MiniMax"
-version: "1.0.0"
+name: MiniMax
+version: 1.0.0
 status: stable
 category: ai_provider
-official_url: "https://platform.minimax.io/docs/guides/text-generation"
-support_contact: "https://www.minimaxi.com/contact"
-
+official_url: https://platform.minimax.io/docs/guides/text-generation
+support_contact: https://www.minimaxi.com/contact
 endpoint:
-  base_url: "https://api.minimax.chat/v1"
-  chat: "/chat/completions"
+  base_url: https://api.minimax.chat/v1
+  chat: /chat/completions
   auth:
-    type: "bearer"
-    header: "Authorization"
-    prefix: "Bearer"
-    token_env: "MINIMAX_API_KEY"
-
+    type: bearer
+    header: Authorization
+    prefix: Bearer
+    token_env: MINIMAX_API_KEY
 error_classification:
   by_http_status:
-    "400": "invalid_request"
-    "401": "authentication"
-    "403": "permission_denied"
-    "404": "not_found"
-    "429": "rate_limited"
-    "500": "server_error"
-    "503": "overloaded"
+    "400": invalid_request
+    "401": authentication
+    "403": permission_denied
+    "404": not_found
+    "429": rate_limited
+    "500": server_error
+    "503": overloaded
   by_error_code:
-    "context_length_exceeded": "request_too_large"
-    "model_not_found": "not_found"
-    "rate_limit_exceeded": "rate_limited"
-
+    context_length_exceeded: request_too_large
+    model_not_found: not_found
+    rate_limit_exceeded: rate_limited
 availability:
   required: false
   regions:
@@ -42,10 +35,11 @@ availability:
     - global
   check:
     method: GET
-    path: "/models"
-    expected_status: [200, 401]
+    path: /models
+    expected_status:
+      - 200
+      - 401
     timeout_ms: 5000
-
 capabilities:
   required:
     - text
@@ -63,52 +57,68 @@ capabilities:
   tool_calling:
     native:
       supported: true
-      reliability: "full"
+      reliability: full
       parallel: true
       streaming: true
-      notes: "OpenAI-compatible tool_calls"
+      notes: OpenAI-compatible tool_calls
     text_fallback: null
-
 parameters:
-  temperature: { type: float, range: [0.0, 2.0], default: 1.0 }
-  max_tokens: { type: integer, min: 1, max: 131072 }
-  top_p: { type: float, range: [0.0, 1.0] }
-  stream: { type: boolean }
-
+  temperature:
+    type: float
+    range:
+      - 0
+      - 2
+    default: 1
+  max_tokens:
+    type: integer
+    min: 1
+    max: 131072
+  top_p:
+    type: float
+    range:
+      - 0
+      - 1
+  stream:
+    type: boolean
 streaming:
   decoder:
-    format: "sse"
-    strategy: "openai_chat"
+    format: sse
+    strategy: openai_chat
     done_signal: "[DONE]"
     prefix: "data: "
-  content_path: "$.choices[0].delta.content"
-  tool_call_path: "$.choices[0].delta.tool_calls"
-  usage_path: "$.usage"
+  content_path: $.choices[0].delta.content
+  tool_call_path: $.choices[0].delta.tool_calls
+  usage_path: $.usage
   event_map:
-    - match: "exists($.choices[*].delta.content)"
-      emit: "PartialContentDelta"
+    - match: exists($.choices[*].delta.content)
+      emit: PartialContentDelta
       fields:
-        content: "$.choices[*].delta.content"
-    - match: "exists($.choices[*].delta.tool_calls)"
-      emit: "PartialToolCall"
+        content: $.choices[*].delta.content
+    - match: exists($.choices[*].delta.tool_calls)
+      emit: PartialToolCall
       fields:
-        tool_calls: "$.choices[*].delta.tool_calls"
-    - match: "exists($.usage)"
-      emit: "Metadata"
+        tool_calls: $.choices[*].delta.tool_calls
+    - match: exists($.usage)
+      emit: Metadata
       fields:
-        usage: "$.usage"
-    - match: "$.choices[*].finish_reason != null"
-      emit: "StreamEnd"
+        usage: $.usage
+    - match: $.choices[*].finish_reason != null
+      emit: StreamEnd
       fields:
-        finish_reason: "$.choices[*].finish_reason"
-  stop_condition: "$.choices[0].finish_reason != null"
-
+        finish_reason: $.choices[*].finish_reason
+  stop_condition: $.choices[0].finish_reason != null
 multimodal:
   input:
     vision:
       supported: true
-      formats: [jpeg, png, gif, webp]
-      encoding_methods: [base64_inline, url]
+      formats:
+        - jpeg
+        - png
+        - gif
+        - webp
+      encoding_methods:
+        - base64_inline
+        - url
     audio:
       supported: false
     video:
@@ -119,39 +129,37 @@ multimodal:
       supported: false
     image:
       supported: false
-
 api_families:
   - chat_completions
 default_api_family: chat_completions
-
 endpoints:
   chat:
-    path: "/chat/completions"
-    method: "POST"
-    adapter: "openai"
-
+    path: /chat/completions
+    method: POST
+    adapter: openai
 services:
   list_models:
-    path: "/models"
-    method: "GET"
-    response_binding: "data"
-
+    path: /models
+    method: GET
+    response_binding: data
 retry_policy:
-  strategy: "exponential_backoff"
+  strategy: exponential_backoff
   max_retries: 3
   min_delay_ms: 1000
   max_delay_ms: 30000
-  jitter: "full"
-  retry_on_http_status: [429, 500, 502, 503]
-
+  jitter: full
+  retry_on_http_status:
+    - 429
+    - 500
+    - 502
+    - 503
 termination:
-  source_field: "finish_reason"
+  source_field: finish_reason
   mapping:
-    stop: "end_turn"
-    length: "max_tokens"
-    tool_calls: "tool_use"
-    content_filter: "refusal"
-
+    stop: end_turn
+    length: max_tokens
+    tool_calls: tool_use
+    content_filter: refusal
 metadata:
   api_compatibility: openai
   models:
@@ -165,8 +173,10 @@ metadata:
         reasoning: true
         attachment: false
       modalities:
-        input: [text]
-        output: [text]
+        input:
+          - text
+        output:
+          - text
       verification:
         status: verified
         source: official_documentation
@@ -181,8 +191,10 @@ metadata:
         reasoning: true
         attachment: false
       modalities:
-        input: [text]
-        output: [text]
+        input:
+          - text
+        output:
+          - text
       verification:
         status: verified
         source: official_documentation
@@ -197,13 +209,68 @@ metadata:
         reasoning: true
         attachment: true
       modalities:
-        input: [text, image]
-        output: [text]
+        input:
+          - text
+          - image
+        output:
+          - text
       verification:
         status: verified
         source: official_documentation
         verified_at: "2026-07-24"
+    MiniMax-M2.7:
+      context_window: 204800
+      max_output_tokens: 131072
+      status: active
+      family: minimax-m2
+      open_weights: true
+      model_capabilities:
+        tool_call: true
+        reasoning: true
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      pricing:
+        input_per_1m: 0.3
+        output_per_1m: 1.2
+      verification:
+        status: unverified
+        source: provider_catalog
+        verified_at: "2026-07-25"
+        notes: >-
+          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
+          strong SoT
+    MiniMax-M2.1:
+      context_window: 204800
+      max_output_tokens: 131072
+      status: active
+      family: minimax-m2
+      open_weights: true
+      model_capabilities:
+        tool_call: true
+        reasoning: true
+        attachment: false
+      modalities:
+        input:
+          - text
+        output:
+          - text
+      pricing:
+        input_per_1m: 0.3
+        output_per_1m: 1.2
+      verification:
+        status: unverified
+        source: provider_catalog
+        verified_at: "2026-07-25"
+        notes: >-
+          PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as
+          strong SoT
   sdk:
-    note: "OpenAI-compatible — use openai SDK with base_url https://api.minimax.chat/v1 (or api.minimax.io/v1)"
+    note: >-
+      OpenAI-compatible — use openai SDK with base_url https://api.minimax.chat/v1 (or
+      api.minimax.io/v1)
     python: openai
     typescript: openai

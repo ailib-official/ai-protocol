@@ -283,6 +283,67 @@
           "source": "official_documentation",
           "verified_at": "2026-07-24"
         }
+      },
+      "openai/gpt-oss-120b": {
+        "context_window": 131072,
+        "max_output_tokens": 65536,
+        "status": "active",
+        "family": "gpt-oss",
+        "open_weights": true,
+        "model_capabilities": {
+          "tool_call": true,
+          "structured_output": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 0.15,
+          "output_per_1m": 0.6
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT; Hosted open-weight OSS on Groq"
+        }
+      },
+      "qwen/qwen3-32b": {
+        "context_window": 131072,
+        "max_output_tokens": 40960,
+        "status": "active",
+        "family": "qwen3",
+        "open_weights": true,
+        "model_capabilities": {
+          "tool_call": true,
+          "reasoning": true,
+          "attachment": false
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "text"
+          ]
+        },
+        "pricing": {
+          "input_per_1m": 0.29,
+          "output_per_1m": 0.59
+        },
+        "verification": {
+          "status": "unverified",
+          "source": "provider_catalog",
+          "verified_at": "2026-07-25",
+          "notes": "PT-ME-005 curated thicken from oneshot gap; confirm on vendor docs before treating as strong SoT"
+        }
       }
     },
     "sdk": {
