@@ -4,6 +4,10 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ## Unreleased
 
+### Docs
+
+- **README align (current tip)**: Rewrite root [`README.md`](README.md) + restore [`README_CN.md`](README_CN.md) (EN↔CN) to match main: version authority (`production_default=v1`, `latest=v2`), `dist/provider-identity.json`, ME-001 Experimental `metadata.models` capabilities, accurate v1/v2/v2-alpha provider counts, npm `@ailib-official/ai-protocol@1.0.0` vs Unreleased tip note, schema URL pins to `v1.0.0`/`main` (drop ancient `v0.2.1`), four-runtime + mock links, validate/build/gate surface including `validate:arch`. Stub [`docs/README.zh-CN.md`](docs/README.zh-CN.md) → root CN README.
+
 ### Added
 
 - **PT-ME-007 Vendor verification upgrade**: Promote curated `unverified` model entries to `verification.status: verified` + `source: official_documentation` where vendor docs confirm the wire id (31 models). Mark documented deprecations (`magistral-medium-latest`, `qwen/qwen3-32b` on Groq, `kimi-k2-thinking-turbo`). Leave 6 unverified (doubao Ark endpoint ids; hunyuan-2.0-* not on first-party list page). Helper: `scripts/me001-vendor-verify.js`.
