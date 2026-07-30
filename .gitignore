@@ -83,3 +83,7 @@ Thumbs.db
 
 # Local npm pack artifacts
 *.tgz
+
+# Local codegraph index
+.codegraph/
+
