@@ -4,55 +4,65 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ## Unreleased
 
+## [1.1.0] - 2026-07-30
+
+### Milestone
+
+- **Post-v1.0 architecture + model capability train**: Version authority ladder, provider identity (incl. multi-family aliases), ME-001 Experimental per-model capabilities, first-party provider admission Waves A/B/C, public-surface hygiene, and catalog/pack architecture scaffolding. npm **`@ailib-official/ai-protocol@1.1.0`**.
+
+### Added
+
+#### Model capability (ME-001)
+
+- **PT-ME-001**: Experimental `model_capabilities` / `modalities` / related fields on [`schemas/v2/metadata-model-entry.json`](schemas/v2/metadata-model-entry.json); omit = unknown (never false); prefer model facts over provider ads. Docs: [`docs/MODEL_CAPABILITY_METADATA.md`](docs/MODEL_CAPABILITY_METADATA.md).
+- **PT-ME-003**: Non-aggregator baseline backfill of `metadata.models` for v2 `ai_provider` manifests.
+- **PT-ME-004**: `validate:arch` ME-001 baseline gate (non-empty `metadata.models`; omit≠false fixture).
+- **PT-ME-002**: Offline oneshot models.dev candidate pipeline (`scripts/me001-oneshot-candidate.js`); docs [`docs/ME001_ONESHOT_CANDIDATE.md`](docs/ME001_ONESHOT_CANDIDATE.md).
+- **PT-ME-005**: Curated short-list thicken (+27 models across admitted providers).
+- **PT-ME-006**: Oneshot alias + slice routes (e.g. Tencent→hunyuan); selective hunyuan thicken.
+- **PT-ME-007**: Vendor-verify upgrade (31 models → `verified` / official_documentation); mark 3 deprecated.
+
+#### Provider admission (PT-ADM)
+
+- **Wave A**: xai / mistral / minimax → v2 with ME-001 short lists.
+- **Wave B**: perplexity / yi / baichuan → v2.
+- **Wave C / P2**: hunyuan / baidu / cerebras → v2 (baidu Qianfan OpenAI-compat; aliases `ernie`/`qianfan`→`baidu`).
+
+#### Architecture workstream
+
+- **PT-ARCH-001…003**: Version authority ladder (`production_default=v1`, `latest=v2`); Experimental capability-tag mapping + context-envelope schemas/docs; `npm run validate:arch`.
+- **PT-ARCH-004**: Manifest logical layers (Capability / Execution / Policy).
+- **PT-ARCH-005 / 005b / 005c / 005d**: Provider identity Option A (`gemini`←`google`); registry uniqueness gates; publish `dist/provider-identity.json`; multi-family map (`kimi`→`moonshot`, `glm`→`zhipu`).
+- **PT-ARCH-F5-GATE-001**: Fullchain gemini / protocol-only CI gates.
+- **PT-ARCH-006**: Protocol docs hygiene (SPEC / RUNTIME_INTEGRATION / link repairs).
+- **PT-ARCH-007**: Error contract names ↔ E codes.
+- **PT-ARCH-008**: Architecture tests pilot.
+- **PT-ARCH-009**: Public surface archive documentation.
+- **PT-ARCH-010**: Pack / ProviderContract boundaries.
+- **PT-ARCH-011**: Capability Catalog Normative skeleton (F8/C2). Catalog meat (**PT-ARCH-012**) remains deferred.
+
+#### Tool-calling / identity / catalog hygiene
+
+- **PT-079**: Document/TTC audit close; DeepSeek DSML dialect + compliance; hybrid parse cases `ttc-008`/`ttc-009`.
+- **MULTI-ALIAS-XLANG-001**: Alias-resolve golden vectors for cross-runtime consume.
+- **PT-VOCAB-001**: Vocabulary freeze draft (G1).
+- **PT-NIM-001 / nvidia**: NIM catalog E5c wire-id sync; api_probe refresh (probe/drop/add models).
+
+### Fixed
+
+- **DeepSeek v2**: canonical `endpoints.chat` alongside `chat_openai` / `chat_anthropic` for runtimes resolving operation `"chat"`.
+- **CI**: wire `validate:arch` after build; assert `dist/index.json` authority block.
+
 ### Docs
 
-- **README align (current tip)**: Rewrite root [`README.md`](README.md) + restore [`README_CN.md`](README_CN.md) (EN↔CN) to match main: version authority (`production_default=v1`, `latest=v2`), `dist/provider-identity.json`, ME-001 Experimental `metadata.models` capabilities, accurate v1/v2/v2-alpha provider counts, npm `@ailib-official/ai-protocol@1.0.0` vs Unreleased tip note, schema URL pins to `v1.0.0`/`main` (drop ancient `v0.2.1`), four-runtime + mock links, validate/build/gate surface including `validate:arch`. Stub [`docs/README.zh-CN.md`](docs/README.zh-CN.md) → root CN README.
+- Root [`README.md`](README.md) + [`README_CN.md`](README_CN.md) aligned to 1.1.0 public surface (identity, ME-001, authority, provider coverage, gates).
+- Cross-runtime HTTP proxy policy note (ALR-TRN-001 R7).
 
-### Added
+### Migration
 
-- **PT-ME-007 Vendor verification upgrade**: Promote curated `unverified` model entries to `verification.status: verified` + `source: official_documentation` where vendor docs confirm the wire id (31 models). Mark documented deprecations (`magistral-medium-latest`, `qwen/qwen3-32b` on Groq, `kimi-k2-thinking-turbo`). Leave 6 unverified (doubao Ark endpoint ids; hunyuan-2.0-* not on first-party list page). Helper: `scripts/me001-vendor-verify.js`.
-
-- **PT-ME-006 Oneshot alias + slice routes**: Expand `PROVIDER_ID_ALIASES` (baidu/doubao/yi/jina synonyms); add `PROVIDER_SLICE_ROUTES` so `hunyuan-*`/`hy*` from Tencent plan catalogs map to protocol `hunyuan` without importing mixed-vendor models. Reports emit `allowlist_unmatched` when models.dev has no coverage. Selective hunyuan thicken: `hunyuan-2.0-instruct` / `hunyuan-2.0-thinking` / `hunyuan-t1`.
-
-- **PT-ME-005 Curated short-list thicken**: Add human-picked models to 14 already-admitted v2 `ai_provider` manifests (soft cap ≤8 / provider). New entries use `verification.status: unverified` + `source: provider_catalog`. Helper: `scripts/me001-curated-thicken.js` (oneshot gap → curated merge; no cron / no auto dist write). Skipped unmatched ids: baichuan / baidu / doubao / hunyuan / jina / yi.
-
-- **PT-ADM Wave C / P2 (hunyuan / baidu / cerebras)**: Admit three P2 first-party providers to v2 with ME-001 short `metadata.models` lists. **baidu** uses Qianfan OpenAI-compat (`https://qianfan.baidubce.com/v2`) — legacy workshop wire stays v1-only. Aliases: `ernie`, `qianfan` → `baidu`.
-
-- **PT-ME-002 Oneshot candidate pipeline**: Offline helper `scripts/me001-oneshot-candidate.js` (+ `scripts/lib/me001-oneshot-map.js`) maps a **local** models.dev-style dump to advisory ME-001 `metadata.models` candidates (allowlist, P0/P1 only, no `dist/` write, no cron). Docs: [`docs/ME001_ONESHOT_CANDIDATE.md`](docs/ME001_ONESHOT_CANDIDATE.md); fixture + `node --test` mapping tests.
-
-- **PT-ADM Wave B (perplexity / yi / baichuan)**: Promote three first-party providers from v1 to v2 with ME-001 `metadata.models` + Experimental `model_capabilities`/`modalities` (PT-ME-010 Wave B ACK). Short model lists: Sonar (`sonar` / `sonar-pro` / `sonar-reasoning-pro`), Yi (`yi-lightning` / `yi-large` / `yi-vision`), Baichuan (`Baichuan4` / `Baichuan3-Turbo` / `Baichuan3-Turbo-128k`).
-
-- **PT-ADM Wave A (xai / mistral / minimax)**: Promote three first-party providers from v1 to v2 with ME-001 `metadata.models` + Experimental `model_capabilities`/`modalities` (PT-ME-010 survey ACK).
-
-- **PT-ME-004 Model capability compliance**: `validate:arch` ME-001 baseline gate (every v2 `ai_provider` non-empty `metadata.models`); omit fixture proves capacity-only entries valid; docs clarify ads≠SoT / omit≠false.
-
-- **PT-ME-003 Non-aggregator baseline backfill**: Fill/enrich `metadata.models` + Experimental `model_capabilities`/`modalities` for all `category: ai_provider` v2 providers (empty shells: cohere/qwen/doubao/jina; deepen others). nvidia aggregator out of gate. One-shot helper `scripts/me001-baseline-backfill.js` (not cron).
-
-- **PT-ME-001 Model capability metadata (Experimental)**: Extend [`schemas/v2/metadata-model-entry.json`](schemas/v2/metadata-model-entry.json) with optional `model_capabilities`, `modalities`, `reasoning_options`, `family`, `knowledge_cutoff`, `open_weights`. Omit = unknown (never false). Prefer model facts over provider `capabilities.required`/`optional` ads. Docs: [`docs/MODEL_CAPABILITY_METADATA.md`](docs/MODEL_CAPABILITY_METADATA.md); fixture + `validate:arch`; DeepSeek v2 seed annotations (full baseline backfill = PT-ME-003).
-
-- **PT-ARCH-005c Publish identity map**: `npm run build` emits `dist/provider-identity.json` and `dist/index.json` `identity` pointer; `provider.json` / `provider-identity.json` schema descriptions Normative for alias resolve; `validate:arch` asserts publish parity and drives family checks from the map (third-party schema/dist consumers; no dual wire keys).
-
-- **PT-ARCH-005b Provider identity registry gates**: `validate:arch` enforces tree-wide uniqueness, filename=`id`, and alias non-collision across `v1` / `v2` / `v2-alpha` providers; rejects parallel wire keys (`canonical_id` / `provider_slug`). v2-alpha `gemini` gains `aliases: [google]`. See [`docs/PROVIDER_IDENTITY.md`](docs/PROVIDER_IDENTITY.md) §7.
-- **PT-ARCH-006 Protocol docs hygiene**: Refresh [`docs/SPEC.md`](docs/SPEC.md) / [`RUNTIME_INTEGRATION.md`](docs/RUNTIME_INTEGRATION.md) headers; fix dangling `schemas/v2/message.json` in [`V2_ARCHITECTURE.md`](docs/V2_ARCHITECTURE.md) → `message-roles.json` + Experimental `context-envelope`; repair `GETTING_STARTED` relative links; cross-link authority ladder (Audit F6).
-
-- **PT-ARCH-005 Provider identity**: Normative [`docs/PROVIDER_IDENTITY.md`](docs/PROVIDER_IDENTITY.md) — **Option A**: canonical id `gemini`, alias `google` (official Gemini API product name; org/SDK `google` is alias); `aliases` on `schemas/v2/provider.json`; `v2/providers/gemini.yaml` (+ contracts `provider_id: gemini`); fixture + `validate:arch` checks (Audit F5). v1 / v2-alpha already aligned on `gemini`.
-
-- **PT-ARCH-004 Manifest logical layers**: Normative [`docs/MANIFEST_LOGICAL_LAYERS.md`](docs/MANIFEST_LOGICAL_LAYERS.md) — Capability Spec / Execution Spec / Policy Spec; clarifies public `retry_policy` as **L-Exec defaults** (host Policy stays in app overlay). Schema `provider.json` descriptions updated (Audit F4; no forced physical multi-file split).
-
-### Fixed
-
-- **PT-ARCH #28 follow-up**: Wire `npm run validate:arch` into CI (after `build`); assert `dist/index.json` `authority.production_default=v1` / `latest=v2`; normalize `docs/VERSION_AUTHORITY.md` to ASCII punctuation (avoid mojibake).
-
-### Added
-
-- **PT-ARCH-001 Version Authority Ladder**: Normative [`docs/VERSION_AUTHORITY.md`](docs/VERSION_AUTHORITY.md). `dist/index.json` now includes an `authority` block clarifying that `latest` is the **evolution tip** (v2), while **`production_default` / `lts_wire` remain `v1`** until coverage parity is announced (closes F1/F7 misread).
-- **PT-ARCH-002 Capability vocabulary bridge (Experimental)**: [`schemas/v2/capability-tag-mapping.json`](schemas/v2/capability-tag-mapping.json), fixture + [`docs/CAPABILITY_VOCABULARY_BRIDGE.md`](docs/CAPABILITY_VOCABULARY_BRIDGE.md) (ProviderCapability ↔ CapabilityTag; Audit F2).
-- **PT-ARCH-003 Context Envelope catch-up (Experimental)**: [`schemas/v2/context-envelope.json`](schemas/v2/context-envelope.json), fixture + [`docs/CONTEXT_ENVELOPE.md`](docs/CONTEXT_ENVELOPE.md) aligned to ai-lib-rust MessageChunk / ContextLayer (Audit F3).
-- **`npm run validate:arch`**: AJV validation for Architecture Workstream fixtures.
-
-### Fixed
-
-- **DeepSeek v2 endpoints**: add canonical `endpoints.chat` (OpenAI-compatible `/chat/completions`) alongside existing `chat_openai` / `chat_anthropic`. Runtimes that resolve operation `"chat"` (ai-lib-rust / velaclaw) no longer hit `Protocol not found: chat` against the v2 DeepSeek manifest.
+- Runtimes / apps: bump pin to **`@ailib-official/ai-protocol@1.1.0`** (or git tag **`v1.1.0`**).
+- Consume `dist/provider-identity.json` for marketplace aliases; prefer `metadata.models` Experimental facts when present.
+- **Tag hygiene:** remote `refs/tags/v1.1.0` previously pointed at a stale Jan-2026 commit (`0.1.2`). Delete that tag before publishing this release, then create an annotated tag on the 1.1.0 release commit so `.github/workflows/release.yml` can npm-publish + GitHub Release.
 
 ## [1.0.0] - 2026-07-01
 
