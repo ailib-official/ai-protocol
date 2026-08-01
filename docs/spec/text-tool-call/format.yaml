@@ -46,8 +46,27 @@ known_dialects:
       command: "text"      # <bash>...</bash> — inner text as command
   - tag: function
     map_to: "$attribute"   # <function name="x"> — name from attribute
+    status: deferred        # not implemented in ai-lib-core; do not advertise in provider manifests until ready
   - tag: dsml
-    map_to: "$invoke_name" # DeepSeek DSML: <｜｜DSML｜｜invoke name="..."><｜｜DSML｜｜parameter>
+    # Wire form is U+FF5C fullwidth delimiter family (`｜｜DSML｜｜`), NOT a literal <dsml> XML tag.
+    # `known_dialects[].tag: dsml` means this delimiter family.
+    map_to: "$invoke_name"
+    shapes:
+      - name: invoke_parameter
+        description: |
+          Canonical DeepSeek DSML (ttc-007):
+          <｜｜DSML｜｜tool_calls>
+          <｜｜DSML｜｜invoke name="shell">
+          <｜｜DSML｜｜parameter name="command" string="true">...</｜｜DSML｜｜parameter>
+          </｜｜DSML｜｜invoke>
+          </｜｜DSML｜｜tool_calls>
+      - name: tool_call_json
+        description: |
+          Hybrid DSML wrapper around standard L1 JSON body (ttc-010; live DeepSeek Web UI):
+          <｜｜DSML｜｜tool_call>
+          {"name": "shell", "arguments": {"command": "..."}}
+          </｜｜DSML｜｜tool_call>
+        body_format: json   # same required_fields / field_aliases as standard_format
 
 # Tool result round-trip format (inserted into conversation as assistant/user text)
 result_format:
@@ -72,5 +91,6 @@ hybrid_parse:
   function: parse_hybrid_tool_calls
   policy: native_first             # use native_tool_calls when non-empty; else lenient text parse
   compliance_cases:
-    - ttc-008   # native empty → DSML fallback
+    - ttc-008   # native empty → DSML invoke/parameter fallback
     - ttc-009   # native non-empty → ignore text dialect
+    - ttc-010   # DSML tool_call + standard JSON body

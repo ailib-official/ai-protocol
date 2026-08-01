@@ -193,3 +193,25 @@ expected:
   tool_calls:
     - name: "shell"
       arguments: {"command": "ls -la"}
+
+---
+suite: "text-tool-call"
+name: "Adapt DeepSeek hybrid DSML tool_call+JSON"
+id: "ttc-010"
+description: "Lenient parser maps DSML-delimited tool_call wrappers with standard JSON body to tool calls"
+tags: ["text-tool-call", "dialect", "deepseek", "P0"]
+input:
+  type: "text_tool_parse"
+  response_text: |
+    Checking remote service status.
+
+    <｜｜DSML｜｜tool_call>
+    {"name": "shell", "arguments": {"command": "ssh piubt systemctl is-active xray"}}
+    </｜｜DSML｜｜tool_call>
+  config:
+    lenient_parsing: true
+expected:
+  remaining_text: "Checking remote service status."
+  tool_calls:
+    - name: "shell"
+      arguments: {"command": "ssh piubt systemctl is-active xray"}
