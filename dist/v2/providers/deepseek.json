@@ -79,7 +79,7 @@
         "reliability": "partial",
         "parallel": true,
         "streaming": true,
-        "notes": "DeepSeek native tool calling is unreliable — LLM often outputs <shell> instead; text fallback required"
+        "notes": "DeepSeek native tool calling is unreliable — LLM often outputs <shell> instead; text fallback required.\nText dialects: standard <tool_call> JSON; <shell>/<bash>; DSML invoke/parameter (ttc-007);\nDSML tool_call wrapping standard JSON (ttc-010). `function` dialect deferred (not advertised).\n`dsml` = U+FF5C delimiter family (not a literal <dsml> XML tag).\n"
       },
       "text_fallback": {
         "format": "xml_json",
@@ -95,10 +95,6 @@
           {
             "tag": "bash",
             "map_to": "shell"
-          },
-          {
-            "tag": "function",
-            "map_to": ""
           },
           {
             "tag": "dsml",
