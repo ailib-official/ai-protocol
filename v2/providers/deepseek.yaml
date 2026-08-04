@@ -67,18 +67,21 @@ capabilities:
       parallel: true
       streaming: true
       notes: |
-        DeepSeek native tool calling is unreliable — LLM often outputs <shell> instead; text fallback required.
-        Text dialects: standard <tool_call> JSON; <shell>/<bash>; DSML invoke/parameter (ttc-007);
-        DSML tool_call wrapping standard JSON (ttc-010). `function` dialect deferred (not advertised).
-        `dsml` = U+FF5C delimiter family (not a literal <dsml> XML tag).
+        DeepSeek native tool calling is unreliable — prefer native tool_calls on the wire;
+        text fallback is a last-resort canonical <tool_call> template only (prompt_level L3).
+        Host recovery uses typed ToolFormatError (ALR-TTC-016), not new dialect tags.
+        `known_dialects` below are legacy parse / migration aids — NOT encouraged model output.
+        Do not advertise or grow DSML/_call/$call as product formats.
+        `dsml` = U+FF5C delimiter family (not a literal <dsml> XML tag). `function` deferred.
     text_fallback:
       format: xml_json
       wrapper: tool_call
       body: json
       name_location: json_field
       args_key: arguments
-      # `function` dialect deferred (format.yaml status:deferred) — do not advertise until implemented.
-      # `dsml` = U+FF5C delimiter family; shapes: invoke/parameter (ttc-007) and tool_call+JSON (ttc-010).
+      # Legacy parse aids only (shell/bash/dsml). Encouraged output = canonical <tool_call> JSON.
+      # Hosts should classify non-canonical markup as ToolFormatError and run recovery ladder.
+      # `function` dialect deferred (format.yaml status:deferred) — do not advertise.
       known_dialects:
         - tag: shell
           map_to: shell
@@ -86,7 +89,7 @@ capabilities:
           map_to: shell
         - tag: dsml
           map_to: ""
-      # L3: few-shot canonical <tool_call> example + native-first / DSML ban (ALR-TTC-014).
+      # L3: few-shot canonical <tool_call> + native-first / DSML ban (ALR-TTC-014/016).
       prompt_level: L3
 capability_profile:
   phase: ios_v1
