@@ -4,6 +4,10 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ## Unreleased
 
+### Changed
+
+- **DeepSeek `text_fallback.prompt_level`**: L2 → **L3** so Hybrid path always gets a few-shot canonical `<tool_call>` example plus native-first / DSML-ban wording (pairs with ALR-TTC-014).
+
 ## [1.1.0] - 2026-07-30
 
 ### Milestone
