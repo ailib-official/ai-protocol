@@ -7,6 +7,7 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 ### Changed
 
 - **DeepSeek `text_fallback.prompt_level`**: L2 → **L3** so Hybrid path always gets a few-shot canonical `<tool_call>` example plus native-first / DSML-ban wording (pairs with ALR-TTC-014).
+- **DeepSeek tool_calling notes**: `known_dialects` documented as **legacy parse aids only**; encouraged output remains native `tool_calls` or canonical `<tool_call>` JSON. Host recovery uses `ToolFormatError` (ALR-TTC-016) — do not grow dialect tags.
 
 ## [1.1.0] - 2026-07-30
 
