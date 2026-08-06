@@ -6,18 +6,12 @@
 import { readFileSync, readdirSync } from 'fs';
 import { join, dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
+import { PROVIDER_MAP } from './lib/v1-v2-capacity-provider-map.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const V1_DIR = join(ROOT, 'dist/v1/models');
 const V2A_DIR = join(ROOT, 'dist/v2-alpha/providers');
-
-const PROVIDER_MAP = {
-  openai: 'openai.json',
-  anthropic: 'anthropic.json',
-  google: 'gemini.json',
-  gemini: 'gemini.json',
-};
 
 function loadJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
