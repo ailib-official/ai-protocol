@@ -58,6 +58,9 @@ jobs:
     - name: Validate Architecture fixtures and authority block
       run: npm run validate:arch
 
+    - name: GOV-007 shared maps (capacity PROVIDER_MAP + ME001/identity alias parity)
+      run: npm run test:gov007-maps
+
     - name: Upload dist folder
       uses: actions/upload-artifact@v4
       with:
