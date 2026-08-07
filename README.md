@@ -1,12 +1,12 @@
-# AI-Protocol
+﻿# AI-Protocol
 
-**Provider-agnostic specification** for AI provider manifests and model registries — the **data-state rulebook** consumed by language runtimes (npm package **`@ailib-official/ai-protocol`**, package version **1.1.0**).
+**Provider-agnostic specification** for AI provider manifests and model registries — the **data-state rulebook** consumed by language runtimes (npm package **`@ailib-official/ai-protocol`**, package version **1.2.0**).
 
 [中文文档](README_CN.md)
 
 AI-Protocol standardizes how runtimes talk to providers across modalities (text, vision, audio, video). It complements [MCP](https://modelcontextprotocol.io): MCP focuses on tools and context at a high level; this repo focuses on **declarative API normalization** (endpoints, streaming maps, errors, capabilities) so runtimes can load the same manifests.
 
-> **Pin:** Prefer **`@ailib-official/ai-protocol@1.1.0`** (tag `v1.1.0`) for production. Follow `main` only when you intentionally want tip-of-tree; see [CHANGELOG](CHANGELOG.md).
+> **Pin:** Prefer **`@ailib-official/ai-protocol@1.2.0`** (tag `v1.2.0`) for production. Follow `main` only when you intentionally want tip-of-tree; see [CHANGELOG](CHANGELOG.md).
 
 ## How it fits
 
@@ -22,7 +22,7 @@ See [`docs/PUBLIC_SURFACE.md`](docs/PUBLIC_SURFACE.md). Historical material unde
 ## Install
 
 ```bash
-npm install @ailib-official/ai-protocol@1.1.0
+npm install @ailib-official/ai-protocol@1.2.0
 ```
 
 Package `files`: `dist`, `v1`, `v2`, `v2-alpha`, `schemas`. Entry: `dist/index.json`.
@@ -33,7 +33,7 @@ Prefer **`dist/` JSON** in production. Resolve aliases via `dist/provider-identi
 
 Pin a release for stability, or follow `main` for tip:
 
-- Release: `https://raw.githubusercontent.com/ailib-official/ai-protocol/v1.1.0/schemas/v1.json`
+- Release: `https://raw.githubusercontent.com/ailib-official/ai-protocol/v1.2.0/schemas/v1.json`
 - Tip: `https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json`
 
 For v2 shapes use `schemas/v2/*.json` under the same tag/`main` rules.
@@ -115,7 +115,7 @@ Docs: [`docs/MODEL_CAPABILITY_METADATA.md`](docs/MODEL_CAPABILITY_METADATA.md). 
 
 ```yaml
 # v1/providers/anthropic.yaml
-$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/v1.1.0/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/v1.2.0/schemas/v1.json"
 
 id: anthropic
 protocol_version: "1.5"
