@@ -1,12 +1,12 @@
-# AI-Protocol
+﻿# AI-Protocol
 
-**供应商无关**的 AI 供应商清单与模型注册表规范 —— 供各语言运行时消费的**数据态规则书**（npm 包 **`@ailib-official/ai-protocol`**，包版本 **1.1.0**）。
+**供应商无关**的 AI 供应商清单与模型注册表规范 —— 供各语言运行时消费的**数据态规则书**（npm 包 **`@ailib-official/ai-protocol`**，包版本 **1.2.0**）。
 
 [English](README.md)
 
 AI-Protocol 标准化运行时与各供应商的交互（文本、视觉、音频、视频等模态）。它补充 [MCP](https://modelcontextprotocol.io)：MCP 侧重工具与上下文的高层协议；本仓库侧重**声明式 API 归一化**（端点、流式映射、错误、能力），使运行时加载同一套清单。
 
-> **钉版本：** 生产环境优先 **`@ailib-official/ai-protocol@1.1.0`**（标签 `v1.1.0`）。仅在有意跟随 tip 时使用 `main`；见 [CHANGELOG](CHANGELOG.md)。
+> **钉版本：** 生产环境优先 **`@ailib-official/ai-protocol@1.2.0`**（标签 `v1.2.0`）。仅在有意跟随 tip 时使用 `main`；见 [CHANGELOG](CHANGELOG.md)。
 
 ## 在生态中的位置
 
@@ -22,7 +22,7 @@ AI-Protocol 标准化运行时与各供应商的交互（文本、视觉、音�
 ## 安装
 
 ```bash
-npm install @ailib-official/ai-protocol@1.1.0
+npm install @ailib-official/ai-protocol@1.2.0
 ```
 
 包 `files`：`dist`、`v1`、`v2`、`v2-alpha`、`schemas`。入口：`dist/index.json`。
@@ -33,7 +33,7 @@ npm install @ailib-official/ai-protocol@1.1.0
 
 钉发布标签以保稳定，或跟随 `main` 取最新：
 
-- 发布：`https://raw.githubusercontent.com/ailib-official/ai-protocol/v1.1.0/schemas/v1.json`
+- 发布：`https://raw.githubusercontent.com/ailib-official/ai-protocol/v1.2.0/schemas/v1.json`
 - 主线：`https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json`
 
 v2 形状使用同一标签/`main` 规则下的 `schemas/v2/*.json`。
@@ -115,7 +115,7 @@ ai-protocol/
 
 ```yaml
 # v1/providers/anthropic.yaml
-$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/v1.1.0/schemas/v1.json"
+$schema: "https://raw.githubusercontent.com/ailib-official/ai-protocol/v1.2.0/schemas/v1.json"
 
 id: anthropic
 protocol_version: "1.5"

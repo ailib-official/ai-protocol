@@ -4,10 +4,17 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ## Unreleased
 
+## [1.2.0] - 2026-08-07
+
+### Milestone
+
+- **GOV-007 Wave2 protocol hygiene + DeepSeek text-tool guidance**: Shared provider maps / ME-001·identity alias gates, plus DeepSeek hybrid prompt and dialect documentation. npm **`@ailib-official/ai-protocol@1.2.0`**.
+
 ### Changed
 
 - **DeepSeek `text_fallback.prompt_level`**: L2 → **L3** so Hybrid path always gets a few-shot canonical `<tool_call>` example plus native-first / DSML-ban wording (pairs with ALR-TTC-014).
 - **DeepSeek tool_calling notes**: `known_dialects` documented as **legacy parse aids only**; encouraged output remains native `tool_calls` or canonical `<tool_call>` JSON. Host recovery uses `ToolFormatError` (ALR-TTC-016) — do not grow dialect tags.
+- **GOV-007**: Share `PROVIDER_MAP` and gate ME-001 / identity alias parity across packaging surfaces.
 
 ## [1.1.0] - 2026-07-30
 
