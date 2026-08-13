@@ -247,6 +247,14 @@
       "path": "/chat/completions",
       "method": "POST",
       "adapter": "openai"
+    },
+    "image_generation": {
+      "path": "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation",
+      "method": "POST",
+      "adapter": "dashscope",
+      "request_encoding": "json",
+      "response_encoding": "json",
+      "notes": "PT-GEN-003 Stage D sample. Native DashScope multimodal-generation (NOT OpenAI /images/generations; NOT under compatible-mode base_url). Request body uses model+input.messages (text prompt), not OpenAI prompt/size shape. Intl host: dashscope-intl.aliyuncs.com with same path. Official docs: Model Studio Qwen-Image / Wan image APIs."
     }
   },
   "services": {
@@ -516,6 +524,30 @@
           "source": "official_documentation",
           "verified_at": "2026-07-25",
           "notes": "PT-ME-007: Model Studio vision tables list qwen3-vl-plus (help.aliyun.com / alibabacloud)"
+        }
+      },
+      "qwen-image-plus": {
+        "context_window": 0,
+        "max_output_tokens": 0,
+        "status": "active",
+        "family": "qwen-image",
+        "notes": "PT-GEN-003: Experimental Stage D image_generation sample (non-OpenAI dialect)",
+        "model_capabilities": {
+          "image_generation": true
+        },
+        "modalities": {
+          "input": [
+            "text"
+          ],
+          "output": [
+            "image"
+          ]
+        },
+        "verification": {
+          "status": "verified",
+          "source": "official_documentation",
+          "verified_at": "2026-08-13",
+          "notes": "Alibaba Cloud Model Studio Qwen-Image API (qwen-image-plus); DashScope native multimodal-generation endpoint"
         }
       }
     }

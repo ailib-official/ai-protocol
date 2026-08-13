@@ -60,8 +60,17 @@ Documented in `v2/providers/openai.yaml`:
 Flat shortcuts: `endpoint.images`, `endpoint.stt`, `endpoint.tts` (unchanged
 semantics for STT/TTS; `images` added in PT-GEN-002).
 
-A second vendor proves Stage D (**PT-GEN-003**) — different path/encoding
-under the **same** keys.
+## 4.1 Stage D second vendor (PT-GEN-003)
+
+`v2/providers/qwen.yaml` seeds **Qwen / DashScope** as a non-OpenAI dialect:
+
+| Key | path | adapter | Notes |
+|-----|------|---------|-------|
+| `image_generation` | absolute `https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation` | `dashscope` | Not under `compatible-mode` chat base; body is native `input.messages`, not OpenAI `prompt` |
+
+Model fact: `metadata.models.qwen-image-plus.model_capabilities.image_generation: true`.
+
+A second vendor proves Stage D — different path/encoding under the **same** keys.
 
 ## 5. Semantics
 
