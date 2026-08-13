@@ -9,7 +9,10 @@
     "tool_call": true,
     "structured_output": true,
     "reasoning": true,
-    "attachment": false
+    "attachment": false,
+    "image_generation": false,
+    "speech_to_text": false,
+    "text_to_speech": false
   },
   "modalities": {
     "input": ["text"],

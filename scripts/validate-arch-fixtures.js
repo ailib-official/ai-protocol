@@ -51,6 +51,10 @@ const fixtures = [
     schema: 'schemas/v2/metadata-model-entry.json',
     data: 'v2/metadata-model-entry-omit.fixture.json',
   },
+  {
+    schema: 'schemas/v2/metadata-model-entry.json',
+    data: 'v2/metadata-model-entry-generative.fixture.json',
+  },
 ];
 
 /** G5 / PT-ARCH-007 required contract semantic names. */

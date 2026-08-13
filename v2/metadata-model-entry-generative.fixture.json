@@ -1,0 +1,22 @@
+{
+  "$comment": "PT-GEN-001 — generative capability keys present; chat tool flags may be omitted (unknown)",
+  "context_window": 0,
+  "max_output_tokens": 0,
+  "status": "active",
+  "model_capabilities": {
+    "image_generation": true,
+    "speech_to_text": false,
+    "text_to_speech": false
+  },
+  "modalities": {
+    "input": ["text"],
+    "output": ["image"]
+  },
+  "family": "openai-images",
+  "verification": {
+    "status": "verified",
+    "source": "official_documentation",
+    "verified_at": "2026-08-13",
+    "notes": "Illustrative Experimental fixture for PT-GEN-001 schema validation only"
+  }
+}
