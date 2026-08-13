@@ -40,7 +40,7 @@ Existing capacity fields (`context_window`, `max_output_tokens`, `pricing`, `sta
 2. **Prefer model over ads.** If `model_capabilities` / `modalities` exist for a model id, use them for that model; do not assume provider `required`/`optional` apply uniformly.  
 3. **Ads may drift.** Provider `capabilities.required` / `optional` need **not** equal the union/intersection of model flags (allowed inconsistency; model wins for that id).  
 4. **`thinking` vs `reasoning`.** Boolean support → `model_capabilities.reasoning`; mode label → `thinking` (e.g. `dual_mode`).  
-5. **L-Exec untouched.** Provider `capabilities.tool_calling` dialects / streaming bindings stay Execution Spec. Generative keys are L-Cap facts only — endpoint maps land in **PT-GEN-002**.  
+5. **L-Exec untouched for chat.** Provider `capabilities.tool_calling` dialects / streaming bindings stay Execution Spec. Generative **capability** keys are L-Cap facts; generative **endpoint** maps live in **PT-GEN-002** — [`GENERATIVE_LEXEC_ENDPOINTS.md`](./GENERATIVE_LEXEC_ENDPOINTS.md).  
 6. **No Tag auto-map.** Do not equate `reasoning: true` with CapabilityTag `high-reasoning`.  
 7. **Provenance.** Use existing `verification.source` enum only (no `models_dev` value).
 
@@ -62,6 +62,7 @@ Aggregator (`third_party_aggregator`) is **not** in this baseline gate.
 | `metadata.models.*.model_capabilities` / `modalities` | **L-Cap** (model fact) |
 | Provider `capabilities.required` / `optional` | L-Cap **ads** (non-SoT when model fields present) |
 | `capabilities.tool_calling` wire dialects | **L-Exec** |
+| `endpoints.image_generation` / `speech_to_text` / `text_to_speech` | **L-Exec** ([`GENERATIVE_LEXEC_ENDPOINTS.md`](./GENERATIVE_LEXEC_ENDPOINTS.md)) |
 
 See [`MANIFEST_LOGICAL_LAYERS.md`](./MANIFEST_LOGICAL_LAYERS.md).
 

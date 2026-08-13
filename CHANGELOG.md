@@ -6,6 +6,7 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Added
 
+- **PT-GEN-002 (Experimental)**: Generative L-Exec endpoint map — preferred keys `endpoints.image_generation` / `speech_to_text` / `text_to_speech` with optional `request_encoding` / `response_encoding`. Schema: [`schemas/v2/generative-endpoint-entry.json`](schemas/v2/generative-endpoint-entry.json). Docs: [`docs/GENERATIVE_LEXEC_ENDPOINTS.md`](docs/GENERATIVE_LEXEC_ENDPOINTS.md). OpenAI adapter sample + flat `endpoint.images`. Chat L-Exec unchanged.
 - **PT-GEN-001 (Experimental)**: Per-model generative capability keys on [`schemas/v2/metadata-model-entry.json`](schemas/v2/metadata-model-entry.json) — `image_generation`, `speech_to_text`, `text_to_speech`. Same ME-001 semantics (omit = unknown; not a stable Facade). Docs: [`docs/MODEL_CAPABILITY_METADATA.md`](docs/MODEL_CAPABILITY_METADATA.md). Fixture: [`v2/metadata-model-entry-generative.fixture.json`](v2/metadata-model-entry-generative.fixture.json). OpenAI seed models: `gpt-image-1`, `dall-e-3`, `whisper-1`, `tts-1`.
 
 ## [1.2.0] - 2026-08-07

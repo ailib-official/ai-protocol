@@ -1,0 +1,8 @@
+{
+  "path": "/images/generations",
+  "method": "POST",
+  "adapter": "openai",
+  "request_encoding": "json",
+  "response_encoding": "json",
+  "notes": "PT-GEN-002 illustrative Experimental fixture for schema validation only"
+}

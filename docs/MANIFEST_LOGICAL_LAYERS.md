@@ -20,7 +20,7 @@ provenance in the public tree ([`MANIFEST_AUTHORITY.md`](./MANIFEST_AUTHORITY.md
 | Layer | Name | Question it answers | Typical field families |
 |-------|------|---------------------|------------------------|
 | **L-Cap** | **Capability Spec** | What can this provider/model do? | `capabilities` (ads + L-Exec-adjacent nests), `feature_flags`, `capability_profile`, `multimodal`, `tool_calling`, `computer_use`, `mcp`, capacity + **Experimental** `metadata.models.*.model_capabilities` / `modalities` ([`MODEL_CAPABILITY_METADATA.md`](./MODEL_CAPABILITY_METADATA.md)) |
-| **L-Exec** | **Execution Spec** | How do runtimes talk to the wire? | `endpoint` / `endpoints`, `streaming`, `error_classification`, `rate_limit_headers`, `termination`, `parameters`, `api_families`, `provider_contract`, **`retry_policy` (see §3)** |
+| **L-Exec** | **Execution Spec** | How do runtimes talk to the wire? | `endpoint` / `endpoints` (incl. Experimental generative keys — [`GENERATIVE_LEXEC_ENDPOINTS.md`](./GENERATIVE_LEXEC_ENDPOINTS.md)), `streaming`, `error_classification`, `rate_limit_headers`, `termination`, `parameters`, `api_families`, `provider_contract`, **`retry_policy` (see §3)** |
 | **L-Pol** | **Policy Spec** | What may *this host* allow or override? | **Not** in public provider YAML. Lives in application overlay / host config (approval, allowlists, spend caps, region product defaults, route Tag inventories) |
 
 Keep all three **declarative**. Do not encode host orchestration, approval workflows, or
