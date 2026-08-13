@@ -12,6 +12,7 @@
     "base_url": "https://api.openai.com/v1",
     "chat": "/chat/completions",
     "embeddings": "/embeddings",
+    "images": "/images/generations",
     "stt": "/audio/transcriptions",
     "tts": "/audio/speech",
     "auth": {
@@ -367,6 +368,30 @@
       "path": "/embeddings",
       "method": "POST",
       "adapter": "openai"
+    },
+    "image_generation": {
+      "path": "/images/generations",
+      "method": "POST",
+      "adapter": "openai",
+      "request_encoding": "json",
+      "response_encoding": "json",
+      "notes": "PT-GEN-002 Experimental L-Exec sample; not unique SoT"
+    },
+    "speech_to_text": {
+      "path": "/audio/transcriptions",
+      "method": "POST",
+      "adapter": "openai",
+      "request_encoding": "multipart",
+      "response_encoding": "json",
+      "notes": "PT-GEN-002 Experimental L-Exec sample; not unique SoT"
+    },
+    "text_to_speech": {
+      "path": "/audio/speech",
+      "method": "POST",
+      "adapter": "openai",
+      "request_encoding": "json",
+      "response_encoding": "binary",
+      "notes": "PT-GEN-002 Experimental L-Exec sample; not unique SoT"
     }
   },
   "services": {

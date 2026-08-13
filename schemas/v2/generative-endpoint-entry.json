@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v2/generative-endpoint-entry.json",
+  "title": "Generative endpoint map entry (Experimental)",
+  "description": "PT-GEN-002 Experimental L-Exec entry under provider endpoints.<op>. Keys should align with ME-001 generative capability names (image_generation / speech_to_text / text_to_speech). OpenAI paths are adapter samples, not SoT uniqueness. Omit = unknown for optional encoding fields.",
+  "type": "object",
+  "required": ["path", "method"],
+  "properties": {
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Path relative to endpoint.base_url (or absolute URL if vendor requires)."
+    },
+    "method": {
+      "type": "string",
+      "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      "description": "HTTP method"
+    },
+    "adapter": {
+      "type": "string",
+      "description": "Wire adapter id (e.g. openai). Informational for runtimes; not a product brand."
+    },
+    "request_encoding": {
+      "type": "string",
+      "enum": ["json", "multipart", "form"],
+      "description": "How the request body is encoded. Omit if unknown."
+    },
+    "response_encoding": {
+      "type": "string",
+      "enum": ["json", "binary", "sse"],
+      "description": "Primary response body shape. Omit if unknown."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Human notes; not runtime contract"
+    }
+  },
+  "additionalProperties": false
+}
