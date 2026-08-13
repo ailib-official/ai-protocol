@@ -490,6 +490,78 @@ metadata:
         source: official_documentation
         verified_at: "2026-07-25"
         notes: "PT-ME-007: OpenAI o-series model id o3-mini documented on platform.openai.com models"
+    gpt-image-1:
+      context_window: 0
+      max_output_tokens: 0
+      status: active
+      family: openai-images
+      notes: "PT-GEN-001: Experimental image generation seed (not chat L-Exec)"
+      model_capabilities:
+        image_generation: true
+      modalities:
+        input:
+          - text
+        output:
+          - image
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-08-13"
+        notes: "OpenAI Images API model gpt-image-1"
+    dall-e-3:
+      context_window: 0
+      max_output_tokens: 0
+      status: active
+      family: openai-images
+      notes: "PT-GEN-001: Experimental image generation seed (legacy Images API)"
+      model_capabilities:
+        image_generation: true
+      modalities:
+        input:
+          - text
+        output:
+          - image
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-08-13"
+        notes: "OpenAI Images API model dall-e-3"
+    whisper-1:
+      context_window: 0
+      max_output_tokens: 0
+      status: active
+      family: openai-audio
+      notes: "PT-GEN-001: Experimental speech-to-text seed"
+      model_capabilities:
+        speech_to_text: true
+      modalities:
+        input:
+          - audio
+        output:
+          - text
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-08-13"
+        notes: "OpenAI Audio transcription model whisper-1"
+    tts-1:
+      context_window: 0
+      max_output_tokens: 0
+      status: active
+      family: openai-audio
+      notes: "PT-GEN-001: Experimental text-to-speech seed"
+      model_capabilities:
+        text_to_speech: true
+      modalities:
+        input:
+          - text
+        output:
+          - audio
+      verification:
+        status: verified
+        source: official_documentation
+        verified_at: "2026-08-13"
+        notes: "OpenAI Audio speech model tts-1"
   sdk:
     python: openai
     typescript: openai
