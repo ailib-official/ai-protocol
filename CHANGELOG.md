@@ -7,6 +7,7 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 ### Added
 
 - **PT-GEN-001 (Experimental)**: Per-model generative capability keys on [`schemas/v2/metadata-model-entry.json`](schemas/v2/metadata-model-entry.json) — `image_generation`, `speech_to_text`, `text_to_speech`. Same ME-001 semantics (omit = unknown; not a stable Facade). Docs: [`docs/MODEL_CAPABILITY_METADATA.md`](docs/MODEL_CAPABILITY_METADATA.md). Fixture: [`v2/metadata-model-entry-generative.fixture.json`](v2/metadata-model-entry-generative.fixture.json). OpenAI seed models: `gpt-image-1`, `dall-e-3`, `whisper-1`, `tts-1`.
+- **PT-TTC-012**: `format.yaml` L4 `invoke` parse-aid (Anthropic-style `<invoke>`/`<parameter>`, not DSML). Compliance `ttc-012`/`ttc-013`. DeepSeek `known_dialects` records live V4 Pro evidence; not encouraged output.
 
 ## [1.2.0] - 2026-08-07
 

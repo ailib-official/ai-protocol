@@ -69,18 +69,19 @@ capabilities:
       notes: |
         DeepSeek native tool calling is unreliable — prefer native tool_calls on the wire;
         text fallback is a last-resort canonical <tool_call> template only (prompt_level L3).
-        Host recovery uses typed ToolFormatError (ALR-TTC-016), not new dialect tags.
+        Host recovery uses typed ToolFormatError (ALR-TTC-016) for malformed markup.
         `known_dialects` below are legacy parse / migration aids — NOT encouraged model output.
-        Do not advertise or grow DSML/_call/$call as product formats.
-        `dsml` = U+FF5C delimiter family (not a literal <dsml> XML tag). `function` deferred.
+        Do not advertise DSML/_call/$call/invoke as product formats.
+        `dsml` = U+FF5C delimiter family. `invoke` = unprefixed Anthropic-style
+        XML (live V4 Pro, 2026-08-13). `function` deferred.
     text_fallback:
       format: xml_json
       wrapper: tool_call
       body: json
       name_location: json_field
       args_key: arguments
-      # Legacy parse aids only (shell/bash/dsml). Encouraged output = canonical <tool_call> JSON.
-      # Hosts should classify non-canonical markup as ToolFormatError and run recovery ladder.
+      # Legacy parse aids only (shell/bash/dsml/invoke). Encouraged output = canonical <tool_call> JSON.
+      # Hosts parse well-formed aids on the lenient path; malformed markup uses ToolFormatError ladder.
       # `function` dialect deferred (format.yaml status:deferred) — do not advertise.
       known_dialects:
         - tag: shell
@@ -89,6 +90,8 @@ capabilities:
           map_to: shell
         - tag: dsml
           map_to: ""
+        - tag: invoke
+          map_to: "$invoke_name"
       # L3: few-shot canonical <tool_call> + native-first / DSML ban (ALR-TTC-014/016).
       prompt_level: L3
 capability_profile:

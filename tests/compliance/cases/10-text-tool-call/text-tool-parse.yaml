@@ -120,7 +120,6 @@ expected:
     - "shell"
     - "file_read"
     - "<shell>"
-    - "WILL BE IGNORED"
 
 ---
 suite: "text-tool-call"
@@ -215,3 +214,45 @@ expected:
   tool_calls:
     - name: "shell"
       arguments: {"command": "ssh piubt systemctl is-active xray"}
+
+---
+suite: "text-tool-call"
+name: "Adapt bare invoke/parameter XML"
+id: "ttc-012"
+description: "Lenient parser maps unprefixed Anthropic-style invoke/parameter to a named tool call"
+tags: ["text-tool-call", "dialect", "invoke", "P0"]
+input:
+  type: "text_tool_parse"
+  response_text: |
+    <invoke name="shell">
+    <parameter name="command">git --git-dir=/srv/git/repos/ai-lib-plans.git log --oneline -5</parameter>
+    </invoke>
+  config:
+    lenient_parsing: true
+expected:
+  remaining_text: ""
+  tool_calls:
+    - name: "shell"
+      arguments: {"command": "git --git-dir=/srv/git/repos/ai-lib-plans.git log --oneline -5"}
+
+---
+suite: "text-tool-call"
+name: "Unwrap tool_calls around bare invoke"
+id: "ttc-013"
+description: "Lenient parser strips outer tool_calls wrapper then maps invoke/parameter"
+tags: ["text-tool-call", "dialect", "invoke", "P0"]
+input:
+  type: "text_tool_parse"
+  response_text: |
+    <tool_calls>
+    <invoke name="shell">
+    <parameter name="command">pwd</parameter>
+    </invoke>
+    </tool_calls>
+  config:
+    lenient_parsing: true
+expected:
+  remaining_text: ""
+  tool_calls:
+    - name: "shell"
+      arguments: {"command": "pwd"}

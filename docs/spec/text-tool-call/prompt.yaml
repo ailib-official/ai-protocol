@@ -47,11 +47,10 @@ levels:
       </tool_call>
 
       CRITICAL RULES:
-      - Use <tool_call> ONLY. <shell>, <bash>, <function> WILL BE IGNORED.
+      - Use <tool_call> ONLY. Do not emit <shell>, <bash>, <function>, <invoke>, or <parameter>.
       - JSON must contain "name" (string) and "arguments" (object).
       - Do NOT wrap in <tool_calls> or any other tag.
       - Do NOT put "name" in XML attributes — it must be inside the JSON body.
-      - If you output any other format, the tool WILL NOT execute.
 
       Available tools:
       {tool_list}
@@ -65,11 +64,10 @@ levels:
       </tool_call>
 
       关键规则：
-      - 只能使用 <tool_call>。<shell>、<bash>、<function> 将被忽略。
+      - 只能使用 <tool_call>。禁止 <shell>、<bash>、<function>、<invoke>、<parameter>。
       - JSON 必须包含 "name" 和 "arguments"。
       - 不要用 <tool_calls> 或其他标签包裹。
       - 不要把 name 放在 XML 属性中 — 必须在 JSON 体内。
-      - 任何其他格式都不会被执行。
 
       可用工具：
       {tool_list}
@@ -99,7 +97,7 @@ levels:
       {"name": "tool_name", "arguments": {"param": "value"}}
       </tool_call>
 
-      CRITICAL: <shell>, <bash>, <function> formats WILL BE IGNORED.
+      CRITICAL: NEVER use <shell>, <bash>, <function>, <invoke>, or <parameter>.
 
       Available tools:
       {tool_list}
@@ -114,7 +112,7 @@ levels:
       {"name": "shell", "arguments": {"command": "ls -la"}}
       </tool_call>
 
-      请严格遵循相同格式。禁止使用 <shell>、<bash>、<function>。
+      请严格遵循相同格式。禁止使用 <shell>、<bash>、<function>、<invoke>、<parameter>。
 
       可用工具：
       {tool_list}

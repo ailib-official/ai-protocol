@@ -67,6 +67,23 @@ known_dialects:
           {"name": "shell", "arguments": {"command": "..."}}
           </｜｜DSML｜｜tool_call>
         body_format: json   # same required_fields / field_aliases as standard_format
+  - tag: invoke
+    map_to: "$invoke_name"
+    # Anthropic-style XML tool-use, no DSML prefix. Cross-model training prior
+    # (live: DeepSeek V4 Pro, 2026-08-13). Legacy parse aid — not encouraged output.
+    # Lenient text path may parse; do not advertise in prompts as the template.
+    extract:
+      name: attribute          # <invoke name="shell">
+      parameters: parameter    # <parameter name="command">...</parameter>
+    shapes:
+      - name: invoke_parameter
+        description: |
+          <invoke name="shell">
+          <parameter name="command">ls</parameter>
+          </invoke>
+      - name: tool_calls_wrapper
+        description: |
+          Optional outer <tool_calls> around one or more invoke blocks (ttc-013).
 
 # Tool result round-trip format (inserted into conversation as assistant/user text)
 result_format:
@@ -94,3 +111,5 @@ hybrid_parse:
     - ttc-008   # native empty → DSML invoke/parameter fallback
     - ttc-009   # native non-empty → ignore text dialect
     - ttc-010   # DSML tool_call + standard JSON body
+    - ttc-012   # bare invoke/parameter (no DSML prefix)
+    - ttc-013   # <tool_calls> wrapping invoke/parameter
