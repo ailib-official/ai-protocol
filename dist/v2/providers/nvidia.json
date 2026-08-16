@@ -347,57 +347,6 @@
           "source": "provider_catalog"
         }
       },
-      "deepseek-ai/deepseek-v4-flash": {
-        "context_window": 1000000,
-        "max_output_tokens": 8192,
-        "verification": {
-          "status": "operational",
-          "source": "provider_catalog",
-          "notes": "284B MoE, 13B activated, 1M context"
-        }
-      },
-      "deepseek-ai/deepseek-v4-pro": {
-        "context_window": 1000000,
-        "max_output_tokens": 8192,
-        "verification": {
-          "status": "operational",
-          "source": "provider_catalog",
-          "notes": "1.6T MoE, 49B activated, 1M context"
-        }
-      },
-      "mistralai/mistral-large-3-675b-instruct-2512": {
-        "context_window": 128000,
-        "max_output_tokens": 8192,
-        "verification": {
-          "status": "operational",
-          "source": "provider_catalog",
-          "notes": "Mistral flagship 675B MoE VLM"
-        }
-      },
-      "mistralai/mistral-small-4-119b-2603": {
-        "context_window": 256000,
-        "max_output_tokens": 8192,
-        "verification": {
-          "status": "operational",
-          "source": "provider_catalog"
-        }
-      },
-      "mistralai/mistral-medium-3.5-128b": {
-        "context_window": 128000,
-        "max_output_tokens": 8192,
-        "verification": {
-          "status": "operational",
-          "source": "provider_catalog"
-        }
-      },
-      "mistralai/ministral-14b-instruct-2512": {
-        "context_window": 256000,
-        "max_output_tokens": 8192,
-        "verification": {
-          "status": "operational",
-          "source": "provider_catalog"
-        }
-      },
       "mistralai/codestral-22b-instruct-v0.1": {
         "context_window": 256000,
         "max_output_tokens": 8192,
@@ -407,30 +356,14 @@
           "notes": "Coding-specialized 22B"
         }
       },
-      "qwen/qwen3.5-397b-a17b": {
-        "context_window": 262144,
-        "max_output_tokens": 81920,
+      "deepseek-ai/deepseek-v4-flash-0731": {
+        "context_window": 1000000,
+        "max_output_tokens": 8192,
         "verification": {
-          "status": "operational",
-          "source": "provider_catalog",
-          "notes": "Qwen3.5 flagship 397B MoE, 17B activated, vision-language"
-        }
-      },
-      "qwen/qwen3.5-122b-a10b": {
-        "context_window": 262144,
-        "max_output_tokens": 81920,
-        "verification": {
-          "status": "deprecated",
-          "source": "provider_catalog",
-          "notes": "Not listed on integrate.api.nvidia.com /v1/models (2026-07-21)"
-        }
-      },
-      "qwen/qwen3-next-80b-a3b-instruct": {
-        "context_window": 262144,
-        "max_output_tokens": 81920,
-        "verification": {
-          "status": "operational",
-          "source": "provider_catalog"
+          "status": "verified",
+          "source": "api_probe",
+          "verified_at": "2026-08-16",
+          "notes": "PT-FRESH: present on GET /v1/models; replaces unversioned deepseek-v4-flash id"
         }
       },
       "z-ai/glm-5.2": {
@@ -441,14 +374,6 @@
           "source": "api_probe",
           "verified_at": "2026-07-08",
           "notes": "Z.ai GLM-5 family flagship, replaces glm-5.1"
-        }
-      },
-      "minimaxai/minimax-m2.7": {
-        "context_window": 128000,
-        "max_output_tokens": 8192,
-        "verification": {
-          "status": "operational",
-          "source": "provider_catalog"
         }
       },
       "minimaxai/minimax-m3": {
@@ -480,14 +405,6 @@
       },
       "google/diffusiongemma-26b-a4b-it": {
         "context_window": 131072,
-        "max_output_tokens": 4096,
-        "verification": {
-          "status": "operational",
-          "source": "provider_catalog"
-        }
-      },
-      "meta/llama-4-maverick-17b-128e-instruct": {
-        "context_window": 1000000,
         "max_output_tokens": 4096,
         "verification": {
           "status": "operational",
@@ -541,14 +458,6 @@
           "notes": "198B MoE, 11B activated, vision-language, agentic"
         }
       },
-      "stepfun-ai/step-3.5-flash": {
-        "context_window": 131072,
-        "max_output_tokens": 16384,
-        "verification": {
-          "status": "operational",
-          "source": "provider_catalog"
-        }
-      },
       "openai/gpt-oss-120b": {
         "context_window": 128000,
         "max_output_tokens": 8192,
@@ -572,6 +481,60 @@
           "status": "operational",
           "source": "provider_catalog"
         }
+      }
+    },
+    "deprecated": {
+      "deepseek-ai/deepseek-v4-flash": {
+        "retired_on": "2026-08-16",
+        "maps_to": "deepseek-ai/deepseek-v4-flash-0731",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16 (PT-FRESH verify)"
+      },
+      "deepseek-ai/deepseek-v4-pro": {
+        "retired_on": "2026-08-16",
+        "maps_to": "deepseek-ai/deepseek-v4-flash-0731",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16; no v4-pro id upstream"
+      },
+      "meta/llama-4-maverick-17b-128e-instruct": {
+        "retired_on": "2026-08-16",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16 (PT-FRESH verify)"
+      },
+      "minimaxai/minimax-m2.7": {
+        "retired_on": "2026-08-16",
+        "maps_to": "minimaxai/minimax-m3",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16 (PT-FRESH verify)"
+      },
+      "mistralai/ministral-14b-instruct-2512": {
+        "retired_on": "2026-08-16",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16 (PT-FRESH verify)"
+      },
+      "mistralai/mistral-large-3-675b-instruct-2512": {
+        "retired_on": "2026-08-16",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16 (PT-FRESH verify)"
+      },
+      "mistralai/mistral-medium-3.5-128b": {
+        "retired_on": "2026-08-16",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16 (PT-FRESH verify)"
+      },
+      "mistralai/mistral-small-4-119b-2603": {
+        "retired_on": "2026-08-16",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16 (PT-FRESH verify)"
+      },
+      "qwen/qwen3-next-80b-a3b-instruct": {
+        "retired_on": "2026-08-16",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16 (PT-FRESH verify)"
+      },
+      "qwen/qwen3.5-122b-a10b": {
+        "retired_on": "2026-08-16",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16 (PT-FRESH verify)"
+      },
+      "qwen/qwen3.5-397b-a17b": {
+        "retired_on": "2026-08-16",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16 (PT-FRESH verify)"
+      },
+      "stepfun-ai/step-3.5-flash": {
+        "retired_on": "2026-08-16",
+        "maps_to": "stepfun-ai/step-3.7-flash",
+        "note": "Absent from live NIM GET /v1/models on 2026-08-16 (PT-FRESH verify)"
       }
     },
     "sdk": {

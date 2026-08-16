@@ -256,8 +256,9 @@ metadata:
       open_weights: true
       verification:
         status: verified
-        source: official_documentation
-        verified_at: "2026-07-23"
+        source: api_probe
+        verified_at: "2026-08-16"
+        notes: "PT-FRESH: present on GET /models (only deepseek-v4-flash + deepseek-v4-pro)"
     deepseek-v4-flash:
       context_window: 1048576
       max_output_tokens: 393216
@@ -285,67 +286,18 @@ metadata:
       open_weights: true
       verification:
         status: verified
-        source: official_documentation
-        verified_at: "2026-07-23"
-    deepseek-chat:
-      context_window: 1000000
-      max_output_tokens: 384000
-      status: active
-      family: deepseek
-      knowledge_cutoff: 2025-09
-      open_weights: true
-      model_capabilities:
-        tool_call: true
-        reasoning: false
-        attachment: false
-      modalities:
-        input:
-          - text
-        output:
-          - text
-      pricing:
-        input_per_1m: 0.14
-        output_per_1m: 0.28
-        cache_read_per_1m: 0.0028
-      verification:
-        status: verified
-        source: official_documentation
-        verified_at: "2026-07-25"
-        notes: "PT-ME-007: listed on DeepSeek API pricing docs (api-docs.deepseek.com)"
-    deepseek-reasoner:
-      context_window: 1000000
-      max_output_tokens: 384000
-      status: active
-      family: deepseek-thinking
-      knowledge_cutoff: 2025-09
-      open_weights: true
-      model_capabilities:
-        tool_call: true
-        reasoning: true
-        attachment: false
-      modalities:
-        input:
-          - text
-        output:
-          - text
-      pricing:
-        input_per_1m: 0.14
-        output_per_1m: 0.28
-        cache_read_per_1m: 0.0028
-      verification:
-        status: verified
-        source: official_documentation
-        verified_at: "2026-07-25"
-        notes: "PT-ME-007: listed on DeepSeek API pricing docs (api-docs.deepseek.com)"
+        source: api_probe
+        verified_at: "2026-08-16"
+        notes: "PT-FRESH: present on GET /models (only deepseek-v4-flash + deepseek-v4-pro)"
   deprecated:
     deepseek-chat:
       retired_on: "2026-07-24"
       maps_to: deepseek-v4-flash (non-thinking)
-      note: Use deepseek-v4-flash instead
+      note: "Absent from live GET /models on 2026-08-16; official aliases retired 2026-07-24"
     deepseek-reasoner:
       retired_on: "2026-07-24"
       maps_to: deepseek-v4-flash (thinking mode)
-      note: Use deepseek-v4-flash with thinking mode instead
+      note: "Absent from live GET /models on 2026-08-16; official aliases retired 2026-07-24"
   sdk:
     note: OpenAI-compatible — use openai SDK with base_url override. Also supports Anthropic Messages API format.
     python: openai
