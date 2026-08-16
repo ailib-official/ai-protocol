@@ -210,8 +210,9 @@
         "max_output_tokens": 8192,
         "verification": {
           "status": "verified",
-          "source": "official_documentation",
-          "verified_at": "2026-07-24"
+          "source": "api_probe",
+          "verified_at": "2026-08-16",
+          "notes": "PT-FRESH: present on GET /openai/v1/models"
         },
         "model_capabilities": {
           "tool_call": true,
@@ -251,37 +252,9 @@
         },
         "verification": {
           "status": "verified",
-          "source": "official_documentation",
-          "verified_at": "2026-07-24"
-        }
-      },
-      "meta-llama/llama-4-scout-17b-16e-instruct": {
-        "context_window": 131072,
-        "max_output_tokens": 8192,
-        "family": "llama-4",
-        "pricing": {
-          "input_per_1m": 0.11,
-          "output_per_1m": 0.34
-        },
-        "model_capabilities": {
-          "tool_call": true,
-          "structured_output": true,
-          "reasoning": false,
-          "attachment": true
-        },
-        "modalities": {
-          "input": [
-            "text",
-            "image"
-          ],
-          "output": [
-            "text"
-          ]
-        },
-        "verification": {
-          "status": "verified",
-          "source": "official_documentation",
-          "verified_at": "2026-07-24"
+          "source": "api_probe",
+          "verified_at": "2026-08-16",
+          "notes": "PT-FRESH: present on GET /openai/v1/models"
         }
       },
       "openai/gpt-oss-120b": {
@@ -310,15 +283,15 @@
         },
         "verification": {
           "status": "verified",
-          "source": "official_documentation",
-          "verified_at": "2026-07-25",
-          "notes": "PT-ME-007: listed on Groq supported models / reasoning docs"
+          "source": "api_probe",
+          "verified_at": "2026-08-16",
+          "notes": "PT-FRESH: present on GET /openai/v1/models"
         }
       },
-      "qwen/qwen3-32b": {
+      "qwen/qwen3.6-27b": {
         "context_window": 131072,
         "max_output_tokens": 40960,
-        "status": "deprecated",
+        "status": "active",
         "family": "qwen3",
         "open_weights": true,
         "model_capabilities": {
@@ -335,15 +308,27 @@
           ]
         },
         "pricing": {
-          "input_per_1m": 0.29,
-          "output_per_1m": 0.59
+          "input_per_1m": 0.6,
+          "output_per_1m": 3
         },
         "verification": {
           "status": "verified",
-          "source": "official_documentation",
-          "verified_at": "2026-07-25",
-          "notes": "PT-ME-007: documented on Groq deprecations (shutdown 2026-07-17); keep id for migration notes"
+          "source": "api_probe",
+          "verified_at": "2026-08-16",
+          "notes": "PT-FRESH: present on GET /openai/v1/models; successor for retired qwen/qwen3-32b"
         }
+      }
+    },
+    "deprecated": {
+      "meta-llama/llama-4-scout-17b-16e-instruct": {
+        "retired_on": "2026-07-17",
+        "maps_to": "qwen/qwen3.6-27b",
+        "note": "Absent from live GET /openai/v1/models on 2026-08-16 (PT-FRESH verify)"
+      },
+      "qwen/qwen3-32b": {
+        "retired_on": "2026-07-17",
+        "maps_to": "qwen/qwen3.6-27b",
+        "note": "Absent from live GET /openai/v1/models on 2026-08-16; prior docs shutdown 2026-07-17"
       }
     },
     "sdk": {
