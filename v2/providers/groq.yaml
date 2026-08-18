@@ -150,34 +150,16 @@ termination:
 metadata:
   api_compatibility: openai
   models:
-    llama-3.1-8b-instant:
-      context_window: 128000
-      max_output_tokens: 8192
-      verification:
-        status: verified
-        source: api_probe
-        verified_at: "2026-08-16"
-        notes: "PT-FRESH: present on GET /openai/v1/models"
-      model_capabilities:
-        tool_call: true
-        reasoning: false
-        attachment: false
-      modalities:
-        input:
-          - text
-        output:
-          - text
-      family: llama-3.1
-    llama-3.3-70b-versatile:
+    openai/gpt-oss-20b:
       context_window: 131072
-      max_output_tokens: 32768
-      family: llama-3.3
-      pricing:
-        input_per_1m: 0.59
-        output_per_1m: 0.79
+      max_output_tokens: 65536
+      status: active
+      family: gpt-oss
+      open_weights: true
       model_capabilities:
         tool_call: true
-        reasoning: false
+        structured_output: true
+        reasoning: true
         attachment: false
       modalities:
         input:
@@ -187,8 +169,8 @@ metadata:
       verification:
         status: verified
         source: api_probe
-        verified_at: "2026-08-16"
-        notes: "PT-FRESH: present on GET /openai/v1/models"
+        verified_at: "2026-08-18"
+        notes: "PT-FRESH: present on GET /openai/v1/models (HK DATA-OWN key via xray)"
     openai/gpt-oss-120b:
       context_window: 131072
       max_output_tokens: 65536
@@ -237,6 +219,14 @@ metadata:
         verified_at: "2026-08-16"
         notes: "PT-FRESH: present on GET /openai/v1/models; successor for retired qwen/qwen3-32b"
   deprecated:
+    llama-3.1-8b-instant:
+      retired_on: "2026-08-18"
+      maps_to: qwen/qwen3.6-27b
+      note: "Absent from live GET /openai/v1/models on 2026-08-18 (HK DATA-OWN key)"
+    llama-3.3-70b-versatile:
+      retired_on: "2026-08-18"
+      maps_to: openai/gpt-oss-120b
+      note: "Absent from live GET /openai/v1/models on 2026-08-18 (HK DATA-OWN key)"
     meta-llama/llama-4-scout-17b-16e-instruct:
       retired_on: "2026-07-17"
       maps_to: qwen/qwen3.6-27b
