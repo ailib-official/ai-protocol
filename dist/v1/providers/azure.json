@@ -1,7 +1,14 @@
 {
   "$schema": "https://raw.githubusercontent.com/ailib-official/ai-protocol/main/schemas/v1.json",
   "id": "azure",
+  "provider_id": "azure",
   "protocol_version": "1.5",
+  "name": "Azure OpenAI",
+  "version": "v1",
+  "status": "stable",
+  "category": "ai_provider",
+  "official_url": "https://learn.microsoft.com/azure/ai-services/openai/",
+  "support_contact": "https://azure.microsoft.com/support/",
   "endpoint": {
     "base_url": "https://${AZURE_RESOURCE_NAME}.openai.azure.com/openai/deployments/${AZURE_DEPLOYMENT_ID}",
     "protocol": "https",
