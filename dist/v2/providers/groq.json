@@ -230,6 +230,20 @@
           "source": "api_probe",
           "verified_at": "2026-08-18",
           "notes": "PT-FRESH: present on GET /openai/v1/models (HK DATA-OWN key via xray)"
+        },
+        "request_defaults": {
+          "status": "experimental",
+          "tpm_profile": "on_demand_free",
+          "max_tokens_cap": 2048,
+          "safe_input_tokens": 4000,
+          "reasoning_effort": {
+            "default": "low",
+            "wire_values": [
+              "low",
+              "medium",
+              "high"
+            ]
+          }
         }
       },
       "openai/gpt-oss-120b": {
@@ -261,6 +275,20 @@
           "source": "api_probe",
           "verified_at": "2026-08-16",
           "notes": "PT-FRESH: present on GET /openai/v1/models"
+        },
+        "request_defaults": {
+          "status": "experimental",
+          "tpm_profile": "on_demand_free",
+          "max_tokens_cap": 2048,
+          "safe_input_tokens": 3200,
+          "reasoning_effort": {
+            "default": "low",
+            "wire_values": [
+              "low",
+              "medium",
+              "high"
+            ]
+          }
         }
       },
       "qwen/qwen3.6-27b": {
@@ -291,6 +319,20 @@
           "source": "api_probe",
           "verified_at": "2026-08-16",
           "notes": "PT-FRESH: present on GET /openai/v1/models; successor for retired qwen/qwen3-32b"
+        },
+        "request_defaults": {
+          "status": "experimental",
+          "tpm_profile": "on_demand_free",
+          "max_tokens_cap": 2048,
+          "safe_input_tokens": 3500,
+          "reasoning_effort": {
+            "when_thinking_off": "none",
+            "when_thinking_on": "default",
+            "wire_values": [
+              "none",
+              "default"
+            ]
+          }
         }
       }
     },
