@@ -151,6 +151,46 @@
         "notes": { "type": "string" }
       },
       "additionalProperties": true
+    },
+    "request_defaults": {
+      "type": "object",
+      "description": "Experimental (EOS-PROTO-REQ-DEFAULTS-001). Host/runtime request overlay hints: TPM-safe caps and reasoning_effort defaults. Not Policy Spec — apps may override; omit keys mean unknown.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["experimental"],
+          "description": "Stability marker; field shape may evolve."
+        },
+        "max_tokens_cap": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Suggested max_tokens / completion cap for rate-limited tiers."
+        },
+        "safe_input_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Suggested input/context budget under TPM pressure (prompt side)."
+        },
+        "tpm_profile": {
+          "type": "string",
+          "description": "Optional tier label (e.g. on_demand_free) for documentation only."
+        },
+        "reasoning_effort": {
+          "type": "object",
+          "description": "Default reasoning_effort wire values when host think toggle applies.",
+          "properties": {
+            "default": { "type": "string" },
+            "when_thinking_off": { "type": "string" },
+            "when_thinking_on": { "type": "string" },
+            "wire_values": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": true
