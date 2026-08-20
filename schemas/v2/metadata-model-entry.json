@@ -164,12 +164,22 @@
         "max_tokens_cap": {
           "type": "integer",
           "minimum": 1,
-          "description": "Suggested max_tokens / completion cap for rate-limited tiers."
+          "description": "Suggested max_tokens / completion cap when thinking is off (or baseline)."
+        },
+        "max_tokens_cap_thinking": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Suggested max_tokens when host think toggle is on — shared reasoning+content budget; raise so content is not starved."
         },
         "safe_input_tokens": {
           "type": "integer",
           "minimum": 1,
-          "description": "Suggested input/context budget under TPM pressure (prompt side)."
+          "description": "Suggested input/context budget under TPM pressure when thinking is off (prompt side)."
+        },
+        "safe_input_tokens_thinking": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Suggested input budget when thinking is on — usually lower so prompt+max_tokens stays under TPM."
         },
         "tpm_profile": {
           "type": "string",
