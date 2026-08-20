@@ -175,7 +175,9 @@ metadata:
         status: experimental
         tpm_profile: on_demand_free
         max_tokens_cap: 2048
+        max_tokens_cap_thinking: 3600
         safe_input_tokens: 4000
+        safe_input_tokens_thinking: 2800
         reasoning_effort:
           default: low
           wire_values: [low, medium, high]
@@ -207,7 +209,9 @@ metadata:
         status: experimental
         tpm_profile: on_demand_free
         max_tokens_cap: 2048
+        max_tokens_cap_thinking: 3600
         safe_input_tokens: 3200
+        safe_input_tokens_thinking: 2500
         reasoning_effort:
           default: low
           wire_values: [low, medium, high]
@@ -237,8 +241,12 @@ metadata:
       request_defaults:
         status: experimental
         tpm_profile: on_demand_free
+        # Thinking+content share max_tokens; raise when think-on so answer is not starved.
+        # Keep prompt+max under on_demand TPM≈8k (2800+4096=6896).
         max_tokens_cap: 2048
+        max_tokens_cap_thinking: 4096
         safe_input_tokens: 3500
+        safe_input_tokens_thinking: 2800
         reasoning_effort:
           when_thinking_off: none
           when_thinking_on: default
