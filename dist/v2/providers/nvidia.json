@@ -24,6 +24,7 @@
       "401": "authentication",
       "403": "permission_denied",
       "404": "not_found",
+      "410": "not_found",
       "429": "rate_limited",
       "500": "server_error",
       "503": "overloaded"
@@ -282,9 +283,10 @@
         "context_window": 128000,
         "max_output_tokens": 8192,
         "verification": {
-          "status": "operational",
-          "source": "provider_catalog",
-          "notes": "Updated v1.5 with improved reasoning"
+          "status": "deprecated",
+          "source": "api_probe",
+          "verified_at": "2026-08-31",
+          "notes": "HTTP 410 Gone / end of life (2026-08-30 NIM); keep tombstone for old config ids"
         }
       },
       "nvidia/llama-3.1-nemotron-70b-instruct": {
@@ -484,6 +486,11 @@
       }
     },
     "deprecated": {
+      "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
+        "retired_on": "2026-08-30",
+        "maps_to": "nvidia/llama-3.1-nemotron-70b-instruct",
+        "note": "NIM chat HTTP 410 Gone: model reached end of life (PT-NIM-002; VelaClaw trial 2026-08-30)"
+      },
       "deepseek-ai/deepseek-v4-flash": {
         "retired_on": "2026-08-16",
         "maps_to": "deepseek-ai/deepseek-v4-flash-0731",

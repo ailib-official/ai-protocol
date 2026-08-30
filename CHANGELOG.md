@@ -4,6 +4,10 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ## Unreleased
 
+### Changed
+
+- **PT-NIM-002**: Tombstone `nvidia/llama-3.3-nemotron-super-49b-v1.5` (NIM HTTP 410 Gone / end of life, 2026-08-30). Keep the id in `metadata.models` as `verification.status: deprecated` and list it under provider `deprecated` with `maps_to: nvidia/llama-3.1-nemotron-70b-instruct`. Classify HTTP `410` as `not_found` on the NVIDIA v2 error map.
+
 ### Added
 
 - **PT-GEN-003 (Experimental)**: Stage D second-vendor generative sample on Qwen/DashScope — model `qwen-image-plus` with `image_generation: true` and native `endpoints.image_generation` absolute URL (`…/multimodal-generation/generation`, adapter `dashscope`). Proves non-OpenAI L-Exec dialect without host UI changes.
