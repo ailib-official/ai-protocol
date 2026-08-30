@@ -191,9 +191,9 @@
       "display_name": "Llama 3.3 Nemotron Super 49B v1.5",
       "verification": {
         "status": "verified",
-        "verified_at": "2026-07-08",
+        "verified_at": "2026-08-31",
         "source": "https://build.nvidia.com/nvidia/llama-3.3-nemotron-super-49b-v1.5",
-        "notes": "Updated v1.5 with improved reasoning"
+        "notes": "Tombstone: NIM HTTP 410 Gone / end of life (2026-08-30). Prefer nvidia/llama-3.1-nemotron-70b-instruct."
       },
       "context_window": 128000,
       "capabilities": [
@@ -204,7 +204,7 @@
         "agentic",
         "reasoning"
       ],
-      "status": "active",
+      "status": "deprecated",
       "tags": [
         "nvidia",
         "llama",
