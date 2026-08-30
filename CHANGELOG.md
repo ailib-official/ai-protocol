@@ -6,7 +6,7 @@ All notable changes to AI-Protocol specifications and schemas will be documented
 
 ### Changed
 
-- **PT-NIM-002**: Tombstone `nvidia/llama-3.3-nemotron-super-49b-v1.5` (NIM HTTP 410 Gone / end of life, 2026-08-30). Keep the id in `metadata.models` as `verification.status: deprecated` and list it under provider `deprecated` with `maps_to: nvidia/llama-3.1-nemotron-70b-instruct`. Classify HTTP `410` as `not_found` on the NVIDIA v2 error map.
+- **PT-NIM-002**: Tombstone `nvidia/llama-3.3-nemotron-super-49b-v1.5` (NIM HTTP 410 Gone / end of life, 2026-08-30). v1 model `status: deprecated` with tombstone notes (`verification.status` stays `verified` — v1 enum has no `deprecated`). v2 metadata `verification.status: deprecated` plus provider `deprecated` with `maps_to: nvidia/llama-3.1-nemotron-70b-instruct`. Classify HTTP `410` as `not_found` on the NVIDIA v2 error map.
 
 ### Added
 

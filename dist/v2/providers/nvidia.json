@@ -489,7 +489,7 @@
       "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
         "retired_on": "2026-08-30",
         "maps_to": "nvidia/llama-3.1-nemotron-70b-instruct",
-        "note": "NIM chat HTTP 410 Gone: model reached end of life (PT-NIM-002; VelaClaw trial 2026-08-30)"
+        "note": "NIM chat HTTP 410 Gone: model reached end of life (PT-NIM-002)"
       },
       "deepseek-ai/deepseek-v4-flash": {
         "retired_on": "2026-08-16",
